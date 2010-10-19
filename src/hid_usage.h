@@ -391,8 +391,8 @@ MS_WH_RIGHT,
 #define _MOD_1 		{ '1', HID_NO_KEY, MOD_LAYER_1 }
 #define _MOD_2 		{ '2', HID_NO_KEY, MOD_LAYER_2 }
 #define _MOD_3 		{ '3', HID_NO_KEY, MOD_LAYER_3 }
-#define _MOD_MOUSE 	{ 'M', HID_NO_KEY, MOD_MOUSE   }
-#define _MOD_COMPOSE {'C', HID_NO_KEY, MOD_COMPOSE }
+#define _MOUSE 	{ 'M', HID_NO_KEY, MOD_MOUSE   }
+#define _COMPOSE {'C', HID_NO_KEY, MOD_COMPOSE }
 
 //
 #define _INS 		{ 'I', HID_INSERT,	NONE  }	 	//  Insert

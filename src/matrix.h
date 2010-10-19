@@ -1,6 +1,8 @@
 #ifndef MATRIX_H
 #define  MATRIX_H 1
 
+#define ALL_COLS_MASK ( ~((1<<7)|(1<<6)))
+
 uint8_t read_col(void);
 void unselect_rows(void);
 void activate(uint8_t row);

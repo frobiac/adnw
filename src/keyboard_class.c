@@ -15,29 +15,37 @@
   You should have received a copy of the GNU General Public License along
   with this project.  If not, see  <http://www.gnu.org/licenses/>.
 
+  --------------------------------------------------------------------------
+  
+  Debounce code based on code from Peter Dannegger [danni/At/specs/d0t/de]
+  described in German at bottom of page
+      http://www.mikrocontroller.net/articles/Entprellung
+  and discussed at
+      http://www.mikrocontroller.net/topic/48465
+  Array extensions inspired by Pult.zip
+      http://www.mikrocontroller.net/topic/48465#1489399
+ 
+  --------------------------------------------------------------------------
 */
 
 #include <string.h>
 #include <limits.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
 
 #include "Keyboard.h"
 #include "keyboard_class.h"
-
 #include "hhstdio.h"
 
 #include "keymap.h"
-
 #include "matrix.h"
 
 
 void init_active_keys(void);
+
 uint8_t lastKeyCode;
-struct
-{
-    uint8_t       row_data[ROWS];
-    uint8_t       prev_row_data[ROWS];
-} kb;
+uint8_t rowData[ROWS];
+uint8_t prevRowData[ROWS];
 
 struct AnalogData {
     int8_t x;
@@ -48,51 +56,35 @@ struct AnalogData {
 
 struct AnalogData analogData;
 
-int8_t k2idx(struct Key k) {
-    return(k.row*COLS + k.col);
-}
-uint8_t rc2idx(uint8_t r, uint8_t c) {
-    return(r*COLS + c);
-}
-
-
 /// used for MODE-key press/release cycle detection
 enum { MKT_RESET, MKT_MODEKEYFIRST, MKT_TOOMANYKEYS, MKT_YES , MKT_INIT };
-/// @todo Make this configurable or time based (clock independant!)
-#define MKT_TIMEOUT 18
+
+#define MKT_TIMEOUT 18 // = 18/61 s
 
 uint16_t    mkt_timer;
 uint8_t     mkt_state;
 struct Key  mkt_key;
 
-/** Debounce code based on code from Peter Dannegger [danni/At/specs/d0t/de]
- *  described in German at bottom of page
- *      http://www.mikrocontroller.net/articles/Entprellung
- *  and discussed at
- *      http://www.mikrocontroller.net/topic/48465
- *  Array extensions inspired by Pult.zip
- *      http://www.mikrocontroller.net/topic/48465#1489399
- */
 
 /// debounce variables
 volatile uint8_t kb_state[ROWS];	// debounced and inverted key state: bit = 1: key pressed
-volatile uint8_t kb_press[ROWS];  // key press detect
+volatile uint8_t kb_press[ROWS];	// key press detect
 volatile uint8_t kb_release[ROWS];  // key release detect
-volatile uint8_t kb_rpt[ROWS];    // key long press and repeat
+volatile uint8_t kb_rpt[ROWS];		// key long press and repeat
 
 static uint8_t ct0[ROWS], ct1[ROWS];
 static int16_t rpt[ROWS];
 
-/// @todo Fix timeouts and generalize routine:
-///       Currently, thumbs are excluded from repeat handling and debounce due to double usage
-#define REPEAT_MASK     0x3F       // repeat: key0
-#define REPEAT_START   31       // 61=1000ms
+#define REPEAT_MASK   ALL_COLS_MASK	// repeat: key0 = 0x3F = 63
+#define REPEAT_START   31				// 61 = 1000ms
 #define REPEAT_NEXT    15
 
 volatile uint16_t idle_count;
 
-#include <avr/interrupt.h>
-
+/**	
+  * ISR that should get called 61 times a second. 
+  * Allows exact timers
+  */
 ISR(TIMER0_OVF_vect)
 {
     idle_count++;
@@ -103,16 +95,19 @@ ISR(TIMER0_OVF_vect)
         idle_count=0;
 }
 
+/** 
+ * Some startup initialization is performed here.
+ */
 void initKeyboard()
 {
-
+	// not strictly necessary
     for (uint8_t row = 0; row < ROWS; ++row){
-        kb.row_data[row]=0;
+        rowData[row]=0;
         ct0[row]=0xFF;
         ct1[row]=0xFF;
     }
 
-    g_mouse_mode=0;
+    g_mouse_mode = 0;
     g_mouse_keys = 0;
     mkt_timer=idle_count + MKT_TIMEOUT;
 
@@ -120,19 +115,25 @@ void initKeyboard()
     init_cols();
 }
 
+/** 
+  * Depending on mouse mode status either mousebutton keys are scanned,
+  * or analog values mapped onto modifier keys.
+  *
+  *	@todo move into mouse module
+  */
 void analogDataAcquire(void) {
     /// @todo: Hardcoded mouse layer
     g_mouse_keys = 0;
     analogData.layer=analogData.mods=0;
 
     if(g_mouse_mode) {
-        if(kb.row_data[5] & (1<<1))
+        if(rowData[5] & (1<<1))
             g_mouse_keys = 0x01;
-        if(kb.row_data[5] & (1<<2))
+        if(rowData[5] & (1<<2))
             g_mouse_keys = 0x04;
-        if(kb.row_data[5] & (1<<3))
+        if(rowData[5] & (1<<3))
             g_mouse_keys = 0x02;
-        if(kb.row_data[4] & (1<<1))
+        if(rowData[4] & (1<<1))
             g_mouse_keys = 0x08;
     }
     else{
@@ -172,7 +173,6 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
     }
 
     clearActiveKeys();
-
     scan_matrix();
 
     /*
@@ -182,10 +182,7 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
         printCurrentKeys();
     }
     */
-
-
     init_active_keys();
-
     analogDataAcquire();
 
     return fillReport(report_data);
@@ -243,29 +240,12 @@ uint8_t get_kb_rpt( uint8_t key_mask, uint8_t col )
     return key_mask;
 }
 
-uint8_t get_kb_short( uint8_t key_mask, uint8_t col )
-{
-  uint8_t i;
-  ATOMIC_BLOCK(ATOMIC_FORCEON)
-          i = get_kb_press( ~kb_state[col] & key_mask, col );
-  return i;
-}
- 
-uint8_t get_kb_long( uint8_t key_mask, uint8_t col )
-{
-  return get_kb_press( get_kb_rpt( key_mask,col  ), col);
-}
-
-uint8_t get_kb_long_r( uint8_t key_mask, uint8_t col )
-{
-  return get_kb_press( get_kb_rpt( kb_press[col]& key_mask,col  ), col);
-}
-
-uint8_t get_kb_long_l( uint8_t key_mask, uint8_t col )
-{
-  return get_kb_rpt( ~kb_press[col]& key_mask,col  );
-}
-
+/** The real hardware access take place here.
+ *  Each of the rows is individually activated and the resulting column value read.
+ *  Should more than 8 channels be needed, this can easily be extended to 16/32bit.
+ *  By means of a neat routine found on  
+ *
+ */
 void scan_matrix(void)
 {
 	uint8_t i, data;
@@ -283,67 +263,49 @@ void scan_matrix(void)
 
         /// @see top comment for source of debounce magic
         // Needs to be adjusted for more than 8 columns
-        i = kb_state[row] ^ (~data);                     // key changed ?
+        i = kb_state[row] ^ (~data);                    // key changed ?
         ct0[row] = ~( ct0[row] & i );                   // reset or count ct0
         ct1[row] = ct0[row] ^ (ct1[row] & i);           // reset or count ct1
         i &= ct0[row] & ct1[row];                       // count until roll over ?
         kb_state[row] ^= i;                             // then toggle debounced state
 
-        kb_press  [row] |=  kb_state[row] & i;             // 0->1: key press detect
-        kb_release[row] |= ~kb_state[row] & i;             // 1->0: key press detect
+        kb_press  [row] |=  kb_state[row] & i;			// 0->1: key press detect
+        kb_release[row] |= ~kb_state[row] & i;          // 1->0: key press detect
 
-        if( (kb_state[row] & REPEAT_MASK) == 0 ) {       // check repeat function
+        if( (kb_state[row] & REPEAT_MASK) == 0 ) {      // check repeat function
             rpt[row] = idle_count + REPEAT_START;       // start delay
         }
         if(  rpt[row] <= idle_count )
         {
-            rpt[row] = idle_count + REPEAT_NEXT;                     // repeat delay
+            rpt[row] = idle_count + REPEAT_NEXT;        // repeat delay
             kb_rpt[row] |= kb_state[row] & REPEAT_MASK;
         }
 
         // Now evaluate results
         uint8_t p,r,h;
-        p=get_kb_press  (REPEAT_MASK, row);
-        h=get_kb_rpt    (REPEAT_MASK, row);
-        r=get_kb_release(REPEAT_MASK, row);
-        if(h!=0) { printf("\n(%d,%d) HOLD %d  %d ",row,h,idle_count, kb_rpt[row]  );}
-        kb.row_data[row] = ((kb.row_data[row]|(p|h)) & ~r);
+        p=get_kb_press  (ALL_COLS_MASK, row);
+        h=get_kb_rpt    (ALL_COLS_MASK, row);
+        r=get_kb_release(ALL_COLS_MASK	, row);
+        
+        rowData[row] = ((rowData[row]|(p|h)) & ~r);
 
         // permanent layer toggles go here!
         if(row==3 && (p & 0x01))
             g_mouse_mode = !g_mouse_mode;
 
-/*
-        if(p!=0) {
-            //printf("\n(%d,%d) PRESS  ",row,p);
-            kb.row_data[row] |= p;
-        }
-        if(r!=0) {
-            //printf("\n(%d,%d) RELEASE",row,r);
-            kb.row_data[row] &= ~r;
-        }
-        if(h!=0) {
-            //printf("\n(%d,%d) HOLD   ",row,h);
-            kb.row_data[row] |= h;
-        }
-        if( !( p==0 && r==0 && h==0)) {
-            ;//printf("  phr= %2d %2d %2d",p,h,r );
-        }
-        */
     }
-
 }
 
 void copyCurrentKeys(void)
 {
     for(uint8_t r=0; r<ROWS; ++r)
-        kb.prev_row_data[r] = kb.row_data[r];
+        prevRowData[r] = rowData[r];
 }
 
 bool keysChanged(void)
 {
     for(uint8_t r=0; r<ROWS; ++r)
-        if(kb.prev_row_data[r] != kb.row_data[r])
+        if(prevRowData[r] != rowData[r])
             return true;
     return false;
 }
@@ -353,14 +315,14 @@ void printCurrentKeys(void)
     for(uint8_t r=0; r<ROWS/2; ++r) {
         printf("\n");
         for(uint8_t c=0; c< COLS; ++c){
-            if( kb.row_data[r] & (1<<c))
+            if( rowData[r] & (1<<c))
                 printf("X");
             else
                 printf(".");
         }
         printf("|  |");
         for(uint8_t c=0; c< COLS; ++c){
-            if( kb.row_data[r+ROWS/2] & (1<<c))
+            if( rowData[r+ROWS/2] & (1<<c))
                 printf("X");
             else
                 printf(".");
@@ -503,7 +465,7 @@ void init_active_keys()
     {
         for (uint8_t col = 0; col < COLS; ++col)
         {
-            if (kb.row_data[row] & (1UL << col))
+            if (rowData[row] & (1UL << col))
             {
                 ActiveKeys_Add(row,col);
             }

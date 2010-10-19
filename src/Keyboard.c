@@ -208,7 +208,11 @@ CPU_PRESCALE(CPU_16MHz);
   TIMSK0 = (1<<TOIE0);
 
 #ifdef VERSIONINFO
-  printf("\n-\n %s\n %s\n-", VERSIONINFO, BUILDDATE);
+  printf("\n-\n %s", VERSIONINFO);
+#endif
+  
+#ifdef BUILDDATE
+  printf("\n %s\n-",  BUILDDATE);
 #endif
 
 #if defined(BOOTLOADER_TEST)
