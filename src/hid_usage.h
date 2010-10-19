@@ -4,14 +4,15 @@
 
 #define MOD_BEGIN 0xE8
 
-#define MOD_L_CTRL	MOD_BEGIN +1 // 0x01
-#define MOD_L_SHIFT	MOD_BEGIN +2 // 0x02
-#define MOD_L_ALT	MOD_BEGIN +3 // 0x04
-#define MOD_L_GUI	MOD_BEGIN +4 // 0x08
-#define MOD_R_CTRL	MOD_BEGIN +5 // 0x10
-#define MOD_R_SHIFT	MOD_BEGIN +6 // 0x20
-#define MOD_R_ALT	MOD_BEGIN +7 // 0x40
-#define MOD_R_GUI	MOD_BEGIN +8 // 0x80
+/// @todo LEFT CTRL not functional
+#define MOD_L_CTRL	MOD_BEGIN +0 // 0x01 
+#define MOD_L_SHIFT	MOD_BEGIN +1 // 0x02
+#define MOD_L_ALT	MOD_BEGIN +2 // 0x04
+#define MOD_L_GUI	MOD_BEGIN +3 // 0x08
+#define MOD_R_CTRL	MOD_BEGIN +4 // 0x10
+#define MOD_R_SHIFT	MOD_BEGIN +5 // 0x20
+#define MOD_R_ALT	MOD_BEGIN +6 // 0x40
+#define MOD_R_GUI	MOD_BEGIN +7 // 0x80
 //#define MOD_ALTGR	MOD_R_ALT | MOD_R_CTRL
 
 #define MOD_LAYER_0		0xF2
@@ -75,7 +76,7 @@
 #define HID_SPACE	44
 #define HID_MINUS	45
 #define HID_EQUAL	46
-#define HID_L_BRACE  47
+#define HID_L_BRACE 47
 #define HID_R_BRACE 48
 #define HID_BACKSLASH	49
 #define HID_NON_US_1	50    // # & ~
@@ -111,33 +112,33 @@
 #define HID_LEFT	80
 #define HID_DOWN	81
 #define HID_UP		82
-#define HID_NUM_LOCK	83
+#define HID_NUM_LOCK		83
 #define HID_KEYPAD_SLASH	84
 #define HID_KEYPAD_ASTERIX	85
 #define HID_KEYPAD_MINUS	86
-#define HID_KEYPAD_PLUS	87
+#define HID_KEYPAD_PLUS		87
 #define HID_KEYPAD_ENTER	88
-#define HID_KEYPAD_1	89
-#define HID_KEYPAD_2	90
-#define HID_KEYPAD_3	91
-#define HID_KEYPAD_4	92
-#define HID_KEYPAD_5	93
-#define HID_KEYPAD_6	94
-#define HID_KEYPAD_7	95
-#define HID_KEYPAD_8	96
-#define HID_KEYPAD_9	97
-#define HID_KEYPAD_0	98
+#define HID_KEYPAD_1		89
+#define HID_KEYPAD_2		90
+#define HID_KEYPAD_3		91
+#define HID_KEYPAD_4		92
+#define HID_KEYPAD_5		93
+#define HID_KEYPAD_6		94
+#define HID_KEYPAD_7		95
+#define HID_KEYPAD_8		96
+#define HID_KEYPAD_9		97
+#define HID_KEYPAD_0		98
 #define HID_KEYPAD_PERIOD	99
 
-#define	HID_NON_US_2	100			// \ & |
+#define	HID_NON_US_2		100			// \ & |
 #define	HID_APPLICATION		101
 #define	HID_MAC_POWER		102
 #define	HID_KEYPAD_EQUAL 	103
-#define	HID_F13			104
-#define	HID_F14			105
-#define	HID_F15			106
+#define	HID_F13				104
+#define	HID_F14				105
+#define	HID_F15				106
 // till F24
-#define	HID_F24			105
+#define	HID_F24				105
 /*
 KB_EXECUTE,
 KB_HELP,
@@ -161,15 +162,15 @@ KP_EQUAL_AS400,       // equal sign on AS/400
 */
 
 
-#define HID_INTERNATIONAL_1_RO 0x87
-#define HID_INTERNATIONAL_2_KATAKANA 0x88
-#define HID_INTERNATIONAL_3_YEN 0x89
-#define HID_INTERNATIONAL_4_HENKAN 0x8A
-#define HID_INTERNATIONAL_5_MUHENKAN 0x8B
-#define HID_INTERNATIONAL_6 0x8C
-#define HID_INTERNATIONAL_7 0x8D
-#define HID_INTERNATIONAL_8 0x8E
-#define HID_INTERNATIONAL_9 0x8E
+#define HID_INTERNATIONAL_1_RO			0x87
+#define HID_INTERNATIONAL_2_KATAKANA	0x88
+#define HID_INTERNATIONAL_3_YEN			0x89
+#define HID_INTERNATIONAL_4_HENKAN		0x8A
+#define HID_INTERNATIONAL_5_MUHENKAN	0x8B
+#define HID_INTERNATIONAL_6				0x8C
+#define HID_INTERNATIONAL_7				0x8D
+#define HID_INTERNATIONAL_8				0x8E
+#define HID_INTERNATIONAL_9				0x8E
 
 #define HID_LANG_1_	0x90
 #define HID_LANG_2_	0x91
@@ -210,7 +211,7 @@ MS_WH_RIGHT,
 #define	HID_R_ALT		230
 #define	HID_R_GUI		231
 
-#define HID_SYSRQ	0x9A
+#define HID_SYSRQ		0x9A
 
 // KEYBOARD Execute/Menu/Help/Copy/paste
 
@@ -231,44 +232,44 @@ MS_WH_RIGHT,
 #define _DEGREE		{ '`',  HID_TILDE, SHIFT  } //  `
 #define _GRAVE 		{ '=',  HID_EQUAL, SHIFT  }	 	//  =
 
-#define _1 		{ '1',  HID_1, NONE  }	   //  1
+#define _1			{ '1',  HID_1, NONE  }	   //  1
 #define _EXCLAM 	{ '!',  HID_1, SHIFT }	   //  !
-#define _2 		{ '2',  HID_2, NONE  }	 	//  2
+#define _2			{ '2',  HID_2, NONE  }	 	//  2
 #define y_AT 		{ '@',  HID_2, SHIFT }	 	//  @
 #define _AT 		{ '@',  HID_Q, ALTGR }	 	//  @
-#define _3 		{ '3',  HID_3, NONE  }	 	//  3
+#define _3			{ '3',  HID_3, NONE  }	 	//  3
 #define y_HASH 		{ '#',  HID_3, SHIFT }	 	//  #
-#define _SQUOTE 		{ '\'',  HID_NON_US_1, SHIFT }	 	//  #
-#define _4 		{ '4',  HID_4, NONE  }	 	//  4
+#define _SQUOTE 	{ '\'', HID_NON_US_1, SHIFT }	 	//  #
+#define _4			{ '4',  HID_4, NONE  }	 	//  4
 #define _DOLLAR 	{ '$',  HID_4, SHIFT }	 	//  $
-#define _5 		{ '5',  HID_5, NONE  }	 	//  5
+#define _5			{ '5',  HID_5, NONE  }	 	//  5
 #define _PERCENT 	{ '%',  HID_5, SHIFT }	 	//  %
-#define _6 		{ '6',  HID_6, NONE  }	 	//  6
-#define y_CARET 		{ '^',  HID_6, SHIFT }//  &
-#define _7 		{ '7',  HID_7, NONE  }	 	//  7
-#define y_AMPERSAND 	{ '&',  HID_7, SHIFT }	 	//  &
-#define _AMPERSAND		{ '&',  HID_6, SHIFT }	 	//  &
-#define _8 		{ '8',  HID_8, NONE  }	 	//  8
+#define _6			{ '6',  HID_6, NONE  }	 	//  6
+#define y_CARET 	{ '^',  HID_6, SHIFT }//  &
+#define _7			{ '7',  HID_7, NONE  }	 	//  7
+#define y_AMPERSAND { '&',  HID_7, SHIFT }	 	//  &
+#define _AMPERSAND	{ '&',  HID_6, SHIFT }	 	//  &
+#define _8			{ '8',  HID_8, NONE  }	 	//  8
 #define y_ASTERIX 	{ '*',  HID_8, SHIFT }	 	//  *
-#define _PLUS 	{ '+',  HID_R_BRACE,	NONE  }	 	//  ]
+#define _PLUS		{ '+',  HID_R_BRACE,	NONE  }	 	//  ]
 #define _ASTERIX	{ '*',  HID_R_BRACE,	SHIFT }	 	//  *
 #define _TILDE 		{ '~',  HID_R_BRACE, 	ALTGR}
 
-#define _9 		{ '9',  HID_9, NONE  }	 	//  9
+#define _9			{ '9',  HID_9, NONE  }	 	//  9
 #define y_L_PAREN 	{ '(',  HID_9, SHIFT }	 	//  (
-#define _L_PAREN  { '[',  HID_8, SHIFT }	 	//  *
-#define _0 		{ '0',  HID_0, NONE  }	 	//  0
+#define _L_PAREN	{ '[',  HID_8, SHIFT }	 	//  *
+#define _0			{ '0',  HID_0, NONE  }	 	//  0
 #define y_R_PAREN 	{ ')',  HID_0, SHIFT }	 	//  )
 #define _R_PAREN 	{ ')',  HID_9, SHIFT }	 	//  )
 
-#define _L_BRACE 	{ '{',  HID_7,	ALTGR  }	 	//
-#define _L_BRACKET 	{ '[',  HID_8,	ALTGR }	 	//  Ü
-#define _R_BRACE 	{ '}',  HID_0,	ALTGR  }	 	//  ]
-#define _R_BRACKET 	{ ']',  HID_9,	ALTGR }	 	//  *
+#define _L_BRACE 	{ '{',  HID_7, ALTGR  }	 	//
+#define _L_BRACKET 	{ '[',  HID_8, ALTGR }	 	//  Ü
+#define _R_BRACE 	{ '}',  HID_0, ALTGR  }	 	//  ]
+#define _R_BRACKET 	{ ']',  HID_9, ALTGR }	 	//  *
 
-#define y_MINUS 		{ '-',  HID_MINUS, NONE  }	 	//  Z:ß/?
+#define y_MINUS 	{ '-',  HID_MINUS, NONE  }	 	//  Z:ß/?
 #define _SSHARP		{ 'ß',  HID_MINUS, NONE  }	 	//  Z:ß/?
-#define _BSLASH		{ '\\',  HID_MINUS, ALTGR  }	 	//  Z:ß/?
+#define _BSLASH		{ '\\', HID_MINUS, ALTGR  }	 	//  Z:ß/?
 #define _MINUS 		{ '-',  HID_SLASH, NONE  }	 	//  -
 #define y_USCORE 	{ '_',  HID_MINUS, SHIFT }	 	//  _
 #define _USCORE 	{ '_',  HID_SLASH, SHIFT }	 	//  _
@@ -299,11 +300,13 @@ MS_WH_RIGHT,
 #define _P 		{ 'P',  HID_P, SHIFT }	 	//  P
 
 #define y_L_BRACE 	{ '{',  HID_L_BRACE,	NONE  }	 	//
-#define y_L_BRACKET 	{ '[',  HID_L_BRACE,	SHIFT }	 	//  Ü
+#define y_L_BRACKET { '[',  HID_L_BRACE,	SHIFT }	 	//  Ü
+#define _U_UML		{ 'u',  HID_L_BRACE,	NONE }	 	//  Ü
+
 #define y_R_BRACE 	{ '}',  HID_R_BRACE,	NONE  }	 	//  ]
-#define y_R_BRACKET 	{ ']',  HID_R_BRACE,	SHIFT }	 	//  *
-#define y_BACKSLASH 	{ '\\',  HID_BACKSLASH,	NONE  }	 	//
-#define _HASH 	{ '#',  HID_BACKSLASH,	NONE  }	 	//
+#define y_R_BRACKET { ']',  HID_R_BRACE,	SHIFT }	 	//  *
+#define y_BACKSLASH { '\\',  HID_BACKSLASH,	NONE  }	 	//
+#define _HASH		{ '#',  HID_BACKSLASH,	NONE  }	 	//
 #define _BAR 		{ '|',  HID_NON_US_2, 	ALTGR}
 
 #define _CAPS 		{ ' ',  HID_CAPS_LOCK, 	NONE  }	 	//  CapsLock
@@ -329,12 +332,14 @@ MS_WH_RIGHT,
 
 #define y_SCOLON 	{ ';',  HID_SEMICOLON, NONE  }	 	//  ö
 #define y_COLON 	{ ':',  HID_SEMICOLON, SHIFT }	 	//  Ö
-#define _SCOLON 	{ ';',  HID_COMMA, SHIFT  }	 	//  ö
-#define _COLON 		{ ':',  HID_PERIOD, SHIFT }	 	//  Ö
+#define _O_UML	 	{ 'o',  HID_SEMICOLON, NONE  }
+#define _SCOLON 	{ ';',  HID_COMMA, SHIFT  }
+#define _COLON 		{ ':',  HID_PERIOD, SHIFT }
 
 #define y_QUOTE 	{ '\'',  HID_QUOTE, NONE  }	 	//  '
+#define _A_UML		{ 'a',  HID_QUOTE, NONE  }	 	//  '
 #define _DQUOTE 	{ '"',  HID_2, SHIFT }	 	// "
-#define y_DQUOTE 	{ '\"',  HID_QUOTE, SHIFT }	 	// "
+#define y_DQUOTE 	{ '\"',  HID_QUOTE, SHIFT }	 	// "	
 
 #define _NON_US_1 	{ ' ',  HID_NON_US_1, NONE  }	 	//  non-US-1
 #define _NON_US_2 	{ ' ',  HID_NON_US_2, NONE  }	 	//  non-US-1
@@ -372,9 +377,9 @@ MS_WH_RIGHT,
 #define _L_SHIFT 	{ 'S', HID_L_SHIFT,     MOD_L_SHIFT }	 	//  LShift
 #define _R_SHIFT 	{ 'S', HID_R_SHIFT, 	MOD_R_SHIFT }	 	//  RShift
 #define _L_CTRL 	{ 'C', HID_L_CONTROL,   MOD_L_CTRL  }	 	//  LCtrl
+#define _R_CTRL 	{ 'C', HID_R_CONTROL,   MOD_R_CTRL  }	 	//  RCtrl
 #define _L_ALT 		{ 'A', HID_L_ALT,       MOD_L_ALT   }	 	//  LAlt
 #define _R_ALT 		{ 'A', HID_R_ALT,   	MOD_R_ALT   }	 	//  RAlt
-#define _R_CTRL 	{ 'C', HID_R_CONTROL,   MOD_R_CTRL  }	 	//  RCtrl
 #define _L_GUI 		{ 'G', HID_L_GUI,   	MOD_L_GUI   }	 	//  LWin
 #define _R_GUI 		{ 'G', HID_R_GUI,   	MOD_R_GUI   }	 	//  RWin
 //
@@ -416,7 +421,7 @@ MS_WH_RIGHT,
 #define _KP_9 		{ '9', HID_KEYPAD_9, NONE  }	 	//  KP_9
 #define _KP_PGUP 	{ ' ', HID_KEYPAD_9, SHIFT }	 	//  PgUp
 #define _KP_6 		{ '6', HID_KEYPAD_6, NONE  }	 	//  KP_6
-#define _KP_RIGHT 	{ '', HID_KEYPAD_6, SHIFT }	 	//  Right
+#define _KP_RIGHT 	{ ' ', HID_KEYPAD_6, SHIFT }	 	//  Right
 #define _KP_3 		{ '3', HID_KEYPAD_3, NONE  }	 	//  KP_3
 #define _KP_PGDN 	{ ' ', HID_KEYPAD_3, SHIFT }	 	//  PgDn
 #define _KP_PERIOD 	{ '.', HID_KEYPAD_PERIOD, NONE  }	 	//  KP_.

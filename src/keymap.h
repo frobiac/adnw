@@ -31,7 +31,7 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] =
     {   _NO,     _NO,     _NO,     _NO,     _NO,     _NO     },
     {   _NO,     _NO,     _NO,     _NO,     _NO,     _NO     },
     {   _NO,     _NO,     _NO,     _NO,     _NO,     _NO     },
-    {   _NO,     _NO,     _NO,     _SPACE,     _TAB,     _NO     },
+    {   _NO,     _NO,     _ESC,     _SPACE,     _TAB,     _NO     },
 
     {   _NO,     _NO,     _NO,     _NO,     _NO,     _NO     },
     {   _NO,     _NO,     _NO,     _NO,     _NO,     _NO     },
@@ -40,6 +40,7 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] =
 };
 
 /// @todo PROGMEM
+///			lalt = gui, lgui = ctrl, 
 static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] =
 {
     // normal layer
@@ -48,12 +49,12 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] =
         {   _q,     _u,     _o,     _b,     _p, _NO },
         {   _a,     _i,     _e,     _t,     _c, _NO },
         {   _NO,    _j,     _x,     _w,     _v, _TAB },
-        {   _MOD_MOUSE, _L_GUI, _L_ALT, _MOD_3,  _L_GUI, _L_ALT },
+        {   _MOD_MOUSE, _L_GUI, _L_ALT, _MOD_3,  _L_CTRL, _L_ALT },
         // Right half
         {   _MOD_1, _k,     _g,     _l,     _m,     _f },
         {   _MOD_2, _h,     _d,     _n,     _r,     _s },
-        {   _MOD_3, _z,     _y,     _COMMA, _PERIOD,_MINUS },
-        {   _ESC,    _MOD_2, _MOD_1, _R_ALT, _NO,  _MOD_COMPOSE }
+        {   _L_SHIFT, _z,     _y,     _COMMA, _PERIOD,_MINUS },
+        {   _NO,    _MOD_2, _L_SHIFT/*_MOD_1*/, _R_ALT, _R_CTRL,  _MOD_COMPOSE }
     },
 
     // MOD1 layer (shifted)
@@ -104,22 +105,22 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] =
     {   _NO,    _j,     _x,     _w,     _v, _NO },
     {   _MOD_MOUSE, _L_GUI, _L_ALT, _MOD_3,  _L_CTRL, _TAB },
 
-    {   _NO,_MS_SCROLL, _NO,     _NO,     _NO,     _NO  },
-    {   _NO, _MS_BTN_1,_MS_BTN_2,_MS_BTN_3, _NO,  _NO },
-    {   _NO,    _NO,    _NO,    _NO,   _NO,     _NO},
-    {   _NO, _MOD_2, _L_SHIFT, _R_ALT, _NO,   _MOD_COMPOSE }
+    {   _NO,	_MS_SCROLL,	_NO,		_NO,		_NO,	_NO  },
+    {   _NO,	_MS_BTN_1,	_MS_BTN_2,	_MS_BTN_3,	_NO,	_NO },
+    {   _NO,    _NO,		_NO,		_NO,		_NO,	_NO},
+    {   _NO,	_MOD_2,		_L_SHIFT,	_R_ALT,		_NO,	_MOD_COMPOSE }
 },
 // COMPOSE
 {
-    {    _BSPACE,   _PGUP,  _UP,   	_PGDN,	_DEL ,  _NO},
-    {    _HOME,   	_LEFT,  _DOWN,  _RIGHT, _END ,  _NO},
-    {    _ESC,  	_TAB, 	_INS,   _ENTER, _NO ,   _NO},
-    {    _NO,   	_NO,    _NO,    _NO,    _NO ,   _NO},
+        { _SSHARP,	_U_UML, _O_UML, _NO,	_NO,  _NO},
+        { _A_UML,	_NO,    _NO,    _NO,    _NO ,   _NO},
+        { _NO,   	_NO,    _NO,	_NO,    _NO ,   _NO},
+        { _NO,   	_NO,    _NO,	_NO,    _NO ,   _NO},
 
-    {   _F1,    _EXCLAM,_7,     _8,     _9,     _PLUS  },
-    {   _NO,    _EQUAL, _4,     _5,     _6,     _SSHARP },
-    {   _NO,    _0,     _1,     _2,     _3,     _NO,  },
-    {   _NO,    _NO,    _NO,    _NO,   _NO,     _NO}
+        { _F1,		_F2,	_F3,	_F4,	_F5,	_F6  },
+        { _F7,		_F8,	_F9,    _F10,	_F11,	_F12 },
+        { _NO,		_NO,    _NO,    _NO,	_NO,	_NO  },
+        { _NO,		_NO,    _NO,    _NO,	_NO,	_NO  }
     }
 }; // end of matrix[][][]
 
