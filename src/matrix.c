@@ -1,6 +1,3 @@
-/*
- * scan matrix
- */
 #include <avr/io.h>
 
 #include "matrix.h"
@@ -19,8 +16,6 @@ void unselect_rows(void) {
 
 void activate(uint8_t row)
 {
-    //    ColPins:PB0 PB1 PB2 PB3 PB4 PB5 PB6
-    //    RowPins:PC4 PC5 PC6 PC7 PD0 PC0 PC1 PC2 PC3 PD1
     unselect_rows();
     // swap upper and lower ports to have left half first in matrix
     (row<4) ? (row+=4) : (row-=4);

@@ -37,6 +37,9 @@
   dean [at] fourwalledcubicle [dot] com
       www.fourwalledcubicle.com
   --------------------------------------------------------------------
+
+  Mouse handling added by frobiac, 2010
+
 */
 
 /** \file

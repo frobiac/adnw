@@ -37,6 +37,11 @@
   dean [at] fourwalledcubicle [dot] com
       www.fourwalledcubicle.com
   --------------------------------------------------------------------
+
+  Mouse handling added by frobiac, 2010
+
+  --------------------------------------------------------------------
+
 */
 
 /** \file
@@ -253,26 +258,6 @@ void EVENT_USB_Device_StartOfFrame(void)
   HID_Device_MillisecondElapsed(&Keyboard_HID_Interface);
   HID_Device_MillisecondElapsed(&DBG_HID_Interface);
   HID_Device_MillisecondElapsed(&Mouse_HID_Interface);
-}
-
-/** Determine the mouse flags from certain keys pressed.
-  * Currently using  D-pad_Up (0x90..0x93) / HID_LANG_1_ ..4
-  */
-void handleAnalogStick( USB_KeyboardReport_Data_t* ReportData)
-{
-    /*g_mouse_keys=0;
-    for (int i=0; i<6; ++i)
-    {
-        if( ReportData->KeyCode[i] >= MS_SCROLL &&
-            ReportData->KeyCode[i] <= MS_BTN_3  )
-        {
-            g_mouse_keys |= 1 << (ReportData->KeyCode[i]-MS_SCROLL) ;
-            printf("\n%d <- %d", g_mouse_keys, ReportData->KeyCode[i] );
-        }
-        if(ReportData->KeyCode[i] != 0)
-            printf(" undetected:%d",ReportData->KeyCode[i] );
-    }
-    */
 }
 
 
