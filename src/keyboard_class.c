@@ -161,6 +161,7 @@ uint8_t Keyboard__get_report(USB_KeyboardReport_Data_t *report_data)
         printCurrentKeys();
     }
 
+
     init_active_keys();
 
     analogDataAcquire();

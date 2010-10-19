@@ -7,37 +7,37 @@
 void printMatrixAllLayers(void);
 void printMatrix(void);
 
-// *************************************************************
-// *    Matrix of physical keyboard to key mapping
-// *************************************************************
-
-   struct keycode {
-   uint8_t  ch;
-   uint8_t  xmodmap; ///< @todo what for?
-   uint8_t  hid;	 ///< HID usage code, will be interpreted by OS keyboard layout!
-   uint8_t  mods;    ///< HID modifiers , will be interpreted by OS keyboard layout!
-   } ;
-
 
 #define LAYERS 4
 #define ROWS   8
 #define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
 
+// *************************************************************
+// *    Matrix of physical keyboard to key mapping
+// *************************************************************
+
+struct keycode {
+    uint8_t  ch;	///< could be useful ofr dumping the layout
+    uint8_t  hid;	///< HID usage code, will be interpreted by OS keyboard layout!
+    uint8_t  mods;	///< HID modifiers , will be interpreted by OS keyboard layout!
+} ;
+
+
 //static const uint8_t PROGMEM Keymap[][ROWS][COLS] = {
 
-   static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] =
-   {
-       // Left half
-       {   _NO,     _NO,     _NO,     _NO,     _NO,     _NO     },
-       {   _NO,     _NO,     _NO,     _NO,     _NO,     _NO     },
-       {   _NO,     _NO,     _NO,     _NO,     _NO,     _NO     },
-       {   _NO,     _NO,     _NO,     _SPACE,     _TAB,     _NO     },
+static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] =
+{
+    // Left half
+    {   _NO,     _NO,     _NO,     _NO,     _NO,     _NO     },
+    {   _NO,     _NO,     _NO,     _NO,     _NO,     _NO     },
+    {   _NO,     _NO,     _NO,     _NO,     _NO,     _NO     },
+    {   _NO,     _NO,     _NO,     _SPACE,     _TAB,     _NO     },
 
-       {   _NO,     _NO,     _NO,     _NO,     _NO,     _NO     },
-       {   _NO,     _NO,     _NO,     _NO,     _NO,     _NO     },
-       {   _NO,     _NO,     _NO,     _NO,     _NO,     _NO     },
-       {   _NO,     _ENTER,     _BSPACE,     _NO,     _NO,     _NO     },
-   };
+    {   _NO,     _NO,     _NO,     _NO,     _NO,     _NO     },
+    {   _NO,     _NO,     _NO,     _NO,     _NO,     _NO     },
+    {   _NO,     _NO,     _NO,     _NO,     _NO,     _NO     },
+    {   _NO,     _ENTER,     _BSPACE,     _NO,     _NO,     _NO     },
+};
 
 /// @todo PROGMEM
 static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] =
