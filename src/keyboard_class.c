@@ -83,8 +83,29 @@ volatile uint8_t kb_rpt[ROWS];    // key long press and repeat
 static uint8_t ct0[ROWS], ct1[ROWS];
 static int16_t rpt[ROWS];
 
+/// @todo Fix timeouts and generalize routine:
+///       Currently, thumbs are excluded from repeat handling and debounce due to double usage
+#define REPEAT_MASK     0x3F       // repeat: key0
+#define REPEAT_START   31       // 61=1000ms
+#define REPEAT_NEXT    15
+
+volatile uint16_t idle_count;
+
+#include <avr/interrupt.h>
+
+ISR(TIMER0_OVF_vect)
+{
+    idle_count++;
+    if(idle_count%61 == 0)
+        ; // printf("\n61 * %d", idle_count/61);
+
+    if(idle_count>12200)
+        idle_count=0;
+}
+
 void Keyboard__init()
 {
+
     for (uint8_t row = 0; row < ROWS; ++row){
         kb.row_data[row]=0;
         ct0[row]=0xFF;
@@ -154,12 +175,13 @@ uint8_t Keyboard__get_report(USB_KeyboardReport_Data_t *report_data)
 
     scan_matrix();
 
-
+    /*
     if ( keysChanged() )
     {
         copyCurrentKeys();
         printCurrentKeys();
     }
+    */
 
 
     init_active_keys();
@@ -193,11 +215,7 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 }
 
 
-/// @todo Fix timeouts and generalize routine:
-///       Currently, thumbs are excluded from repeat handling and debounce due to double usage
-#define REPEAT_MASK     0x3F       // repeat: key0
-#define REPEAT_START   1000
-#define REPEAT_NEXT     500
+
 
 uint8_t get_kb_release( uint8_t key_mask, uint8_t col)
 {
@@ -274,11 +292,12 @@ void scan_matrix(void)
         kb_press  [row] |=  kb_state[row] & i;             // 0->1: key press detect
         kb_release[row] |= ~kb_state[row] & i;             // 1->0: key press detect
 
-        if( (kb_state[row] & REPEAT_MASK) == 0 )        // check repeat function
-            rpt[row] = REPEAT_START;                    // start delay
-        if(  --rpt[row] == 0 )
+        if( (kb_state[row] & REPEAT_MASK) == 0 ) {       // check repeat function
+            rpt[row] = idle_count + REPEAT_START;       // start delay
+        }
+        if(  rpt[row] <= idle_count )
         {
-            rpt[row] = REPEAT_NEXT;                     // repeat delay
+            rpt[row] = idle_count + REPEAT_NEXT;                     // repeat delay
             kb_rpt[row] |= kb_state[row] & REPEAT_MASK;
         }
 
@@ -287,7 +306,7 @@ void scan_matrix(void)
         p=get_kb_press  (REPEAT_MASK, row);
         h=get_kb_rpt    (REPEAT_MASK, row);
         r=get_kb_release(REPEAT_MASK, row);
-
+        if(h!=0) { printf("\n(%d,%d) HOLD %d  %d ",row,h,idle_count, kb_rpt[row]  );}
         kb.row_data[row] = ((kb.row_data[row]|(p|h)) & ~r);
 
         // permanent layer toggles go here!

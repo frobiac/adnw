@@ -180,7 +180,11 @@ int main(void)
 void SetupHardware()
 {
   /* Disable clock division */
-  clock_prescale_set(clock_div_2);
+  //clock_prescale_set(clock_div_2);
+  // set for 16 MHz clock
+#define CPU_PRESCALE(n) (CLKPR = 0x80, CLKPR = (n))
+#define CPU_16MHz       0x00
+CPU_PRESCALE(CPU_16MHz);
 
   /* Disable watchdog if enabled by bootloader/fuses */
   MCUSR &= ~(1 << WDRF);
@@ -198,6 +202,10 @@ void SetupHardware()
 
   g_num_lock = g_caps_lock = g_scrl_lock = 0;
 
+  // set up timer
+  TCCR0A = 0x00;
+  TCCR0B = 0x05;
+  TIMSK0 = (1<<TOIE0);
 
 #ifdef VERSIONINFO
   printf("\n-\n %s\n %s\n-", VERSIONINFO, BUILDDATE);
