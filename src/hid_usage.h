@@ -288,8 +288,10 @@ MS_WH_RIGHT,
 #define _R 		{ 'R',  HID_R, SHIFT }	 	//  R
 #define _t 		{ 't',  HID_T, NONE  }	 	//  t
 #define _T 		{ 'T',  HID_T, SHIFT }	 	//  T
-#define _y 		{ 'y',  HID_Y, NONE  }	 	//  y
-#define _Y 		{ 'Y',  HID_Y, SHIFT }	 	//  Y
+#define y_y 	{ 'y',  HID_Y, NONE  }	 	//  y
+#define y_Y 	{ 'Y',  HID_Y, SHIFT }	 	//  Y
+#define _y 		{ 'y',  HID_Z, NONE  }	 	//  y
+#define _Y 		{ 'Y',  HID_Z, SHIFT }	 	//  Y
 #define _u 		{ 'u',  HID_U, NONE  }	 	//  u
 #define _U 		{ 'U',  HID_U, SHIFT }	 	//  U
 #define _i 		{ 'i',  HID_I, NONE  }	 	//  i
@@ -346,8 +348,10 @@ MS_WH_RIGHT,
 
 #define _ENTER 		{ 'E',  HID_ENTER, NONE  }	 	//  Enter
 
-#define _z 		{ 'z',  HID_Z, NONE  }	 	//  z
-#define _Z 		{ 'Z',  HID_Z, SHIFT }	 	//  Z
+#define y_z 		{ 'z',  HID_Z, NONE  }	 	//  z
+#define y_Z 		{ 'Z',  HID_Z, SHIFT  }	 	//  z
+#define _z 		{ 'z',  HID_Y, NONE }	 	//  Z
+#define _Z 		{ 'Z',  HID_Y, SHIFT }	 	//  Z
 #define _x 		{ 'x',  HID_X, NONE  }	 	//  x
 #define _X 		{ 'X',  HID_X, SHIFT }	 	//  X
 #define _c 		{ 'c',  HID_C, NONE  }	 	//  c
