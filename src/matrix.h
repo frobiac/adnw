@@ -4,7 +4,7 @@
 #include <avr/io.h>
 
 
-#define ALL_COLS_MASK ( ~((1<<7)|(1<<6)))
+#define ALL_COLS_MASK ((1<<COLS)-1)  // 0x63 or all lower 6 bits
 
 uint8_t read_col(void);
 void unselect_rows(void);
@@ -32,26 +32,12 @@ void activate(uint8_t row)
 }
 static inline void init_cols(void)
 {
-  /* Columns are inputs */
-	DDRB  &= ~((1<<6) | (1<<7));
-	PORTB |= ~((1<<6) | (1<<7));
-	/*
-  DDRB &= ~(1 << PB0);
-  DDRB &= ~(1 << PB1);
-  DDRB &= ~(1 << PB2);
-  DDRB &= ~(1 << PB3);
-  DDRB &= ~(1 << PB4);
-  DDRB &= ~(1 << PB5);
-  DDRB &= ~(1 << PB6);
 
-  /* Enable pull-up resistors on inputs */
-  /*PORTB |= (1 << PB0);
-  PORTB |= (1 << PB1);
-  PORTB |= (1 << PB2);
-  PORTB |= (1 << PB3);
-  PORTB |= (1 << PB4);
-  PORTB |= (1 << PB5);
-  PORTB |= (1 << PB6);
-  */
+    /* Columns are inputs */
+    DDRB  &= ((1<<6) | (1<<7)); // 192 or upper 2 bits
+
+    /* Enable pull-up resistors on inputs */
+    PORTB |= ((1<<6)-1);        // 63 or lower 6 bits
+
 }
 #endif

@@ -61,7 +61,7 @@ enum { MKT_RESET, MKT_MODEKEYFIRST, MKT_TOOMANYKEYS, MKT_YES , MKT_INIT };
 
 #define MKT_TIMEOUT 18 // = 18/61 s
 
-uint16_t    mkt_timer;
+uint32_t    mkt_timer;
 uint8_t     mkt_state;
 struct Key  mkt_key;
 
@@ -73,14 +73,13 @@ volatile uint8_t kb_release[ROWS];  // key release detect
 volatile uint8_t kb_rpt[ROWS];		// key long press and repeat
 
 static uint8_t ct0[ROWS], ct1[ROWS];
-static int16_t rpt[ROWS];
+static int32_t rpt[ROWS];
 
 #define REPEAT_MASK    ALL_COLS_MASK	// repeat: key0 = 0x3F = 63
 #define REPEAT_START   31				// 61 = 1000ms
 #define REPEAT_NEXT    15
 
-volatile uint16_t idle_count;
-
+volatile uint32_t idle_count = 0;
 /**	
   * ISR that should get called 61 times a second. 
   * Allows exact timers
@@ -88,10 +87,11 @@ volatile uint16_t idle_count;
 ISR(TIMER0_OVF_vect)
 {
     idle_count++;
-    if(idle_count%61 == 0)
-        ; // printf("\n61 * %d", idle_count/61);
 
-    if(idle_count>12200)
+    /// @todo What happens on overflow? with 61/s and 16bit=65536
+    // (2^15-1)/61/60        ~= 9 minutes till overflow
+    // (2^31-1)/61/60/60/24   = 407 days should suffice...
+    if(idle_count<0)
         idle_count=0;
 }
 
