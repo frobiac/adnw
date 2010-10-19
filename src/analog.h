@@ -1,3 +1,4 @@
+/// based on PJRC example
 #ifndef _analog_h_included__
 #define _analog_h_included__
 

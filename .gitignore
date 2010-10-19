@@ -15,4 +15,5 @@
 .DS_Store
 generated
 build
-kspec
+log
+version.h

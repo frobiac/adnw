@@ -77,7 +77,7 @@ TARGET = $(OBJDIR)/firmware
 OBJDIR = build
 
 # Source files directory
-SRCDIR = ../src
+SRCDIR = src
 VPATH = .. $(OBJDIR)
 
 # Path to the LUFA library
@@ -373,7 +373,11 @@ ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 
 # Default target.
 # all: begin $(OBJDIR)/.generate gccversion sizebefore build checkinvalidevents showliboptions showtarget sizeafter end
-all:  gccversion sizebefore build checkinvalidevents showliboptions showtarget sizeafter
+all:  gccversion sizebefore version build checkinvalidevents showliboptions showtarget sizeafter
+
+# create some version information from git
+version:
+	@$(SRCDIR)/version.sh > $(SRCDIR)/version.h
 
 # Change the build target to build a HEX file or a library.
 build: elf hex eep lss sym

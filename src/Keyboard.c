@@ -60,7 +60,7 @@
 #include "hid_usage.h"
 #include "analog.h"
 
-
+#include "version.h"
 
 /** Buffer to hold the previously generated Mouse HID report, for comparison purposes inside the HID class driver. */
 uint8_t PrevMouseHIDReportBuffer[sizeof(USB_MouseReport_Data_t)];
@@ -197,6 +197,11 @@ void SetupHardware()
   Keyboard__init();
 
   g_num_lock = g_caps_lock = g_scrl_lock = 0;
+
+
+#ifdef VERSIONINFO
+  printf("\n-\n %s\n %s\n-", VERSIONINFO, BUILDDATE);
+#endif
 
 #if defined(BOOTLOADER_TEST)
   uint8_t bootloader = eeprom_read_byte(&ee_bootloader);
