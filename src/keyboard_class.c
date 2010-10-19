@@ -59,7 +59,7 @@ uint8_t rc2idx(uint8_t r, uint8_t c) {
 /// used for MODE-key press/release cycle detection
 enum { MKT_RESET, MKT_MODEKEYFIRST, MKT_TOOMANYKEYS, MKT_YES , MKT_INIT };
 /// @todo Make this configurable or time based (clock independant!)
-#define MKT_TIMEOUT 120
+#define MKT_TIMEOUT 18
 
 uint16_t    mkt_timer;
 uint8_t     mkt_state;
@@ -114,7 +114,7 @@ void Keyboard__init()
 
     g_mouse_mode=0;
     g_mouse_keys = 0;
-    mkt_timer=MKT_TIMEOUT;
+    mkt_timer=idle_count + MKT_TIMEOUT;
 
     stdio_init();
     init_cols();
@@ -159,7 +159,7 @@ void analogDataAcquire(void) {
 uint8_t Keyboard__get_report(USB_KeyboardReport_Data_t *report_data)
 {
     //testMKT();
-    if(mkt_timer++ > MKT_TIMEOUT)
+    if(mkt_timer+MKT_TIMEOUT < idle_count)
         mkt_state = MKT_RESET;
     if(activeKeys.keycnt==0){
         if(mkt_state == MKT_YES){
@@ -489,7 +489,7 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
     if(mkt_state == MKT_INIT && activeKeys.keycnt==1 && !key.normalKey){
         mkt_state = MKT_YES;
         mkt_key = key;
-        mkt_timer=0;
+        mkt_timer=idle_count;
     }
     if(mkt_state == key.normalKey)
         mkt_state = MKT_RESET;
