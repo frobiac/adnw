@@ -1,0 +1,7 @@
+#!/bin/bash
+echo "*** make clean" 
+make clean > log &&
+echo "*** make " &&
+make >> log &&
+echo "*** Now flash..." &&
+teensy_loader_cli -mmcu=at90usb1286 -w -v  build/firmware.hex

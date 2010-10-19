@@ -1,0 +1,20 @@
+done - Mouse buttons, move on windows
+done - move mod4 to shifted mod3 Not very efficient, double usage of modifiers with standard keys is better
+done - F1-12
+
+done - timeout modekey toggle
+- trackpoint
+- new 3D design, mainly thumbkeys
+- Macro + shifted macro causes spurious press?
+- programming macros on edges?
+
+- prntscreen...
+
+
+
+### ModKey toggle: Ctrl-Tab needs separate Tab
+Ctrl-Alt-F1
+Ctrl-Alt-Del
+           !               !
+win  alt  shft ctrl  | -  mod3 mod4  altgr
+     esc  spac tab        back enter del
