@@ -114,10 +114,10 @@ SRC =   $(SRCDIR)/Keyboard.c         \
 	$(SRCDIR)/keyboard_class.c   \
 	$(SRCDIR)/hhstdio.c          \
 	$(SRCDIR)/analog.c 	     \
-	$(SRCDIR)/matrix.c       \
 	$(SRCDIR)/analog.c       \
 	$(LUFA_SRC)
 
+#  //$(SRCDIR)/matrix.c       \
 
 # List C++ source files here. (C dependencies are automatically generated.)
 CPPSRC = 

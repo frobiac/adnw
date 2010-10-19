@@ -75,7 +75,7 @@ volatile uint8_t kb_rpt[ROWS];		// key long press and repeat
 static uint8_t ct0[ROWS], ct1[ROWS];
 static int16_t rpt[ROWS];
 
-#define REPEAT_MASK   ALL_COLS_MASK	// repeat: key0 = 0x3F = 63
+#define REPEAT_MASK    ALL_COLS_MASK	// repeat: key0 = 0x3F = 63
 #define REPEAT_START   31				// 61 = 1000ms
 #define REPEAT_NEXT    15
 
