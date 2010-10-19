@@ -450,7 +450,7 @@ USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
         .PollingIntervalMS      = 0x00 /* ignored for full-speed bulk transfers */
       },
 
-.HID2_MouseInterface =
+.HID_MouseInterface =
 {
 		.Header                 = {.Size = sizeof(USB_Descriptor_Interface_t), .Type = DTYPE_Interface},
 
@@ -466,7 +466,7 @@ USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
 		.InterfaceStrIndex      = NO_DESCRIPTOR
 							  },
 
-.HID2_MouseHID =
+.HID_MouseHID =
 {
 		.Header                 = {.Size = sizeof(USB_HID_Descriptor_t), .Type = DTYPE_HID},
 
@@ -477,7 +477,7 @@ USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
 		.HIDReportLength        = sizeof(MouseReport)
 							  },
 
-.HID2_ReportINEndpoint =
+.HID_MouseReportINEndpoint =
 {
 		.Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
 		.EndpointAddress        = (ENDPOINT_DESCRIPTOR_DIR_IN | MOUSE_IN_EPNUM),
@@ -575,7 +575,7 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint8_t wIndex,
           Size    = sizeof(USB_HID_Descriptor_t);
           break;
 		case 3:
-		  Address = (void*)&ConfigurationDescriptor.HID2_MouseHID;
+		  Address = (void*)&ConfigurationDescriptor.HID_MouseHID;
 		  Size    = sizeof(USB_HID_Descriptor_t);
 		  break;
       }

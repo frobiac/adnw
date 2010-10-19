@@ -103,7 +103,7 @@ ISR(TIMER0_OVF_vect)
         idle_count=0;
 }
 
-void Keyboard__init()
+void initKeyboard()
 {
 
     for (uint8_t row = 0; row < ROWS; ++row){
@@ -156,7 +156,7 @@ void analogDataAcquire(void) {
     }
 }
 
-uint8_t Keyboard__get_report(USB_KeyboardReport_Data_t *report_data)
+uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
     //testMKT();
     if(mkt_timer+MKT_TIMEOUT < idle_count)

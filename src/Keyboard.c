@@ -198,7 +198,7 @@ CPU_PRESCALE(CPU_16MHz);
   while (!USB_PLL_IsReady());
 
   /* Task init */
-  Keyboard__init();
+  initKeyboard();
 
   g_num_lock = g_caps_lock = g_scrl_lock = 0;
 
@@ -290,9 +290,7 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
   if (HIDInterfaceInfo == &Keyboard_HID_Interface)
   {
     USB_KeyboardReport_Data_t* KeyboardReport = (USB_KeyboardReport_Data_t*)ReportData;
-    *ReportSize = Keyboard__get_report(KeyboardReport);
-
-     //handleAnalogStick((USB_KeyboardReport_Data_t*)ReportData);
+    *ReportSize = getKeyboardReport(KeyboardReport);
   }
 
   else if (HIDInterfaceInfo == &DBG_HID_Interface)

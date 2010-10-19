@@ -24,8 +24,8 @@
 #include <LUFA/Drivers/USB/Class/HID.h>
 #include "analog.h"
 
-void      Keyboard__init(void);
-uint8_t   Keyboard__get_report(USB_KeyboardReport_Data_t *report);
+void      initKeyboard(void);
+uint8_t   getKeyboardReport(USB_KeyboardReport_Data_t *report);
 
 
 uint8_t g_mouse_keys;
@@ -48,17 +48,17 @@ struct sfrActiveKeys {
     uint8_t keycnt;
 };
 
+void clearActiveKeys(void);
+
 bool isModifierKey(uint8_t row, uint8_t col);
 bool isLayerKey(uint8_t row, uint8_t col);
 bool isNormalKey(uint8_t row, uint8_t col);
 
-uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer);
 uint8_t getKeyCode(uint8_t row, uint8_t col, uint8_t layer);
-
+uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer);
 uint8_t getActiveModifiers(void);
 uint8_t getActiveLayer(void);
 uint8_t getActiveKeyCodeModifier(void);
-void clearActiveKeys(void);
 
 void scan_matrix(void);
 
@@ -67,4 +67,5 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data);
 void copyCurrentKeys(void);
 bool keysChanged(void);
 void printCurrentKeys(void);
+
 #endif // __KEYBOARD_CLASS_H__

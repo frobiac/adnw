@@ -75,9 +75,9 @@
             USB_Descriptor_Endpoint_t             HIDDBG_ReportINEndpoint;
             USB_Descriptor_Interface_t            Programming_Interface;
             USB_Descriptor_Endpoint_t             Programming_ReportINEndpoint;
-            USB_Descriptor_Interface_t            HID2_MouseInterface;
-            USB_HID_Descriptor_t                  HID2_MouseHID;
-            USB_Descriptor_Endpoint_t             HID2_ReportINEndpoint;
+            USB_Descriptor_Interface_t            HID_MouseInterface;
+            USB_HID_Descriptor_t                  HID_MouseHID;
+            USB_Descriptor_Endpoint_t             HID_MouseReportINEndpoint;
 		} USB_Descriptor_Configuration_t;
 
 	/* Macros: */
