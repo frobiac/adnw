@@ -227,7 +227,7 @@ MS_WH_RIGHT,
 #define SHIFT 0x02
 #define ALTGR 0x40
 
-#define _NO 		{ ' ',  0, 	   NONE  }     // No key defined
+#define _no 		{ ' ',  0, 	   NONE  }     // No key defined
 #define _CARET 		{ '`',  HID_TILDE, NONE  } //  `
 #define _DEGREE		{ '`',  HID_TILDE, SHIFT  } //  `
 #define _GRAVE 		{ '=',  HID_EQUAL, SHIFT  }	 	//  =
