@@ -144,14 +144,14 @@ void analogDataAcquire(void) {
         analogData.y = dy;
 
         if(dx>1)
-            analogData.layer = 3;
+            analogData.mods = 0x02 ; // SHIFT
         else if(dx<-1)
-            analogData.layer = 2;
+            analogData.layer = 3;
 
         if(dy>1)
-            analogData.mods = 0x01 ; // SHIFT
+            analogData.mods = 0x01 ; // CTRL
         else if(dy<-1)
-            analogData.mods = 0x02 ; // CTRL
+			analogData.layer = 2;
 
         //printf("\nMouse: %d/%d %d %d",analogData.mods,analogData.layer , dx, dy);
     }
