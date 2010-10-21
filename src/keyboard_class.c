@@ -419,19 +419,6 @@ bool isNormalKey(uint8_t row, uint8_t col)
 }
 
 
-
-/** get modifier
-  */
-uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer)
-{
-    return KeyMatrix[layer][row][col].mods;
-}
-
-uint8_t getKeyCode(uint8_t row, uint8_t col, uint8_t layer)
-{
-    return KeyMatrix[layer][row][col].hid;
-}
-
 void ActiveKeys_Add(uint8_t row, uint8_t col)
 {
     if(activeKeys.keycnt>= MAX_ACTIVE_KEYS){

@@ -113,7 +113,7 @@ SRC =   $(SRCDIR)/Keyboard.c         \
 	$(SRCDIR)/Descriptors.c      \
 	$(SRCDIR)/keyboard_class.c   \
 	$(SRCDIR)/hhstdio.c          \
-	$(SRCDIR)/analog.c 	     \
+	$(SRCDIR)/keymap.c 	     \
 	$(SRCDIR)/analog.c       \
 	$(LUFA_SRC)
 
