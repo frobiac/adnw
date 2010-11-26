@@ -59,7 +59,7 @@
 
 #include "hid_usage.h"
 #include "analog.h"
-
+#include "ps2mouse.h"
 #include "version.h"
 
 /** Buffer to hold the previously generated Mouse HID report, for comparison purposes inside the HID class driver. */
@@ -200,6 +200,8 @@ CPU_PRESCALE(CPU_16MHz);
   /* Task init */
   initKeyboard();
 
+  ps2_init_mouse();
+
   g_num_lock = g_caps_lock = g_scrl_lock = 0;
 
   // set up timer
@@ -305,7 +307,22 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
 
 
   else if (HIDInterfaceInfo == &Mouse_HID_Interface) {
+          USB_MouseReport_Data_t* MouseReport = (USB_MouseReport_Data_t*)ReportData;
+          int16_t dx=0, dy=0;
+		  uint8_t btns;
+          ps2_read_mouse(&dx, &dy, &btns);
+          
+          printf("\n %d ", btns);
+	      MouseReport->V=0;
+              MouseReport->H=0;
+              MouseReport->Y = -dy;
+              MouseReport->X = dx;
+              MouseReport->Button=btns;
+              //printf("\n %d",MouseReport->Button);
+          *ReportSize = sizeof(USB_MouseReport_Data_t);
+          return true;
 
+/*
       if(g_mouse_mode) {
           USB_MouseReport_Data_t* MouseReport = (USB_MouseReport_Data_t*)ReportData;
           int16_t dx=0, dy=0;
@@ -333,7 +350,7 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
           *ReportSize = sizeof(USB_MouseReport_Data_t);
           return true;
       }
-
+*/
   }
 
   return false;
