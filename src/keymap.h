@@ -30,7 +30,7 @@ struct keycode {
 //static const uint8_t PROGMEM Keymap[][ROWS][COLS] = {
 
 /// whether pinkies serve two columns or not - determines which outer column is dropped!
-#define TWO_COL_PINKY 0
+#define TWO_COL_PINKY 1
 
 uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer);
 
@@ -43,7 +43,7 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS+1] =
     { _no,     _no,     _no,     _no,		_no,     _no },
     { _no,     _no,     _no,     _no,		_no,     _no },
     { _no,     _no,     _no,     _no,		_no,     _no },
-    { _no,     _no,     _no,     _SPACE,    _TAB,    _no },
+    { _no,     _no,     _no,     _ESC,	    _SPACE,  _TAB },
 
     { _no,     _no,     _no,     _no,		_no,     _no },
     { _no,     _no,     _no,     _no,		_no,     _no },
@@ -53,8 +53,8 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS+1] =
 
 /// @todo PROGMEM
 
-#define _THUMB_ROW_LEFT		_MOUSE,		_L_GUI,		_R_ALT,		_L_SHIFT,	_L_CTRL,	_L_ALT
-#define _THUMB_ROW_RIGHT	_ANALOG,	_L_SHIFT,	_L_CTRL,	_no,		_no,		_COMPOSE
+#define _THUMB_ROW_LEFT		_MOUSE,		_L_GUI,		_R_ALT,		_L_ALT,		_SHIFT,		_L_CTRL
+#define _THUMB_ROW_RIGHT	_ANALOG,	_MOD_2,		_MOD_3,		_no,		_no,		_COMPOSE
 
 
 
