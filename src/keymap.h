@@ -20,12 +20,52 @@ struct keycode {
     uint8_t  mods;	///< HID modifiers , will be interpreted by OS keyboard layout!
 } ;
 
-/// To shift the used 3x5 keys per side flush with left or right border
-#define TWO_COL_PINKY 1
-#define _MID( x ) ( TWO_COL_PINKY ) ? (x ",") : "" 
+/* AdNW (Ulf)
 
-#define _OUT( x )  ( !TWO_COL_PINKY ) ? (x ",") : ""
-// #define _OUT(x) !TWO_COL_PINKY ? : " "
+kuÜ,ä vgclfß
+hieao dtrnsz
+xyö.q bpwmj
+
+kuj,  vgclf
+hieao dtrns
+xy .q bpwmz
+
+*/
+ 
+/*
+----- Thumb & MKT ----
+M   W 2 C A  3 1 A    ♫ 
+⌧ ⇤  ␣ ⌫  ⌦ 
+
+----- M0 Default -----
+q u o b p   k g l m f 
+a i e t c   h d n r s
+  j x w v   z y , . -
+
+----- M1 / Shift -----
+Q U O B P   K G L M F 
+A I E T C   H D N R S
+  J X W V   Z Y ; : _
+
+----- M2 / special ---
+@ _ [ ] #   ! < > = & 
+\ / { } *   ? ( ) + -
+  $ | ~ `   ^ % " '
+
+----- M3 / MoveNum ---
+⇞ ⌫ ⇡ ⌦ ⇟     7 8 9 + 
+⇱ ⇠ ⇣ ⇢ ⇲     4 5 6 -
+  ↲ ⎀ ⇥     0 1 2 3
+
+----- Mouse ----------
+              S
+	      1 2 3
+
+
+----- Compose --------
+ß ü ö       F1.....F6 
+Ä           F7....F12
+
 
 //static const uint8_t PROGMEM Keymap[][ROWS][COLS] = {
 
