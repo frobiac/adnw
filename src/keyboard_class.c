@@ -183,8 +183,9 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
     }
     */
     init_active_keys();
+#ifdef ANALOG_STICK
     analogDataAcquire();
-
+#endif
     return fillReport(report_data);
 }
 

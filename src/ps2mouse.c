@@ -51,8 +51,8 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS ) {
 		if(ack==0xfa) 
 		{
 			mouseinf=read_packet();
-			*dx=read_packet();
 			*dy=read_packet();
+			*dx= -1* read_packet();
 			
 	
 			if(mouseinf&0x10)

@@ -191,7 +191,9 @@ CPU_PRESCALE(CPU_16MHz);
   wdt_disable();
 
   /* Hardware Initialization */
+#ifdef ANALOG_STICK
   Analog_Init();
+#endif 
   LEDs_Init();
   USB_Init();
   USB_PLL_On();
