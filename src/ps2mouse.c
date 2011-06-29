@@ -51,8 +51,8 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS ) {
 		if(ack==0xfa) 
 		{
 			mouseinf=read_packet();
-			*dy=read_packet();
-			*dx= -1* read_packet();
+			*dy= read_packet();
+			*dx= read_packet();
 			
 	
 			if(mouseinf&0x10)
@@ -65,7 +65,8 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS ) {
 			posy += dy;   // Absolute Y position
 
 	
-			
+		        LMB=0;MMB=0;RMB=0;
+/*	
 			if(mouseinf&0x01) { //0x09
 				LMB=1;         // Get leftbutton status
 			}
@@ -91,7 +92,7 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS ) {
 				MMB=1;
 				RMB=LMB=0;
 			}
-			
+*/			
 			*BTNS = (LMB<<3) | (MMB<<2) | (RMB << 1);
 			/*
 			pdec(LMB);
