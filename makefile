@@ -58,7 +58,8 @@
 # To rebuild project do "make clean" then "make all".
 #----------------------------------------------------------------------------
 
-HH_DEFS += -DUSE_HHSTDIO -DNEW_MOUSE
+#HH_DEFS += -DUSE_HHSTDIO -DNEW_MOUSE -DANALOGSTICK
+HH_DEFS += -DUSE_HHSTDIO -DNEW_MOUSE  
 
 
 # MCU name

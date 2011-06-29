@@ -183,9 +183,11 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
     }
     */
     init_active_keys();
-#ifdef ANALOG_STICK
+
+#ifdef ANALOGSTICK
     analogDataAcquire();
 #endif
+
     return fillReport(report_data);
 }
 
@@ -353,12 +355,14 @@ uint8_t getActiveLayer()
             //printf("\nL=%d",layer);
         }
     }
+#ifdef ANALOG_STICK
     // no other layer modifier pressed
     if(layer == 0) {
         if( g_mouse_mode)
             return 4; /// @todo  hardcoded layer
         else return analogData.layer;
     }
+#endif
     return layer;
 }
 
@@ -388,7 +392,9 @@ uint8_t getActiveModifiers()
             modifiers |= (1<<(getModifier(k.row, k.col,0)-MOD_BEGIN));
         }
     }
+#ifdef ANALOGSTICK
     modifiers |= analogData.mods;
+#endif
 
     return modifiers;
 }

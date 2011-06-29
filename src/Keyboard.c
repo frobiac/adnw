@@ -58,8 +58,12 @@
 #include "dbg.h"
 
 #include "hid_usage.h"
-#include "analog.h"
+
 #include "ps2mouse.h"
+#ifdef ANALOGSTICK
+    #include "analog.h"
+#endif
+
 #include "version.h"
 
 /** Buffer to hold the previously generated Mouse HID report, for comparison purposes inside the HID class driver. */
@@ -191,9 +195,11 @@ CPU_PRESCALE(CPU_16MHz);
   wdt_disable();
 
   /* Hardware Initialization */
-#ifdef ANALOG_STICK
-  Analog_Init();
-#endif 
+
+#ifdef ANALOGSTICK
+    Analog_Init();
+#endif
+
   LEDs_Init();
   USB_Init();
   USB_PLL_On();
