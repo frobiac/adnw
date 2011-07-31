@@ -46,9 +46,15 @@ void clk(uint8_t x) {
 	return;
 }
 
-void reset(){
+void tp_reset(){
+
     RDDR |= (1 << RBIT);
     RPORT |= (1 << RBIT);
+    _delay_us(DELAY);
+    RPORT &= ~(1 << RBIT);
+
+    return;
+    
     while(CLK){
         asm("nop");
     }

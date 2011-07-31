@@ -59,7 +59,7 @@
 #----------------------------------------------------------------------------
 
 #HH_DEFS += -DUSE_HHSTDIO -DNEW_MOUSE -DANALOGSTICK
-HH_DEFS += -DUSE_HHSTDIO -DNEW_MOUSE  # -DPS2MOUSE
+HH_DEFS += -DUSE_HHSTDIO -DNEW_MOUSE  -DPS2MOUSE
 
 
 # MCU name

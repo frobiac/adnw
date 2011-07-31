@@ -17,6 +17,10 @@ void led(uint8_t n) {
 }
 
 bool ps2_init_mouse(void) {
+	printf("\n Resetting TP");
+	tp_reset();
+	//return;
+	printf("\n Done. ");
 
 	if ( ! send_packet(0xff) )
 		return false;

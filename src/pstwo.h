@@ -37,8 +37,8 @@
 #define CBIT  2
 
 //reset trackpoimt
-#define RSTPORT D
-#define RBIT 0
+#define RSTPORT B
+#define RBIT 6
 
 /////////////////////////////
 ///General purpose macros////
