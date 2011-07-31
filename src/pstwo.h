@@ -21,6 +21,8 @@
     http://computer-engineering.org/ps2protocol/
 **********************************************************************************/
 
+#include <stdbool.h>
+
 
 #ifndef F_CPU
 #define F_CPU 16000000UL
@@ -33,6 +35,10 @@
 //Clock
 #define CLKPORT D
 #define CBIT  2
+
+//reset trackpoimt
+#define RSTPORT D
+#define RBIT 0
 
 /////////////////////////////
 ///General purpose macros////
@@ -49,15 +55,24 @@
 #define CPORT   CCPORT(CLKPORT)
 #define CPIN    CCPIN(CLKPORT)
 #define CDDR    CCDDR(CLKPORT)
+
+#define RPORT   CCPORT(RSTPORT)
+#define RPIN    CCPIN(RSTPORT)
+#define RDDR    CCDDR(RSTPORT)
 //////////////////////////////
 
 #define DATA ((DPIN & (1 << DBIT)) >> DBIT)
 #define CLK  ((CPIN & (1 << CBIT)) >> CBIT)
+#define RESET ((RPIN & (1 << RBIT)) >> RBIT)))
 ///////////////////////////////
 /*
 #define DELX (dapack[1]-(((dapack[0] & (1 << 4)) >> 4) << 8))
 #define DELY (dapack[2]-(((dapack[0] & (1 << 5)) >> 5) << 8))
 */
 
-void send_packet(uint8_t);
+bool send_packet(uint8_t);
 uint8_t read_packet(void);
+void reset();
+
+
+uint8_t errcnt;

@@ -46,23 +46,47 @@ void clk(uint8_t x) {
 	return;
 }
 
-void serout(uint8_t bit) {
+void reset(){
+    RDDR |= (1 << RBIT);
+    RPORT |= (1 << RBIT);
     while(CLK){
         asm("nop");
     }
-    data(bit);
     while(!CLK) {
+        asm("nop");
+    }
+    while(CLK){
+        asm("nop");
+    }
+    while(!CLK) {
+        asm("nop");
+    }
+    RPORT &= ~(1 << RBIT);
+}
+#define CNT 500
+void serout(uint8_t bit) {
+    uint8_t cnt;
+    cnt=0;
+    while(CLK && cnt++ < CNT){
+        asm("nop");
+    }
+    data(bit);
+    cnt = 0;
+    while(!CLK && cnt++ < CNT) {
         asm("nop");
     }
 }
 
 uint8_t serin() {
     uint8_t state;
-    while(CLK){
+    uint8_t cnt;
+    cnt=0;
+    while(CLK && cnt++ < CNT){
         asm("nop");
     }
     state = DATA;
-    while(!CLK){
+    cnt = 0;
+    while(!CLK && cnt++ < CNT){
         asm("nop");
     }
     return state;
@@ -81,8 +105,14 @@ uint8_t oparity(uint8_t byte) {
     return par;
 }
 
-void send_packet(uint8_t byte) {
+
+
+bool send_packet(uint8_t byte) {
+
     uint8_t parity;
+
+    errcnt=0;
+    do {
     parity = oparity(byte);
 	clk(0);
 	_delay_us(DELAY);
@@ -90,6 +120,7 @@ void send_packet(uint8_t byte) {
     clk(1);
 	CDDR &= ~(1 << CBIT); // Release clock
 	CPORT |= (1 << CBIT); //Set the pull up on Clock
+
     /////////////
     serout((byte & (1 << 0)) >> 0);
     serout((byte & (1 << 1)) >> 1);
@@ -99,17 +130,26 @@ void send_packet(uint8_t byte) {
     serout((byte & (1 << 5)) >> 5);
     serout((byte & (1 << 6)) >> 6);
     serout((byte & (1 << 7)) >> 7);
-    /////////////
+
+/////////////
     serout(parity);
     /////////////
     serout(1); //Stop
+
     DDDR &= ~(1 << DBIT); //Release the Data line
     DPORT |= (1 << DBIT); //Set the pull up on Data
-    /////////////
-    if(serin() != ACK)
-        send_packet(byte); // Try again if ACK has not been received
 
-	return;
+
+    /////////////
+    //if(serin() != ACK )
+    //    send_packet(byte); // Try again if ACK has not been received
+    errcnt++;
+
+    } while (serin() != ACK && errcnt < 5 );
+
+    if(errcnt >= 5)
+        return false;
+    return true;
 }
 
 uint8_t read_packet(void) {

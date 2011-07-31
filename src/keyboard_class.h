@@ -22,7 +22,10 @@
 #define __KEYBOARD_CLASS_H__
 
 #include <LUFA/Drivers/USB/Class/HID.h>
-#include "analog.h"
+
+#ifdef ANALOGSTICK
+    #include "analog.h"
+#endif
 
 void      initKeyboard(void);
 uint8_t   getKeyboardReport(USB_KeyboardReport_Data_t *report);
@@ -30,6 +33,7 @@ uint8_t   getKeyboardReport(USB_KeyboardReport_Data_t *report);
 
 uint8_t g_mouse_keys;
 uint8_t g_mouse_mode;
+uint8_t g_trackpoint;
 
 void analogDataAcquire(void);
 

@@ -168,7 +168,8 @@ int main(void)
     {
       HID_Device_USBTask(&Keyboard_HID_Interface);
       HID_Device_USBTask(&DBG_HID_Interface);
-      HID_Device_USBTask(&Mouse_HID_Interface);
+      if(g_trackpoint == 1)
+        HID_Device_USBTask(&Mouse_HID_Interface);
       PRG_Device_USBTask();
     }
     else if (USB_RemoteWakeupEnabled )
@@ -208,7 +209,6 @@ CPU_PRESCALE(CPU_16MHz);
   /* Task init */
   initKeyboard();
 
-  ps2_init_mouse();
 
   g_num_lock = g_caps_lock = g_scrl_lock = 0;
 
@@ -217,13 +217,29 @@ CPU_PRESCALE(CPU_16MHz);
   TCCR0B = 0x05;
   TIMSK0 = (1<<TOIE0);
 
+#ifdef PS2MOUSE
+  if( ps2_init_mouse() )
+      g_trackpoint=1;
+  /*while ( !ps2_init_mouse() ) {
+      printf("\nResetting!");
+      reset();
+      g_trackpoint++;
+  }*/
+#endif
+
+/*
 #ifdef VERSIONINFO
   printf("\n-\n %s", VERSIONINFO);
 #endif
   
 #ifdef BUILDDATE
-  printf("\n %s\n-",  BUILDDATE);
+  printf("\n %s\n- ",  BUILDDATE);
 #endif
+  */
+  if(g_trackpoint > 0)
+      printf("\nTrackpoint initialized %d ", g_trackpoint);
+  else
+      printf("\nTP FAILED!");
 
 #if defined(BOOTLOADER_TEST)
   uint8_t bootloader = eeprom_read_byte(&ee_bootloader);
@@ -317,14 +333,18 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
   else if (HIDInterfaceInfo == &Mouse_HID_Interface) {
           USB_MouseReport_Data_t* MouseReport = (USB_MouseReport_Data_t*)ReportData;
           int16_t dx=0, dy=0;
-		  uint8_t btns;
-          ps2_read_mouse(&dx, &dy, &btns);
+          uint8_t btns=0;
+
+#ifdef PS2MOUSE
+        if(g_trackpoint)
+            ps2_read_mouse(&dx, &dy, &btns);
+#endif
           
-          printf("\n %d ", btns);
+          //printf("\n %d ", btns);
 	      MouseReport->V=0;
               MouseReport->H=0;
-              MouseReport->Y = -dy;
-              MouseReport->X = dx;
+              MouseReport->Y = -dx;
+              MouseReport->X = dy;
               MouseReport->Button=btns;
               //printf("\n %d",MouseReport->Button);
           *ReportSize = sizeof(USB_MouseReport_Data_t);

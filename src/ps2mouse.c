@@ -1,6 +1,7 @@
 #include<avr/io.h>
 #include<util/delay.h>
 #include "pstwo.h"
+#include "ps2mouse.h"
 
 //#define DELX (dapack[1]-(((dapack[0] & (1 << 4)) >> 4) << 8))
 //#define DELY (dapack[2]-(((dapack[0] & (1 << 5)) >> 5) << 8))
@@ -15,14 +16,16 @@ void led(uint8_t n) {
 	return;
 }
 
-void ps2_init_mouse(void) {
+bool ps2_init_mouse(void) {
 
-	send_packet(0xff);
+	if ( ! send_packet(0xff) )
+		return false;
 	read_packet(); //Ack
 	read_packet(); //Bat
 	read_packet(); //dev ID
-	////
-	send_packet(0xf4); //Enable Data reporting
+	//Enable Data reporting
+	if ( !send_packet(0xf4) )
+		return false;
 	read_packet();	// Ack
 	////
 	//send_packet(0xe8); //Set Resolution
@@ -33,8 +36,13 @@ void ps2_init_mouse(void) {
 	//send_packet(0xf3); //SetSample rate
 	//read_packet(); //Ack
 	//send_packet(0x64); //200 smaples a second
-	send_packet(0xf0); //Set remote mode
+
+	//Set remote mode
+	if( ! send_packet(0xf0) )
+		return false;
 	read_packet(); //Ack
+
+	return true;
 }
 void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS ) {
 

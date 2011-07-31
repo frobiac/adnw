@@ -109,6 +109,7 @@ void initKeyboard()
 
     g_mouse_mode = 0;
     g_mouse_keys = 0;
+    g_trackpoint = 0;
     mkt_timer=idle_count + MKT_TIMEOUT;
 
     stdio_init();
@@ -288,7 +289,7 @@ void scan_matrix(void)
         uint8_t p,r,h;
         p=get_kb_press  (ALL_COLS_MASK, row);
         h=get_kb_rpt    (ALL_COLS_MASK, row);
-        r=get_kb_release(ALL_COLS_MASK	, row);
+        r=get_kb_release(ALL_COLS_MASK, row);
         
         rowData[row] = ((rowData[row]|(p|h)) & ~r);
 
@@ -461,6 +462,7 @@ void init_active_keys()
         {
             if (rowData[row] & (1UL << col))
             {
+		printf("\n%d x %d", col, row);
                 ActiveKeys_Add(row,col);
             }
         }
