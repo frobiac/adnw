@@ -23,6 +23,8 @@
 
 #include <stdbool.h>
 
+uint8_t     g_trackpoint;
+
 void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS );
 bool ps2_init_mouse(void);
 
@@ -81,5 +83,7 @@ void tp_reset(void);
 
 void serout(uint8_t bit);
 uint8_t serin(void);
+
+uint8_t getMouseReport(USB_MouseReport_Data_t *report_data);
 
 uint8_t errcnt;

@@ -94,4 +94,9 @@
 
 
 
+		uint8_t     g_mouse_keys;
+		uint32_t    g_mouse_mode;
+
+		volatile uint32_t idle_count;
+
 #endif

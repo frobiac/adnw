@@ -68,7 +68,6 @@
 
 /** Buffer to hold the previously generated Mouse HID report, for comparison purposes inside the HID class driver. */
 uint8_t PrevMouseHIDReportBuffer[sizeof(USB_MouseReport_Data_t)];
-static uint8_t scrollcnt=0;
 
 /** LUFA HID Class driver interface configuration and state information. This structure is
  *  passed to all HID Class driver functions, so that multiple instances of the same class
@@ -209,7 +208,6 @@ CPU_PRESCALE(CPU_16MHz);
   /* Task init */
   initKeyboard();
 
-
   g_num_lock = g_caps_lock = g_scrl_lock = 0;
 
   // set up timer
@@ -234,7 +232,7 @@ CPU_PRESCALE(CPU_16MHz);
   if(g_trackpoint > 0)
       printf("\nTrackpoint initialized %d ", g_trackpoint);
   else
-      printf("\nTP FAILED!");
+      printf("\nTrackpoint FAILED!");
 
 #if defined(BOOTLOADER_TEST)
   uint8_t bootloader = eeprom_read_byte(&ee_bootloader);
@@ -324,65 +322,9 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
     *ReportSize = DBG__get_report(DBGReport);
   }
 
-
   else if (HIDInterfaceInfo == &Mouse_HID_Interface) {
-          USB_MouseReport_Data_t* MouseReport = (USB_MouseReport_Data_t*)ReportData;
-          int16_t dx=0, dy=0;
-          uint8_t btns=0;
-
-#ifdef PS2MOUSE
-        if(g_trackpoint){
-            ps2_read_mouse(&dx, &dy, &btns);
-        }
-#endif
-        if(g_mouse_mode != 1 && (dx!=0 || dy!=0)) {
-            g_mouse_mode=idle_count;
-        } else if(idle_count-g_mouse_mode>61 && g_mouse_mode != 1) {
-            g_mouse_mode=0;
-        }
-
-      if(g_mouse_mode) {
-          if( g_mouse_keys & 0x08 )
-          {
-              int8_t sx=0, sy=0;
-
-              if( dx!=0 ){
-                  if(dx&0xFF00)
-                      sx= -(256-(dx+0x100));
-                  else
-                      sx=dx;
-              }
-              if( dy!=0 ){
-                  if(dy&0xFF00)
-                      sy= -(256-(dy+0x100));
-                  else
-                      sy=dy;
-              }
-
-              MouseReport->Button=0;
-              scrollcnt = scrollcnt+abs(sy)+abs(sx);
-
-              if(scrollcnt>40){
-                  scrollcnt=0;
-                  MouseReport->X=0;
-                  MouseReport->Y=0;
-                  // only move by 1 ?!
-                  MouseReport->V = sy;
-                  MouseReport->H = sx;
-                  MouseReport->Button=0;
-              }
-          } else {
-              MouseReport->V=0;
-              MouseReport->H=0;
-              MouseReport->Y = -dy;
-              MouseReport->X = dx;
-              MouseReport->Button=g_mouse_keys & ~(0x08);
-          }
-          g_mouse_keys=0;
-
-          *ReportSize = sizeof(USB_MouseReport_Data_t);
-          return true;
-      }
+    USB_MouseReport_Data_t* MouseReport = (USB_MouseReport_Data_t*)ReportData;
+    *ReportSize = getMouseReport(MouseReport);
   }
 
   return false;

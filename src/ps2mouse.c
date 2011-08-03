@@ -23,11 +23,16 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include <stdlib.h>
 
+#include "Keyboard.h"
 #include "ps2mouse.h"
 
 #define ACK 0
 #define DELAY 150
+
+static uint8_t scrollcnt=0;
+
 
 void data(uint8_t x) {
     DDDR |= (1 << DBIT);
@@ -193,6 +198,8 @@ void led(uint8_t n) {
 }
 
 bool ps2_init_mouse(void) {
+	g_trackpoint = 0;
+
 	tp_reset();
 
 	if ( ! send_packet(0xff) )
@@ -290,4 +297,65 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
 			*BTNS = (LMB<<3) | (MMB<<2) | (RMB << 1);
 		}
 	}
+}
+
+uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
+{
+	int16_t dx=0, dy=0;
+	uint8_t btns=0;
+
+#ifdef PS2MOUSE
+    if(g_trackpoint){
+        ps2_read_mouse(&dx, &dy, &btns);
+    }
+#endif
+    if(g_mouse_mode != 1 && (dx!=0 || dy!=0)) {
+        g_mouse_mode=idle_count;
+    } else if(idle_count-g_mouse_mode>61 && g_mouse_mode != 1) {
+        g_mouse_mode=0;
+    }
+
+    if(g_mouse_mode) {
+        if( g_mouse_keys & 0x08 )
+        {
+            int8_t sx=0, sy=0;
+
+            if( dx!=0 ){
+                if(dx&0xFF00)
+                    sx= -(256-(dx+0x100));
+                else
+                    sx=dx;
+            }
+            if( dy!=0 ){
+                if(dy&0xFF00)
+                    sy= -(256-(dy+0x100));
+                else
+                    sy=dy;
+            }
+
+            MouseReport->Button=0;
+
+            scrollcnt = scrollcnt+abs(sy)+abs(sx);
+
+            if(scrollcnt>40){
+                scrollcnt=0;
+                MouseReport->X=0;
+                MouseReport->Y=0;
+                // only move by 1 ?!
+                MouseReport->V = sy;
+                MouseReport->H = sx;
+                MouseReport->Button=0;
+            }
+        } else {
+            MouseReport->V=0;
+            MouseReport->H=0;
+            MouseReport->Y = -dy;
+            MouseReport->X = dx;
+            MouseReport->Button=g_mouse_keys & ~(0x08);
+        }
+        g_mouse_keys=0;
+
+        return sizeof(USB_MouseReport_Data_t);
+    }
+    return 0;
 }
