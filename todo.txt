@@ -1,9 +1,14 @@
+
+
 done - Mouse buttons, move on windows
 done - move mod4 to shifted mod3 Not very efficient, double usage of modifiers with standard keys is better
 done - F1-12
 
 done - timeout modekey toggle
+
 - trackpoint
+    timeout, mousemode only temporary and on selected button keys!
+
 - new 3D design, mainly thumbkeys
 - Macro + shifted macro causes spurious press?
 - programming macros on edges?
