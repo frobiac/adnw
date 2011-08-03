@@ -156,6 +156,19 @@ void PRG_Device_USBTask()
   }
 }
 
+
+
+
+void led(uint8_t n) {
+	DDRD |= (1 << 6);
+	if(n==0)
+		PORTD &= ~(1 << 6);
+	else if(n==1)
+		PORTD |= (1 << 6);
+	return;
+}
+
+
 int main(void)
 {
   SetupHardware();
