@@ -54,7 +54,7 @@ A I E T C   H D N R S
 
 ----- M3 / MoveNum ---
 ⇞ ⌫ ⇡ ⌦ ⇟     7 8 9 + 
-⇱ ⇠ ⇣ ⇢ ⇲     4 5 6 -
+⇱ �  ⇣ ⇢ ⇲     4 5 6 -
   ↲ ⎀ ⇥     0 1 2 3
 
 ----- Mouse ----------
@@ -85,7 +85,7 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS+1] =
     { _no,     _no,     _no,     _no,		_no,     _no },
     { _no,     _no,     _no,     _no,		_no,     _no },
     { _no,     _no,     _no,     _no,		_no,     _no },
-    { _no,     _no,     _ESC,	 _SPACE,  	_TAB, _no },
+    { _no,     _no,     _ESC,	 _SPACE,  	_TAB, 	 _no },
 
     { _no,     _no,     _no,     _no,		_no,     _no },
     { _no,     _no,     _no,     _no,		_no,     _no },
@@ -98,7 +98,7 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS+1] =
 //#define _THUMB_ROW_LEFT		_MOUSE,		_L_GUI,		_R_ALT,		_L_ALT,		_L_SHIFT,		_L_CTRL
 //#define _THUMB_ROW_RIGHT	_ANALOG,	_MOD_2,		_MOD_3,		_no,		_no,		_COMPOSE
 #define _THUMB_ROW_LEFT		_L_GUI,		_R_ALT,		_L_ALT,		_L_SHIFT,		_L_CTRL , _no
-#define _THUMB_ROW_RIGHT	_no,	_MOD_2,		_MOD_3,		_COMPOSE,		_L_CTRL,		_COMPOSE
+#define _THUMB_ROW_RIGHT	_MOUSE,	_MOD_2,		_MOD_3,		_COMPOSE,		_L_CTRL,		_MOUSE
 
 /** Depending on the TWO_COL_PINKY setting one of the outer columns is dropped in 
  *  getKeyCode() !!!
@@ -110,26 +110,26 @@ xy .q bpwmz
 */ 
 static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS+1] =
 {    // normal layer
-  {
-		{ _ESC, _k,			_u,			_j,			_COMMA,		_no,	_ESC	},
+    {
+	{ _ESC, _k,			_u,			_j,			_COMMA,		_no,	_ESC	},
         { _TAB, _h,			_i,			_e,			_a,			_o,		_TAB 	},
-		{ _no,  _x, 		_y,			_no,		_PERIOD,	_q,		_TAB	},
+	{ _no,  _x, 		_y,			_no,		_PERIOD,	_q,		_TAB	},
         { _THUMB_ROW_LEFT },
         
         { _BSPACE, _v,		_g,		_c,			_l,			_f,    		_BSPACE },
         { _ENTER,	_d,		_t,			_r,			_n,			_s,			_ENTER	},
         { _no,		_b,		_p,			_w,			_m,			_z,			_no   	},
         { _THUMB_ROW_RIGHT}
-		},
+    },
 
      // MOD1 layer (shifted)
     {
-		{ _ESC, _K,         _U,         _J,         _COMMA,     _no,    _ESC    },  
+	{ _ESC, _K,         _U,         _J,         _COMMA,     _no,    _ESC    },  
         { _TAB, _H,         _I,         _E,         _A,         _O,     _TAB    },
         { _no,  _X,         _Y,         _no,        _PERIOD,    _Q,     _TAB    },
         { _THUMB_ROW_LEFT },
 
-        { _BSPACE, _V,       _G,     _C,         _L,         _F,         _BSPACE },
+        { _BSPACE,  _V,     _G,         _C,         _L,         _F,         _BSPACE },
         { _ENTER,   _D,     _T,         _R,         _N,         _S,         _ENTER  },  
         { _no,      _B,     _P,         _W,         _M,         _Z,         _no     },  
         { _THUMB_ROW_RIGHT}
@@ -139,7 +139,7 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS+1] =
     {
         { _no, _AT,      _no,		_L_BRACKET, _R_BRACKET, _HASH ,   _no			},
         { _no, _BSLASH,  _SLASH,	_L_BRACE,   _R_BRACE,   _ASTERIX, _no			},
-        { _no, _no,      _DOLLAR,	_BAR,		_TILDE,		_GRAVE ,  _no			},
+        { _no, _no,      _DOLLAR,	_BAR,	    _TILDE,	_GRAVE ,  _no			},
         { _no, _THUMB_ROW_LEFT },
 
         { _no, _EXCLAM,	_LESS,      _GREATER,	_EQUAL,		_AMPERSAND,	_no	},
@@ -164,15 +164,15 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS+1] =
 	//MOUSE MODE
 	/// @todo These should not be shifted, maybe factor out entirely!
     {
-		{ _no, 		_q,		_u,			_o,			_b,			_p,		_no		},
-		{ _no, 		_a,		_i,			_e,			_t,			_c,		_no		},
-		{ _no, 		_no,	_j,			_x,			_w,			_v,		_no		},
-		{ _THUMB_ROW_LEFT },
-	
-		{ _no,		_MS_SCROLL,	_no,		_no,		_no,	_no,    _no		},
-		{ _no,		_MS_BTN_1,	_MS_BTN_2,	_MS_BTN_3,	_no,	_no,    _no		},
-		{ _no,		_no,		_no,		_no,		_no,	_no,    _no		},
-		{ _THUMB_ROW_RIGHT}
+		{ _no, _SSHARP, _U_UML,         _O_UML, _A_UML, _no, _no		},
+		{ _no, _MS_SCROLL, _MS_BTN_1, _MS_BTN_2,      _MS_BTN_3,     _no,    _no },
+		{ _no, _no, _no, _no, _no, _no, _no },
+		{ _no, _no, _no, _no, _MS_SCROLL, _MS_BTN_1 },
+
+                { _no, _no, _no, _no, _no, _no, _no },
+                { _no, _no, _no, _no, _no, _no, _no },
+                { _no, _no, _no, _no, _no, _no, _no },
+		{ _MS_BTN_2,      _MS_BTN_3,     _no,    _no ,_MOUSE, _MOUSE}
 	},
 
 	// COMPOSE

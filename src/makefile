@@ -117,6 +117,7 @@ SRC =   $(SRCDIR)/Keyboard.c         \
 	$(SRCDIR)/analog.c       \
 	$(SRCDIR)/pstwo.c       \
 	$(SRCDIR)/ps2mouse.c       \
+	$(SRCDIR)/jump_bootloader.c       \
 	$(LUFA_SRC)
 
 #  //$(SRCDIR)/matrix.c       \

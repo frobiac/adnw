@@ -39,7 +39,7 @@
 
 #include "keymap.h"
 #include "matrix.h"
-
+#include "jump_bootloader.h"
 
 void init_active_keys(void);
 
@@ -294,8 +294,10 @@ void scan_matrix(void)
         rowData[row] = ((rowData[row]|(p|h)) & ~r);
 
         // permanent layer toggles go here!
-        if(row==3 && (p & 0x01))
+        if(row==3 && (p & 0x01)) {
             g_mouse_mode = !g_mouse_mode;
+            printf("\nMouseMode=%d", g_mouse_mode);
+        }
 
     }
 }
@@ -344,6 +346,9 @@ void clearActiveKeys()
 /// @todo Switch back from mouse layer!
 uint8_t getActiveLayer()
 {
+    if( g_mouse_mode)
+        return 4; /// @todo  hardcoded layer
+
     uint8_t layer=0;
     for(uint8_t i=0; i < activeKeys.keycnt; ++i)
     {
@@ -353,6 +358,7 @@ uint8_t getActiveLayer()
             if(layer!=0)
                 printf("\nWARN: More than one layer key pressed!");
             layer = getModifier(k.row, k.col,0)-MOD_LAYER_0;
+            //if(layer!=0)
             //printf("\nL=%d",layer);
         }
     }
@@ -462,10 +468,21 @@ void init_active_keys()
         {
             if (rowData[row] & (1UL << col))
             {
-		printf("\n%d x %d", col, row);
+                //printf("\n%d x %d", col, row);
                 ActiveKeys_Add(row,col);
             }
         }
+    }
+
+    // scan for commands:
+
+    // all four corners to reboot
+    if( (rowData[0] & (1<<0)) &&
+        (rowData[2] & (1<<0)) &&
+        (rowData[4] & (1<<5)) &&
+        (rowData[6] & (1<<5)) ) {
+        jump_bootloader();
+        printf("\n4 corners pressed, will reboot");
     }
 }
 
