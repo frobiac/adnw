@@ -315,6 +315,7 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
         g_mouse_mode=0;
     }
 
+    led((g_mouse_mode!=0));
     if(g_mouse_mode) {
         if( g_mouse_keys & 0x08 )
         {
