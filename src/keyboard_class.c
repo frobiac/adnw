@@ -41,12 +41,13 @@
 #include "matrix.h"
 #include "jump_bootloader.h"
 
-void init_active_keys(void);
+
 
 uint8_t lastKeyCode;
 uint8_t rowData[ROWS];
 uint8_t prevRowData[ROWS];
 
+#ifdef ANALOGSTICK
 struct AnalogData {
     int8_t x;
     int8_t y;
@@ -55,7 +56,7 @@ struct AnalogData {
 } ;
 
 struct AnalogData analogData;
-
+#endif
 /// used for MODE-key press/release cycle detection
 enum { MKT_RESET, MKT_MODEKEYFIRST, MKT_TOOMANYKEYS, MKT_YES , MKT_INIT };
 
@@ -79,11 +80,12 @@ static int32_t rpt[ROWS];
 #define REPEAT_START   31				// 61 = 1000ms
 #define REPEAT_NEXT    15
 
-volatile uint32_t idle_count = 0;
 /**	
   * ISR that should get called 61 times a second. 
   * Allows exact timers
   */
+//volatile uint32_t idle_count = 0;
+
 ISR(TIMER0_OVF_vect)
 {
     idle_count++;
@@ -100,6 +102,7 @@ ISR(TIMER0_OVF_vect)
  */
 void initKeyboard()
 {
+	idle_count=0;
 	// not strictly necessary
     for (uint8_t row = 0; row < ROWS; ++row){
         rowData[row]=0;
@@ -116,12 +119,14 @@ void initKeyboard()
     init_cols();
 }
 
+
 /** 
   * Depending on mouse mode status either mousebutton keys are scanned,
   * or analog values mapped onto modifier keys.
   *
   *	@todo move into mouse module
   */
+#ifdef ANALOGSTICK
 void analogDataAcquire(void) {
     /// @todo: Hardcoded mouse layer
     g_mouse_keys = 0;
@@ -157,6 +162,7 @@ void analogDataAcquire(void) {
         //printf("\nMouse: %d/%d %d %d",analogData.mods,analogData.layer , dx, dy);
     }
 }
+#endif
 
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
@@ -295,10 +301,8 @@ void scan_matrix(void)
 
         // permanent layer toggles go here!
         if(row==3 && (p & 0x01)) {
-            g_mouse_mode = !g_mouse_mode;
-            printf("\nMouseMode=%d", g_mouse_mode);
+            g_mouse_mode = g_mouse_mode>0 ? 0 : 1;
         }
-
     }
 }
 
@@ -432,6 +436,14 @@ bool isNormalKey(uint8_t row, uint8_t col)
     return !(isLayerKey(row,col) || isModifierKey(row,col));
 }
 
+bool isMouseKey(uint8_t row, uint8_t col)
+{
+    uint16_t hid = getKeyCode(row, col, 4);
+    if ( hid >= MS_BTNS && hid < MS_BTNS +4 )
+        return true;
+    return false;
+}
+
 
 void ActiveKeys_Add(uint8_t row, uint8_t col)
 {
@@ -442,7 +454,12 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
     struct Key key;
     key.row=row;
     key.col=col;
-    key.normalKey = !(isModifierKey(row,col) || isLayerKey(row,col));
+    key.normalKey = isNormalKey(row,col);
+
+    if( g_mouse_mode && isMouseKey(row,col)) {
+        g_mouse_keys|=(1<<(getKeyCode(row, col, 4)-MS_BTN_1));
+        return;
+    }
 
     activeKeys.keys[activeKeys.keycnt]=key;
     activeKeys.keycnt++;

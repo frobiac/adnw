@@ -220,11 +220,6 @@ CPU_PRESCALE(CPU_16MHz);
 #ifdef PS2MOUSE
   if( ps2_init_mouse() )
       g_trackpoint=1;
-  /*while ( !ps2_init_mouse() ) {
-      printf("\nResetting!");
-      reset();
-      g_trackpoint++;
-  }*/
 #endif
 
 /*
@@ -336,49 +331,58 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
           uint8_t btns=0;
 
 #ifdef PS2MOUSE
-        if(g_trackpoint)
+        if(g_trackpoint){
             ps2_read_mouse(&dx, &dy, &btns);
+        }
 #endif
-          
-          //printf("\n %d ", btns);
-	      MouseReport->V=0;
-              MouseReport->H=0;
-              MouseReport->Y = -dx;
-              MouseReport->X = dy;
-              MouseReport->Button=btns;
-              //printf("\n %d",MouseReport->Button);
-          *ReportSize = sizeof(USB_MouseReport_Data_t);
-          return true;
+        if(g_mouse_mode != 1 && (dx!=0 || dy!=0)) {
+            g_mouse_mode=idle_count;
+        } else if(idle_count-g_mouse_mode>61 && g_mouse_mode != 1) {
+            g_mouse_mode=0;
+        }
 
-/*
       if(g_mouse_mode) {
-          USB_MouseReport_Data_t* MouseReport = (USB_MouseReport_Data_t*)ReportData;
-          int16_t dx=0, dy=0;
-          getXY(&dx, &dy);
-
-          // Shift sets scrolling mode
           if( g_mouse_keys & 0x08 )
           {
-              MouseReport->Button=0;
-              scrollcnt = scrollcnt+abs(dy)+abs(dx);
+              int8_t sx=0, sy=0;
 
-              if(scrollcnt>140){
+              if( dx!=0 ){
+                  if(dx&0xFF00)
+                      sx= -(256-(dx+0x100));
+                  else
+                      sx=dx;
+              }
+              if( dy!=0 ){
+                  if(dy&0xFF00)
+                      sy= -(256-(dy+0x100));
+                  else
+                      sy=dy;
+              }
+
+              MouseReport->Button=0;
+              scrollcnt = scrollcnt+abs(sy)+abs(sx);
+
+              if(scrollcnt>40){
                   scrollcnt=0;
-                  MouseReport->V = -dy/abs(dy);
-                  MouseReport->H = dx/abs(dx);
+                  MouseReport->X=0;
+                  MouseReport->Y=0;
+                  // only move by 1 ?!
+                  MouseReport->V = sy;
+                  MouseReport->H = sx;
+                  MouseReport->Button=0;
               }
           } else {
               MouseReport->V=0;
               MouseReport->H=0;
-              MouseReport->Y = dy;
+              MouseReport->Y = -dy;
               MouseReport->X = dx;
               MouseReport->Button=g_mouse_keys & ~(0x08);
-              //printf("\n %d",MouseReport->Button);
           }
+          g_mouse_keys=0;
+
           *ReportSize = sizeof(USB_MouseReport_Data_t);
           return true;
       }
-*/
   }
 
   return false;

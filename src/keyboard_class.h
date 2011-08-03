@@ -28,12 +28,17 @@
 #endif
 
 void      initKeyboard(void);
+void      init_active_keys(void);
+
 uint8_t   getKeyboardReport(USB_KeyboardReport_Data_t *report);
 
 
-uint8_t g_mouse_keys;
-uint8_t g_mouse_mode;
-uint8_t g_trackpoint;
+uint8_t     g_mouse_keys;
+uint8_t     g_trackpoint;
+uint32_t    g_mouse_mode;
+
+volatile uint32_t idle_count;
+
 
 void analogDataAcquire(void);
 

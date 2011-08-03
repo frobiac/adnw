@@ -165,7 +165,7 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS+1] =
 	/// @todo These should not be shifted, maybe factor out entirely!
     {
 		{ _no, _SSHARP, _U_UML,         _O_UML, _A_UML, _no, _no		},
-		{ _no, _MS_SCROLL, _MS_BTN_1, _MS_BTN_2,      _MS_BTN_3,     _no,    _no },
+		{ _no, _MS_SCROLL, _MS_BTN_1, _MS_BTN_2, _MS_BTN_3,     _no,    _no },
 		{ _no, _no, _no, _no, _no, _no, _no },
 		{ _no, _no, _no, _no, _MS_SCROLL, _MS_BTN_1 },
 
