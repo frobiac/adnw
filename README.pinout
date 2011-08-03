@@ -1,0 +1,14 @@
+Currently 2 halves of 4x6 Keys are used.
+
+Diode from column connection to key, black bar at key
+
+8 Rows use C0-C7
+6 Cols use B0-B5
+
+TP mini: 
+	Blue  D2
+	Black D3
+	Purple  VCC
+	Grey 	GND
+	Red	Reset (default GND)
+	 
