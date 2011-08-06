@@ -187,16 +187,6 @@ uint8_t read_packet(void) {
 }
 
 
-
-void led(uint8_t n) {
-	DDRD |= (1 << 6);
-	if(n==0)
-		PORTD &= ~(1 << 6);
-	else if(n==1)
-		PORTD |= (1 << 6);
-	return;
-}
-
 bool ps2_init_mouse(void) {
 	g_trackpoint = 0;
 

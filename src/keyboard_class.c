@@ -89,7 +89,6 @@ static int32_t rpt[ROWS];
 ISR(TIMER0_OVF_vect)
 {
     idle_count++;
-
     /// @todo What happens on overflow? with 61/s and 16bit=65536
     // (2^15-1)/61/60        ~= 9 minutes till overflow
     // (2^31-1)/61/60/60/24   = 407 days should suffice...
@@ -112,7 +111,6 @@ void initKeyboard()
 
     g_mouse_mode = 0;
     g_mouse_keys = 0;
-    g_trackpoint = 0;
     mkt_timer=idle_count + MKT_TIMEOUT;
 
     stdio_init();
@@ -300,10 +298,16 @@ void scan_matrix(void)
         rowData[row] = ((rowData[row]|(p|h)) & ~r);
 
         // permanent layer toggles go here!
-        if(row==3 && (p & 0x01)) {
-            g_mouse_mode = g_mouse_mode>0 ? 0 : 1;
-        }
+        //if(row==3 && (p & 0x05)) {
+        //   g_mouse_mode = g_mouse_mode>0 ? 0 : 1;
+        //}
     }
+    // middle two buttons under TP
+    /*if ( (rowData[3] & (1<<5)) && (rowData[7] & (1<<0) ) ) {
+        g_mouse_mode = g_mouse_mode >0 ? 0 : 1;
+        printf("\nGMOUSEMODE=%d", g_mouse_mode);
+    }
+    */
 }
 
 void copyCurrentKeys(void)
@@ -350,8 +354,8 @@ void clearActiveKeys()
 /// @todo Switch back from mouse layer!
 uint8_t getActiveLayer()
 {
-    if( g_mouse_mode)
-        return 4; /// @todo  hardcoded layer
+    //if( g_mouse_mode)
+    //    return 4; /// @todo  hardcoded layer
 
     uint8_t layer=0;
     for(uint8_t i=0; i < activeKeys.keycnt; ++i)
@@ -477,6 +481,7 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
 
 void init_active_keys()
 {
+    //led(idle_count%120<3);
 
     // process row/column data to find the active keys
     for (uint8_t row = 0; row < ROWS; ++row)
