@@ -34,16 +34,16 @@ bool ps2_init_mouse(void);
 #endif
 
 //Data
-#define DAPORT D
-#define DBIT  3
+#define DAPORT C
+#define DBIT  6
 
 //Clock
-#define CLKPORT D
-#define CBIT  2
+#define CLKPORT E
+#define CBIT  6
 
 //reset trackpoimt
-#define RSTPORT B
-#define RBIT 6
+#define RSTPORT C
+#define RBIT 7
 
 /////////////////////////////
 ///General purpose macros////

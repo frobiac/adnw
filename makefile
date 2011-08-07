@@ -62,9 +62,14 @@
 HH_DEFS += -DUSE_HHSTDIO -DNEW_MOUSE  -DPS2MOUSE
 
 
-# MCU name
-MCU = at90usb1286
-
+# MCU name, you MUST set this to match the board you are using
+# # type "make clean" after changing this, so all files will be rebuilt
+# #
+# #MCU = at90usb162       # Teensy 1.0
+MCU = atmega32u4        # Teensy 2.0
+# #MCU = at90usb646       # Teensy++ 1.0
+# #MCU = at90usb1286      # Teensy++ 2.0
+#
 
 # Processor frequency.
 #     This will define a symbol, F_CPU, in all source code files equal to the 
