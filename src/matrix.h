@@ -16,6 +16,16 @@ uint8_t read_col(void)
 {
     // teensy 2.0: F 01  4567
     uint8_t res = PINF;
+
+    return (
+    (res & (1<<0)) << 5 |
+    (res & (1<<1)) << 3 |
+    (res & (1<<4)) >> 1 |
+    (res & (1<<5)) >> 3 |
+    (res & (1<<6)) >> 5 |
+    (res & (1<<7)) >> 7  );
+
+
     return (( res & 0b11) | ((res & 0b11110000)>>2 ));
 
     // PINF & 0x11

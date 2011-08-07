@@ -452,7 +452,7 @@ bool isMouseKey(uint8_t row, uint8_t col)
 void ActiveKeys_Add(uint8_t row, uint8_t col)
 {
     if(activeKeys.keycnt>= MAX_ACTIVE_KEYS){
-        printf("ERR: Too many active keys!");
+        //printf("ERR: Too many active keys!");
         return;
     }
     struct Key key;
