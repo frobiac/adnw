@@ -1,9 +1,12 @@
 #!/bin/bash
+
+MCU=atmega32u4
 echo "*** make clean" 
 make clean > log &&
 echo "*** make " &&
 make >> log &&
-echo "*** Now flash..." &&
-teensy_loader_cli -mmcu=at90usb1286 -w -v  build/firmware.hex &&
+echo "*** Now flash $MCU..." &&
+#teensy_loader_cli -mmcu=at90usb1286 -w -v  build/firmware.hex &&
+./teensy_loader_cli -mmcu=$MCU -w -v  build/firmware.hex &&
 
 sudo  /usr/sbin/hid_listen

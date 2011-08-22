@@ -27,8 +27,8 @@
 #define MANUFACTURER_NAME     L"frobiac"
 #define MANUFACTURER_NAME_LEN USB_STRING_LEN(7)
 
-#define PRODUCT_NAME          L"Left Numpad blue=C0 red=A7"
-#define PRODUCT_NAME_LEN      USB_STRING_LEN(26)
+#define PRODUCT_NAME          L"ML-TP teensy-2.0"
+#define PRODUCT_NAME_LEN      USB_STRING_LEN(17)
 
 #define SERIAL_NUMBER         L"000000000000"
 #define SERIAL_NUMBER_LEN     USB_STRING_LEN(12)
