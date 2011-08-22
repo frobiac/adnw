@@ -6,7 +6,7 @@ done - F1-12
 
 done - timeout modekey toggle
 
-- trackpoint
+done - trackpoint
     timeout, mousemode only temporary and on selected button keys!
 
 - new 3D design, mainly thumbkeys
@@ -15,6 +15,15 @@ done - timeout modekey toggle
 
 - prntscreen...
 
+- debug output of layout
+- openmoko touchpad?
+
+- macro mode
+- F1...F12
+
+- multiple layouts -> fixed based layer toggle
+- trainer stats
+- 
 
 
 ### ModKey toggle: Ctrl-Tab needs separate Tab
