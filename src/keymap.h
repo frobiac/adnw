@@ -109,9 +109,9 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] =
 static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS+1] =
 {    // normal layer
     {
-        { _ESC, _k,			_u,			_j,			_COMMA,		_no	},
+        { _ESC, _k,			_u,			_q,			_COMMA,		_j	},
         { _TAB, _h,			_i,			_e,			_a,			_o 	},
-        { _no,  _x, 		_y,			_no,		_PERIOD,	_q	},
+        { _no,  _x, 		_y,			_no,		_PERIOD,	_no	},
         { _THUMB_ROW_LEFT },
 
         { _v,		_g,		_c,			_l,			_f,    		_BSPACE },
@@ -122,9 +122,9 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS+1] =
 
     // MOD1 layer (shifted)
     {
-        { _ESC, _K,         _U,         _J,         _COMMA,     _no},  
+        { _ESC, _K,         _U,         _Q,         _COMMA,     _J},  
         { _TAB, _H,         _I,         _E,         _A,         _O},
-        { _no,  _X,         _Y,         _no,        _PERIOD,    _Q},
+        { _no,  _X,         _Y,         _no,        _PERIOD,    _no},
         { _THUMB_ROW_LEFT },
 
         { _V,     _G,         _C,         _L,         _F,         _BSPACE },

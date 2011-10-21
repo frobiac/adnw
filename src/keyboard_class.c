@@ -503,6 +503,7 @@ void init_active_keys()
         (rowData[2] & (1<<0)) &&
         (rowData[4] & (1<<5)) &&
         (rowData[6] & (1<<5)) ) {
+        printf("\n4 corners pressed, will reboot\n");
         jump_bootloader();
         printf("\n4 corners pressed, will reboot");
     }
