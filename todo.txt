@@ -27,8 +27,12 @@ done - trackpoint
 
 
 ### ModKey toggle: Ctrl-Tab needs separate Tab
-Ctrl-Alt-F1
+Ctrl-Alt-Fx
 Ctrl-Alt-Del
-           !               !
+ctrl-alt       vmware
+(ctrl)shift + direction
+ctrl-mouseclick
+
+!
 win  alt  shft ctrl  | -  mod3 mod4  altgr
      esc  spac tab        back enter del

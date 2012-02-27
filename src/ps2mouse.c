@@ -279,6 +279,7 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
 }
 
 volatile uint32_t mouse_timer; /// toggle mouse mode for a specified time
+volatile uint16_t accel; /// toggle mouse mode for a specified time
 
 uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 {
@@ -294,8 +295,17 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 
     // reset mouse mode after inactivity: idle_count is incremented 61 times per second
     if( dx!=0 || dy!=0 ) {
-        g_mouse_mode=1;
+        if(g_mouse_mode==0){
+            g_mouse_mode=1;
+            accel=0;
+        }
+#define ACC_RAMPTIME 400 // acc incrementation time till maximum
+#define ACC_MAX      2.5   // maximum accelleration factor reachable
+
         mouse_timer=idle_count;
+        if(accel<ACC_RAMPTIME)
+            accel++;
+
     } else if(idle_count-mouse_timer > 1/*seconds*/ *61 ) {
         g_mouse_mode=0;
     }
@@ -333,15 +343,12 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
                 MouseReport->Button=0;
             }
         } else {
+            float factor= 1 + accel * (ACC_MAX-1) / ACC_RAMPTIME;
             MouseReport->V=0;
             MouseReport->H=0;
-            // original
-            // MouseReport->Y = -dy;
-            // MouseReport->X = dx;
 
-            // rotated clockwise 90°
-            MouseReport->Y = dx;
-            MouseReport->X = dy;
+            MouseReport->Y = -dy * factor;
+            MouseReport->X = dx  * factor;
             MouseReport->Button=g_mouse_keys & ~(0x08);
         }
         g_mouse_keys=0;
