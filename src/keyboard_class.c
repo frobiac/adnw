@@ -48,16 +48,6 @@ uint8_t lastKeyCode;
 uint8_t rowData[ROWS];
 uint8_t prevRowData[ROWS];
 
-#ifdef ANALOGSTICK
-struct AnalogData {
-    int8_t x;
-    int8_t y;
-    uint8_t mods;
-    uint8_t layer;
-} ;
-
-struct AnalogData analogData;
-#endif
 /// used for MODE-key press/release cycle detection
 enum { MKT_RESET, MKT_MODEKEYFIRST, MKT_TOOMANYKEYS, MKT_YES , MKT_INIT };
 
@@ -120,50 +110,6 @@ void initKeyboard()
     init_cols();
 }
 
-
-/** 
-  * Depending on mouse mode status either mousebutton keys are scanned,
-  * or analog values mapped onto modifier keys.
-  *
-  *	@todo move into mouse module
-  */
-#ifdef ANALOGSTICK
-void analogDataAcquire(void) {
-    /// @todo: Hardcoded mouse layer
-    g_mouse_keys = 0;
-    analogData.layer=analogData.mods=0;
-
-    if(g_mouse_mode) {
-        if(rowData[5] & (1<<1))
-            g_mouse_keys = 0x01;
-        if(rowData[5] & (1<<2))
-            g_mouse_keys = 0x04;
-        if(rowData[5] & (1<<3))
-            g_mouse_keys = 0x02;
-        if(rowData[4] & (1<<1))
-            g_mouse_keys = 0x08;
-    }
-    else{
-        int16_t dx=0, dy=0;
-        getXY(&dx, &dy);
-
-        analogData.x = dx;
-        analogData.y = dy;
-
-        if(dx>1)
-            analogData.mods = 0x02 ; // SHIFT
-        else if(dx<-1)
-            analogData.layer = 3;
-
-        if(dy>1)
-            analogData.mods = 0x01 ; // CTRL
-        else if(dy<-1)
-			analogData.layer = 2;
-
-        //printf("\nMouse: %d/%d %d %d",analogData.mods,analogData.layer , dx, dy);
-    }
-}
-#endif
 
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {

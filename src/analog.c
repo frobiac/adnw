@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include "analog.h"
 
+#include "Keyboard.h"
 
 static uint8_t aref = (1<<REFS0); // default to AREF = Vcc
 
@@ -78,4 +79,49 @@ int16_t adc_read(uint8_t mux)
 	while (ADCSRA & (1<<ADSC)) ;			// wait for result
 	low = ADCL;					// must read LSB first
 	return (ADCH << 8) | low;			// must read MSB only once!
+}
+
+
+/**
+  * Depending on mouse mode status either mousebutton keys are scanned,
+  * or analog values mapped onto modifier keys.
+  *
+  *	@todo move into mouse module
+  */
+void analogDataAcquire(void) {
+    /// @todo: Hardcoded mouse layer
+    g_mouse_keys = 0;
+    analogData.layer=analogData.mods=0;
+
+    if(g_mouse_mode) {
+        /*  //should be handled in key detection routine
+        if(rowData[5] & (1<<1))
+            g_mouse_keys = 0x01;
+        if(rowData[5] & (1<<2))
+            g_mouse_keys = 0x04;
+        if(rowData[5] & (1<<3))
+            g_mouse_keys = 0x02;
+        if(rowData[4] & (1<<1))
+            g_mouse_keys = 0x08;
+     */
+    }
+    else{
+        int16_t dx=0, dy=0;
+        getXY(&dx, &dy);
+
+        analogData.x = dx;
+        analogData.y = dy;
+
+        if(dx>1)
+            analogData.mods = 0x02 ; // SHIFT
+        else if(dx<-1)
+            analogData.layer = 3;
+
+        if(dy>1)
+            analogData.mods = 0x01 ; // CTRL
+        else if(dy<-1)
+            analogData.layer = 2;
+
+        //printf("\nMouse: %d/%d %d %d",analogData.mods,analogData.layer , dx, dy);
+    }
 }

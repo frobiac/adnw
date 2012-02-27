@@ -4,6 +4,14 @@
 
 #include <stdint.h>
 
+struct AnalogData {
+    int8_t x;
+    int8_t y;
+    uint8_t mods;
+    uint8_t layer;
+} ;
+struct AnalogData analogData;
+
 
 void Analog_Init(void);
 void getXY(int16_t * dx, int16_t *  dy);
