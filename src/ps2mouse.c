@@ -278,6 +278,8 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
 	}
 }
 
+volatile uint32_t mouse_timer; /// toggle mouse mode for a specified time
+
 uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 {
 	int16_t dx=0, dy=0;
@@ -290,14 +292,15 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
     }
 #endif
 
-    // activates mouse mode on TP usage - conflicts with TP as modifier
-    if(g_mouse_mode != 0 && (dx!=0 || dy!=0)) {
-        g_mouse_mode=idle_count;
-    } else if(idle_count-g_mouse_mode>61 && g_mouse_mode != 1) {
+    // reset mouse mode after inactivity: idle_count is incremented 61 times per second
+    if( dx!=0 || dy!=0 ) {
+        g_mouse_mode=1;
+        mouse_timer=idle_count;
+    } else if(idle_count-mouse_timer > 1/*seconds*/ *61 ) {
         g_mouse_mode=0;
     }
-
-    led((g_mouse_mode!=0));
+    
+	led((g_mouse_mode!=0));
     if(g_mouse_mode) {
         if( g_mouse_keys & 0x08 )
         {

@@ -102,8 +102,8 @@ ISR(TIMER0_OVF_vect)
  */
 void initKeyboard()
 {
-	idle_count=0;
-	// not strictly necessary
+    idle_count=0;
+    // not strictly necessary
     for (uint8_t row = 0; row < ROWS; ++row){
         rowData[row]=0;
         ct0[row]=0xFF;
@@ -361,8 +361,8 @@ void clearActiveKeys()
 /// @todo Switch back from mouse layer!
 uint8_t getActiveLayer()
 {
-    //if( g_mouse_mode)
-    //    return 4; /// @todo  hardcoded layer
+    if( g_mouse_mode)
+        return 4; /// @todo  hardcoded layer
 
     uint8_t layer=0;
     for(uint8_t i=0; i < activeKeys.keycnt; ++i)
@@ -374,9 +374,6 @@ uint8_t getActiveLayer()
                 printf("\nWARN: More than one layer key pressed!");
             }
             layer = getModifier(k.row, k.col,0)-MOD_LAYER_0;
-            //if(layer!=0)
-            //printf("\nL=%d",layer);
-        }
     }
 #ifdef ANALOG_STICK
     // no other layer modifier pressed
@@ -480,10 +477,14 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
     key.col=col;
     key.normalKey = isNormalKey(row,col);
 
-    // if TP is used as mouse remap keys to mouse buttons
-    if( g_mouse_mode && isMouseKey(row,col)) {
-        g_mouse_keys|=(1<<(getKeyCode(row, col, 4)-MS_BTN_1));
-        return;
+    // quit early if mouse key is pressed in mouse mode, or end it on other keypress.
+    if( g_mouse_mode ){
+        if(isMouseKey(row,col)) {
+            g_mouse_keys|=(1<<(getKeyCode(row, col, 4)-MS_BTN_1));
+            return;
+        } else {
+            g_mouse_mode = 0;
+        }
     }
 
     activeKeys.keys[activeKeys.keycnt]=key;
