@@ -32,6 +32,7 @@
 #include <limits.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+#include <util/atomic.h>
 
 #include "Keyboard.h"
 #include "keyboard_class.h"

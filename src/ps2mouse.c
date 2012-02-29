@@ -62,16 +62,16 @@ void tp_reset(){
     return;
 
     while(CLK){
-        asm("nop");
+        __asm__("nop");
     }
     while(!CLK) {
-        asm("nop");
+        __asm__("nop");
     }
     while(CLK){
-        asm("nop");
+        __asm__("nop");
     }
     while(!CLK) {
-        asm("nop");
+        __asm__("nop");
     }
     RPORT &= ~(1 << RBIT);
 }
@@ -82,12 +82,12 @@ void serout(uint8_t bit) {
     uint8_t cnt;
     cnt=0;
     while(CLK && cnt++ < CNT){
-        asm("nop");
+        __asm__("nop");
     }
     data(bit);
     cnt = 0;
     while(!CLK && cnt++ < CNT) {
-        asm("nop");
+        __asm__("nop");
     }
 }
 
@@ -96,12 +96,12 @@ uint8_t serin() {
     uint8_t cnt;
     cnt=0;
     while(CLK && cnt++ < CNT){
-        asm("nop");
+        __asm__("nop");
     }
     state = DATA;
     cnt = 0;
     while(!CLK && cnt++ < CNT){
-        asm("nop");
+        __asm__("nop");
     }
     return state;
 }

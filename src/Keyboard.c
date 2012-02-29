@@ -255,7 +255,7 @@ CPU_PRESCALE(CPU_16MHz);
   }
   else if (bootloader == TRUE)
   {
-    asm("jmp 0xF000");
+    __asm__("jmp 0xF000");
   }
 #endif
 }

@@ -363,7 +363,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
 
 			.Class                  = 0x03,
 			.SubClass               = 0x01,
-			.Protocol               = HID_CSCP_KeyboardBootProtocol /*HID_BOOT_KEYBOARD_PROTOCOL,*/
+                        .Protocol               = HID_CSCP_KeyboardBootProtocol, /*HID_BOOT_KEYBOARD_PROTOCOL,*/
 
 			.InterfaceStrIndex      = NO_DESCRIPTOR
 		},
@@ -383,7 +383,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
 		{
 			.Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
 
-			.EndpointAddress        = (ENDPOINT_DESCRIPTOR_DIR_IN | KEYBOARD_EPNUM),
+                        .EndpointAddress        = (ENDPOINT_DIR_IN | KEYBOARD_EPNUM),
 			.Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
 			.EndpointSize           = KEYBOARD_EPSIZE,
 			.PollingIntervalMS      = 0x0A
@@ -419,7 +419,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
       {
         .Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
 
-        .EndpointAddress        = (ENDPOINT_DESCRIPTOR_DIR_IN | DBG_EPNUM),
+        .EndpointAddress        = (ENDPOINT_DIR_IN | DBG_EPNUM),
         .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
         .EndpointSize           = DBG_EPSIZE,
         .PollingIntervalMS      = 0x0A
@@ -444,7 +444,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
       {
         .Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
 
-        .EndpointAddress        = (ENDPOINT_DESCRIPTOR_DIR_IN | PRG_EPNUM),
+        .EndpointAddress        = (ENDPOINT_DIR_IN | PRG_EPNUM),
         .Attributes             = (EP_TYPE_BULK | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
         .EndpointSize           = PRG_EPSIZE,
         .PollingIntervalMS      = 0x00 /* ignored for full-speed bulk transfers */
@@ -480,7 +480,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
 .HID_MouseReportINEndpoint =
 {
 		.Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
-		.EndpointAddress        = (ENDPOINT_DESCRIPTOR_DIR_IN | MOUSE_IN_EPNUM),
+                .EndpointAddress        = (ENDPOINT_DIR_IN | MOUSE_IN_EPNUM),
 		.Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
 		.EndpointSize           = HID_EPSIZE,
 		.PollingIntervalMS      = 0x0A
@@ -527,7 +527,7 @@ const USB_Descriptor_String_t PROGMEM ProductString =
  *  is called so that the descriptor details can be passed back and the appropriate descriptor sent back to the
  *  USB host.
  */
-uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint8_t wIndex, void** const DescriptorAddress)
+uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint8_t wIndex, const void** const DescriptorAddress)
 {
 	const uint8_t  DescriptorType   = (wValue >> 8);
 	const uint8_t  DescriptorNumber = (wValue & 0xFF);
