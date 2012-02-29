@@ -296,7 +296,11 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 
 #ifdef PS2MOUSE
     if(g_trackpoint){
-        ps2_read_mouse(&dx, &dy, &btns);
+        ps2_read_mouse(&dy, &dx, &btns);
+        // rotate 90° clockwise
+        int16_t tmp = dy;
+        //dx = -1*dy;
+        //dy=tmp;
     }
 #endif
     if(g_mouse_mode != 1 && (dx!=0 || dy!=0)) {
@@ -340,7 +344,7 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
         } else {
             MouseReport->V=0;
             MouseReport->H=0;
-            MouseReport->Y = -dy;
+            MouseReport->Y = dy;
             MouseReport->X = dx;
             MouseReport->Button=g_mouse_keys & ~(0x08);
         }
