@@ -184,7 +184,7 @@ int main(void)
         HID_Device_USBTask(&Mouse_HID_Interface);
       PRG_Device_USBTask();
     }
-    else if (USB_RemoteWakeupEnabled )
+    else if (USB_Device_RemoteWakeupEnabled )
     {
       USB_CLK_Unfreeze();
       USB_Device_SendRemoteWakeup();
@@ -359,6 +359,5 @@ void CALLBACK_HID_Device_ProcessHIDReport(USB_ClassInfo_HID_Device_t* const HIDI
 
   uint8_t* LEDReport = (uint8_t*)ReportData;
 
-  LEDs_ChangeLEDs(LED_CAPS_LOCK|LED_SCROLL_LOCK|LED_NUM_LOCK|
-                  LED_COMPOSE|LED_KANA, *LEDReport);
+  // LEDs_ChangeLEDs(LED_CAPS_LOCK|LED_SCROLL_LOCK|LED_NUM_LOCK| LED_COMPOSE|LED_KANA, *LEDReport);
 }

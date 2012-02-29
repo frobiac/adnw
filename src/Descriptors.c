@@ -363,19 +363,19 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
 
 			.Class                  = 0x03,
 			.SubClass               = 0x01,
-			.Protocol               = HID_BOOT_KEYBOARD_PROTOCOL,
+			.Protocol               = HID_CSCP_KeyboardBootProtocol /*HID_BOOT_KEYBOARD_PROTOCOL,*/
 
 			.InterfaceStrIndex      = NO_DESCRIPTOR
 		},
 
 	.HID_KeyboardHID =
 		{
-			.Header                 = {.Size = sizeof(USB_HID_Descriptor_t), .Type = DTYPE_HID},
+			.Header                 = {.Size = sizeof(USB_HID_Descriptor_HID_t), .Type = HID_DTYPE_HID},
 
 			.HIDSpec                = VERSION_BCD(01.11),
 			.CountryCode            = 0x00,
 			.TotalReportDescriptors = 1,
-			.HIDReportType          = DTYPE_Report,
+			.HIDReportType          = HID_DTYPE_Report,
 			.HIDReportLength        = sizeof(KeyboardReport)
 		},
 
@@ -406,12 +406,12 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
 
     .HIDDBG_HID =
       {
-        .Header                 = {.Size = sizeof(USB_HID_Descriptor_t), .Type = DTYPE_HID},
+        .Header                 = {.Size = sizeof(USB_HID_Descriptor_HID_t), .Type = HID_DTYPE_HID},
 
         .HIDSpec                = VERSION_BCD(01.11),
         .CountryCode            = 0x00,
         .TotalReportDescriptors = 1,
-        .HIDReportType          = DTYPE_Report,
+        .HIDReportType          = HID_DTYPE_Report,
         .HIDReportLength        = sizeof(DBGReport)
       },
 
@@ -461,19 +461,19 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
 
 		.Class                  = 0x03,
 		.SubClass               = 0x01,
-		.Protocol               = HID_NON_BOOT_PROTOCOL, /*HID_BOOT_MOUSE_PROTOCOL,*/
+		.Protocol               = HID_CSCP_NonBootProtocol, 
 
 		.InterfaceStrIndex      = NO_DESCRIPTOR
 							  },
 
 .HID_MouseHID =
 {
-		.Header                 = {.Size = sizeof(USB_HID_Descriptor_t), .Type = DTYPE_HID},
+		.Header                 = {.Size = sizeof(USB_HID_Descriptor_HID_t), .Type = HID_DTYPE_HID},
 
 		.HIDSpec                = VERSION_BCD(01.11),
 		.CountryCode            = 0x00,
 		.TotalReportDescriptors = 1,
-		.HIDReportType          = DTYPE_Report,
+		.HIDReportType          = HID_DTYPE_Report,
 		.HIDReportLength        = sizeof(MouseReport)
 							  },
 
@@ -563,24 +563,24 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint8_t wIndex,
 			}
 
 			break;
-    case DTYPE_HID:
+    case HID_DTYPE_HID:
       switch (wIndex)
       {
         case 0:
           Address = (void*)&ConfigurationDescriptor.HID_KeyboardHID;
-          Size    = sizeof(USB_HID_Descriptor_t);
+          Size    = sizeof(USB_HID_Descriptor_HID_t);
           break;
         case 1:
           Address = (void*)&ConfigurationDescriptor.HIDDBG_HID;
-          Size    = sizeof(USB_HID_Descriptor_t);
+          Size    = sizeof(USB_HID_Descriptor_HID_t);
           break;
 		case 3:
 		  Address = (void*)&ConfigurationDescriptor.HID_MouseHID;
-		  Size    = sizeof(USB_HID_Descriptor_t);
+		  Size    = sizeof(USB_HID_Descriptor_HID_t);
 		  break;
       }
 			break;
-    case DTYPE_Report:
+    case HID_DTYPE_Report:
       switch (wIndex)
       {
         case 0:

@@ -59,7 +59,7 @@
 #----------------------------------------------------------------------------
 
 #HH_DEFS += -DUSE_HHSTDIO -DNEW_MOUSE -DANALOGSTICK
-HH_DEFS += -DUSE_HHSTDIO -DNEW_MOUSE  -DPS2MOUSE
+HH_DEFS += -DUSE_HHSTDIO -DNEW_MOUSE  -DPS2MOUSE 
 
 
 # MCU name, you MUST set this to match the board you are using
@@ -67,6 +67,7 @@ HH_DEFS += -DUSE_HHSTDIO -DNEW_MOUSE  -DPS2MOUSE
 # #
 # #MCU = at90usb162       # Teensy 1.0
 MCU = atmega32u4        # Teensy 2.0
+
 # #MCU = at90usb646       # Teensy++ 1.0
 # #MCU = at90usb1286      # Teensy++ 2.0
 #
@@ -83,7 +84,6 @@ MCU = atmega32u4        # Teensy 2.0
 #     reflect the processor speed set externally so that the code can use accurate
 #     software delays.
 F_CPU = 16000000
-
 
 # Input clock frequency.
 #     This will define a symbol, F_CLOCK, in all source code files equal to the 

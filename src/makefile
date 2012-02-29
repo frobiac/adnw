@@ -61,7 +61,13 @@
 # Target board (see library "Board Types" documentation, NONE for projects not requiring
 # LUFA board drivers). If USER is selected, put custom board drivers in a directory called 
 # "Board" inside the application directory.
-BOARD  = USER
+#BOARD  = USER
+BOARD  = TEENSY
+
+F_USB =  8000000
+
+#ARCH = AVR8
+#ARCH = ATMEGA32U4
 
 # Output format. (can be srec, ihex, binary)
 FORMAT = ihex
@@ -81,7 +87,8 @@ SRCDIR = src
 VPATH = .. $(OBJDIR)
 
 # Path to the LUFA library
-LUFA_PATH = lufa-100513
+#LUFA_PATH = lufa-100513
+LUFA_PATH = LUFA-111009
 
 # LUFA library compile-time options
 LUFA_OPTS  = -D USB_DEVICE_ONLY
@@ -89,6 +96,8 @@ LUFA_OPTS += -D FIXED_CONTROL_ENDPOINT_SIZE=8
 LUFA_OPTS += -D FIXED_NUM_CONFIGURATIONS=1
 LUFA_OPTS += -D USE_FLASH_DESCRIPTORS
 LUFA_OPTS += -D USE_STATIC_OPTIONS="(USB_DEVICE_OPT_FULLSPEED | USB_OPT_REG_ENABLED | USB_OPT_MANUAL_PLL)"
+
+LUFA_OPTS += -D F_USB=8000000 -D ARCH=ARCH_AVR8
 
 # Generated files directory
 GENERATED = generated
