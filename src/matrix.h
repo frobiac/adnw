@@ -41,7 +41,9 @@ void activate(uint8_t row)
 {
     unselect_rows();
     // swap upper and lower ports to have left half first in matrix
+#ifdef SWAP_LEFT_RIGHT
     (row<4) ? (row+=4) : (row-=4);
+#endif
     DDRD = (1<<row);
     return;
 }

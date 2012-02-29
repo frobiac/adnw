@@ -59,7 +59,7 @@
 #----------------------------------------------------------------------------
 
 #HH_DEFS += -DUSE_HHSTDIO -DNEW_MOUSE -DANALOGSTICK
-HH_DEFS += -DUSE_HHSTDIO -DNEW_MOUSE  -DPS2MOUSE -DMOUSE_HAS_SCROLL_WHEELS
+HH_DEFS += -DUSE_HHSTDIO -DNEW_MOUSE  -DPS2MOUSE -DMOUSE_HAS_SCROLL_WHEELS -DSWAP_LEFT_RIGHT
 
 
 # MCU name, you MUST set this to match the board you are using
