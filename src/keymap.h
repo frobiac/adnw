@@ -83,7 +83,7 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] =
     { _no,     _no,     _no,     _no,		_no,     _no },
     { _no,     _no,     _no,     _no,		_no,     _no },
     { _no,     _no,     _no,     _no,		_no,     _no },
-    { _no,     _no,     _ESC,	 _SPACE,  	_TAB, 	 _no },
+    { _no,     _ESC,    _no,	 _SPACE,  	_TAB, 	 _no },
 
     { _no,     _no,     _no,     _no,		_no,     _no },
     { _no,     _no,     _no,     _no,		_no,     _no },
@@ -95,7 +95,7 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] =
 
 //#define _THUMB_ROW_LEFT		_MOUSE,		_L_GUI,		_R_ALT,		_L_ALT,		_L_SHIFT,		_L_CTRL
 //#define _THUMB_ROW_RIGHT	_ANALOG,	_MOD_2,		_MOD_3,		_no,		_no,		_COMPOSE
-#define _THUMB_ROW_LEFT		_L_GUI,		_R_ALT,		_L_ALT,		_L_SHIFT,		_L_CTRL , _L_ALT
+#define _THUMB_ROW_LEFT		_L_GUI,		_R_ALT,		_L_SHIFT,		_MOD_1,		_L_CTRL , _L_ALT
 #define _THUMB_ROW_RIGHT	_no,	    _MOD_2,		_MOD_3,		_COMPOSE,		_R_CTRL,  _no
 
 /** Depending on the TWO_COL_PINKY setting one of the outer columns is dropped in 
@@ -106,12 +106,12 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] =
  xy .q bpwmz
 
  */ 
-static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS+1] =
+static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] =
 {    // normal layer
     {
         { _ESC, _k,			_u,			_q,			_COMMA,		_j	},
         { _TAB, _h,			_i,			_e,			_a,			_o 	},
-        { _no,  _x, 		_y,			_no,		_PERIOD,	_no	},
+        { _no,  _x, 		_y,			_MINUS,		_PERIOD,	_DQUOTE	},
         { _THUMB_ROW_LEFT },
 
         { _v,		_g,		_c,			_l,			_f,    		_BSPACE },
@@ -122,9 +122,9 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS+1] =
 
     // MOD1 layer (shifted)
     {
-        { _ESC, _K,         _U,         _Q,         _COMMA,     _J},  
+        { _ESC, _K,         _U,         _Q,         _SCOLON,     _J},  
         { _TAB, _H,         _I,         _E,         _A,         _O},
-        { _no,  _X,         _Y,         _no,        _PERIOD,    _no},
+        { _no,  _X,         _Y,         _USCORE,    _COLON,    _SQUOTE},
         { _THUMB_ROW_LEFT },
 
         { _V,     _G,         _C,         _L,         _F,         _BSPACE },
@@ -175,8 +175,8 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS+1] =
 
     // COMPOSE
     {
-        { _no, _SSHARP,	_U_UML,		_O_UML,		_no,		_no},
-        { _no, _A_UML,	_no,		_no,		_no,		_no},
+        { _no, _SSHARP,	_U_UML,		_no,		_no,		_no},
+        { _no, _no,	    _no,		_no,		_A_UML,		_O_UML},
         { _no, _no,   	_no,		_no,		_no,		_no},
         { _THUMB_ROW_LEFT },
 

@@ -364,9 +364,11 @@ uint8_t getActiveLayer()
         struct Key k = activeKeys.keys[i];
         if( isLayerKey(k.row, k.col) )
         {
-            if(layer!=0)
+            if(layer!=0) {
                 printf("\nWARN: More than one layer key pressed!");
+            }
             layer = getModifier(k.row, k.col,0)-MOD_LAYER_0;
+            printf("\nLayer %d", layer);
             //if(layer!=0)
             //printf("\nL=%d",layer);
         }
