@@ -1,8 +1,11 @@
 #!/bin/bash
 
 MCU=atmega32u4
-echo "*** make clean" 
-make clean > log &&
+
+if [ ! -z $1 ]; then 
+	echo "*** make clean" 
+	make clean > log 
+fi
 echo "*** make " &&
 make >> log &&
 echo "*** Now flashing $MCU..." &&
