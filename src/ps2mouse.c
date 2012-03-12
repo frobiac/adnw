@@ -296,14 +296,12 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 
 #ifdef PS2MOUSE
     if(g_trackpoint){
-        ps2_read_mouse(&dy, &dx, &btns);
-        // rotate 90° clockwise
-        int16_t tmp = dy;
-        //dx = -1*dy;
-        //dy=tmp;
+        ps2_read_mouse(&dx, &dy, &btns);
     }
 #endif
-    if(g_mouse_mode != 1 && (dx!=0 || dy!=0)) {
+
+    // activates mouse mode on TP usage - conflicts with TP as modifier
+    if(g_mouse_mode != 0 && (dx!=0 || dy!=0)) {
         g_mouse_mode=idle_count;
     } else if(idle_count-g_mouse_mode>61 && g_mouse_mode != 1) {
         g_mouse_mode=0;
@@ -337,20 +335,64 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
                 MouseReport->X=0;
                 MouseReport->Y=0;
                 // only move by 1 ?!
-                MouseReport->V = sy;
-                MouseReport->H = sx;
+                MouseReport->V = sx;
+                MouseReport->H = -sy;
                 MouseReport->Button=0;
             }
         } else {
             MouseReport->V=0;
             MouseReport->H=0;
-            MouseReport->Y = dy;
-            MouseReport->X = dx;
+            // original
+            // MouseReport->Y = -dy;
+            // MouseReport->X = dx;
+
+            // rotated clockwise 90°
+            MouseReport->Y = dx;
+            MouseReport->X = dy;
             MouseReport->Button=g_mouse_keys & ~(0x08);
         }
         g_mouse_keys=0;
 
         return sizeof(USB_MouseReport_Data_t);
+
+    } else {
+        // no g_mouse_mode;
+        int8_t old = g_mouse_modifier;
+
+        // reset after a certain time
+        if(dx==0 && dy==0) {
+            if( g_tp_counter++ > 12 ){
+                g_mouse_modifier=0;
+                g_tp_counter=0;
+                for(int i=0; i<4;++i) {
+                    g_mouse_mode_sum[i] = 0;
+                }
+            }
+        }
+
+        if( dx > 0 )
+            g_mouse_mode_sum[0] += dx;
+        else if( dx & 0xFF00 )
+            g_mouse_mode_sum[1] += (256-(dx+0x100)) ;
+        if( dy > 0 )
+            g_mouse_mode_sum[2] += dy;
+        else if( dy & 0xFF00)
+            g_mouse_mode_sum[3] += (256-(dy+0x100));
+
+
+        uint8_t maxid;
+        for(int i=1; i<4;++i) {
+            if(g_mouse_mode_sum[i]>g_mouse_mode_sum[maxid]){
+                maxid=i;
+            }
+        }
+
+        if( g_mouse_mode_sum[maxid] > 30)
+            g_mouse_modifier=(1<<maxid);
+
+       // if(old != g_mouse_modifier)
+       //     printf("\n%5d %5d %5d %5d : %d -> %d | ",g_mouse_mode_sum[0],g_mouse_mode_sum[1],g_mouse_mode_sum[2],g_mouse_mode_sum[3], old, g_mouse_modifier );
+
     }
     return 0;
 }

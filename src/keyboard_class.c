@@ -110,8 +110,10 @@ void initKeyboard()
         ct1[row]=0xFF;
     }
 
+    g_mouse_modifier = 0;
     g_mouse_mode = 0;
     g_mouse_keys = 0;
+    g_tp_counter = 0;
     mkt_timer=idle_count + MKT_TIMEOUT;
 
     stdio_init();
@@ -216,7 +218,11 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
         }
 
     }
+
+
+
     report_data->Modifier=getActiveModifiers()|getActiveKeyCodeModifier();
+
     return sizeof(USB_KeyboardReport_Data_t);
 }
 
@@ -368,7 +374,6 @@ uint8_t getActiveLayer()
                 printf("\nWARN: More than one layer key pressed!");
             }
             layer = getModifier(k.row, k.col,0)-MOD_LAYER_0;
-            printf("\nLayer %d", layer);
             //if(layer!=0)
             //printf("\nL=%d",layer);
         }
@@ -381,6 +386,18 @@ uint8_t getActiveLayer()
         else return analogData.layer;
     }
 #endif
+
+    if(g_mouse_modifier > 0) {
+        if(g_mouse_modifier & 2)
+            layer=1;
+        else if(g_mouse_modifier & 4)
+            layer=2;
+        else if(g_mouse_modifier & 8)
+            layer=3;
+
+    }
+
+
     return layer;
 }
 
@@ -463,6 +480,7 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
     key.col=col;
     key.normalKey = isNormalKey(row,col);
 
+    // if TP is used as mouse remap keys to mouse buttons
     if( g_mouse_mode && isMouseKey(row,col)) {
         g_mouse_keys|=(1<<(getKeyCode(row, col, 4)-MS_BTN_1));
         return;
@@ -500,7 +518,13 @@ void init_active_keys()
     }
 
     // scan for commands:
-
+    if( ( (rowData[0] & (1<<0)) &&
+          (rowData[2] & (1<<0)) ) ||
+        ( (rowData[4] & (1<<5)) &&
+          (rowData[6] & (1<<5)) ) ) {
+            printf("\n2 of 4 corners pressed, mousemode");
+            g_mouse_mode=1;
+    }
     // all four corners to reboot
     if( (rowData[0] & (1<<0)) &&
         (rowData[2] & (1<<0)) &&
