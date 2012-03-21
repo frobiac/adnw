@@ -1,4 +1,5 @@
 PS/2 buttons?
+startup even if TP is disabled
 
 done - Mouse buttons, move on windows
 done - move mod4 to shifted mod3 Not very efficient, double usage of modifiers with standard keys is better

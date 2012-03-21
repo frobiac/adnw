@@ -95,6 +95,9 @@
 
 
 
+                volatile uint8_t     g_macro_mode;
+                uint8_t     g_macro_idx;
+
 		uint8_t     g_mouse_keys;
                 int8_t      g_mouse_modifier;
                 uint16_t    g_mouse_mode_sum[4];

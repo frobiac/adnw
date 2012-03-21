@@ -138,7 +138,7 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] =
         { _no, _AT,      _no,		_L_BRACKET, _R_BRACKET, _HASH },
         { _no, _BSLASH,  _SLASH,	_L_BRACE,   _R_BRACE,   _ASTERIX},
         { _no, _no,      _DOLLAR,	_BAR,	    _TILDE,	_GRAVE },
-        { _no, _THUMB_ROW_LEFT },
+        { _THUMB_ROW_LEFT },
 
         { _EXCLAM,	_LESS,      _GREATER,	_EQUAL,		_AMPERSAND,	_no	},
         { _QUESTION,_L_PAREN,	_R_PAREN, 	_PLUS,		_MINUS,		_no	},

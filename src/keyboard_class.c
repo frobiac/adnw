@@ -104,6 +104,8 @@ void initKeyboard()
     g_mouse_mode = 0;
     g_mouse_keys = 0;
     g_tp_counter = 0;
+    g_macro_mode = 0;
+    g_macro_idx  = 0;
     mkt_timer=idle_count + MKT_TIMEOUT;
 
     stdio_init();
@@ -113,6 +115,9 @@ void initKeyboard()
 
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
+    if(g_macro_mode){
+        return fillMacroReport(report_data);
+    }
     //testMKT();
     if(mkt_timer+MKT_TIMEOUT < idle_count)
         mkt_state = MKT_RESET;
@@ -145,6 +150,34 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
     return fillReport(report_data);
 }
 
+#include "keymap.h"
+struct keycode macro[]={ _l, _a , _l, _P, _l, _o,_SPACE, _H,_A,_L,_L,_O,_SPACE,_H,_a,_L,_l,_o };
+uint8_t macrotest=0;
+/** Goes through given macro and sends it letter by letter.
+ *  We could try to be smart and fill the report with up to 6 letters,
+ *  but keeping track fo modifier changes and duplicates makes this over-complicated.
+ */
+uint8_t fillMacroReport(USB_KeyboardReport_Data_t *report_data)
+{
+    if(!g_macro_mode)
+        return 0;
+    // needed to send the same character twice in a row
+    if(macrotest++%2)
+        return sizeof(USB_KeyboardReport_Data_t);
+
+    if( g_macro_idx < sizeof(macro)/sizeof(struct keycode) )
+    {
+        report_data->KeyCode[0]=macro[g_macro_idx].hid;
+        report_data->Modifier=macro[g_macro_idx].mods;
+        g_macro_idx++;
+        return sizeof(USB_KeyboardReport_Data_t);
+    } else {
+        g_macro_mode = 0;
+        g_macro_idx  = 0;
+    }
+
+    return 0;
+}
 
 
 uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
@@ -171,7 +204,6 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 
     return sizeof(USB_KeyboardReport_Data_t);
 }
-
 
 
 
@@ -320,6 +352,7 @@ uint8_t getActiveLayer()
                 printf("\nWARN: More than one layer key pressed!");
             }
             layer = getModifier(k.row, k.col,0)-MOD_LAYER_0;
+        }
     }
 #ifdef ANALOG_STICK
     // no other layer modifier pressed
@@ -424,7 +457,7 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
     key.normalKey = isNormalKey(row,col);
 
     // quit early if mouse key is pressed in mouse mode, or end it on other keypress.
-    if( g_mouse_mode ){
+    if( g_mouse_mode ) {
         if(isMouseKey(row,col)) {
             g_mouse_keys|=(1<<(getKeyCode(row, col, 4)-MS_BTN_1));
             return;
@@ -450,36 +483,30 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
 void init_active_keys()
 {
     //led(idle_count%120<3);
-
-    // process row/column data to find the active keys
-    for (uint8_t row = 0; row < ROWS; ++row)
-    {
-        for (uint8_t col = 0; col < COLS; ++col)
-        {
-            if (rowData[row] & (1UL << col))
-            {
-                //printf("\n%d x %d", col, row);
-                ActiveKeys_Add(row,col);
-            }
-        }
-    }
-
-    // scan for commands:
-    if( ( (rowData[0] & (1<<0)) &&
-          (rowData[2] & (1<<0)) ) ||
-        ( (rowData[4] & (1<<5)) &&
-          (rowData[6] & (1<<5)) ) ) {
-            printf("\n2 of 4 corners pressed, mousemode");
-            g_mouse_mode=1;
+    if( rowData[0] & (1<<0) ){
+        rowData[0]=(rowData[0] & ~(1<<0));
+        g_macro_mode = 1;
     }
     // all four corners to reboot
-    if( (rowData[0] & (1<<0)) &&
-        (rowData[2] & (1<<0)) &&
-        (rowData[4] & (1<<5)) &&
-        (rowData[6] & (1<<5)) ) {
+    else if( (rowData[0] & (1<<0)) &&
+             (rowData[2] & (1<<0)) &&
+             (rowData[4] & (1<<5)) &&
+             (rowData[6] & (1<<5)) ) {
         printf("\n4 corners pressed, will reboot\n");
         jump_bootloader();
         printf("\n4 corners pressed, will reboot");
+    } else {
+        // process row/column data to find the active keys
+        for (uint8_t row = 0; row < ROWS; ++row)
+        {
+            for (uint8_t col = 0; col < COLS; ++col)
+            {
+                if (rowData[row] & (1UL << col))
+                {
+                    //printf("\n%d x %d", col, row);
+                    ActiveKeys_Add(row,col);
+                }
+            }
+        }
     }
 }
-
