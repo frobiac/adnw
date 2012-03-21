@@ -273,7 +273,7 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
 				RMB=LMB=0;
 			}
 */
-			*BTNS = (LMB<<3) | (MMB<<2) | (RMB << 1);
+                        *BTNS = (LMB<<2) | (MMB<<1) | (RMB << 0);
 		}
 	}
 }
@@ -338,8 +338,8 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
                 MouseReport->X=0;
                 MouseReport->Y=0;
                 // only move by 1 ?!
-                MouseReport->V = sx;
-                MouseReport->H = -sy;
+                MouseReport->H = sx;
+                MouseReport->V = sy;
                 MouseReport->Button=0;
             }
         } else {
@@ -350,6 +350,7 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
             MouseReport->Y = -dy * factor;
             MouseReport->X = dx  * factor;
             MouseReport->Button=g_mouse_keys & ~(0x08);
+            MouseReport->Button |= btns;    // PS/2 buttons if set
         }
         g_mouse_keys=0;
 
