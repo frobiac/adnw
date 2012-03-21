@@ -450,8 +450,7 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
     if( g_mouse_mode ) {
         if(isMouseKey(row,col)) {
             g_mouse_keys|=(1<<(getKeyCode(row, col, 4)-MS_BTN_1));
-            return;
-        } else {
+        } else if(isNormalKey(row,col)) {
             g_mouse_mode = 0;
         }
     }
