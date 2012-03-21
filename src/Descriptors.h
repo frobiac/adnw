@@ -52,61 +52,60 @@
 #ifndef _DESCRIPTORS_H_
 #define _DESCRIPTORS_H_
 
-	/* Includes: */
-		#include <avr/pgmspace.h>
+/* Includes: */
+#include <avr/pgmspace.h>
 
-		#include <LUFA/Drivers/USB/USB.h>
+#include <LUFA/Drivers/USB/USB.h>
 
-		#include <LUFA/Drivers/USB/Class/HID.h>
+#include <LUFA/Drivers/USB/Class/HID.h>
 
-	/* Type Defines: */
-		/** Type define for the device configuration descriptor structure. This must be defined in the
-		 *  application code, as the configuration descriptor contains several sub-descriptors which
-		 *  vary between devices, and which describe the device's usage to the host.
-		 */
-		typedef struct
-		{
-			USB_Descriptor_Configuration_Header_t Config;
-			USB_Descriptor_Interface_t            HID_Interface;
-			USB_HID_Descriptor_HID_t                  HID_KeyboardHID;
-	        USB_Descriptor_Endpoint_t             HID_ReportINEndpoint;
-            USB_Descriptor_Interface_t            HIDDBG_Interface;
-            USB_HID_Descriptor_HID_t                  HIDDBG_HID;
-            USB_Descriptor_Endpoint_t             HIDDBG_ReportINEndpoint;
-            USB_Descriptor_Interface_t            Programming_Interface;
-            USB_Descriptor_Endpoint_t             Programming_ReportINEndpoint;
-            USB_Descriptor_Interface_t            HID_MouseInterface;
-            USB_HID_Descriptor_HID_t                  HID_MouseHID;
-            USB_Descriptor_Endpoint_t             HID_MouseReportINEndpoint;
-		} USB_Descriptor_Configuration_t;
+/* Type Defines: */
+/** Type define for the device configuration descriptor structure. This must be defined in the
+ *  application code, as the configuration descriptor contains several sub-descriptors which
+ *  vary between devices, and which describe the device's usage to the host.
+ */
+typedef struct {
+    USB_Descriptor_Configuration_Header_t Config;
+    USB_Descriptor_Interface_t            HID_Interface;
+    USB_HID_Descriptor_HID_t                  HID_KeyboardHID;
+    USB_Descriptor_Endpoint_t             HID_ReportINEndpoint;
+    USB_Descriptor_Interface_t            HIDDBG_Interface;
+    USB_HID_Descriptor_HID_t                  HIDDBG_HID;
+    USB_Descriptor_Endpoint_t             HIDDBG_ReportINEndpoint;
+    USB_Descriptor_Interface_t            Programming_Interface;
+    USB_Descriptor_Endpoint_t             Programming_ReportINEndpoint;
+    USB_Descriptor_Interface_t            HID_MouseInterface;
+    USB_HID_Descriptor_HID_t                  HID_MouseHID;
+    USB_Descriptor_Endpoint_t             HID_MouseReportINEndpoint;
+} USB_Descriptor_Configuration_t;
 
-	/* Macros: */
-		/** Endpoint number of the Keyboard HID report IN endpoint. */
-		#define KEYBOARD_EPNUM               1
+/* Macros: */
+/** Endpoint number of the Keyboard HID report IN endpoint. */
+#define KEYBOARD_EPNUM               1
 
-		/** Size in bytes of the Keyboard HID report IN and OUT endpoints. */
-		#define KEYBOARD_EPSIZE              8
+/** Size in bytes of the Keyboard HID report IN and OUT endpoints. */
+#define KEYBOARD_EPSIZE              8
 
-    /** Endpoint number of the DBG HID report IN endpoint. */
-		#define DBG_EPNUM                    2
+/** Endpoint number of the DBG HID report IN endpoint. */
+#define DBG_EPNUM                    2
 
-    /** Size in bytes of the DBG HID report IN and OUT
-     *  endpoints. */
-		#define DBG_EPSIZE                   32
+/** Size in bytes of the DBG HID report IN and OUT
+ *  endpoints. */
+#define DBG_EPSIZE                   32
 
-    /** Endpoint number of the DBG HID report IN endpoint. */
-		#define PRG_EPNUM                    3
+/** Endpoint number of the DBG HID report IN endpoint. */
+#define PRG_EPNUM                    3
 
-    /** Size in bytes of the Programming report IN and
-     *  OUT endpoints. */
-		#define PRG_EPSIZE                   64
+/** Size in bytes of the Programming report IN and
+ *  OUT endpoints. */
+#define PRG_EPSIZE                   64
 
-	/** Endpoint number of the Mouse HID reporting IN endpoint. */
-		#define MOUSE_IN_EPNUM                4
-		#define HID_EPSIZE                    8
+/** Endpoint number of the Mouse HID reporting IN endpoint. */
+#define MOUSE_IN_EPNUM                4
+#define HID_EPSIZE                    8
 
-        /* Function Prototypes: */
-		uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint8_t wIndex, const void** const DescriptorAddress)
-		                           ATTR_WARN_UNUSED_RESULT ATTR_NON_NULL_PTR_ARG(3);
+/* Function Prototypes: */
+uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint8_t wIndex, const void** const DescriptorAddress)
+ATTR_WARN_UNUSED_RESULT ATTR_NON_NULL_PTR_ARG(3);
 
 #endif

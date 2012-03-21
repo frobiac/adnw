@@ -61,7 +61,7 @@
 
 #include "ps2mouse.h"
 #ifdef ANALOGSTICK
-    #include "analog.h"
+#include "analog.h"
 #endif
 
 #include "version.h"
@@ -74,8 +74,7 @@ uint8_t PrevMouseHIDReportBuffer[sizeof(USB_MouseReport_Data_t)];
  *  within a device can be differentiated from one another. This is for the mouse HID
  *  interface within the device.
  */
-USB_ClassInfo_HID_Device_t Mouse_HID_Interface =
-{
+USB_ClassInfo_HID_Device_t Mouse_HID_Interface = {
     .Config =
     {
         .InterfaceNumber              = 2,
@@ -96,10 +95,9 @@ uint8_t PrevKeyboardHIDReportBuffer[sizeof(USB_KeyboardReport_Data_t)];
  *  passed to all HID Class driver functions, so that multiple instances of the same class
  *  within a device can be differentiated from one another.
  */
-USB_ClassInfo_HID_Device_t Keyboard_HID_Interface =
-  {
+USB_ClassInfo_HID_Device_t Keyboard_HID_Interface = {
     .Config =
-      {
+    {
         .InterfaceNumber              = 0,
 
         .ReportINEndpointNumber       = KEYBOARD_EPNUM,
@@ -108,15 +106,14 @@ USB_ClassInfo_HID_Device_t Keyboard_HID_Interface =
 
         .PrevReportINBuffer           = PrevKeyboardHIDReportBuffer,
         .PrevReportINBufferSize       = sizeof(PrevKeyboardHIDReportBuffer),
-      },
-    };
+    },
+};
 
 uint8_t PrevDBGHIDReportBuffer[sizeof(USB_DBGReport_Data_t)];
 
-USB_ClassInfo_HID_Device_t DBG_HID_Interface =
-  {
+USB_ClassInfo_HID_Device_t DBG_HID_Interface = {
     .Config =
-      {
+    {
         .InterfaceNumber              = 1,
 
         .ReportINEndpointNumber       = DBG_EPNUM,
@@ -125,8 +122,8 @@ USB_ClassInfo_HID_Device_t DBG_HID_Interface =
 
         .PrevReportINBuffer           = PrevDBGHIDReportBuffer,
         .PrevReportINBufferSize       = sizeof(PrevDBGHIDReportBuffer),
-      },
-    };
+    },
+};
 
 uint8_t g_num_lock, g_caps_lock, g_scrl_lock;
 
@@ -141,172 +138,165 @@ void PRG_Device_USBTask(void);
 
 void PRG_Device_USBTask()
 {
-	if (USB_DeviceState != DEVICE_STATE_Configured)
-	  return;
+    if (USB_DeviceState != DEVICE_STATE_Configured)
+        return;
 
-  Endpoint_SelectEndpoint(PRG_EPNUM);
+    Endpoint_SelectEndpoint(PRG_EPNUM);
 
-  if (Endpoint_IsConfigured() && Endpoint_IsINReady() && Endpoint_IsReadWriteAllowed())
-  {
-    static char data[] = "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
-    Endpoint_Write_Stream_LE((void *)data, 64, NULL);
-    // FIXME handle err
+    if (Endpoint_IsConfigured() && Endpoint_IsINReady() && Endpoint_IsReadWriteAllowed()) {
+        static char data[] = "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
+        Endpoint_Write_Stream_LE((void *)data, 64, NULL);
+        // FIXME handle err
 
-    Endpoint_ClearIN();
-  }
+        Endpoint_ClearIN();
+    }
 }
 
 
 
 
-void led(uint8_t n) {
-	DDRD |= (1 << 6);
-	if(n==0)
-		PORTD &= ~(1 << 6);
-	else if(n==1)
-		PORTD |= (1 << 6);
-	return;
+void led(uint8_t n)
+{
+    DDRD |= (1 << 6);
+    if(n==0)
+        PORTD &= ~(1 << 6);
+    else if(n==1)
+        PORTD |= (1 << 6);
+    return;
 }
 
 
 int main(void)
 {
-  SetupHardware();
-  sei();
+    SetupHardware();
+    sei();
 
-  for (;;)
-  {
-    if (USB_DeviceState != DEVICE_STATE_Suspended)
-    {
-      HID_Device_USBTask(&Keyboard_HID_Interface);
-      HID_Device_USBTask(&DBG_HID_Interface);
-      if(g_trackpoint == 1)
-        HID_Device_USBTask(&Mouse_HID_Interface);
-      PRG_Device_USBTask();
+    for (;;) {
+        if (USB_DeviceState != DEVICE_STATE_Suspended) {
+            HID_Device_USBTask(&Keyboard_HID_Interface);
+            HID_Device_USBTask(&DBG_HID_Interface);
+            if(g_trackpoint == 1)
+                HID_Device_USBTask(&Mouse_HID_Interface);
+            PRG_Device_USBTask();
+        } else if (USB_Device_RemoteWakeupEnabled ) {
+            USB_CLK_Unfreeze();
+            USB_Device_SendRemoteWakeup();
+        }
+        USB_USBTask();
     }
-    else if (USB_Device_RemoteWakeupEnabled )
-    {
-      USB_CLK_Unfreeze();
-      USB_Device_SendRemoteWakeup();
-    }
-    USB_USBTask();
-  }
 }
 
 /** Configures the board hardware and chip peripherals for the demo's functionality. */
 void SetupHardware()
 {
-  /* Disable clock division */
-  //clock_prescale_set(clock_div_2);
-  // set for 16 MHz clock
+    /* Disable clock division */
+    //clock_prescale_set(clock_div_2);
+    // set for 16 MHz clock
 #define CPU_PRESCALE(n) (CLKPR = 0x80, CLKPR = (n))
 #define CPU_16MHz       0x00
-CPU_PRESCALE(CPU_16MHz);
+    CPU_PRESCALE(CPU_16MHz);
 
-  /* Disable watchdog if enabled by bootloader/fuses */
-  MCUSR &= ~(1 << WDRF);
-  wdt_disable();
+    /* Disable watchdog if enabled by bootloader/fuses */
+    MCUSR &= ~(1 << WDRF);
+    wdt_disable();
 
-  /* Hardware Initialization */
+    /* Hardware Initialization */
 
 #ifdef ANALOGSTICK
     Analog_Init();
 #endif
 
-  LEDs_Init();
-  USB_Init();
-  USB_PLL_On();
-  while (!USB_PLL_IsReady());
+    LEDs_Init();
+    USB_Init();
+    USB_PLL_On();
+    while (!USB_PLL_IsReady());
 
-  /* Task init */
-  initKeyboard();
+    /* Task init */
+    initKeyboard();
 
-  g_num_lock = g_caps_lock = g_scrl_lock = 0;
+    g_num_lock = g_caps_lock = g_scrl_lock = 0;
 
-  // set up timer
-  TCCR0A = 0x00;
-  TCCR0B = 0x05;
-  TIMSK0 = (1<<TOIE0);
+    // set up timer
+    TCCR0A = 0x00;
+    TCCR0B = 0x05;
+    TIMSK0 = (1<<TOIE0);
 
 #ifdef PS2MOUSE
-  if( ps2_init_mouse() )
-      g_trackpoint=1;
+    if( ps2_init_mouse() )
+        g_trackpoint=1;
 #endif
 
-/*
-#ifdef VERSIONINFO
-  printf("\n-\n %s", VERSIONINFO);
-#endif
-  
-#ifdef BUILDDATE
-  printf("\n %s\n- ",  BUILDDATE);
-#endif
-  */
-  if(g_trackpoint > 0)
-      printf("\nTrackpoint initialized %d ", g_trackpoint);
-  else
-      printf("\nTrackpoint FAILED!");
+    /*
+    #ifdef VERSIONINFO
+      printf("\n-\n %s", VERSIONINFO);
+    #endif
+
+    #ifdef BUILDDATE
+      printf("\n %s\n- ",  BUILDDATE);
+    #endif
+      */
+    if(g_trackpoint > 0)
+        printf("\nTrackpoint initialized %d ", g_trackpoint);
+    else
+        printf("\nTrackpoint FAILED!");
 
 #if defined(BOOTLOADER_TEST)
-  uint8_t bootloader = eeprom_read_byte(&ee_bootloader);
-  if (bootloader == 0xff) // eeprom has been reset
-  {
-    eeprom_write_byte(&ee_bootloader, FALSE);
-  }
-  else if (bootloader == TRUE)
-  {
-    __asm__("jmp 0xF000");
-  }
+    uint8_t bootloader = eeprom_read_byte(&ee_bootloader);
+    if (bootloader == 0xff) { // eeprom has been reset
+        eeprom_write_byte(&ee_bootloader, FALSE);
+    } else if (bootloader == TRUE) {
+        __asm__("jmp 0xF000");
+    }
 #endif
 }
 
 /** Event handler for the library USB Connection event. */
 void EVENT_USB_Device_Connect(void)
 {
-  LEDs_SetAllLEDs(LEDMASK_USB_ENUMERATING);
+    LEDs_SetAllLEDs(LEDMASK_USB_ENUMERATING);
 }
 
 /** Event handler for the library USB Disconnection event. */
 void EVENT_USB_Device_Disconnect(void)
 {
-  LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);
+    LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);
 }
 
 /** Event handler for the library USB Configuration Changed event. */
 void EVENT_USB_Device_ConfigurationChanged(void)
 {
-  LEDs_SetAllLEDs(LEDMASK_USB_READY);
+    LEDs_SetAllLEDs(LEDMASK_USB_READY);
 
-  if (!(HID_Device_ConfigureEndpoints(&Keyboard_HID_Interface)))
-    LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
+    if (!(HID_Device_ConfigureEndpoints(&Keyboard_HID_Interface)))
+        LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
 
-  if (!(HID_Device_ConfigureEndpoints(&DBG_HID_Interface)))
-    LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
+    if (!(HID_Device_ConfigureEndpoints(&DBG_HID_Interface)))
+        LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
 
-  if (!(HID_Device_ConfigureEndpoints(&Mouse_HID_Interface)))
-    LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
+    if (!(HID_Device_ConfigureEndpoints(&Mouse_HID_Interface)))
+        LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
 
-  if (!(Endpoint_ConfigureEndpoint(PRG_EPNUM, EP_TYPE_BULK, ENDPOINT_DIR_IN,
-                                   PRG_EPSIZE, ENDPOINT_BANK_SINGLE)))
-    LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
+    if (!(Endpoint_ConfigureEndpoint(PRG_EPNUM, EP_TYPE_BULK, ENDPOINT_DIR_IN,
+                                     PRG_EPSIZE, ENDPOINT_BANK_SINGLE)))
+        LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
 
-  USB_Device_EnableSOFEvents();
+    USB_Device_EnableSOFEvents();
 }
 
 /** Event handler for the library USB Unhandled Control Request event. */
 void EVENT_USB_Device_UnhandledControlRequest(void)
 {
-  HID_Device_ProcessControlRequest(&Keyboard_HID_Interface);
-  HID_Device_ProcessControlRequest(&DBG_HID_Interface);
-  HID_Device_ProcessControlRequest(&Mouse_HID_Interface);
+    HID_Device_ProcessControlRequest(&Keyboard_HID_Interface);
+    HID_Device_ProcessControlRequest(&DBG_HID_Interface);
+    HID_Device_ProcessControlRequest(&Mouse_HID_Interface);
 }
 
 /** Event handler for the USB device Start Of Frame event. */
 void EVENT_USB_Device_StartOfFrame(void)
 {
-  HID_Device_MillisecondElapsed(&Keyboard_HID_Interface);
-  HID_Device_MillisecondElapsed(&DBG_HID_Interface);
-  HID_Device_MillisecondElapsed(&Mouse_HID_Interface);
+    HID_Device_MillisecondElapsed(&Keyboard_HID_Interface);
+    HID_Device_MillisecondElapsed(&DBG_HID_Interface);
+    HID_Device_MillisecondElapsed(&Mouse_HID_Interface);
 }
 
 
@@ -321,26 +311,24 @@ void EVENT_USB_Device_StartOfFrame(void)
  *  \return Boolean true to force the sending of the report, false to let the library determine if it needs to be sent
  */
 bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDInterfaceInfo, uint8_t* const ReportID,
-                                         const uint8_t ReportType, void* ReportData, uint16_t* ReportSize)
+        const uint8_t ReportType, void* ReportData, uint16_t* ReportSize)
 {
-  if (HIDInterfaceInfo == &Keyboard_HID_Interface)
-  {
-    USB_KeyboardReport_Data_t* KeyboardReport = (USB_KeyboardReport_Data_t*)ReportData;
-    *ReportSize = getKeyboardReport(KeyboardReport);
-  }
+    if (HIDInterfaceInfo == &Keyboard_HID_Interface) {
+        USB_KeyboardReport_Data_t* KeyboardReport = (USB_KeyboardReport_Data_t*)ReportData;
+        *ReportSize = getKeyboardReport(KeyboardReport);
+    }
 
-  else if (HIDInterfaceInfo == &DBG_HID_Interface)
-  {
-    USB_DBGReport_Data_t* DBGReport = (USB_DBGReport_Data_t*)ReportData;
-    *ReportSize = DBG__get_report(DBGReport);
-  }
+    else if (HIDInterfaceInfo == &DBG_HID_Interface) {
+        USB_DBGReport_Data_t* DBGReport = (USB_DBGReport_Data_t*)ReportData;
+        *ReportSize = DBG__get_report(DBGReport);
+    }
 
-  else if (HIDInterfaceInfo == &Mouse_HID_Interface) {
-    USB_MouseReport_Data_t* MouseReport = (USB_MouseReport_Data_t*)ReportData;
-    *ReportSize = getMouseReport(MouseReport);
-  }
+    else if (HIDInterfaceInfo == &Mouse_HID_Interface) {
+        USB_MouseReport_Data_t* MouseReport = (USB_MouseReport_Data_t*)ReportData;
+        *ReportSize = getMouseReport(MouseReport);
+    }
 
-  return false;
+    return false;
 }
 
 /** HID class driver callback function for the processing of HID reports from the host.
@@ -352,12 +340,12 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
  *  \param[in] ReportSize  Size in bytes of the received HID report
  */
 void CALLBACK_HID_Device_ProcessHIDReport(USB_ClassInfo_HID_Device_t* const HIDInterfaceInfo, const uint8_t ReportID,
-                                          const uint8_t ReportType, const void* ReportData, const uint16_t ReportSize)
+        const uint8_t ReportType, const void* ReportData, const uint16_t ReportSize)
 {
-  if (HIDInterfaceInfo == &Mouse_HID_Interface)
-      return;
+    if (HIDInterfaceInfo == &Mouse_HID_Interface)
+        return;
 
-  uint8_t* LEDReport = (uint8_t*)ReportData;
+    uint8_t* LEDReport = (uint8_t*)ReportData;
 
-  // LEDs_ChangeLEDs(LED_CAPS_LOCK|LED_SCROLL_LOCK|LED_NUM_LOCK| LED_COMPOSE|LED_KANA, *LEDReport);
+    // LEDs_ChangeLEDs(LED_CAPS_LOCK|LED_SCROLL_LOCK|LED_NUM_LOCK| LED_COMPOSE|LED_KANA, *LEDReport);
 }

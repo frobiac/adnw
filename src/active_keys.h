@@ -7,11 +7,10 @@
 #define MAX_KEYS      6
 #define MAX_ACTIVE_CELLS (MAX_KEYS + NUM_MODIFIERS)
 
-struct ActiveKeys
-{
-  BoundKey  keys[MAX_ACTIVE_CELLS];
-  uint8_t   num_keys;
-  uint8_t   curr_key;
+struct ActiveKeys {
+    BoundKey  keys[MAX_ACTIVE_CELLS];
+    uint8_t   num_keys;
+    uint8_t   curr_key;
 };
 
 typedef struct ActiveKeys ActiveKeys;

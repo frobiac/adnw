@@ -4,9 +4,8 @@
 #include "Descriptors.h"
 #include "hhstdio.h"
 
-typedef struct
-{
-  char data[DBG_EPSIZE];
+typedef struct {
+    char data[DBG_EPSIZE];
 
 } USB_DBGReport_Data_t;
 

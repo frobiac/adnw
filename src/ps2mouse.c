@@ -34,7 +34,8 @@
 static uint8_t scrollcnt=0;
 
 
-void data(uint8_t x) {
+void data(uint8_t x)
+{
     DDDR |= (1 << DBIT);
     if(x==0)
         DPORT &= ~(1 << DBIT);
@@ -43,16 +44,18 @@ void data(uint8_t x) {
     return;
 }
 
-void clk(uint8_t x) {
-	CDDR |= (1 << CBIT);
-	if(x==0)
-		CPORT &= ~(1 << CBIT);
-	else if(x==1)
-		CPORT |= (1 << CBIT);
-	return;
+void clk(uint8_t x)
+{
+    CDDR |= (1 << CBIT);
+    if(x==0)
+        CPORT &= ~(1 << CBIT);
+    else if(x==1)
+        CPORT |= (1 << CBIT);
+    return;
 }
 
-void tp_reset(){
+void tp_reset()
+{
 
     RDDR |= (1 << RBIT);
     RPORT |= (1 << RBIT);
@@ -61,13 +64,13 @@ void tp_reset(){
 
     return;
 
-    while(CLK){
+    while(CLK) {
         __asm__("nop");
     }
     while(!CLK) {
         __asm__("nop");
     }
-    while(CLK){
+    while(CLK) {
         __asm__("nop");
     }
     while(!CLK) {
@@ -78,10 +81,11 @@ void tp_reset(){
 
 
 #define CNT 500
-void serout(uint8_t bit) {
+void serout(uint8_t bit)
+{
     uint8_t cnt;
     cnt=0;
-    while(CLK && cnt++ < CNT){
+    while(CLK && cnt++ < CNT) {
         __asm__("nop");
     }
     data(bit);
@@ -91,22 +95,24 @@ void serout(uint8_t bit) {
     }
 }
 
-uint8_t serin() {
+uint8_t serin()
+{
     uint8_t state;
     uint8_t cnt;
     cnt=0;
-    while(CLK && cnt++ < CNT){
+    while(CLK && cnt++ < CNT) {
         __asm__("nop");
     }
     state = DATA;
     cnt = 0;
-    while(!CLK && cnt++ < CNT){
+    while(!CLK && cnt++ < CNT) {
         __asm__("nop");
     }
     return state;
 }
 
-uint8_t oparity(uint8_t byte) {
+uint8_t oparity(uint8_t byte)
+{
     uint8_t par=1;
     par ^= ((byte & (1 << 0)) >> 0);
     par ^= ((byte & (1 << 1)) >> 1);
@@ -121,43 +127,44 @@ uint8_t oparity(uint8_t byte) {
 
 
 
-bool send_packet(uint8_t byte) {
+bool send_packet(uint8_t byte)
+{
 
     uint8_t parity;
 
     errcnt=0;
     do {
-    parity = oparity(byte);
-    clk(0);
-    _delay_us(DELAY);
-    data(0); //Start
-    clk(1);
-    CDDR &= ~(1 << CBIT); // Release clock
-    CPORT |= (1 << CBIT); //Set the pull up on Clock
+        parity = oparity(byte);
+        clk(0);
+        _delay_us(DELAY);
+        data(0); //Start
+        clk(1);
+        CDDR &= ~(1 << CBIT); // Release clock
+        CPORT |= (1 << CBIT); //Set the pull up on Clock
 
-    /////////////
-    serout((byte & (1 << 0)) >> 0);
-    serout((byte & (1 << 1)) >> 1);
-    serout((byte & (1 << 2)) >> 2);
-    serout((byte & (1 << 3)) >> 3);
-    serout((byte & (1 << 4)) >> 4);
-    serout((byte & (1 << 5)) >> 5);
-    serout((byte & (1 << 6)) >> 6);
-    serout((byte & (1 << 7)) >> 7);
+        /////////////
+        serout((byte & (1 << 0)) >> 0);
+        serout((byte & (1 << 1)) >> 1);
+        serout((byte & (1 << 2)) >> 2);
+        serout((byte & (1 << 3)) >> 3);
+        serout((byte & (1 << 4)) >> 4);
+        serout((byte & (1 << 5)) >> 5);
+        serout((byte & (1 << 6)) >> 6);
+        serout((byte & (1 << 7)) >> 7);
 
 /////////////
-    serout(parity);
-    /////////////
-    serout(1); //Stop
+        serout(parity);
+        /////////////
+        serout(1); //Stop
 
-    DDDR &= ~(1 << DBIT); //Release the Data line
-    DPORT |= (1 << DBIT); //Set the pull up on Data
+        DDDR &= ~(1 << DBIT); //Release the Data line
+        DPORT |= (1 << DBIT); //Set the pull up on Data
 
 
-    /////////////
-    //if(serin() != ACK )
-    //    send_packet(byte); // Try again if ACK has not been received
-    errcnt++;
+        /////////////
+        //if(serin() != ACK )
+        //    send_packet(byte); // Try again if ACK has not been received
+        errcnt++;
 
     } while (serin() != ACK && errcnt < 5 );
 
@@ -166,7 +173,8 @@ bool send_packet(uint8_t byte) {
     return true;
 }
 
-uint8_t read_packet(void) {
+uint8_t read_packet(void)
+{
     uint8_t byte=0,par;
     serin(); //Start
     byte |= (serin() << 0);
@@ -187,36 +195,37 @@ uint8_t read_packet(void) {
 }
 
 
-bool ps2_init_mouse(void) {
-	g_trackpoint = 0;
+bool ps2_init_mouse(void)
+{
+    g_trackpoint = 0;
 
-	tp_reset();
+    tp_reset();
 
-	if ( ! send_packet(0xff) )
-		return false;
-	read_packet(); //Ack
-	read_packet(); //Bat
-	read_packet(); //dev ID
-	//Enable Data reporting
-	if ( !send_packet(0xf4) )
-		return false;
-	read_packet();	// Ack
-	////
-	//send_packet(0xe8); //Set Resolution
-	//read_packet(); //Ack
-	//send_packet(0x01); //8counts/mm
-	//read_packet(); //Ack
-	////
-	//send_packet(0xf3); //SetSample rate
-	//read_packet(); //Ack
-	//send_packet(0x64); //200 smaples a second
+    if ( ! send_packet(0xff) )
+        return false;
+    read_packet(); //Ack
+    read_packet(); //Bat
+    read_packet(); //dev ID
+    //Enable Data reporting
+    if ( !send_packet(0xf4) )
+        return false;
+    read_packet();  // Ack
+    ////
+    //send_packet(0xe8); //Set Resolution
+    //read_packet(); //Ack
+    //send_packet(0x01); //8counts/mm
+    //read_packet(); //Ack
+    ////
+    //send_packet(0xf3); //SetSample rate
+    //read_packet(); //Ack
+    //send_packet(0x64); //200 smaples a second
 
-	//Set remote mode
-	if( ! send_packet(0xf0) )
-		return false;
-	read_packet(); //Ack
+    //Set remote mode
+    if( ! send_packet(0xf0) )
+        return false;
+    read_packet(); //Ack
 
-	return true;
+    return true;
 }
 
 
@@ -226,56 +235,57 @@ bool ps2_init_mouse(void) {
 void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
 {
 
-        uint8_t ack;
-        uint8_t LMB,MMB,RMB;
-	int mouseinf;
-	{
-		send_packet(0xeb);
-		ack=read_packet(); //Ack
-		if(ack==0xfa) 
-		{
-			mouseinf=read_packet();
-			*dx= read_packet();
-			*dy= read_packet();
+    uint8_t ack;
+    uint8_t LMB,MMB,RMB;
+    int mouseinf;
+    {
+        send_packet(0xeb);
+        ack=read_packet(); //Ack
+        if(ack==0xfa) {
+            mouseinf=read_packet();
+            *dx= read_packet();
+            *dy= read_packet();
 
-			// raw *dx is of 0xXX
-			// int x = *dx; int y = *dy;
+            // raw *dx is of 0xXX
+            // int x = *dx; int y = *dy;
 
-			if(mouseinf&0x10)
-				*dx-=0x100; // Add sign bit to dx
-			if(mouseinf&0x20)
-				*dy-=0x100; // Add sign bit to dy
+            if(mouseinf&0x10)
+                *dx-=0x100; // Add sign bit to dx
+            if(mouseinf&0x20)
+                *dy-=0x100; // Add sign bit to dy
 
-			/*
-			if( x!=0 ){
-				//printf("\n%4x %4x | %4x %4x", x,*dx,y,*dy);
-				printf("\nX %4x %4x: ", x,*dx);
-				if(*dx&0xFF00)
-					printf("-%d" , 256-(*dx+0x100));
-				else
-					printf("+%d" , *dx);
-			}
-			*/
+            /*
+            if( x!=0 ){
+                //printf("\n%4x %4x | %4x %4x", x,*dx,y,*dy);
+                printf("\nX %4x %4x: ", x,*dx);
+                if(*dx&0xFF00)
+                    printf("-%d" , 256-(*dx+0x100));
+                else
+                    printf("+%d" , *dx);
+            }
+            */
 
-			LMB=0;MMB=0;RMB=0;
+            LMB=0;
+            MMB=0;
+            RMB=0;
 
-                        if(mouseinf & 0x01)  //0x09
-                            LMB=1;         // Get leftbutton status
-                        if(mouseinf & 0x02)
-                            RMB=1;        // Get rightbutton status
-                        if(mouseinf & 0x04)
-                            MMB=1;       // Get middlebutton status
+            if(mouseinf & 0x01)  //0x09
+                LMB=1;         // Get leftbutton status
+            if(mouseinf & 0x02)
+                RMB=1;        // Get rightbutton status
+            if(mouseinf & 0x04)
+                MMB=1;       // Get middlebutton status
 
 
-/*			// emulate 3 buttons
-			if( RMB & LMB ) {
-				MMB=1;
-				RMB=LMB=0;
-			}
-*/
-                        *BTNS = (LMB<<2) | (MMB<<1) | (RMB << 0);
-		}
-	}
+            /*          // emulate 3 buttons
+                        if( RMB & LMB ) {
+                            MMB=1;
+                            RMB=LMB=0;
+                        }
+            */
+            *BTNS = (LMB<<2) | (MMB<<1) | (RMB << 0);
+        }
+    }
 }
 
 volatile uint32_t mouse_timer; /// toggle mouse mode for a specified time
@@ -283,11 +293,11 @@ volatile uint16_t accel; /// toggle mouse mode for a specified time
 
 uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 {
-	int16_t dx=0, dy=0;
-	uint8_t btns=0;
+    int16_t dx=0, dy=0;
+    uint8_t btns=0;
 
 #ifdef PS2MOUSE
-    if(g_trackpoint){
+    if(g_trackpoint) {
         ps2_read_mouse(&dx, &dy, &btns);
         //printf("\nBtns: %d ", btns);
     }
@@ -295,7 +305,7 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 
     // reset mouse mode after inactivity: idle_count is incremented 61 times per second
     if( dx!=0 || dy!=0 ) {
-        if(g_mouse_mode==0){
+        if(g_mouse_mode==0) {
             g_mouse_mode=1;
             accel=0;
         }
@@ -309,20 +319,19 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
     } else if(idle_count-mouse_timer > 1/*seconds*/ *61 ) {
         g_mouse_mode=0;
     }
-    
-	led((g_mouse_mode!=0));
+
+    led((g_mouse_mode!=0));
     if(g_mouse_mode) {
-        if( g_mouse_keys & 0x08 )
-        {
+        if( g_mouse_keys & 0x08 ) {
             int8_t sx=0, sy=0;
 
-            if( dx!=0 ){
+            if( dx!=0 ) {
                 if(dx&0xFF00)
                     sx= -(256-(dx+0x100));
                 else
                     sx=dx;
             }
-            if( dy!=0 ){
+            if( dy!=0 ) {
                 if(dy&0xFF00)
                     sy= -(256-(dy+0x100));
                 else
@@ -333,7 +342,7 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 
             scrollcnt = scrollcnt+abs(sy)+abs(sx);
 
-            if(scrollcnt>40){
+            if(scrollcnt>40) {
                 scrollcnt=0;
                 MouseReport->X=0;
                 MouseReport->Y=0;
@@ -362,10 +371,10 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 
         // reset after a certain time
         if(dx==0 && dy==0) {
-            if( g_tp_counter++ > 12 ){
+            if( g_tp_counter++ > 12 ) {
                 g_mouse_modifier=0;
                 g_tp_counter=0;
-                for(int i=0; i<4;++i) {
+                for(int i=0; i<4; ++i) {
                     g_mouse_mode_sum[i] = 0;
                 }
             }
@@ -382,8 +391,8 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 
 
         uint8_t maxid;
-        for(int i=1; i<4;++i) {
-            if(g_mouse_mode_sum[i]>g_mouse_mode_sum[maxid]){
+        for(int i=1; i<4; ++i) {
+            if(g_mouse_mode_sum[i]>g_mouse_mode_sum[maxid]) {
                 maxid=i;
             }
         }
@@ -391,8 +400,8 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
         if( g_mouse_mode_sum[maxid] > 30)
             g_mouse_modifier=(1<<maxid);
 
-       // if(old != g_mouse_modifier)
-       //     printf("\n%5d %5d %5d %5d : %d -> %d | ",g_mouse_mode_sum[0],g_mouse_mode_sum[1],g_mouse_mode_sum[2],g_mouse_mode_sum[3], old, g_mouse_modifier );
+        // if(old != g_mouse_modifier)
+        //     printf("\n%5d %5d %5d %5d : %d -> %d | ",g_mouse_mode_sum[0],g_mouse_mode_sum[1],g_mouse_mode_sum[2],g_mouse_mode_sum[3], old, g_mouse_modifier );
 
     }
     return 0;

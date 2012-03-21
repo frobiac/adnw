@@ -16,7 +16,7 @@
   with this project.  If not, see  <http://www.gnu.org/licenses/>.
 
   --------------------------------------------------------------------------
-  
+
   Debounce code based on code from Peter Dannegger [danni/At/specs/d0t/de]
   described in German at bottom of page
       http://www.mikrocontroller.net/articles/Entprellung
@@ -24,7 +24,7 @@
       http://www.mikrocontroller.net/topic/48465
   Array extensions inspired by Pult.zip
       http://www.mikrocontroller.net/topic/48465#1489399
- 
+
   --------------------------------------------------------------------------
 */
 
@@ -59,20 +59,20 @@ struct Key  mkt_key;
 
 
 /// debounce variables
-volatile uint8_t kb_state[ROWS];	// debounced and inverted key state: bit = 1: key pressed
-volatile uint8_t kb_press[ROWS];	// key press detect
+volatile uint8_t kb_state[ROWS];    // debounced and inverted key state: bit = 1: key pressed
+volatile uint8_t kb_press[ROWS];    // key press detect
 volatile uint8_t kb_release[ROWS];  // key release detect
-volatile uint8_t kb_rpt[ROWS];		// key long press and repeat
+volatile uint8_t kb_rpt[ROWS];      // key long press and repeat
 
 static uint8_t ct0[ROWS], ct1[ROWS];
 static int32_t rpt[ROWS];
 
-#define REPEAT_MASK    ALL_COLS_MASK	// repeat: key0 = 0x3F = 63
-#define REPEAT_START   31				// 61 = 1000ms
+#define REPEAT_MASK    ALL_COLS_MASK    // repeat: key0 = 0x3F = 63
+#define REPEAT_START   31               // 61 = 1000ms
 #define REPEAT_NEXT    15
 
-/**	
-  * ISR that should get called 61 times a second. 
+/**
+  * ISR that should get called 61 times a second.
   * Allows exact timers
   */
 //volatile uint32_t idle_count = 0;
@@ -87,14 +87,14 @@ ISR(TIMER0_OVF_vect)
         idle_count=0;
 }
 
-/** 
+/**
  * Some startup initialization is performed here.
  */
 void initKeyboard()
 {
     idle_count=0;
     // not strictly necessary
-    for (uint8_t row = 0; row < ROWS; ++row){
+    for (uint8_t row = 0; row < ROWS; ++row) {
         rowData[row]=0;
         ct0[row]=0xFF;
         ct1[row]=0xFF;
@@ -115,14 +115,14 @@ void initKeyboard()
 
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
-    if(g_macro_mode){
+    if(g_macro_mode) {
         return fillMacroReport(report_data);
     }
     //testMKT();
     if(mkt_timer+MKT_TIMEOUT < idle_count)
         mkt_state = MKT_RESET;
-    if(activeKeys.keycnt==0){
-        if(mkt_state == MKT_YES){
+    if(activeKeys.keycnt==0) {
+        if(mkt_state == MKT_YES) {
             report_data->KeyCode[0] = ModeKeyMatrix[mkt_key.row][mkt_key.col].hid;
             report_data->Modifier = 0;
             mkt_state = MKT_INIT;
@@ -151,7 +151,7 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 }
 
 #include "keymap.h"
-struct keycode macro[]={ _l, _a , _l, _P, _l, _o,_SPACE, _H,_A,_L,_L,_O,_SPACE,_H,_a,_L,_l,_o };
+struct keycode macro[]= { _l, _a , _l, _P, _l, _o,_SPACE, _H,_A,_L,_L,_O,_SPACE,_H,_a,_L,_l,_o };
 uint8_t macrotest=0;
 /** Goes through given macro and sends it letter by letter.
  *  We could try to be smart and fill the report with up to 6 letters,
@@ -165,8 +165,7 @@ uint8_t fillMacroReport(USB_KeyboardReport_Data_t *report_data)
     if(macrotest++%2)
         return sizeof(USB_KeyboardReport_Data_t);
 
-    if( g_macro_idx < sizeof(macro)/sizeof(struct keycode) )
-    {
+    if( g_macro_idx < sizeof(macro)/sizeof(struct keycode) ) {
         report_data->KeyCode[0]=macro[g_macro_idx].hid;
         report_data->Modifier=macro[g_macro_idx].mods;
         g_macro_idx++;
@@ -184,12 +183,11 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 {
     uint8_t idx=0;
 
-    for(uint8_t i=0; i < activeKeys.keycnt; ++i)
-    {
+    for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
         struct Key k=activeKeys.keys[i];
         if(k.normalKey && idx < 6) {
-           report_data->KeyCode[idx]=getKeyCode(k.row, k.col, getActiveLayer());
-           idx++;
+            report_data->KeyCode[idx]=getKeyCode(k.row, k.col, getActiveLayer());
+            idx++;
         }
         if(idx==6) {
             printf("\nError: more than 6 keys!");
@@ -209,7 +207,7 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 
 uint8_t get_kb_release( uint8_t key_mask, uint8_t col)
 {
-    ATOMIC_BLOCK(ATOMIC_FORCEON){
+    ATOMIC_BLOCK(ATOMIC_FORCEON) {
         key_mask &= kb_release[col];                      // read key(s)
         kb_release[col] ^= key_mask;                      // clear key(s)
     }
@@ -218,15 +216,15 @@ uint8_t get_kb_release( uint8_t key_mask, uint8_t col)
 
 uint8_t get_kb_press( uint8_t key_mask, uint8_t col )
 {
-    ATOMIC_BLOCK(ATOMIC_FORCEON){
+    ATOMIC_BLOCK(ATOMIC_FORCEON) {
         key_mask &= kb_press[col];                      // read key(s)
         kb_press[col] ^= key_mask;                      // clear key(s)
     }
-	return key_mask;
+    return key_mask;
 }
 uint8_t get_kb_rpt( uint8_t key_mask, uint8_t col )
 {
-    ATOMIC_BLOCK(ATOMIC_FORCEON){
+    ATOMIC_BLOCK(ATOMIC_FORCEON) {
         key_mask &= kb_rpt[col];                        // read key(s)
         kb_rpt[col] ^= key_mask;                        // clear key(s)
     }
@@ -236,15 +234,14 @@ uint8_t get_kb_rpt( uint8_t key_mask, uint8_t col )
 /** The real hardware access take place here.
  *  Each of the rows is individually activated and the resulting column value read.
  *  Should more than 8 channels be needed, this can easily be extended to 16/32bit.
- *  By means of a neat routine found on  
+ *  By means of a neat routine found on
  *
  */
 void scan_matrix(void)
 {
-	uint8_t i, data;
+    uint8_t i, data;
 
-    for (uint8_t row = 0; row < ROWS; ++row)
-    {
+    for (uint8_t row = 0; row < ROWS; ++row) {
         activate(row);
 
         // Insert NOPs for synchronization
@@ -262,14 +259,13 @@ void scan_matrix(void)
         i &= ct0[row] & ct1[row];                       // count until roll over ?
         kb_state[row] ^= i;                             // then toggle debounced state
 
-        kb_press  [row] |=  kb_state[row] & i;			// 0->1: key press detect
+        kb_press  [row] |=  kb_state[row] & i;          // 0->1: key press detect
         kb_release[row] |= ~kb_state[row] & i;          // 1->0: key press detect
 
         if( (kb_state[row] & REPEAT_MASK) == 0 ) {      // check repeat function
             rpt[row] = idle_count + REPEAT_START;       // start delay
         }
-        if(  rpt[row] <= idle_count )
-        {
+        if(  rpt[row] <= idle_count ) {
             rpt[row] = idle_count + REPEAT_NEXT;        // repeat delay
             kb_rpt[row] |= kb_state[row] & REPEAT_MASK;
         }
@@ -279,7 +275,7 @@ void scan_matrix(void)
         p=get_kb_press  (ALL_COLS_MASK, row);
         h=get_kb_rpt    (ALL_COLS_MASK, row);
         r=get_kb_release(ALL_COLS_MASK, row);
-        
+
         rowData[row] = ((rowData[row]|(p|h)) & ~r);
 
         // permanent layer toggles go here!
@@ -313,14 +309,14 @@ void printCurrentKeys(void)
 {
     for(uint8_t r=0; r<ROWS/2; ++r) {
         printf("\n");
-        for(uint8_t c=0; c< COLS; ++c){
+        for(uint8_t c=0; c< COLS; ++c) {
             if( rowData[r] & (1<<c))
                 printf("X");
             else
                 printf(".");
         }
         printf("|  |");
-        for(uint8_t c=0; c< COLS; ++c){
+        for(uint8_t c=0; c< COLS; ++c) {
             if( rowData[r+ROWS/2] & (1<<c))
                 printf("X");
             else
@@ -343,11 +339,9 @@ uint8_t getActiveLayer()
         return 4; /// @todo  hardcoded layer
 
     uint8_t layer=0;
-    for(uint8_t i=0; i < activeKeys.keycnt; ++i)
-    {
+    for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
         struct Key k = activeKeys.keys[i];
-        if( isLayerKey(k.row, k.col) )
-        {
+        if( isLayerKey(k.row, k.col) ) {
             if(layer!=0) {
                 printf("\nWARN: More than one layer key pressed!");
             }
@@ -380,11 +374,9 @@ uint8_t getActiveLayer()
 
 uint8_t getActiveKeyCodeModifier()
 {
-    for(uint8_t i=0; i < activeKeys.keycnt; ++i)
-    {
+    for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
         struct Key k=activeKeys.keys[i];
-        if(k.normalKey)
-        {
+        if(k.normalKey) {
             return getModifier(k.row, k.col, getActiveLayer());
         }
     }
@@ -395,11 +387,9 @@ uint8_t getActiveKeyCodeModifier()
 uint8_t getActiveModifiers()
 {
     uint8_t modifiers=0;
-    for(uint8_t i=0; i < activeKeys.keycnt; ++i)
-    {
+    for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
         struct Key k = activeKeys.keys[i];
-        if( isModifierKey(k.row, k.col) )
-        {
+        if( isModifierKey(k.row, k.col) ) {
             modifiers |= (1<<(getModifier(k.row, k.col,0)-MOD_BEGIN));
         }
     }
@@ -425,7 +415,7 @@ bool isModifierKey(uint8_t row, uint8_t col)
   */
 bool isLayerKey(uint8_t row, uint8_t col)
 {
-    if( getModifier(row,col,0) > MOD_LAYER_0 && getModifier(row,col,0) < MOD_LAYER_LAST){
+    if( getModifier(row,col,0) > MOD_LAYER_0 && getModifier(row,col,0) < MOD_LAYER_LAST) {
         return true;
     }
     return false;
@@ -447,7 +437,7 @@ bool isMouseKey(uint8_t row, uint8_t col)
 
 void ActiveKeys_Add(uint8_t row, uint8_t col)
 {
-    if(activeKeys.keycnt>= MAX_ACTIVE_KEYS){
+    if(activeKeys.keycnt>= MAX_ACTIVE_KEYS) {
         //printf("ERR: Too many active keys!");
         return;
     }
@@ -471,7 +461,7 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
 
     if(activeKeys.keycnt>1)
         mkt_state = MKT_TOOMANYKEYS;
-    if(mkt_state == MKT_INIT && activeKeys.keycnt==1 && !key.normalKey){
+    if(mkt_state == MKT_INIT && activeKeys.keycnt==1 && !key.normalKey) {
         mkt_state = MKT_YES;
         mkt_key = key;
         mkt_timer=idle_count;
@@ -483,7 +473,7 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
 void init_active_keys()
 {
     //led(idle_count%120<3);
-    if( rowData[0] & (1<<0) ){
+    if( rowData[0] & (1<<0) ) {
         rowData[0]=(rowData[0] & ~(1<<0));
         g_macro_mode = 1;
     }
@@ -497,12 +487,9 @@ void init_active_keys()
         printf("\n4 corners pressed, will reboot");
     } else {
         // process row/column data to find the active keys
-        for (uint8_t row = 0; row < ROWS; ++row)
-        {
-            for (uint8_t col = 0; col < COLS; ++col)
-            {
-                if (rowData[row] & (1UL << col))
-                {
+        for (uint8_t row = 0; row < ROWS; ++row) {
+            for (uint8_t col = 0; col < COLS; ++col) {
+                if (rowData[row] & (1UL << col)) {
                     //printf("\n%d x %d", col, row);
                     ActiveKeys_Add(row,col);
                 }

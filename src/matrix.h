@@ -18,12 +18,12 @@ uint8_t read_col(void)
     uint8_t res = PINF;
 
     return (
-    (res & (1<<0)) << 5 |
-    (res & (1<<1)) << 3 |
-    (res & (1<<4)) >> 1 |
-    (res & (1<<5)) >> 3 |
-    (res & (1<<6)) >> 5 |
-    (res & (1<<7)) >> 7  );
+               (res & (1<<0)) << 5 |
+               (res & (1<<1)) << 3 |
+               (res & (1<<4)) >> 1 |
+               (res & (1<<5)) >> 3 |
+               (res & (1<<6)) >> 5 |
+               (res & (1<<7)) >> 7  );
 
 
     return (( res & 0b11) | ((res & 0b11110000)>>2 ));
@@ -32,7 +32,8 @@ uint8_t read_col(void)
     return (PINF & ~((1<<6) | (1<<7)));
 }
 
-void unselect_rows(void) {
+void unselect_rows(void)
+{
     DDRD  = 0x00;
     PORTD = 0x00;
 }

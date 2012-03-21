@@ -24,7 +24,7 @@
 #include <LUFA/Drivers/USB/Class/HID.h>
 
 #ifdef ANALOGSTICK
-    #include "analog.h"
+#include "analog.h"
 #endif
 
 void      initKeyboard(void);
