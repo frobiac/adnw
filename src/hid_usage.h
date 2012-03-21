@@ -221,7 +221,8 @@ MS_WH_RIGHT,
 
 
 // **************************************************************
-// *    QWERTY mapping of characters and HID codes
+// *    QWERTZ mapping of characters and HID codes
+// * prefixes with y_ are valid if computer is set-up for qwert_Y_
 // **************************************************************
 #define NONE  0x00
 #define SHIFT 0x02
