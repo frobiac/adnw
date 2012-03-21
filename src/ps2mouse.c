@@ -226,7 +226,8 @@ bool ps2_init_mouse(void) {
 void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
 {
 
-	uint8_t ack ,LMB,MMB,RMB;
+        uint8_t ack;
+        uint8_t LMB,MMB,RMB;
 	int mouseinf;
 	{
 		send_packet(0xeb);
@@ -257,33 +258,21 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
 			*/
 
 			LMB=0;MMB=0;RMB=0;
-/*	
-			if(mouseinf&0x01) { //0x09
-				LMB=1;         // Get leftbutton status
-			}
-			else 
-				LMB=0;
+
+                        if(mouseinf & 0x01)  //0x09
+                            LMB=1;         // Get leftbutton status
+                        if(mouseinf & 0x02)
+                            RMB=1;        // Get rightbutton status
+                        if(mouseinf & 0x04)
+                            MMB=1;       // Get middlebutton status
 
 
-			if(mouseinf&0x02) {
-				RMB=1;        // Get rightbutton status
-			}
-			else 
-				RMB=0;
-	
-			//if(mouseinf == 0x0B ) {
-			if(mouseinf& 0x04 ) {
-				MMB=1;       // Get middlebutton status
-			}
-			else 
-				MMB=0;
-
-			// emulate 3 buttons
+/*			// emulate 3 buttons
 			if( RMB & LMB ) {
 				MMB=1;
 				RMB=LMB=0;
 			}
-*/			
+*/
 			*BTNS = (LMB<<3) | (MMB<<2) | (RMB << 1);
 		}
 	}
@@ -297,6 +286,7 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 #ifdef PS2MOUSE
     if(g_trackpoint){
         ps2_read_mouse(&dx, &dy, &btns);
+        //printf("\nBtns: %d ", btns);
     }
 #endif
 

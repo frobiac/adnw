@@ -83,20 +83,20 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] =
     { _no,     _no,     _no,     _no,		_no,     _no },
     { _no,     _no,     _no,     _no,		_no,     _no },
     { _no,     _no,     _no,     _no,		_no,     _no },
-    { _no,     _ESC,    _no,	 _SPACE,  	_TAB, 	 _no },
+    { _no,     _no,     _no,	 _ESC,  	_SPACE,  _TAB },
 
     { _no,     _no,     _no,     _no,		_no,     _no },
     { _no,     _no,     _no,     _no,		_no,     _no },
     { _no,     _no,     _no,     _no,		_no,     _no },
-    { _no,     _BSPACE, _ENTER,  _no,		_no,     _no }
+    { _BSPACE, _ENTER,  _no,	 _no,   	_no,     _no }
 };
 
 /// @todo PROGMEM
 
 //#define _THUMB_ROW_LEFT		_MOUSE,		_L_GUI,		_R_ALT,		_L_ALT,		_L_SHIFT,		_L_CTRL
 //#define _THUMB_ROW_RIGHT	_ANALOG,	_MOD_2,		_MOD_3,		_no,		_no,		_COMPOSE
-#define _THUMB_ROW_LEFT		_L_GUI,		_R_ALT,		_L_SHIFT,		_MOD_1,		_L_CTRL , _L_ALT
-#define _THUMB_ROW_RIGHT	_no,	    _MOD_2,		_MOD_3,		_COMPOSE,		_R_CTRL,  _no
+#define _THUMB_ROW_LEFT		_L_GUI,		_R_ALT,		_MOD_1,		_L_CTRL , _L_ALT,		_L_SHIFT
+#define _THUMB_ROW_RIGHT	_MOD_2,		_MOD_3,		_COMPOSE,	_R_CTRL,  _no, _no
 
 /** Depending on the TWO_COL_PINKY setting one of the outer columns is dropped in 
  *  getKeyCode() !!!
