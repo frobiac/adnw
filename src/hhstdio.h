@@ -1,6 +1,6 @@
 /*
                    The HumbleHacker Keyboard Project
-                 Copyright © 2008-2010, David Whetstone
+                 Copyright Â© 2008-2010, David Whetstone
                david DOT whetstone AT humblehacker DOT com
 
   This file is a part of The HumbleHacker Keyboard Project.
@@ -37,7 +37,7 @@ char stdout_popchar(void);
 
 /*
                     The HumbleHacker Keyboard Project
-                 Copyright © 2008-2010, David Whetstone
+                 Copyright Â© 2008-2010, David Whetstone
                david DOT whetstone AT humblehacker DOT com
 
   This file is a part of The HumbleHacker Keyboard Project.

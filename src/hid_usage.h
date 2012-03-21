@@ -5,7 +5,7 @@
 #define MOD_BEGIN 0xE8
 
 /// @todo LEFT CTRL not functional
-#define MOD_L_CTRL	MOD_BEGIN +0 // 0x01 
+#define MOD_L_CTRL	MOD_BEGIN +0 // 0x01
 #define MOD_L_SHIFT	MOD_BEGIN +1 // 0x02
 #define MOD_L_ALT	MOD_BEGIN +2 // 0x04
 #define MOD_L_GUI	MOD_BEGIN +3 // 0x08
@@ -81,7 +81,7 @@
 #define HID_BACKSLASH	49
 #define HID_NON_US_1	50    // # & ~
 #define HID_SEMICOLON	51
-#define HID_QUOTE	52		
+#define HID_QUOTE	52
 #define HID_TILDE	53		// grave & tilde
 #define HID_COMMA	54
 #define HID_PERIOD	55
@@ -152,11 +152,11 @@ KB_COPY,
 KB_PASTE,
 KB_FIND,
 KB_MUTE,
-KB_VOLUP,   		//0x80 
+KB_VOLUP,   		//0x80
 KB_VOLDOWN,
 KB_LOCKING_CAPS,      // locking Caps Lock
-KB_LOCKING_NUM,       // locking Num Lock 
-KB_LOCKING_SCROLL,    // locking Scroll Lock 
+KB_LOCKING_NUM,       // locking Num Lock
+KB_LOCKING_SCROLL,    // locking Scroll Lock
 KP_COMMA,
 KP_EQUAL_AS400,       // equal sign on AS/400
 */
@@ -263,13 +263,13 @@ MS_WH_RIGHT,
 #define _R_PAREN 	{ ')',  HID_9, SHIFT }	 	//  )
 
 #define _L_BRACE 	{ '{',  HID_7, ALTGR  }	 	//
-#define _L_BRACKET 	{ '[',  HID_8, ALTGR }	 	//  Ü
+#define _L_BRACKET 	{ '[',  HID_8, ALTGR }	 	//  Ãœ
 #define _R_BRACE 	{ '}',  HID_0, ALTGR  }	 	//  ]
 #define _R_BRACKET 	{ ']',  HID_9, ALTGR }	 	//  *
 
-#define y_MINUS 	{ '-',  HID_MINUS, NONE  }	 	//  Z:ß/?
-#define _SSHARP		{ 'ß',  HID_MINUS, NONE  }	 	//  Z:ß/?
-#define _BSLASH		{ '\\', HID_MINUS, ALTGR  }	 	//  Z:ß/?
+#define y_MINUS 	{ '-',  HID_MINUS, NONE  }	 	//  Z:ÃŸ/?
+#define _SSHARP		{ 'ÃŸ',  HID_MINUS, NONE  }	 	//  Z:ÃŸ/?
+#define _BSLASH		{ '\\', HID_MINUS, ALTGR  }	 	//  Z:ÃŸ/?
 #define _MINUS 		{ '-',  HID_SLASH, NONE  }	 	//  -
 #define y_USCORE 	{ '_',  HID_MINUS, SHIFT }	 	//  _
 #define _USCORE 	{ '_',  HID_SLASH, SHIFT }	 	//  _
@@ -302,8 +302,8 @@ MS_WH_RIGHT,
 #define _P 		{ 'P',  HID_P, SHIFT }	 	//  P
 
 #define y_L_BRACE 	{ '{',  HID_L_BRACE,	NONE  }	 	//
-#define y_L_BRACKET { '[',  HID_L_BRACE,	SHIFT }	 	//  Ü
-#define _U_UML		{ 'u',  HID_L_BRACE,	NONE }	 	//  Ü
+#define y_L_BRACKET { '[',  HID_L_BRACE,	SHIFT }	 	//  Ãœ
+#define _U_UML		{ 'u',  HID_L_BRACE,	NONE }	 	//  Ãœ
 
 #define y_R_BRACE 	{ '}',  HID_R_BRACE,	NONE  }	 	//  ]
 #define y_R_BRACKET { ']',  HID_R_BRACE,	SHIFT }	 	//  *
@@ -332,8 +332,8 @@ MS_WH_RIGHT,
 #define _l 		{ 'l',  HID_L, NONE  }	 	//  l
 #define _L 		{ 'K',  HID_L, SHIFT }	 	//  L
 
-#define y_SCOLON 	{ ';',  HID_SEMICOLON, NONE  }	 	//  ö
-#define y_COLON 	{ ':',  HID_SEMICOLON, SHIFT }	 	//  Ö
+#define y_SCOLON 	{ ';',  HID_SEMICOLON, NONE  }	 	//  Ã¶
+#define y_COLON 	{ ':',  HID_SEMICOLON, SHIFT }	 	//  Ã–
 #define _O_UML	 	{ 'o',  HID_SEMICOLON, NONE  }
 #define _SCOLON 	{ ';',  HID_COMMA, SHIFT  }
 #define _COLON 		{ ':',  HID_PERIOD, SHIFT }
@@ -341,7 +341,7 @@ MS_WH_RIGHT,
 #define y_QUOTE 	{ '\'',  HID_QUOTE, NONE  }	 	//  '
 #define _A_UML		{ 'a',  HID_QUOTE, NONE  }	 	//  '
 #define _DQUOTE 	{ '"',  HID_2, SHIFT }	 	// "
-#define y_DQUOTE 	{ '\"',  HID_QUOTE, SHIFT }	 	// "	
+#define y_DQUOTE 	{ '\"',  HID_QUOTE, SHIFT }	 	// "
 
 #define _NON_US_1 	{ ' ',  HID_NON_US_1, NONE  }	 	//  non-US-1
 #define _NON_US_2 	{ ' ',  HID_NON_US_2, NONE  }	 	//  non-US-1
@@ -374,7 +374,7 @@ MS_WH_RIGHT,
 #define y_SLASH 	{ '/',  HID_SLASH,	NONE  }	 	//  /
 #define _SLASH 	 	{ '/',  HID_7,      SHIFT }	 	//  &
 #define y_QUESTION 	{ '?',  HID_SLASH,	SHIFT }	 	//  ?
-#define _QUESTION	{ '?',  HID_MINUS,  SHIFT }	 	//  Z:ß/?
+#define _QUESTION	{ '?',  HID_MINUS,  SHIFT }	 	//  Z:ÃŸ/?
 #define _SPACE 		{ ' ',  HID_SPACE,	NONE  }	 	//  space
 
 //L/R 4 modifiers

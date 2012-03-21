@@ -22,9 +22,9 @@ struct keycode {
 
 /* AdNW (Ulf)
 
-   kuÜ,ä vgclfß
+   kuÃ,Ã€ vgclf
    hieao dtrnsz
-   xyö.q bpwmj
+   xyÃ¶.q bpwmj
 
    kuj,  vgclf
    hieao dtrns
@@ -34,28 +34,28 @@ struct keycode {
 
 /*
    ----- Thumb & MKT ----
-   M   W 2 C A  3 1 A    ♫ 
-   ⌧ ⇤  ␣ ⌫  ⌦ 
+   M   W 2 C A  3 1 A    â«
+   â§ â€  â£ â«  âŠ
 
    ----- M0 Default -----
-   q u o b p   k g l m f 
+   q u o b p   k g l m f
    a i e t c   h d n r s
    j x w v   z y , . -
 
    ----- M1 / Shift -----
-   Q U O B P   K G L M F 
+   Q U O B P   K G L M F
    A I E T C   H D N R S
    J X W V   Z Y ; : _
 
    ----- M2 / special ---
-   @ _ [ ] #   ! < > = & 
+   @ _ [ ] #   ! < > = &
    \ / { } *   ? ( ) + -
    $ | ~ `   ^ % " '
 
    ----- M3 / MoveNum ---
-   ⇞ ⌫ ⇡ ⌦ ⇟     7 8 9 + 
-   ⇱ �  ⇣ ⇢ ⇲     4 5 6 -
-   ↲ ⎀ ⇥     0 1 2 3
+   â â« â¡ âŠ â     7 8 9 +
+   â± â  â£ â¢ â²     4 5 6 -
+   â² â â¥     0 1 2 3
 
    ----- Mouse ----------
    S
@@ -63,8 +63,8 @@ struct keycode {
 
 
    ----- Compose --------
-   ß ü ö       F1.....F6 
-   Ä           F7....F12
+   Ã ÃŒ Ã¶       F1.....F6
+   Ã           F7....F12
 
 
    ----------------------
@@ -98,14 +98,14 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] =
 #define _THUMB_ROW_LEFT		_L_GUI,		_R_ALT,		_MOD_1,		_L_CTRL , _L_ALT,		_L_SHIFT
 #define _THUMB_ROW_RIGHT	_MOD_2,		_MOD_3,		_COMPOSE,	_R_CTRL,  _no, _no
 
-/** Depending on the TWO_COL_PINKY setting one of the outer columns is dropped in 
+/** Depending on the TWO_COL_PINKY setting one of the outer columns is dropped in
  *  getKeyCode() !!!
 
  kuj,  vgclf
  hieao dtrns
  xy .q bpwmz
 
- */ 
+ */
 static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] =
 {    // normal layer
     {
@@ -128,10 +128,10 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] =
         { _THUMB_ROW_LEFT },
 
         { _V,     _G,         _C,         _L,         _F,         _BSPACE },
-        { _D,     _T,         _R,         _N,         _S,         _ENTER  },  
-        { _B,     _P,         _W,         _M,         _Z,         _no     },  
+        { _D,     _T,         _R,         _N,         _S,         _ENTER  },
+        { _B,     _P,         _W,         _M,         _Z,         _no     },
         { _THUMB_ROW_RIGHT}
-    },	
+    },
 
     // MOD2 layer (special chars)
     {
@@ -188,9 +188,9 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] =
 }; // end of matrix[][][]
 
 
-/** Depending on the TWO_COL_PINKY setting one of the outer columns is dropped in 
+/** Depending on the TWO_COL_PINKY setting one of the outer columns is dropped in
  *  getKeyCode() !!!
- */ 
+ */
 static const struct keycode /*PROGMEM*/ KeyMatrixNTSplit[LAYERS+2][ROWS][COLS] =
 {    // normal layer
     {
@@ -216,7 +216,7 @@ static const struct keycode /*PROGMEM*/ KeyMatrixNTSplit[LAYERS+2][ROWS][COLS] =
         { _H,			_D,		_N,			_R,			_S,			_no,    	},
         { _Z,			_Y,		_SCOLON,	_COLON,		_F,			_no,    	},
         { _THUMB_ROW_RIGHT}
-    },	
+    },
 
     // MOD2 layer (special chars)
     {
