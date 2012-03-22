@@ -1,8 +1,8 @@
 #include "macro.h"
 //#include "hid_usage.h"
 
-#define MACROLEN    128
-#define MACROCOUNT  3
+#define MACROLEN    20
+#define MACROCOUNT  6
 
 struct keycode macros[MACROCOUNT][MACROLEN] =
 {
@@ -21,7 +21,14 @@ bool macromode=false;
 
 // "^° !  § $ % & /{ ([ ]) }= \\?  *+~ \'# @ <>| ,; .: -_" ,
 
-const char macrosC[][MACROLEN] = {
+static const  char  macrosC[][MACROLEN]  =  {
+ //   "X ! \" X $ % & / ( ) = ? `",
+ //    €!"€^[$%&-(==?
+
+    "{[]}\\+*~#'",
+    "<>|,;.:-_",
+    "@´`",
+
 "MacroKilled",
 "MacroKilled",
 "MacroKilled"
