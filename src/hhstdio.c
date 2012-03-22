@@ -226,6 +226,7 @@ static const USB_KeyboardReport_Data_t ascii_table[] PROGMEM = {
 //    /* 95  _ */ { L_SHF, 0, { USAGE_ID(HID_USAGE__MINUS_AND_UNDERSCORE) }},
     /* 95  _ */ { L_SHF, 0, { USAGE_ID(HID_USAGE__SLASH_AND__QUESTION) }},
 
+//    /* 96  ` */ { NONE, 0, { USAGE_ID(HID_USAGE_NONE) }},
     /* 96  ` */ { NONE, 0, { USAGE_ID(HID_USAGE_NONE) }},
     /* 97  a */ { NONE, 0, { USAGE_ID(HID_USAGE_A_AND_A) }},
     /* 98  b */ { NONE, 0, { USAGE_ID(HID_USAGE_B_AND_B) }},

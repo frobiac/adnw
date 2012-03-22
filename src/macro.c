@@ -1,7 +1,7 @@
 #include "macro.h"
-//#include "hid_usage.h"
 
-#define MACROLEN    128
+/// Increasing either too much leads to keyboard not registering at all!
+#define MACROLEN    20
 #define MACROCOUNT  3
 
 struct keycode macros[MACROCOUNT][MACROLEN] =
@@ -19,9 +19,15 @@ uint8_t idx=0;
 
 bool macromode=false;
 
-// "^° !  § $ % & /{ ([ ]) }= \\?  *+~ \'# @ <>| ,; .: -_" ,
-
-const char macrosC[][MACROLEN] = {
+/**
+ * Only standard ascii characters work: No umlauts!
+ */
+static const  char  macrosC[][MACROLEN]  =  {
+    /*   "^X!\"X$%&/()=?`",
+    "{[]}\\+*~#'",
+    "<>|,;.:-_",
+    "@´`",
+    */
 "MacroKilled",
 "MacroKilled",
 "MacroKilled"
