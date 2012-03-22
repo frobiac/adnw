@@ -15,6 +15,17 @@ uint8_t curMacro  = MACROCOUNT;
 uint8_t sendEmpty = 0;    // empty report needed to send the same character twice in a row
 uint8_t idx=0;
 
+
+bool macromode=false;
+
+bool macroMode() {
+    return(macromode != 0);
+}
+
+void setMacroMode( bool on ) {
+    macromode=on;
+}
+
 /**
  * set current active macro
  */
@@ -25,7 +36,7 @@ bool activateMacro(uint8_t id)
         curMacro=id;
         return true;
     } else {
-        g_macro_mode=0;
+        setMacroMode(false);
         return false;
     }
 }
@@ -34,7 +45,7 @@ bool activateMacro(uint8_t id)
 
 bool getMacroChar(struct keycode *kc)
 {
-    if(!g_macro_mode)
+    if(! macromode)
         return false;
     if(curMacro>=MACROCOUNT)
         return false;
@@ -51,7 +62,7 @@ bool getMacroChar(struct keycode *kc)
         idx++;
         return true;
     } else {
-        g_macro_mode = 0;
+        macromode = 0;
         idx  = 0;
         curMacro=MACROCOUNT;
     }

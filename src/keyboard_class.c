@@ -117,7 +117,7 @@ void initKeyboard()
 
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
-    if(g_macro_mode) {
+    if(macroMode()) {
         struct keycode kc;
         if(getMacroChar(&kc)){
             report_data->KeyCode[0]=kc.hid;
@@ -167,6 +167,11 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 
 uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 {
+    if(activeKeys.keycnt==0) {
+        report_data->KeyCode[0]=0;
+        return sizeof(USB_KeyboardReport_Data_t);
+    }
+
     uint8_t idx=0;
 
     for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
@@ -488,8 +493,8 @@ void init_active_keys()
     {
         rowData[0] &= ~(1<<0);
         rowData[3] &= ~(1<<0);
-        g_macro_mode = 1;
-        return;
+        setMacroMode(true);
+        //return;
     }
     // all four corners to reboot
     else if( (rowData[0] & (1<<0)) &&
@@ -504,11 +509,11 @@ void init_active_keys()
     for (uint8_t row = 0; row < ROWS; ++row) {
         for (uint8_t col = 0; col < COLS; ++col) {
             if (rowData[row] & (1UL << col)) {
-                // Check macro and inhibit any keys if valid macro is selected.
-                if(macroMode() && activateMacro(row*ROWS+col)) {
-                    return;
-                } else {
-                    ActiveKeys_Add(row,col);
+                if(macroMode()){
+                    if(activateMacro(row*ROWS+col)){
+                        rowData[row] &= (~(1<<col));
+                        return;
+                    }
                 }
                 ActiveKeys_Add(row,col);
             }
