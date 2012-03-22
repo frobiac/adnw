@@ -25,7 +25,6 @@
 
 static int hid_putc(char, FILE*);
 static FILE buf_stdout = FDEV_SETUP_STREAM(hid_putc, NULL, _FDEV_SETUP_WRITE);
-static const USB_KeyboardReport_Data_t ascii_table[];
 
 enum {OUTPUT_BUFSIZE = 256};
 static char output_buffer[OUTPUT_BUFSIZE];

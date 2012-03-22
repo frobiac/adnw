@@ -34,6 +34,8 @@ bool stdout_is_empty(void);
 bool stdout_is_full(void);
 char stdout_popchar(void);
 
+static const USB_KeyboardReport_Data_t ascii_table[];
+
 
 /*
                     The HumbleHacker Keyboard Project

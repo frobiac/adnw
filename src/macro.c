@@ -11,6 +11,7 @@ struct keycode macros[MACROCOUNT][MACROLEN] =
 {MacroKilled }
 };
 
+
 uint8_t curMacro  = MACROCOUNT;
 uint8_t sendEmpty = 0;    // empty report needed to send the same character twice in a row
 uint8_t idx=0;
@@ -18,7 +19,16 @@ uint8_t idx=0;
 
 bool macromode=false;
 
-bool macroMode() {
+/*
+const char macrosC[][MACROLEN] = {
+"MacroKilled",
+"MacroKilled",
+"MacroKilled"
+};
+*/
+const char macrosC[] = "TestStrinG";
+
+bool macroMode(void) {
     return(macromode != 0);
 }
 
@@ -42,10 +52,37 @@ bool activateMacro(uint8_t id)
 }
 
 
+bool getMacroCharacter(char *c)
+{
+    if(!macromode)
+        return false;
+    if(curMacro>=MACROCOUNT)
+        return false;
+
+    sendEmpty = sendEmpty ? 0 : 1;
+    if( sendEmpty) {
+        //kc = _L;
+        *c='a';
+        return true;
+    }
+
+    if( idx < 6/*sizeof(macrosC[curMacro])*/ ) {
+        *c=macrosC[idx];
+        idx++;
+        return true;
+    } else {
+        macromode = 0;
+        idx  = 0;
+        curMacro=MACROCOUNT;
+    }
+
+    return false;
+}
+
 
 bool getMacroChar(struct keycode *kc)
 {
-    if(! macromode)
+    if(!macromode)
         return false;
     if(curMacro>=MACROCOUNT)
         return false;

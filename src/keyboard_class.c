@@ -52,7 +52,8 @@ uint8_t prevRowData[ROWS];
 /// used for MODE-key press/release cycle detection
 enum { MKT_RESET, MKT_MODEKEYFIRST, MKT_TOOMANYKEYS, MKT_YES , MKT_INIT };
 
-#define MKT_TIMEOUT 18 // = 18/61 s
+
+#define MKT_TIMEOUT 30 // = x/61 [s]: a modekey will NOT send normal key if pressed this long
 
 uint32_t    mkt_timer;
 uint8_t     mkt_state;
@@ -115,12 +116,25 @@ void initKeyboard()
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
     if(macroMode()) {
+        printf("\nMacro ON" );
+        char *ch;
+        if(getMacroCharacter(ch)){
+            printf("\n- %c", *ch);
+            stdio_fill_report(ch,report_data);
+            return sizeof(USB_KeyboardReport_Data_t);
+        }
+        else {
+            printf("\ngetMacroCharacter FAILED!");
+            //setMacroMode(false);
+        }
+/*
         struct keycode kc;
         if(getMacroChar(&kc)){
             report_data->KeyCode[0]=kc.hid;
             report_data->Modifier  =kc.mods;
             return sizeof(USB_KeyboardReport_Data_t);
         }
+*/
     }
     //testMKT();
     if(mkt_timer+MKT_TIMEOUT < idle_count)
@@ -454,6 +468,7 @@ void init_active_keys()
         rowData[0] &= ~(1<<0);
         rowData[3] &= ~(1<<0);
         setMacroMode(true);
+        printf("\nSetMacromode=%d", macroMode() );
         //return;
     }
     // all four corners to reboot
