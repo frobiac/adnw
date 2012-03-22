@@ -117,20 +117,14 @@ void initKeyboard()
 
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
-    /*
-        if(g_mouse_double == 1 ){
-            printf(" COPY ");
-            g_mouse_double=0;
-            //stdio_fill_report('c',report_data);
-            //report_data->Modifier = (1<<(MOD_L_CTRL-MOD_BEGIN));
-            //return sizeof(USB_KeyboardReport_Data_t);
-        } else if(g_mouse_keys == 4 ){
-            printf("+");
-            //stdio_fill_report('v',report_data);
-            //report_data->Modifier = (1<<(MOD_L_CTRL-MOD_BEGIN));
-            //return sizeof(USB_KeyboardReport_Data_t);
+    if(g_macro_mode) {
+        struct keycode kc;
+        if(getMacroChar(&kc)){
+            report_data->KeyCode[0]=kc.hid;
+            report_data->Modifier  =kc.mods;
+            return sizeof(USB_KeyboardReport_Data_t);
         }
-    */
+    }
     //testMKT();
     if(mkt_timer+MKT_TIMEOUT < idle_count)
         mkt_state = MKT_RESET;
@@ -173,11 +167,6 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 
 uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 {
-    if(activeKeys.keycnt==0) {
-        report_data->KeyCode[0]=0;
-        return sizeof(USB_KeyboardReport_Data_t);
-    }
-
     uint8_t idx=0;
 
     for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
@@ -494,9 +483,12 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
   */
 void init_active_keys()
 {
-    TRACE (" initAK");
-    if( rowData[3] & (1<<0) ) {
-        setMacroMode(true);
+    if(( rowData[0] & (1<<0) ) &&
+        (rowData[3] & (1<<0)) )
+    {
+        rowData[0] &= ~(1<<0);
+        rowData[3] &= ~(1<<0);
+        g_macro_mode = 1;
         return;
     }
     // all four corners to reboot
@@ -518,6 +510,7 @@ void init_active_keys()
                 } else {
                     ActiveKeys_Add(row,col);
                 }
+                ActiveKeys_Add(row,col);
             }
         }
     }
