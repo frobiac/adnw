@@ -116,17 +116,13 @@ void initKeyboard()
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
     if(macroMode()) {
-        printf("\nMacro ON" );
         char *ch;
         if(getMacroCharacter(ch)){
-            printf("\n- %c", *ch);
-            stdio_fill_report(ch,report_data);
+            //printf("%c", *ch);
+            stdio_fill_report(*ch,report_data);
             return sizeof(USB_KeyboardReport_Data_t);
         }
-        else {
-            printf("\ngetMacroCharacter FAILED!");
-            //setMacroMode(false);
-        }
+
 /*
         struct keycode kc;
         if(getMacroChar(&kc)){

@@ -11,11 +11,12 @@
 
 #include "keymap.h"
 
-bool macroMode();
+bool macroMode(void);
 void setMacroMode( bool on );
 
 bool activateMacro(uint8_t id);
 bool getMacroChar(struct keycode *kc);
+bool getMacroCharacter(char *c);
 
 
 #endif

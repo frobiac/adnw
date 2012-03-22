@@ -1,7 +1,7 @@
 #include "macro.h"
 //#include "hid_usage.h"
 
-#define MACROLEN    16
+#define MACROLEN    128
 #define MACROCOUNT  3
 
 struct keycode macros[MACROCOUNT][MACROLEN] =
@@ -19,14 +19,13 @@ uint8_t idx=0;
 
 bool macromode=false;
 
-/*
+// "^° !  § $ % & /{ ([ ]) }= \\?  *+~ \'# @ <>| ,; .: -_" ,
+
 const char macrosC[][MACROLEN] = {
 "MacroKilled",
 "MacroKilled",
 "MacroKilled"
 };
-*/
-const char macrosC[] = "TestStrinG";
 
 bool macroMode(void) {
     return(macromode != 0);
@@ -61,13 +60,12 @@ bool getMacroCharacter(char *c)
 
     sendEmpty = sendEmpty ? 0 : 1;
     if( sendEmpty) {
-        //kc = _L;
-        *c='a';
+        *c='\0';
         return true;
     }
 
-    if( idx < 6/*sizeof(macrosC[curMacro])*/ ) {
-        *c=macrosC[idx];
+    if( idx < sizeof(macrosC[curMacro])/sizeof(char) ) {
+        *c=macrosC[curMacro][idx];
         idx++;
         return true;
     } else {
