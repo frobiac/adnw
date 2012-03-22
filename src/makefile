@@ -116,6 +116,7 @@ SRC =   $(LUFA_SRC_USB) \
 	$(SRCDIR)/hhstdio.c          \
 	$(SRCDIR)/keymap.c 	     \
 	$(SRCDIR)/analog.c       \
+	$(SRCDIR)/macro.c       \
 	$(SRCDIR)/ps2mouse.c       \
 	$(SRCDIR)/jump_bootloader.c       \
 	$(LUFA_SRC)
