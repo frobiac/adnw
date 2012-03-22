@@ -114,7 +114,7 @@ void initKeyboard()
 
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
-    if(g_macro_mode) {
+    if(macroMode()) {
         struct keycode kc;
         if(getMacroChar(&kc)){
             report_data->KeyCode[0]=kc.hid;
@@ -453,7 +453,7 @@ void init_active_keys()
     {
         rowData[0] &= ~(1<<0);
         rowData[3] &= ~(1<<0);
-        g_macro_mode = 1;
+        setMacroMode(true);
         //return;
     }
     // all four corners to reboot
@@ -469,7 +469,7 @@ void init_active_keys()
     for (uint8_t row = 0; row < ROWS; ++row) {
         for (uint8_t col = 0; col < COLS; ++col) {
             if (rowData[row] & (1UL << col)) {
-                if(g_macro_mode){
+                if(macroMode()){
                     if(activateMacro(row*ROWS+col)){
                         rowData[row] &= (~(1<<col));
                         return;
