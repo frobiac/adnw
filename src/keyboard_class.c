@@ -118,12 +118,21 @@ void initKeyboard()
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
     if(macroMode()) {
+        char *ch;
+        if(getMacroCharacter(ch)){
+            //printf("%c", *ch);
+            stdio_fill_report(*ch,report_data);
+            return sizeof(USB_KeyboardReport_Data_t);
+        }
+
+/*
         struct keycode kc;
         if(getMacroChar(&kc)){
             report_data->KeyCode[0]=kc.hid;
             report_data->Modifier  =kc.mods;
             return sizeof(USB_KeyboardReport_Data_t);
         }
+*/
     }
     //testMKT();
     if(mkt_timer+MKT_TIMEOUT < idle_count)
