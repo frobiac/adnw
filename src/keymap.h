@@ -147,9 +147,9 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
         { _no, _ESC,    _TAB,       _INS,       _ENTER,     _no },
         { _THUMB_ROW_LEFT },
 
-        { _EXCLAM,  _7,         _8,         _9,     _PLUS,      _no },
-        { _EQUAL,   _4,         _5,         _6,     _MINUS,     _no },
-        { _0,       _1,         _2,         _3,     _no,        _no },
+        { _SSHARP,_7,         _8,         _9,     _a_UML, _A_UML },
+        { _PERIOD,_4,         _5,         _6,     _o_UML, _O_UML },
+        { _0      _1,         _2,         _3,     _U_UML, _U_UML },
         { _THUMB_ROW_RIGHT}
     },
 
