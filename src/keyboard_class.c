@@ -326,9 +326,9 @@ uint8_t getActiveLayer()
         struct Key k = activeKeys.keys[i];
         if( isLayerKey(k.row, k.col) ) {
             if(layer!=0) {
-                printf("\nWARN: More than one layer key pressed!");
+                // printf("\nWARN: More than one layer key pressed!");
             }
-            layer = getModifier(k.row, k.col,0)-MOD_LAYER_0;
+            layer += getModifier(k.row, k.col,0)-MOD_LAYER_0;
         }
     }
 #ifdef ANALOG_STICK
