@@ -365,7 +365,9 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 
         return sizeof(USB_MouseReport_Data_t);
 
-    } else {
+    }
+    /* Test of TP as modifier switcher
+    else {
         // no g_mouse_mode;
         int8_t old = g_mouse_modifier;
 
@@ -404,5 +406,6 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
         //     printf("\n%5d %5d %5d %5d : %d -> %d | ",g_mouse_mode_sum[0],g_mouse_mode_sum[1],g_mouse_mode_sum[2],g_mouse_mode_sum[3], old, g_mouse_modifier );
 
     }
+    */ // end TP as modifier
     return 0;
 }

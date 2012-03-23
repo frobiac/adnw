@@ -43,7 +43,8 @@
 #include "matrix.h"
 #include "jump_bootloader.h"
 
-
+// #define TRACE printf
+#define TRACE
 
 uint8_t lastKeyCode;
 uint8_t rowData[ROWS];
@@ -157,6 +158,11 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 
 uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 {
+    if(activeKeys.keycnt==0) {
+        report_data->KeyCode[0]=0;
+        return sizeof(USB_KeyboardReport_Data_t);
+    }
+
     uint8_t idx=0;
 
     for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
@@ -213,6 +219,7 @@ uint8_t get_kb_rpt( uint8_t key_mask, uint8_t col )
  */
 void scan_matrix(void)
 {
+    TRACE("\ns_m ");
     uint8_t i, data;
 
     for (uint8_t row = 0; row < ROWS; ++row) {
@@ -309,6 +316,8 @@ void clearActiveKeys()
 /// @todo Switch back from mouse layer!
 uint8_t getActiveLayer()
 {
+    TRACE("gAL ");
+
     if( g_mouse_mode)
         return 4; /// @todo  hardcoded layer
 
@@ -331,6 +340,7 @@ uint8_t getActiveLayer()
     }
 #endif
 
+    /* TP as mode switch
     if(g_mouse_modifier > 0) {
         if(g_mouse_modifier & 2)
             layer=1;
@@ -338,9 +348,8 @@ uint8_t getActiveLayer()
             layer=2;
         else if(g_mouse_modifier & 8)
             layer=3;
-
     }
-
+    */
 
     return layer;
 }
@@ -348,6 +357,7 @@ uint8_t getActiveLayer()
 
 uint8_t getActiveKeyCodeModifier()
 {
+    TRACE("gAKCM ");
     for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
         struct Key k=activeKeys.keys[i];
         if(k.normalKey) {
@@ -360,6 +370,7 @@ uint8_t getActiveKeyCodeModifier()
 // Assuming there is only one active key
 uint8_t getActiveModifiers()
 {
+    TRACE("gAM ");
     uint8_t modifiers=0;
     for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
         struct Key k = activeKeys.keys[i];
@@ -380,6 +391,7 @@ uint8_t getActiveModifiers()
   */
 bool isModifierKey(uint8_t row, uint8_t col)
 {
+    TRACE("iMK ");
     if( getModifier(row,col,0) >= MOD_BEGIN && getModifier(row,col,0) < MOD_LAYER_0)
         return true;
     return false;
@@ -389,6 +401,7 @@ bool isModifierKey(uint8_t row, uint8_t col)
   */
 bool isLayerKey(uint8_t row, uint8_t col)
 {
+    TRACE("iLK ");
     if( getModifier(row,col,0) > MOD_LAYER_0 && getModifier(row,col,0) < MOD_LAYER_LAST) {
         return true;
     }
@@ -397,11 +410,13 @@ bool isLayerKey(uint8_t row, uint8_t col)
 
 bool isNormalKey(uint8_t row, uint8_t col)
 {
+    TRACE("iNK ");
     return !(isLayerKey(row,col) || isModifierKey(row,col));
 }
 
 bool isMouseKey(uint8_t row, uint8_t col)
 {
+    TRACE("iMK ");
     uint16_t hid = getKeyCode(row, col, 4);
     if ( hid >= MS_BTNS && hid < MS_BTNS +4 )
         return true;
@@ -448,9 +463,9 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
   */
 void init_active_keys()
 {
+    TRACE (" initAK");
     if( rowData[3] & (1<<0) )
     {
-        //rowData[3] &= ~(1<<0);
         setMacroMode(true);
         return;
     }
@@ -468,11 +483,8 @@ void init_active_keys()
         for (uint8_t col = 0; col < COLS; ++col) {
             if (rowData[row] & (1UL << col)) {
                 // Check macro and inhibit any keys if valid macro is selected.
-                if(macroMode()){
-                    if(activateMacro(row*ROWS+col)){
-                        //rowData[row] &= ~(1<<row);
-                        return;
-                    }
+                if(macroMode() && activateMacro(row*ROWS+col)){
+                    return;
                 } else {
                     ActiveKeys_Add(row,col);
                 }
