@@ -46,6 +46,8 @@ void setMacroMode( bool on ) {
  */
 bool activateMacro(uint8_t id)
 {
+    if(!macromode)
+        return false;
     // de-bounce not working in current macro detection
     if(id==curMacro)
         return true;

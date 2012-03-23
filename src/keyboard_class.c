@@ -450,7 +450,7 @@ void init_active_keys()
 {
     if( rowData[3] & (1<<0) )
     {
-        rowData[3] &= ~(1<<0);
+        //rowData[3] &= ~(1<<0);
         setMacroMode(true);
         return;
     }
@@ -470,7 +470,7 @@ void init_active_keys()
                 // Check macro and inhibit any keys if valid macro is selected.
                 if(macroMode()){
                     if(activateMacro(row*ROWS+col)){
-                        rowData[row] &= ~(1<<row);
+                        //rowData[row] &= ~(1<<row);
                         return;
                     }
                 } else {
