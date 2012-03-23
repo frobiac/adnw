@@ -115,23 +115,6 @@ void initKeyboard()
 
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
-    if(macroMode()) {
-        char *ch;
-        if(getMacroCharacter(ch)){
-            //printf("%c", *ch);
-            stdio_fill_report(*ch,report_data);
-            return sizeof(USB_KeyboardReport_Data_t);
-        }
-
-/*
-        struct keycode kc;
-        if(getMacroChar(&kc)){
-            report_data->KeyCode[0]=kc.hid;
-            report_data->Modifier  =kc.mods;
-            return sizeof(USB_KeyboardReport_Data_t);
-        }
-*/
-    }
     //testMKT();
     if(mkt_timer+MKT_TIMEOUT < idle_count)
         mkt_state = MKT_RESET;
@@ -161,6 +144,13 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
     analogDataAcquire();
 #endif
 
+    if(macroMode()) {
+        char *ch ='\0';
+        if(getMacroCharacter(ch)){
+            stdio_fill_report(*ch,report_data);
+            return sizeof(USB_KeyboardReport_Data_t);
+        }
+    }
     return fillReport(report_data);
 }
 
@@ -458,14 +448,11 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
   */
 void init_active_keys()
 {
-    if(( rowData[0] & (1<<0) ) &&
-        (rowData[3] & (1<<0)) )
+    if( rowData[3] & (1<<0) )
     {
-        rowData[0] &= ~(1<<0);
         rowData[3] &= ~(1<<0);
         setMacroMode(true);
-        printf("\nSetMacromode=%d", macroMode() );
-        //return;
+        return;
     }
     // all four corners to reboot
     else if( (rowData[0] & (1<<0)) &&
@@ -480,13 +467,15 @@ void init_active_keys()
     for (uint8_t row = 0; row < ROWS; ++row) {
         for (uint8_t col = 0; col < COLS; ++col) {
             if (rowData[row] & (1UL << col)) {
+                // Check macro and inhibit any keys if valid macro is selected.
                 if(macroMode()){
                     if(activateMacro(row*ROWS+col)){
-                        rowData[row] &= (~(1<<col));
+                        rowData[row] &= ~(1<<row);
                         return;
                     }
+                } else {
+                    ActiveKeys_Add(row,col);
                 }
-                ActiveKeys_Add(row,col);
             }
         }
     }

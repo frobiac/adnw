@@ -76,8 +76,8 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
 };
 
 
-#define _THUMB_ROW_LEFT     _L_GUI,     _R_ALT,     _MOD_1,     _L_CTRL , _L_ALT,       _L_SHIFT
-#define _THUMB_ROW_RIGHT    _MOD_2,     _MOD_3,     _COMPOSE,   _R_CTRL,  _no, _no
+#define _THUMB_ROW_LEFT     _no /*macro*/, _L_GUI,     _MOD_1,     _L_CTRL , _L_ALT,       _L_SHIFT
+#define _THUMB_ROW_RIGHT    _MOD_2,     _MOD_3,     _COMPOSE,   _R_ALT,  _no, _no
 
 
 static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
