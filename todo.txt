@@ -3,6 +3,9 @@ macro do not echo key after macro
 dedicated macro key
 strg stuck
 revert multimodekey
+debug mode to configure features while running (PinkyDrop, ThumpShift)
+make matrix a matrix
+copy paste on mouse middle btn
 ### DONE ####
 PS/2 buttons
 Mouse buttons, move on windows

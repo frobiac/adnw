@@ -8,6 +8,8 @@
 #define ROWS   8
 #define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
 
+#define PINKYDROP true  ///<  drop pinky column by one for more ergonomic layout
+
 #define _ANALOG _no
 
 // *************************************************************
@@ -76,7 +78,7 @@ x y - . "   b p w m z
 
 
 uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer);
-uint8_t getKeyCode(uint8_t row, uint8_t col, uint8_t layer);
+uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 
 
 static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
@@ -103,8 +105,8 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
 static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
     // normal layer
     {
-        { _no, _k, _u, _q, _PERIOD,_j  },
-        { _ESC, _h, _i, _e, _a, _o  },
+        { _no,   _k, _u, _q, _PERIOD,_j  },
+        { _ESC,  _h, _i, _e, _a, _o  },
         { _TAB,  _x, _y, _MINUS, _COMMA, _DQUOTE },
         { _THUMB_ROW_LEFT },
 
@@ -116,9 +118,9 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
 
     // MOD1 layer (shifted)
     {
-        { _no , _K,         _U,         _Q,         _COLON,     _J},
-        { _ESC, _H,         _I,         _E,         _A,         _O},
-        { _TAB,  _X,         _Y,         _USCORE,    _SCOLON,    _SQUOTE},
+        { _no ,  _K,         _U,         _Q,         _COLON,     _J},
+        { _ESC,  _H,         _I,         _E,         _A,         _O},
+        { _TAB,  _X,         _Y,         _USCORE,    _SCOLON,    _SQUOTE /** @todo Does not work with regular Shift as 2nd layer*/},
         { _THUMB_ROW_LEFT },
 
         { _V,     _G,         _C,         _L,         _F,         _no },
@@ -153,7 +155,7 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
         { _THUMB_ROW_RIGHT}
     },
 
-    //MOUSE MODE
+    // MOUSE MODE
     /// @todo These should not be shifted, maybe factor out entirely!
     {
         { _no, _SSHARP,     _u_UML,    _no,      _a_UML,     _o_UML },
@@ -168,7 +170,7 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
 //        { _MS_BTN_2,      _MS_BTN_3,     _no,    _no ,_MOUSE, _MOUSE}
     },
 
-    // COMPOSE
+    // COMPOSE or MOD2 + MOD3
     {
         { _no, _no,     _u_UML, _no,    _no,    _no },
         { _no, _SSHARP, _no,    _no,    _a_UML, _o_UML},
