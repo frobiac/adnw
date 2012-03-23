@@ -1,5 +1,8 @@
 startup even if TP is disabled
-
+macro do not echo key after macro
+dedicated macro key
+strg stuck
+revert multimodekey
 ### DONE ####
 PS/2 buttons
 Mouse buttons, move on windows
