@@ -44,7 +44,8 @@
 #include "jump_bootloader.h"
 
 // #define TRACE printf
-#define TRACE
+// #define TRACE false || printf
+#define TRACE(...)
 
 uint8_t lastKeyCode;
 uint8_t rowData[ROWS];

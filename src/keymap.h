@@ -149,14 +149,14 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
 
         { _SSHARP,_7,         _8,         _9,     _a_UML, _A_UML },
         { _PERIOD,_4,         _5,         _6,     _o_UML, _O_UML },
-        { _0      _1,         _2,         _3,     _U_UML, _U_UML },
+        { _0,     _1,         _2,         _3,     _u_UML, _U_UML },
         { _THUMB_ROW_RIGHT}
     },
 
     //MOUSE MODE
     /// @todo These should not be shifted, maybe factor out entirely!
     {
-        { _no, _SSHARP,     _U_UML,    _no,      _A_UML,     _O_UML },
+        { _no, _SSHARP,     _u_UML,    _no,      _a_UML,     _o_UML },
         { _no, _MS_BTN_1,   _MS_BTN_2,_MS_BTN_3, _MS_SCROLL, _no},
         { _no, _no, _no, _no, _no, _no},
         { _no, _no, _no, _L_CTRL, _L_ALT, _L_SHIFT },
@@ -170,8 +170,8 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
 
     // COMPOSE
     {
-        { _no, _no,     _U_UML, _no,    _no,    _no },
-        { _no, _SSHARP, _no,    _no,    _A_UML, _O_UML},
+        { _no, _no,     _u_UML, _no,    _no,    _no },
+        { _no, _SSHARP, _no,    _no,    _a_UML, _o_UML},
         { _no, _no,     _no,    _no,    _no,    _no},
         { _THUMB_ROW_LEFT },
 

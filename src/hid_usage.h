@@ -304,7 +304,8 @@ MS_WH_RIGHT,
 
 #define y_L_BRACE   { '{',  HID_L_BRACE,    NONE  }     //
 #define y_L_BRACKET { '[',  HID_L_BRACE,    SHIFT }     //  Ü
-#define _U_UML      { 'u',  HID_L_BRACE,    NONE }      //  Ü
+#define _U_UML      { 'U',  HID_L_BRACE,    SHIFT }     //  Ü
+#define _u_UML      { 'u',  HID_L_BRACE,    NONE }      //  Ü
 
 #define y_R_BRACE   { '}',  HID_R_BRACE,    NONE  }     //  ]
 #define y_R_BRACKET { ']',  HID_R_BRACE,    SHIFT }     //  *
@@ -335,12 +336,14 @@ MS_WH_RIGHT,
 
 #define y_SCOLON    { ';',  HID_SEMICOLON, NONE  }      //  ö
 #define y_COLON     { ':',  HID_SEMICOLON, SHIFT }      //  Ö
-#define _O_UML      { 'o',  HID_SEMICOLON, NONE  }
+#define _O_UML      { 'O',  HID_SEMICOLON, SHIFT  }
+#define _o_UML      { 'o',  HID_SEMICOLON, NONE  }
 #define _SCOLON     { ';',  HID_COMMA, SHIFT  }
 #define _COLON      { ':',  HID_PERIOD, SHIFT }
 
 #define y_QUOTE     { '\'',  HID_QUOTE, NONE  }     //  '
-#define _A_UML      { 'a',  HID_QUOTE, NONE  }      //  '
+#define _a_UML      { 'a',  HID_QUOTE, NONE  }      //  '
+#define _A_UML      { 'A',  HID_QUOTE, SHIFT  }      //  '
 #define _DQUOTE     { '"',  HID_2, SHIFT }      // "
 #define y_DQUOTE    { '\"',  HID_QUOTE, SHIFT }     // "
 
