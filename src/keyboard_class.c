@@ -117,23 +117,6 @@ void initKeyboard()
 
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
-    if(macroMode()) {
-        char *ch;
-        if(getMacroCharacter(ch)) {
-            //printf("%c", *ch);
-            stdio_fill_report(*ch,report_data);
-            return sizeof(USB_KeyboardReport_Data_t);
-        }
-    }
-    /*
-            struct keycode kc;
-            if(getMacroChar(&kc)){
-                report_data->KeyCode[0]=kc.hid;
-                report_data->Modifier  =kc.mods;
-                return sizeof(USB_KeyboardReport_Data_t);
-            }
-    */
-
     if(g_mouse_double == 1 ) {
         printf(" COPY ");
         g_mouse_double=0;
@@ -512,6 +495,7 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
 void init_active_keys()
 {
     if( rowData[3] & (1<<0) ) {
+        rowData[3] &= ~(1<<0);
         setMacroMode(true);
         //return;
     }
