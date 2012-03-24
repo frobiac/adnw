@@ -27,14 +27,14 @@
 #define MANUFACTURER_NAME     L"frobiac"
 #define MANUFACTURER_NAME_LEN USB_STRING_LEN(7)
 
-#define PRODUCT_NAME          L"ML-TP teensy-2.0"
-#define PRODUCT_NAME_LEN      USB_STRING_LEN(17)
+#define PRODUCT_NAME          L"NTS teensy-2.0"
+#define PRODUCT_NAME_LEN      USB_STRING_LEN(14)
 
 #define SERIAL_NUMBER         L"000000000000"
 #define SERIAL_NUMBER_LEN     USB_STRING_LEN(12)
 
 #define VENDOR_ID             0x05AF
-#define PRODUCT_ID            0x2031
+#define PRODUCT_ID            0x2032
 #define RELEASE_NUMBER        0xF000
 
 #endif // __IDENTIFIERS_H__
