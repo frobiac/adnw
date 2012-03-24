@@ -360,6 +360,23 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
             MouseReport->X = dx  * factor;
             MouseReport->Button=g_mouse_keys & ~(0x08);
             MouseReport->Button |= btns;    // PS/2 buttons if set
+
+            /*
+            if(MouseReport->Button)
+                printf("\nButton %d %d ",MouseReport->Button, g_mouse_keys );
+            if(MouseReport->Button && (1<<0)){
+                if(idle_count - g_mouse_lmb < 30) {
+                    g_mouse_double=1;
+                    printf("\nLMB DoubleClick");
+                } else {
+                    g_mouse_double=0;
+                }
+                g_mouse_lmb=idle_count;
+            }
+            else {
+                g_mouse_double=0;
+            }
+            */
         }
         g_mouse_keys=0;
 

@@ -138,7 +138,13 @@
 #define HID_F14             105
 #define HID_F15             106
 // till F24
-#define HID_F24             105
+#define HID_F24             115
+
+#define HID_CUT             0x7b
+#define HID_COPY            0x7c
+#define HID_PASTE           125
+#define HID_FIND            0x7e
+
 /*
 KB_EXECUTE,
 KB_HELP,
@@ -225,6 +231,7 @@ MS_WH_RIGHT,
 // * prefixes with y_ are valid if computer is set-up for qwert_Y_
 // **************************************************************
 #define NONE  0x00
+#define CTRL  0x01
 #define SHIFT 0x02
 #define ALTGR 0x40
 
@@ -451,6 +458,11 @@ MS_WH_RIGHT,
 #define _F10        { ' ', HID_F10, NONE  }     //  F10
 #define _F11        { ' ', HID_F11, NONE  }     //  F11
 #define _F12        { ' ', HID_F12, NONE  }     //  F12
+
+#define _CUT        { ' ', HID_CUT, NONE }
+#define _COPY       { ' ', HID_COPY, NONE }
+//#define _PASTE      { ' ', HID_PASTE, NONE }
+#define _PASTE      { ' ', HID_V, CTRL }
 
 #define _MS_SCROLL   { ' ', MS_SCROLL,NONE  }
 #define _MS_BTN_1    { ' ', MS_BTN_1, NONE  }

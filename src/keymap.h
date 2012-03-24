@@ -99,7 +99,7 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
 //#define _THUMB_ROW_RIGHT    _MOD_2,     _MOD_3,     _COMPOSE,   _R_ALT,  _no, _no
 #define _MACRO _no
 #define _THUMB_ROW_LEFT     _MACRO, _L_GUI,     _L_ALT,    _L_CTRL , _SPACE,  _MOD_2
-#define _THUMB_ROW_RIGHT    _MOD_3,     _L_SHIFT,      _L_ALT,   _R_ALT,  _no, _no
+#define _THUMB_ROW_RIGHT    _MOD_3,     _L_SHIFT,      _L_ALT,   _R_ALT,  _no, _COMPOSE
 
 
 static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
@@ -158,8 +158,8 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
     // MOUSE MODE
     /// @todo These should not be shifted, maybe factor out entirely!
     {
-        { _no, _SSHARP,     _u_UML,    _no,      _a_UML,     _o_UML },
-        { _no, _MS_BTN_1,   _MS_BTN_2,_MS_BTN_3, _MS_SCROLL, _no},
+        { _no, _CUT,     _COPY,    _PASTE,      _a_UML,     _o_UML },
+        { _no, _MS_BTN_1, _MS_BTN_2,_MS_BTN_3, _MS_SCROLL, _no},
         { _no, _no, _no, _no, _no, _no},
         { _no, _no, _no, _L_CTRL, _L_ALT, _L_SHIFT },
 
@@ -172,7 +172,7 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
 
     // COMPOSE or MOD2 + MOD3
     {
-        { _no, _no,     _u_UML, _no,    _no,    _no },
+        { _no, _CUT,     _COPY,    _PASTE,    _no,    _no },
         { _no, _SSHARP, _no,    _no,    _a_UML, _o_UML},
         { _no, _no,     _no,    _no,    _no,    _no},
         { _THUMB_ROW_LEFT },

@@ -117,6 +117,20 @@ void initKeyboard()
 
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
+
+    if(g_mouse_double == 1 ){
+        printf(" COPY ");
+        g_mouse_double=0;
+        //stdio_fill_report('c',report_data);
+        //report_data->Modifier = (1<<(MOD_L_CTRL-MOD_BEGIN));
+        //return sizeof(USB_KeyboardReport_Data_t);
+    } else if(g_mouse_keys == 4 ){
+        printf("+");
+        //stdio_fill_report('v',report_data);
+        //report_data->Modifier = (1<<(MOD_L_CTRL-MOD_BEGIN));
+        //return sizeof(USB_KeyboardReport_Data_t);
+    }
+
     //testMKT();
     if(mkt_timer+MKT_TIMEOUT < idle_count)
         mkt_state = MKT_RESET;
@@ -440,6 +454,21 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
     if( g_mouse_mode ) {
         if(isMouseKey(row,col)) {
             g_mouse_keys|=(1<<(getKeyCode(row, col, 4)-MS_BTN_1));
+
+            if(g_mouse_keys == 1){
+                if(idle_count-g_mouse_lmb > 4) {
+                    if(idle_count-g_mouse_lmb < 20) {
+                        printf("\n1 %d  ",idle_count-g_mouse_lmb );
+                        g_mouse_double=1;
+                        printf(" DK ");
+                    }
+                    g_mouse_lmb=idle_count;
+                }
+            } else  {
+                g_mouse_lmb=0;
+                g_mouse_double=0;
+            }
+
         } else if(isNormalKey(row,col)) {
             g_mouse_mode = 0;
         }
