@@ -322,6 +322,9 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 
     led((g_mouse_mode!=0));
     if(g_mouse_mode) {
+#ifdef MOUSE_HAS_SCROLL_WHEELS
+        MouseReport->V=0;
+        MouseReport->H=0;
         if( g_mouse_keys & 0x08 ) {
             int8_t sx=0, sy=0;
 
@@ -351,10 +354,10 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
                 MouseReport->V = sy;
                 MouseReport->Button=0;
             }
-        } else {
+        } else 
+#endif        
+        {
             float factor= 1 + accel * (ACC_MAX-1) / ACC_RAMPTIME;
-            MouseReport->V=0;
-            MouseReport->H=0;
 
             MouseReport->Y = -dy * factor;
             MouseReport->X = dx  * factor;
