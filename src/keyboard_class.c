@@ -119,20 +119,32 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
     if(macroMode()) {
         char *ch;
-        if(getMacroCharacter(ch)){
+        if(getMacroCharacter(ch)) {
             //printf("%c", *ch);
             stdio_fill_report(*ch,report_data);
             return sizeof(USB_KeyboardReport_Data_t);
         }
-	}
-/*
-        struct keycode kc;
-        if(getMacroChar(&kc)){
-            report_data->KeyCode[0]=kc.hid;
-            report_data->Modifier  =kc.mods;
-            return sizeof(USB_KeyboardReport_Data_t);
-        }
-*/
+    }
+    /*
+            struct keycode kc;
+            if(getMacroChar(&kc)){
+                report_data->KeyCode[0]=kc.hid;
+                report_data->Modifier  =kc.mods;
+                return sizeof(USB_KeyboardReport_Data_t);
+            }
+    */
+
+    if(g_mouse_double == 1 ) {
+        printf(" COPY ");
+        g_mouse_double=0;
+        //stdio_fill_report('c',report_data);
+        //report_data->Modifier = (1<<(MOD_L_CTRL-MOD_BEGIN));
+        //return sizeof(USB_KeyboardReport_Data_t);
+    } else if(g_mouse_keys == 4 ) {
+        printf("+");
+        //stdio_fill_report('v',report_data);
+        //report_data->Modifier = (1<<(MOD_L_CTRL-MOD_BEGIN));
+        //return sizeof(USB_KeyboardReport_Data_t);
     }
     //testMKT();
     if(mkt_timer+MKT_TIMEOUT < idle_count)
@@ -191,9 +203,9 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
         }
         if(idx==6) {
             printf("\nError: more than 6 keys! ");
-			for( uint8_t k=0;k<6;++k)
-				printf(" %d ", report_data->KeyCode[k]);
-			break;
+            for( uint8_t k=0; k<6; ++k)
+                printf(" %d ", report_data->KeyCode[k]);
+            break;
         }
 
     }
@@ -460,7 +472,7 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
         if(isMouseKey(row,col)) {
             g_mouse_keys|=(1<<(getKeyCode(row, col, 4)-MS_BTN_1));
 
-            if(g_mouse_keys == 1){
+            if(g_mouse_keys == 1) {
                 if(idle_count-g_mouse_lmb > 4) {
                     if(idle_count-g_mouse_lmb < 20) {
                         //printf("\n1 %d  ",idle_count-g_mouse_lmb );
@@ -499,11 +511,7 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
   */
 void init_active_keys()
 {
-    if(( rowData[0] & (1<<0) ) &&
-        (rowData[3] & (1<<0)) )
-    {
-        rowData[0] &= ~(1<<0);
-        rowData[3] &= ~(1<<0);
+    if( rowData[3] & (1<<0) ) {
         setMacroMode(true);
         //return;
     }
@@ -520,11 +528,11 @@ void init_active_keys()
     for (uint8_t row = 0; row < ROWS; ++row) {
         for (uint8_t col = 0; col < COLS; ++col) {
             if (rowData[row] & (1UL << col)) {
-                if(macroMode()){
-                    if(activateMacro(row*ROWS+col)){
-                        rowData[row] &= (~(1<<col));
-                        return;
-                    }
+                // Check macro and inhibit any keys if valid macro is selected.
+                if(macroMode() && activateMacro(row*ROWS+col)) {
+                    return;
+                } else {
+                    ActiveKeys_Add(row,col);
                 }
             }
         }

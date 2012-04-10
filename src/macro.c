@@ -4,8 +4,7 @@
 #define MACROLEN    20
 #define MACROCOUNT  3
 
-struct keycode macros[MACROCOUNT][MACROLEN] =
-{
+struct keycode macros[MACROCOUNT][MACROLEN] = {
 {MacroKilled},
 {MacroKilled},
 {MacroKilled }
@@ -33,13 +32,13 @@ static const  char  macrosC[][MACROLEN]  =  {
 "MacroKilled"
 };
 
-//const char macrosC[] = "TestStrinGGgGGg";
-
-bool macroMode(void) {
+bool macroMode(void)
+{
     return(macromode != 0);
 }
 
-void setMacroMode( bool on ) {
+void setMacroMode( bool on )
+{
     macromode=on;
 }
 
@@ -48,7 +47,12 @@ void setMacroMode( bool on ) {
  */
 bool activateMacro(uint8_t id)
 {
-    if(id<MACROCOUNT){
+    if(!macromode)
+        return false;
+    // de-bounce not working in current macro detection
+    if(id==curMacro)
+        return true;
+    if(id<MACROCOUNT) {
         idx=0;
         curMacro=id;
         return true;
@@ -96,7 +100,8 @@ bool getMacroChar(struct keycode *kc)
     sendEmpty = sendEmpty ? 0 : 1;
     if( sendEmpty) {
         //kc = _L;
-        kc->hid=0; kc->mods=0;
+        kc->hid=0;
+        kc->mods=0;
         return true;
     }
 

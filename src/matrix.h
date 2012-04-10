@@ -14,7 +14,7 @@ void activate(uint8_t row);
 // this must be called once before matrix_scan.
 uint8_t read_col(void)
 {
-	// teensy++ 2.0 n
+    // teensy++ 2.0 n
     // PINF & 0x11
     uint8_t res = PINF;
     return (res & ~((1<<6) | (1<<7)));
@@ -52,11 +52,11 @@ void activate(uint8_t row)
 static inline void init_cols(void)
 {
 
-	// teensy++ 2.0 : 6&7 unused
-	DDRF &= ((1<<6) | (1<<7));
+    // teensy++ 2.0 : 6&7 unused
+    DDRF &= ((1<<6) | (1<<7));
     PORTF |= (0b00111111);
 
-	return;
+    return;
 
     // teensy 2.0: 2&3 unused, F 01  4567
     /* Columns are inputs */

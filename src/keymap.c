@@ -10,22 +10,20 @@
  */
 uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer)
 {
-	if( PINKYDROP ){
-		if( (row<4 && row > 0 && col==1) || (row > 4 && col == 4))
-			return KeyMatrix[layer][row-1][col].mods;
-	}
-	else
-		return KeyMatrix[layer][row][col].mods;
+    if( PINKYDROP ) {
+        if( (row<4 && row > 0 && col==1) || (row > 4 && col == 4))
+            return KeyMatrix[layer][row-1][col].mods;
+    } else
+        return KeyMatrix[layer][row][col].mods;
 }
 
 uint8_t getKeyCode(uint8_t row, uint8_t col, uint8_t layer)
 {
-	if(PINKYDROP){
-	    if( (row<4 && row > 0 && col==1) || (row > 4 && col == 4))
-		    return KeyMatrix[layer][row-1][col].hid;
-	}
-	else
-		return KeyMatrix[layer][row][col].hid;
+    if(PINKYDROP) {
+        if( (row<4 && row > 0 && col==1) || (row > 4 && col == 4))
+            return KeyMatrix[layer][row-1][col].hid;
+    } else
+        return KeyMatrix[layer][row][col].hid;
 }
 
 
