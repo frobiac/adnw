@@ -63,7 +63,8 @@
 # "Board" inside the application directory.
 #BOARD  = USER
 
-MCU = atmega32u4
+#MCU = atmega32u4
+MCU = at90usb1286
 BOARD  = TEENSY
 
 F_CPU =  16000000
