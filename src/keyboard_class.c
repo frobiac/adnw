@@ -124,7 +124,7 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
             stdio_fill_report(*ch,report_data);
             return sizeof(USB_KeyboardReport_Data_t);
         }
-
+	}
 /*
         struct keycode kc;
         if(getMacroChar(&kc)){

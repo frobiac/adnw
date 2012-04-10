@@ -8,7 +8,7 @@
 #define ROWS   8
 #define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
 
-#define PINKYDROP true  ///<  drop pinky column by one for more ergonomic layout
+#undef PINKYDROP false  ///<  drop pinky column by one for more ergonomic layout
 
 #define _ANALOG _no
 
@@ -86,7 +86,7 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
     { _no,     _no,     _no,     _no,       _no,     _no },
     { _no,     _no,     _no,     _no,       _no,     _no },
     { _no,     _no,     _no,     _no,       _no,     _no },
-    { _no,     _no,     _no,     _ESC,      _TAB,    _no },
+    { _no,     _no,     _no,     _ESC,      _TAB,    _SPACE },
 
     { _no,     _no,     _no,     _no,       _no,     _no },
     { _no,     _no,     _no,     _no,       _no,     _no },
@@ -98,34 +98,36 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
 //#define _THUMB_ROW_LEFT     _no /*macro*/, _L_GUI,     _MOD_1,     _L_CTRL , _L_ALT, _L_SHIFT
 //#define _THUMB_ROW_RIGHT    _MOD_2,     _MOD_3,     _COMPOSE,   _R_ALT,  _no, _no
 #define _MACRO _no
-#define _THUMB_ROW_LEFT     _MACRO, _L_GUI,     _L_ALT,    _L_CTRL , _SPACE,  _MOD_2
-#define _THUMB_ROW_RIGHT    _MOD_3,     _L_SHIFT,      _L_ALT,   _R_ALT,  _no, _COMPOSE
+//#define _THUMB_ROW_LEFT     _MACRO, _L_GUI,     _L_ALT,    _L_CTRL , _MOD_2, _SPACE
+//#define _THUMB_ROW_RIGHT    _L_SHIFT,      _L_ALT,   _R_ALT,  _no, _MOD_3, _COMPOSE
+#define _THUMB_ROW_LEFT     _B, _E,     _L_ALT,    _L_CTRL , _MOD_2, _SPACE
+#define _THUMB_ROW_RIGHT    _L_SHIFT,      _L_ALT,   _R_ALT,  _no, _H, _N
 
 
 static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
     // normal layer
     {
-        { _no,   _k, _u, _q, _PERIOD,_j  },
-        { _ESC,  _h, _i, _e, _a, _o  },
+        { _ESC,   _k, _u, _q, _PERIOD,_j  },
+        { _TAB,  _h, _i, _e, _a, _o  },
         { _TAB,  _x, _y, _MINUS, _COMMA, _DQUOTE },
         { _THUMB_ROW_LEFT },
 
-        { _v,   _g, _c, _l, _f, _no },
-        { _d,   _t, _r, _n, _s, _BSPACE  },
-        { _b,   _p, _w, _m, _z, _ENTER     },
+        { _v,   _g, _c, _l, _f, _BSPACE },
+        { _d,   _t, _r, _n, _s, _ENTER  },
+        { _b,   _p, _w, _m, _z, _ENTER  },
         { _THUMB_ROW_RIGHT}
     },
 
     // MOD1 layer (shifted)
     {
-        { _no ,  _K,         _U,         _Q,         _COLON,     _J},
-        { _ESC,  _H,         _I,         _E,         _A,         _O},
-        { _TAB,  _X,         _Y,         _USCORE,    _SCOLON,    _SQUOTE /** @todo Does not work with regular Shift as 2nd layer*/},
+        { _ESC,  _K,         _U,         _Q,         _COLON,     _J},
+        { _TAB,  _H,         _I,         _E,         _A,         _O},
+        { _no,  _X,         _Y,         _USCORE,    _SCOLON,    _SQUOTE /** @todo Does not work with regular Shift as 2nd layer*/},
         { _THUMB_ROW_LEFT },
 
-        { _V,     _G,         _C,         _L,         _F,         _no },
-        { _D,     _T,         _R,         _N,         _S,         _DEL  },
-        { _B,     _P,         _W,         _M,         _Z,         _ENTER  },
+        { _V,     _G,         _C,         _L,         _F,         _DEL },
+        { _D,     _T,         _R,         _N,         _S,         _ENTER  },
+        { _B,     _P,         _W,         _M,         _Z,         _no  },
         { _THUMB_ROW_RIGHT}
     },
 
