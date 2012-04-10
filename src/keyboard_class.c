@@ -190,8 +190,10 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
             idx++;
         }
         if(idx==6) {
-            printf("\nError: more than 6 keys!");
-            break;
+            printf("\nError: more than 6 keys! ");
+			for( uint8_t k=0;k<6;++k)
+				printf(" %d ", report_data->KeyCode[k]);
+			break;
         }
 
     }
@@ -457,21 +459,21 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
     if( g_mouse_mode ) {
         if(isMouseKey(row,col)) {
             g_mouse_keys|=(1<<(getKeyCode(row, col, 4)-MS_BTN_1));
-            /*
-                        if(g_mouse_keys == 1){
-                            if(idle_count-g_mouse_lmb > 4) {
-                                if(idle_count-g_mouse_lmb < 20) {
-                                    printf("\n1 %d  ",idle_count-g_mouse_lmb );
-                                    g_mouse_double=1;
-                                    printf(" DK ");
-                                }
-                                g_mouse_lmb=idle_count;
-                            }
-                        } else  {
-                            g_mouse_lmb=0;
-                            g_mouse_double=0;
-                        }
-            */
+
+            if(g_mouse_keys == 1){
+                if(idle_count-g_mouse_lmb > 4) {
+                    if(idle_count-g_mouse_lmb < 20) {
+                        //printf("\n1 %d  ",idle_count-g_mouse_lmb );
+                        g_mouse_double=1;
+                        printf(" DK ");
+                    }
+                    g_mouse_lmb=idle_count;
+                }
+            } else  {
+                g_mouse_lmb=0;
+                g_mouse_double=0;
+            }
+
         } else if(isNormalKey(row,col)) {
             g_mouse_mode = 0;
         }
@@ -524,7 +526,6 @@ void init_active_keys()
                         return;
                     }
                 }
-                ActiveKeys_Add(row,col);
             }
         }
     }
