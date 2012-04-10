@@ -100,7 +100,7 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM MouseReport[] =
 };
 
 #endif
-#ifdef NEW_MOUSE
+// #ifdef NEW_MOUSE
 
 //
 // Wheel Mouse - simplified version - 5 button, vertical and horizontal wheel
@@ -201,7 +201,7 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM MouseReport[] =
     0xc0,              //   END_COLLECTION
     0xc0               // END_COLLECTION
 };
-#endif
+// #endif
 
 
 /** HID class report descriptor. This is a special descriptor constructed with values from the
