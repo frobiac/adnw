@@ -61,15 +61,15 @@ void activate(uint8_t row)
 		case 2:
 			DDRB |= (1<<4); break;
 		case 3:
-			DDRD = (1<<7); break;
+			DDRD |= (1<<7); break;
 		case 4:
-			DDRD = (1<<6); break;
+			DDRD |= (1<<6); break;
 		case 5:
-			DDRD = (1<<4); break;
+			DDRD |= (1<<4); break;
 		case 6:
-			DDRD = (1<<2); break;
+			DDRD |= (1<<2); break;
 		case 7:
-			DDRD = (1<<5); break;
+			DDRD |= (1<<5); break;
 		
 	}
 	// DDRD = (1<<row);
