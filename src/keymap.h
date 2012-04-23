@@ -86,7 +86,7 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
     { _no,     _no,     _no,     _no,       _no,     _no },
     { _no,     _no,     _no,     _no,       _no,     _no },
     { _no,     _no,     _no,     _no,       _no,     _no },
-    { _no,     _no,     _no,     _ESC,      _TAB,    _SPACE },
+    { _no,     _no,     _no,     _ESC,      _TAB,    _no },
 
     { _no,     _no,     _no,     _no,       _no,     _no },
     { _no,     _no,     _no,     _no,       _no,     _no },
@@ -100,7 +100,7 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
 #define _MACRO _no
 //#define _THUMB_ROW_LEFT     _MACRO, _L_GUI,     _L_ALT,    _L_CTRL , _MOD_2, _SPACE
 //#define _THUMB_ROW_RIGHT    _L_SHIFT,      _L_ALT,   _R_ALT,  _no, _MOD_3, _COMPOSE
-#define _THUMB_ROW_LEFT     _no /*macro*/, _B, _L_GUI,    _L_ALT , _L_CTRL, _MOD_2
+#define _THUMB_ROW_LEFT     _no /*macro*/, _B, _L_GUI,    _L_ALT , _L_CTRL, _SPACE
 #define _THUMB_ROW_RIGHT    _L_SHIFT,      _MOD_2,   _R_ALT,  _COMPOSE, _MOD_3, _H
 
 
