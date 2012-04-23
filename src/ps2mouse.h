@@ -33,6 +33,19 @@ bool ps2_init_mouse(void);
 #define F_CPU 16000000UL
 #endif
 
+/*
+//Data
+#define DAPORT B
+#define DBIT  7
+
+//Clock
+#define CLKPORT E
+#define CBIT  6
+
+//reset trackpoimt
+#define RSTPORT C
+#define RBIT 7
+*/
 //Data
 #define DAPORT B
 #define DBIT  7

@@ -117,7 +117,8 @@ void initKeyboard()
 
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
-/*    if(g_mouse_double == 1 ) {
+/*
+   if(g_mouse_double == 1 ) {
         printf(" COPY ");
         g_mouse_double=0;
         //stdio_fill_report('c',report_data);
@@ -185,7 +186,7 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
             report_data->KeyCode[idx]=getKeyCode(k.row, k.col, getActiveLayer());
             idx++;
         }
-        if(idx==6) {
+        if(idx>6) {
             printf("\nError: more than 6 keys! ");
             for( uint8_t k=0; k<6; ++k)
                 printf(" %d ", report_data->KeyCode[k]);
@@ -278,7 +279,11 @@ void scan_matrix(void)
         //if(row==3 && (p & 0x05)) {
         //   g_mouse_mode = g_mouse_mode>0 ? 0 : 1;
         //}
+
+		// printf("\n%d: %b", row,  rowData[row]);
     }
+
+	
     // middle two buttons under TP
     /*if ( (rowData[3] & (1<<5)) && (rowData[7] & (1<<0) ) ) {
         g_mouse_mode = g_mouse_mode >0 ? 0 : 1;
@@ -510,8 +515,10 @@ void init_active_keys()
 
     // process row/column data to find the active keys
     for (uint8_t row = 0; row < ROWS; ++row) {
+//		printf("\n%d : ", row);
         for (uint8_t col = 0; col < COLS; ++col) {
             if (rowData[row] & (1UL << col)) {
+				//printf("\n%d x %d", row, col);
                 // Check macro and inhibit any keys if valid macro is selected.
                 if(macroMode() && activateMacro(row*ROWS+col)) {
                     return;
