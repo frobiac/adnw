@@ -117,7 +117,7 @@ void initKeyboard()
 
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
-    if(g_mouse_double == 1 ) {
+/*    if(g_mouse_double == 1 ) {
         printf(" COPY ");
         g_mouse_double=0;
         //stdio_fill_report('c',report_data);
@@ -129,6 +129,7 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
         //report_data->Modifier = (1<<(MOD_L_CTRL-MOD_BEGIN));
         //return sizeof(USB_KeyboardReport_Data_t);
     }
+*/
     //testMKT();
     if(mkt_timer+MKT_TIMEOUT < idle_count)
         mkt_state = MKT_RESET;
@@ -145,7 +146,7 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
     clearActiveKeys();
     scan_matrix();
 
-    /*
+    /* 
     if ( keysChanged() )
     {
         copyCurrentKeys();
@@ -245,8 +246,7 @@ void scan_matrix(void)
 
         // Place data on all column pins for active row
         // into a single 32 bit value.
-        data = read_col();
-
+        data = read_col( (row>3) );
         /// @see top comment for source of debounce magic
         // Needs to be adjusted for more than 8 columns
         i = kb_state[row] ^ (~data);                    // key changed ?
@@ -460,7 +460,7 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
                     if(idle_count-g_mouse_lmb < 20) {
                         //printf("\n1 %d  ",idle_count-g_mouse_lmb );
                         g_mouse_double=1;
-                        printf(" DK ");
+                        //printf(" DK ");
                     }
                     g_mouse_lmb=idle_count;
                 }

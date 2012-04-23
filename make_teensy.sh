@@ -1,7 +1,7 @@
 #!/bin/bash
 
 MCU=atmega32u4
-MCU=at90usb1286
+#MCU=at90usb1286
 
 if [ ! -z $1 ]; then 
 	echo "*** make clean" 

@@ -283,7 +283,12 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
                             RMB=LMB=0;
                         }
             */
-            *BTNS = (LMB<<2) | (MMB<<1) | (RMB << 0);
+            // *BTNS = (LMB<<2) | (MMB<<1) | (RMB << 0);
+            // buttons (left to right) are  1 2 3
+            // hexcode as expected is       1 4 2
+            // swap lower two buttons on "blue cube" 
+            *BTNS = (LMB<<0) | (MMB<<1) | (RMB << 2);
+
         }
     }
 }
@@ -320,12 +325,14 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
         g_mouse_mode=0;
     }
 
-    led((g_mouse_mode!=0));
-    if(g_mouse_mode) {
+// DISABLED as real mouse buttons are available
+// if(g_mouse_mode) {
+{
 #ifdef MOUSE_HAS_SCROLL_WHEELS
         MouseReport->V=0;
         MouseReport->H=0;
-        if( g_mouse_keys & 0x08 ) {
+        // keyboard mouse buttons only in mousemode
+        if( (btns & 0x04) || (g_mouse_mode && (g_mouse_keys & 0x08) ) ) {
             int8_t sx=0, sy=0;
 
             if( dx!=0 ) {
@@ -350,8 +357,8 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
                 MouseReport->X=0;
                 MouseReport->Y=0;
                 // only move by 1 ?!
-                MouseReport->H = sx;
-                MouseReport->V = sy;
+                MouseReport->H = -sx;
+                MouseReport->V = -sy;
                 MouseReport->Button=0;
             }
         } else 
@@ -359,8 +366,8 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
         {
             float factor= 1 + accel * (ACC_MAX-1) / ACC_RAMPTIME;
 
-            MouseReport->Y = -dy * factor;
-            MouseReport->X = dx  * factor;
+            MouseReport->Y = dy * factor;
+            MouseReport->X = -dx * factor;
             MouseReport->Button=g_mouse_keys & ~(0x08);
             MouseReport->Button |= btns;    // PS/2 buttons if set
 
