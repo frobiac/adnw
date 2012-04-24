@@ -42,6 +42,13 @@ void setMacroMode( bool on )
     macromode=on;
 }
 
+void endMacro()
+{
+    macromode = 0;
+    idx  = 0;
+    curMacro=MACROCOUNT;
+}
+
 /**
  * set current active macro
  */
@@ -81,9 +88,8 @@ bool getMacroCharacter(char *c)
         idx++;
         return true;
     } else {
-        macromode = 0;
-        idx  = 0;
-        curMacro=MACROCOUNT;
+        endMacro();
+        return false;
     }
 
     return false;
@@ -99,7 +105,6 @@ bool getMacroChar(struct keycode *kc)
 
     sendEmpty = sendEmpty ? 0 : 1;
     if( sendEmpty) {
-        //kc = _L;
         kc->hid=0;
         kc->mods=0;
         return true;

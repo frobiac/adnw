@@ -13,6 +13,7 @@
 
 bool macroMode(void);
 void setMacroMode(bool on);
+void endMacro(void);
 
 bool activateMacro(uint8_t id);
 bool getMacroChar(struct keycode *kc);
