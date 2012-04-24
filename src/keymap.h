@@ -86,7 +86,7 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
     { _no,     _no,     _no,     _no,       _no,     _no },
     { _no,     _no,     _no,     _no,       _no,     _no },
     { _no,     _no,     _no,     _no,       _no,     _no },
-    { _no,     _no,     _no,     _ESC,      _TAB,    _no },
+    { _no,     _no,     _no,     _ESC,      _TAB,    _no /*is real SPACE*/ },
 
     { _no,     _no,     _no,     _no,       _no,     _no },
     { _no,     _no,     _no,     _no,       _no,     _no },
@@ -94,13 +94,12 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
     { _BSPACE, _ENTER,  _no,     _no,       _no,     _no }
 };
 
-
-//#define _THUMB_ROW_LEFT     _no /*macro*/, _L_GUI,     _MOD_1,     _L_CTRL , _L_ALT, _L_SHIFT
-//#define _THUMB_ROW_RIGHT    _MOD_2,     _MOD_3,     _COMPOSE,   _R_ALT,  _no, _no
+// on BlueCube, the innermost thumb-buttons are on outermost columns in matrix!
+//         0  5
+// 2 3 4 5 1  4 0 1 2 3
+// 
 #define _MACRO _no
-//#define _THUMB_ROW_LEFT     _MACRO, _L_GUI,     _L_ALT,    _L_CTRL , _MOD_2, _SPACE
-//#define _THUMB_ROW_RIGHT    _L_SHIFT,      _L_ALT,   _R_ALT,  _no, _MOD_3, _COMPOSE
-#define _THUMB_ROW_LEFT     _no /*macro*/, _B, _L_GUI,    _L_ALT , _L_CTRL, _SPACE
+#define _THUMB_ROW_LEFT     _no /*macro*/, _L_GUI,     _L_GUI,    _L_ALT , _L_CTRL, _SPACE
 #define _THUMB_ROW_RIGHT    _L_SHIFT,      _MOD_2,   _R_ALT,  _COMPOSE, _MOD_3, _H
 
 
@@ -109,12 +108,12 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
     {
         { _ESC,   _k, _u, _q, _PERIOD,_j  },
         { _TAB,   _h, _i, _e, _a, _o  },
-        { _SLASH, _x, _y, _MINUS, _COMMA, _DQUOTE },
+        { _DQUOTE,_x, _y, _MINUS, _COMMA, _SLASH },
         { _THUMB_ROW_LEFT },
 
         { _v,   _g, _c, _l, _f, _BSPACE },
         { _d,   _t, _r, _n, _s, _ENTER  },
-        { _b,   _p, _w, _m, _z, _ENTER  },
+        { _b,   _p, _w, _m, _z, _no  },
         { _THUMB_ROW_RIGHT}
     },
 
@@ -122,7 +121,7 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
     {
         { _ESC,   _K,         _U,         _Q,         _COLON,     _J},
         { _TAB,   _H,         _I,         _E,         _A,         _O},
-        { _BSLASH,_X,         _Y,         _USCORE,    _SCOLON,    _SQUOTE /** @todo Does not work with regular Shift as 2nd layer*/},
+        { _no,_X,         _Y,         _USCORE,    _SCOLON,    _SQUOTE /** @todo Does not work with regular Shift as 2nd layer*/},
         { _THUMB_ROW_LEFT },
 
         { _V,     _G,         _C,         _L,         _F,         _DEL },
@@ -130,7 +129,7 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
         { _B,     _P,         _W,         _M,         _Z,         _no  },
         { _THUMB_ROW_RIGHT}
     },
-
+   
     // MOD2 layer (special chars)
     {
         { _no, _AT,      _no,       _L_BRACKET, _R_BRACKET, _HASH },
