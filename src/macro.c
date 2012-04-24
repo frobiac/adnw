@@ -1,12 +1,19 @@
 #include "macro.h"
+//#include "hhstdio.h"
+#include "Keyboard.h"
 
 /// Increasing either too much leads to keyboard not registering at all!
 #define MACROLEN    20
-#define MACROCOUNT  3
+#define MACROCOUNT  6
 
+// end all macros with "_no" as dynamic length detection does not work yet
 struct keycode macros[MACROCOUNT][MACROLEN] = {
 {MacroKilled},
 {MacroKilled},
+{MacroKilled},
+    { _h, _a, _l, _l, _o , _no},
+    { _SPACE,_L_CTRL, _c, _no },
+/MacroKilled }
 {MacroKilled }
 };
 
@@ -29,7 +36,10 @@ static const  char  macrosC[][MACROLEN]  =  {
     */
 "MacroKilled",
 "MacroKilled",
-"MacroKilled"
+"MacroKilled",
+    "a",
+    "b",
+"MacroKilledf"
 };
 
 bool macroMode(void)
