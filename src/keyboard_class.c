@@ -161,9 +161,20 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 #endif
 
     if(macroMode()) {
+       /* only ascii char from array
         char *ch ='\0';
         if(getMacroCharacter(ch)) {
             stdio_fill_report(*ch,report_data);
+            return sizeof(USB_KeyboardReport_Data_t);
+        }
+        */
+        
+        struct keycode k;
+        k.ch = ' '; k.hid=0; k.mods=NONE;
+        if(getMacroChar(&k)) {
+            //printf("\n%c %d ",k.ch,  k.hid);
+            report_data->KeyCode[0] = k.hid;
+            report_data->Modifier = k.mods;
             return sizeof(USB_KeyboardReport_Data_t);
         }
     }
@@ -521,6 +532,7 @@ void init_active_keys()
 				//printf("\n%d x %d", row, col);
                 // Check macro and inhibit any keys if valid macro is selected.
                 if(macroMode() && activateMacro(row*ROWS+col)) {
+                    rowData[row] &= ~(1UL << col);
                     return;
                 } else {
                     ActiveKeys_Add(row,col);

@@ -105,7 +105,6 @@ bool getMacroCharacter(char *c)
     return false;
 }
 
-
 bool getMacroChar(struct keycode *kc)
 {
     if(!macromode)
@@ -119,19 +118,42 @@ bool getMacroChar(struct keycode *kc)
         kc->mods=0;
         return true;
     }
-
-    if( idx < sizeof(macros[curMacro])/sizeof(struct keycode) ) {
-        *kc=macros[curMacro][idx];
-        idx++;
-        return true;
-    } else {
-        macromode = 0;
-        idx  = 0;
-        curMacro=MACROCOUNT;
+    // check if we're at the end 
+    if(macros[curMacro][idx].hid == 0 ){//&& macros[curMacro][idx].mods == NONE ){
+        endMacro();
+        return false;
     }
 
-    return false;
+        // printf("\nMACRO %d [%d]: %c" ,curMacro, idx, macros[curMacro][idx].ch);
+        while( macros[curMacro][idx].hid >= HID_L_CONTROL &&
+            macros[curMacro][idx].hid <= HID_R_GUI ) {
+            // nasty difference to general modifier usage (shift & altgr) 
+            kc->mods |= 1 << (macros[curMacro][idx].mods - MOD_BEGIN);
+            idx++;
+        }
+        kc->hid = macros[curMacro][idx].hid;
+        kc->mods |= macros[curMacro][idx].mods;
+        printf("\nMACRO %d [%d]: %c=%d + %d" ,curMacro, idx, macros[curMacro][idx].ch, kc->hid,  kc->mods);
+        idx++;
+
+        if(macros[curMacro][idx].hid == 0 ){//&& macros[curMacro][idx].mods == NONE ){
+            endMacro();
+        }
+
+        return true;
 }
+
+/*
+void
+stdio_fill_report(char ch, USB_KeyboardReport_Data_t *report)
+{
+        memcpy_P(report, &ascii_table[(uint8_t)ch], sizeof(USB_KeyboardReport_Data_t));
+            memset(&report->KeyCode[1], 0, 5);
+}
+
+*/
+
+
 
 /** Goes through given macro and sends it letter by letter.
  *  We could try to be smart and fill the report with up to 6 letters,
