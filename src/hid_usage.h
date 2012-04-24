@@ -276,7 +276,8 @@ MS_WH_RIGHT,
 #define _R_BRACKET  { ']',  HID_9, ALTGR }      //  *
 
 #define y_MINUS     { '-',  HID_MINUS, NONE  }      //  Z:ß/?
-#define _SSHARP     { 'ß',  HID_MINUS, NONE  }     //  Z:ß/?
+//#define _SSHARP     { 'ß',  HID_MINUS, NONE  }     //  Z:ß/?
+#define _SSHARP     { 's',  HID_MINUS, NONE  }     //  Z:ß/?
 #define _BSLASH     { '\\', HID_MINUS, ALTGR  }     //  Z:ß/?
 #define _MINUS      { '-',  HID_SLASH, NONE  }      //  -
 #define y_USCORE    { '_',  HID_MINUS, SHIFT }      //  _
