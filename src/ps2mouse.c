@@ -237,34 +237,13 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
 
     uint8_t ack;
     uint8_t LMB,MMB,RMB;
+    *BTNS=0;
     int mouseinf;
     {
         send_packet(0xeb);
         ack=read_packet(); //Ack
         if(ack==0xfa) {
             mouseinf=read_packet();
-            *dx= read_packet();
-            *dy= read_packet();
-
-            // raw *dx is of 0xXX
-            // int x = *dx; int y = *dy;
-
-            if(mouseinf&0x10)
-                *dx-=0x100; // Add sign bit to dx
-            if(mouseinf&0x20)
-                *dy-=0x100; // Add sign bit to dy
-
-            /*
-            if( x!=0 ){
-                //printf("\n%4x %4x | %4x %4x", x,*dx,y,*dy);
-                printf("\nX %4x %4x: ", x,*dx);
-                if(*dx&0xFF00)
-                    printf("-%d" , 256-(*dx+0x100));
-                else
-                    printf("+%d" , *dx);
-            }
-            */
-
             LMB=0;
             MMB=0;
             RMB=0;
@@ -289,6 +268,37 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
             // swap lower two buttons on "blue cube" 
             *BTNS = (LMB<<0) | (MMB<<1) | (RMB << 2);
 
+
+            *dx= read_packet();
+            *dy= read_packet();
+            // raw *dx is of 0xXX
+            int x = *dx; int y = *dy; int xtest = *dx;
+
+            if(mouseinf&0x10)
+                *dx=-(256-*dx);
+
+            if(mouseinf&0x20)
+                *dy=-(256-*dy);
+
+            return;
+
+            if(mouseinf&0x10){
+                xtest=-(256-*dx);
+                *dx-=0x100; // Add sign bit to dx
+
+            }
+            if(mouseinf&0x20)
+                *dy-=0x100; // Add sign bit to dy
+
+            if( x!=0 ){
+                //printf("\n%4x %4x | %4x %4x", x,*dx,y,*dy);
+                printf("\ninf=0x%04x x:%2d dx:0x%04x xtest: %d dxrevert: ", mouseinf, x,*dx, xtest);
+                if(*dx&0xFF00)
+                    printf("-%2d" , 256-(*dx+0x100));
+                else
+                    printf("+%2d" , *dx);
+            }
+
         }
     }
 }
@@ -304,12 +314,14 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 #ifdef PS2MOUSE
     if(g_trackpoint) {
         ps2_read_mouse(&dx, &dy, &btns);
-        //printf("\nBtns: %d ", btns);
+        if( dx != 0|| dy!=0 || btns != 0) {
+            printf("\nPS/2 is %ld: %2d %2d -> %d  , ", g_mouse_mode, dx, dy, dx*dx + dy*dy );
+            printf(" Btns: %d", btns );
+        }
     }
 #endif
 
-    // reset mouse mode after inactivity: idle_count is incremented 61 times per second
-    if( dx!=0 || dy!=0 ) {
+    if( (dx!=0 || dy!=0) && ( dx*dx + dy*dy > 49) ) {
         if(g_mouse_mode==0) {
             g_mouse_mode=1;
             accel=0;
@@ -321,12 +333,14 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
         if(accel<ACC_RAMPTIME)
             accel++;
 
+    // reset mouse mode after inactivity: idle_count is incremented 61 times per second
     } else if(idle_count-mouse_timer > 1/*seconds*/ *61 ) {
         g_mouse_mode=0;
+        accel=0;
     }
 
 // DISABLED as real mouse buttons are available
-// if(g_mouse_mode) {
+if(g_mouse_mode || btns) 
 {
 #ifdef MOUSE_HAS_SCROLL_WHEELS
         MouseReport->V=0;

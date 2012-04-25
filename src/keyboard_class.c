@@ -524,6 +524,13 @@ void init_active_keys()
         jump_bootloader();
     }
 
+    if( rowData[7] & (1<<5) ) {
+        printf("\nToggle MM to %d ", !g_mouse_mode);
+        if(! g_mouse_mode)
+            tp_reset();
+        g_mouse_mode= g_mouse_mode ? 0: 1;
+        return;
+    }
     // process row/column data to find the active keys
     for (uint8_t row = 0; row < ROWS; ++row) {
 //		printf("\n%d : ", row);
