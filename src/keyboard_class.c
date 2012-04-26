@@ -526,9 +526,10 @@ void init_active_keys()
 
     if( rowData[7] & (1<<5) ) {
         printf("\nToggle MM to %d ", !g_mouse_mode);
-        if(! g_mouse_mode)
-            tp_reset();
+        //if(! g_mouse_mode)
+        //    tp_reset();
         g_mouse_mode= g_mouse_mode ? 0: 1;
+        rowData[7] &= ~(1<<5);
         return;
     }
     // process row/column data to find the active keys

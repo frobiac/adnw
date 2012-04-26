@@ -321,7 +321,8 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
     }
 #endif
 
-    if( (dx!=0 || dy!=0) && ( dx*dx + dy*dy > 49) ) {
+    if( btns & (1<<0)  || (dx*dx+dy*dy > 100) )  
+    {        
         if(g_mouse_mode==0) {
             g_mouse_mode=1;
             accel=0;
