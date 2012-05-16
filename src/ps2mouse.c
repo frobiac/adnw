@@ -198,6 +198,7 @@ uint8_t read_packet(void)
 bool ps2_init_mouse(void)
 {
     g_trackpoint = 0;
+    g_mouse_enabled = 0;
 
     tp_reset();
 
@@ -265,7 +266,7 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
             // *BTNS = (LMB<<2) | (MMB<<1) | (RMB << 0);
             // buttons (left to right) are  1 2 3
             // hexcode as expected is       1 4 2
-            // swap lower two buttons on "blue cube" 
+            // swap lower two buttons on "blue cube"
             *BTNS = (LMB<<0) | (MMB<<1) | (RMB << 2);
 
 
@@ -308,21 +309,26 @@ volatile uint16_t accel; /// toggle mouse mode for a specified time
 
 uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 {
+    if(!g_mouse_enabled)
+        return 0;
+
     int16_t dx=0, dy=0;
     uint8_t btns=0;
 
 #ifdef PS2MOUSE
     if(g_trackpoint) {
         ps2_read_mouse(&dx, &dy, &btns);
+        /*
         if( dx != 0|| dy!=0 || btns != 0) {
-            printf("\nPS/2 is %ld: %2d %2d -> %d  , ", g_mouse_mode, dx, dy, dx*dx + dy*dy );
-            printf(" Btns: %d", btns );
+            printf("\nPS/2 is %d: %2d %2d -> %d  , ", g_mouse_mode, dx, dy, dx*dx + dy*dy );
+            printf(" Btns: %d / %d", btns, g_mouse_keys );
         }
+        */
     }
 #endif
 
-    if( btns & (1<<0)  || (dx*dx+dy*dy > 100) )  
-    {        
+    if( (btns & 0x07) || (dx+dy) > 0 /* Test for spurious movements */ )
+    {
         if(g_mouse_mode==0) {
             g_mouse_mode=1;
             accel=0;
@@ -341,13 +347,15 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
     }
 
 // DISABLED as real mouse buttons are available
-if(g_mouse_mode || btns) 
+if(g_mouse_mode || btns)
 {
 #ifdef MOUSE_HAS_SCROLL_WHEELS
         MouseReport->V=0;
         MouseReport->H=0;
+        MouseReport->Button=0;
+
         // keyboard mouse buttons only in mousemode
-        if( (btns & 0x04) || (g_mouse_mode && (g_mouse_keys & 0x08) ) ) {
+        if( (btns & 0x05)==0x05 || (g_mouse_keys & 0x08)  ) {
             int8_t sx=0, sy=0;
 
             if( dx!=0 ) {
@@ -363,7 +371,6 @@ if(g_mouse_mode || btns)
                     sy=dy;
             }
 
-            MouseReport->Button=0;
 
             scrollcnt = scrollcnt+abs(sy)+abs(sx);
 
@@ -374,16 +381,17 @@ if(g_mouse_mode || btns)
                 // only move by 1 ?!
                 MouseReport->H = -sx;
                 MouseReport->V = -sy;
-                MouseReport->Button=0;
             }
-        } else 
-#endif        
+        } else
+#endif
         {
             float factor= 1 + accel * (ACC_MAX-1) / ACC_RAMPTIME;
 
             MouseReport->Y = dy * factor;
             MouseReport->X = -dx * factor;
-            MouseReport->Button=g_mouse_keys & ~(0x08);
+            //printf("\nBtns: %d / %d", btns, g_mouse_keys );
+
+            MouseReport->Button = g_mouse_keys & ~(0x08);
             MouseReport->Button |= btns;    // PS/2 buttons if set
 
             /*

@@ -47,6 +47,8 @@
 // #define TRACE false || printf
 #define TRACE(...)
 
+extern uint8_t g_mouse_enabled;
+
 uint8_t lastKeyCode;
 uint8_t rowData[ROWS];
 uint8_t prevRowData[ROWS];
@@ -147,7 +149,7 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
     clearActiveKeys();
     scan_matrix();
 
-    /* 
+    /*
     if ( keysChanged() )
     {
         copyCurrentKeys();
@@ -168,7 +170,7 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
             return sizeof(USB_KeyboardReport_Data_t);
         }
         */
-        
+
         struct keycode k;
         k.ch = ' '; k.hid=0; k.mods=NONE;
         if(getMacroChar(&k)) {
@@ -291,10 +293,10 @@ void scan_matrix(void)
         //   g_mouse_mode = g_mouse_mode>0 ? 0 : 1;
         //}
 
-		// printf("\n%d: %b", row,  rowData[row]);
+        // printf("\n%d: %b", row,  rowData[row]);
     }
 
-	
+
     // middle two buttons under TP
     /*if ( (rowData[3] & (1<<5)) && (rowData[7] & (1<<0) ) ) {
         g_mouse_mode = g_mouse_mode >0 ? 0 : 1;
@@ -525,10 +527,10 @@ void init_active_keys()
     }
 
     if( rowData[7] & (1<<5) ) {
-        printf("\nToggle MM to %d ", !g_mouse_mode);
         //if(! g_mouse_mode)
-        //    tp_reset();
-        g_mouse_mode= g_mouse_mode ? 0: 1;
+        //  tp_reset();
+        g_mouse_enabled = g_mouse_enabled > 0 ? 0 : 1;
+        printf("\nToggle MM to %d ", g_mouse_enabled);
         rowData[7] &= ~(1<<5);
         return;
     }
@@ -537,7 +539,7 @@ void init_active_keys()
 //		printf("\n%d : ", row);
         for (uint8_t col = 0; col < COLS; ++col) {
             if (rowData[row] & (1UL << col)) {
-				//printf("\n%d x %d", row, col);
+                //printf("\n%d x %d", row, col);
                 // Check macro and inhibit any keys if valid macro is selected.
                 if(macroMode() && activateMacro(row*ROWS+col)) {
                     rowData[row] &= ~(1UL << col);
