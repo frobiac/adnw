@@ -412,6 +412,7 @@ if(g_mouse_mode || btns)
             */
         }
         g_mouse_keys=0;
+        btns=0;
 
         return sizeof(USB_MouseReport_Data_t);
 

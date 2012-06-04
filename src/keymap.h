@@ -99,8 +99,8 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
 // 2 3 4 5 1  4 0 1 2 3
 // 
 #define _MACRO _no
-#define _THUMB_ROW_LEFT     _no /*macro*/, _L_GUI,     _L_GUI,    _L_ALT , _L_CTRL, _SPACE
-#define _THUMB_ROW_RIGHT    _L_SHIFT,      _MOD_2,   _R_ALT,  _COMPOSE, _MOD_3, _H
+#define _THUMB_ROW_LEFT     _no /*macro*/, _L_GUI,     _L_SHIFT,    _L_ALT , _L_CTRL, _SPACE
+#define _THUMB_ROW_RIGHT    _MOD_1,      _MOD_2,   _R_ALT,  _COMPOSE, _MOD_3, _H
 
 
 static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
@@ -121,7 +121,7 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
     {
         { _ESC,   _K,         _U,         _Q,         _COLON,     _J},
         { _TAB,   _H,         _I,         _E,         _A,         _O},
-        { _no,_X,         _Y,         _USCORE,    _SCOLON,    _SQUOTE /** @todo Does not work with regular Shift as 2nd layer*/},
+        { _no,_X,         _Y,         _USCORE,    _SCOLON,    _BSLASH /** @todo Does not work with regular Shift as 2nd layer*/},
         { _THUMB_ROW_LEFT },
 
         { _V,     _G,         _C,         _L,         _F,         _DEL },
