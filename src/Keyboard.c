@@ -79,8 +79,12 @@ USB_ClassInfo_HID_Device_t Mouse_HID_Interface = {
     {
         .InterfaceNumber              = 2,
 
-        .ReportINEndpointNumber       = MOUSE_IN_EPNUM,
-        .ReportINEndpointSize         = HID_EPSIZE,
+        .ReportINEndpoint             =
+            {
+                .Address              = MOUSE_IN_EPADDR,
+                .Size                 = HID_EPSIZE,
+                .Banks                = 1,
+            },
 
         .PrevReportINBuffer           = PrevMouseHIDReportBuffer,
         .PrevReportINBufferSize       = sizeof(PrevMouseHIDReportBuffer),
@@ -100,9 +104,12 @@ USB_ClassInfo_HID_Device_t Keyboard_HID_Interface = {
     {
         .InterfaceNumber              = 0,
 
-        .ReportINEndpointNumber       = KEYBOARD_EPNUM,
-        .ReportINEndpointSize         = KEYBOARD_EPSIZE,
-        .ReportINEndpointDoubleBank   = false,
+        .ReportINEndpoint             =
+            {
+                .Address              = KEYBOARD_IN_EPADDR,
+                .Size                 = KEYBOARD_EPSIZE,
+                .Banks                = 1,
+            },
 
         .PrevReportINBuffer           = PrevKeyboardHIDReportBuffer,
         .PrevReportINBufferSize       = sizeof(PrevKeyboardHIDReportBuffer),
@@ -116,9 +123,12 @@ USB_ClassInfo_HID_Device_t DBG_HID_Interface = {
     {
         .InterfaceNumber              = 1,
 
-        .ReportINEndpointNumber       = DBG_EPNUM,
-        .ReportINEndpointSize         = DBG_EPSIZE,
-        .ReportINEndpointDoubleBank   = false,
+        .ReportINEndpoint             =
+            {
+                .Address              = DBG_IN_EPADDR,
+                .Size                 = DBG_EPSIZE,
+                .Banks                = 1,
+            },
 
         .PrevReportINBuffer           = PrevDBGHIDReportBuffer,
         .PrevReportINBufferSize       = sizeof(PrevDBGHIDReportBuffer),
@@ -141,7 +151,7 @@ void PRG_Device_USBTask()
     if (USB_DeviceState != DEVICE_STATE_Configured)
         return;
 
-    Endpoint_SelectEndpoint(PRG_EPNUM);
+    Endpoint_SelectEndpoint(PRG_IN_EPADDR);
 
     if (Endpoint_IsConfigured() && Endpoint_IsINReady() && Endpoint_IsReadWriteAllowed()) {
         static char data[] = "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
@@ -276,8 +286,8 @@ void EVENT_USB_Device_ConfigurationChanged(void)
     if (!(HID_Device_ConfigureEndpoints(&Mouse_HID_Interface)))
         LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
 
-    if (!(Endpoint_ConfigureEndpoint(PRG_EPNUM, EP_TYPE_BULK, ENDPOINT_DIR_IN,
-                                     PRG_EPSIZE, ENDPOINT_BANK_SINGLE)))
+    if (!(Endpoint_ConfigureEndpoint(PRG_IN_EPADDR, EP_TYPE_BULK, /*ENDPOINT_DIR_IN,*/
+                                     PRG_EPSIZE, 1 /*ENDPOINT_BANK_SINGLE*/)))
         LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
 
     USB_Device_EnableSOFEvents();

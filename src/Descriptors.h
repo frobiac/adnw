@@ -57,7 +57,8 @@
 
 #include <LUFA/Drivers/USB/USB.h>
 
-#include <LUFA/Drivers/USB/Class/HID.h>
+// #include <LUFA/Drivers/USB/Class/HID.h>
+#include <LUFA/Drivers/USB/Class/Device/HIDClassDevice.h>
 
 /* Type Defines: */
 /** Type define for the device configuration descriptor structure. This must be defined in the
@@ -81,27 +82,27 @@ typedef struct {
 
 /* Macros: */
 /** Endpoint number of the Keyboard HID report IN endpoint. */
-#define KEYBOARD_EPNUM               1
+#define KEYBOARD_IN_EPADDR           (ENDPOINT_DIR_IN  | 1)
 
 /** Size in bytes of the Keyboard HID report IN and OUT endpoints. */
 #define KEYBOARD_EPSIZE              8
 
 /** Endpoint number of the DBG HID report IN endpoint. */
-#define DBG_EPNUM                    2
+#define DBG_IN_EPADDR                (ENDPOINT_DIR_IN  | 2)
 
 /** Size in bytes of the DBG HID report IN and OUT
  *  endpoints. */
 #define DBG_EPSIZE                   32
 
 /** Endpoint number of the DBG HID report IN endpoint. */
-#define PRG_EPNUM                    3
+#define PRG_IN_EPADDR              (ENDPOINT_DIR_IN  | 3)
 
 /** Size in bytes of the Programming report IN and
  *  OUT endpoints. */
 #define PRG_EPSIZE                   64
 
 /** Endpoint number of the Mouse HID reporting IN endpoint. */
-#define MOUSE_IN_EPNUM                4
+#define MOUSE_IN_EPADDR                (ENDPOINT_DIR_IN  | 4)
 #define HID_EPSIZE                    8
 
 /* Function Prototypes: */

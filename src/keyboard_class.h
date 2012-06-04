@@ -21,8 +21,6 @@
 #ifndef __KEYBOARD_CLASS_H__
 #define __KEYBOARD_CLASS_H__
 
-#include <LUFA/Drivers/USB/Class/HID.h>
-
 #ifdef ANALOGSTICK
 #include "analog.h"
 #endif

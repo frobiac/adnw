@@ -342,7 +342,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .ConfigurationNumber    = 1,
         .ConfigurationStrIndex  = NO_DESCRIPTOR,
 
-        .ConfigAttributes       = (USB_CONFIG_ATTR_BUSPOWERED | USB_CONFIG_ATTR_REMOTEWAKEUP),
+        .ConfigAttributes       = (USB_CONFIG_ATTR_RESERVED | USB_CONFIG_ATTR_REMOTEWAKEUP),
 
         .MaxPowerConsumption    = USB_CONFIG_POWER_MA(100)
     },
@@ -378,7 +378,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
     {
         .Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
 
-        .EndpointAddress        = (ENDPOINT_DIR_IN | KEYBOARD_EPNUM),
+        .EndpointAddress        = KEYBOARD_IN_EPADDR,
         .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
         .EndpointSize           = KEYBOARD_EPSIZE,
         .PollingIntervalMS      = 0x0A
@@ -414,7 +414,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
     {
         .Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
 
-        .EndpointAddress        = (ENDPOINT_DIR_IN | DBG_EPNUM),
+        .EndpointAddress        = DBG_IN_EPADDR,
         .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
         .EndpointSize           = DBG_EPSIZE,
         .PollingIntervalMS      = 0x0A
@@ -439,7 +439,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
     {
         .Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
 
-        .EndpointAddress        = (ENDPOINT_DIR_IN | PRG_EPNUM),
+        .EndpointAddress        = PRG_IN_EPADDR,
         .Attributes             = (EP_TYPE_BULK | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
         .EndpointSize           = PRG_EPSIZE,
         .PollingIntervalMS      = 0x00 /* ignored for full-speed bulk transfers */
@@ -475,7 +475,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
     .HID_MouseReportINEndpoint =
     {
         .Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
-        .EndpointAddress        = (ENDPOINT_DIR_IN | MOUSE_IN_EPNUM),
+        .EndpointAddress        = MOUSE_IN_EPADDR,
         .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
         .EndpointSize           = HID_EPSIZE,
         .PollingIntervalMS      = 0x0A
