@@ -38,6 +38,7 @@
 #include "keyboard_class.h"
 #include "hhstdio.h"
 
+#include "eeprom.h"
 #include "keymap.h"
 #include "macro.h"
 #include "matrix.h"
@@ -98,6 +99,7 @@ ISR(TIMER0_OVF_vect)
  */
 void initKeyboard()
 {
+
     idle_count=0;
     // not strictly necessary
     for (uint8_t row = 0; row < ROWS; ++row) {

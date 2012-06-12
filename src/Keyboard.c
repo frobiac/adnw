@@ -66,6 +66,7 @@
 
 #include "version.h"
 
+
 /** Buffer to hold the previously generated Mouse HID report, for comparison purposes inside the HID class driver. */
 uint8_t PrevMouseHIDReportBuffer[sizeof(USB_MouseReport_Data_t)];
 
@@ -178,6 +179,9 @@ void led(uint8_t n)
 
 int main(void)
 {
+    /// @todo REMOVE THIS
+    eeprom_example();
+
     SetupHardware();
     sei();
 
