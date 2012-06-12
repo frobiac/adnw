@@ -163,14 +163,18 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 #endif
 
     if(macroMode()) {
-       /* only ascii char from array
+        // only ascii char from array
         char *ch ='\0';
+        if(getMacroReport(report_data)){
+            return sizeof(USB_KeyboardReport_Data_t);
+        }
+        /*
         if(getMacroCharacter(ch)) {
             stdio_fill_report(*ch,report_data);
             return sizeof(USB_KeyboardReport_Data_t);
         }
         */
-
+/*
         struct keycode k;
         k.ch = ' '; k.hid=0; k.mods=NONE;
         if(getMacroChar(&k)) {
@@ -179,7 +183,9 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
             report_data->Modifier = k.mods;
             return sizeof(USB_KeyboardReport_Data_t);
         }
+*/
     }
+
     return fillReport(report_data);
 }
 

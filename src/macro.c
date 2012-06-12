@@ -37,9 +37,9 @@ static const  char  macrosC[][MACROLEN]  =  {
 "MacroKilled",
 "MacroKilled",
 "MacroKilled",
-    "a",
-    "b",
-"MacroKilledf"
+    { (L_CTL|L_ALT)+0x80, 127, '\0' /*CTRL_ALT_DEL*/},
+    { 'a' },
+{MacroKilled }
 };
 
 bool macroMode(void)
@@ -79,6 +79,51 @@ bool activateMacro(uint8_t id)
     }
 }
 
+bool getMacroReport(USB_KeyboardReport_Data_t *report)
+{
+    char c;
+    if(!macromode)
+        return false;
+    if(curMacro>=MACROCOUNT)
+        return false;
+
+    sendEmpty = sendEmpty ? 0 : 1;
+    if( sendEmpty) {
+        c='\0';
+        memset(&report->KeyCode[0], 0, 6);
+        //sendEmpty = 0;
+        return true;
+    }
+
+    if( idx < sizeof(macrosC[curMacro])/sizeof(char) ) {
+        uint8_t mod = 0;
+
+        c=macrosC[curMacro][idx];
+
+        // if > 127, it is a modifier
+        if(c & 0x80 ){
+            mod=(c & 0x7F);
+            c=0;
+            sendEmpty = sendEmpty ? 0 : 1;
+        }
+
+        memcpy_P(report, &ascii_table[(uint8_t)c], sizeof(USB_KeyboardReport_Data_t));
+        report->Modifier |= mod;
+        // set remaining 5 bytes to 0
+        memset(&report->KeyCode[1], 0, 5);
+
+        //if(report->Modifier != 0)
+        //    sendEmpty = 1;
+
+        idx++;
+        return true;
+    } else {
+        endMacro();
+        return false;
+    }
+
+    return false;
+}
 
 bool getMacroCharacter(char *c)
 {
@@ -141,16 +186,6 @@ bool getMacroChar(struct keycode *kc)
 
         return true;
 }
-
-/*
-void
-stdio_fill_report(char ch, USB_KeyboardReport_Data_t *report)
-{
-        memcpy_P(report, &ascii_table[(uint8_t)ch], sizeof(USB_KeyboardReport_Data_t));
-            memset(&report->KeyCode[1], 0, 5);
-}
-
-*/
 
 
 

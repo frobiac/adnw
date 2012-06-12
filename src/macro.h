@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "hhstdio.h"
 #include "keymap.h"
 
 bool macroMode(void);
@@ -18,6 +19,7 @@ void endMacro(void);
 bool activateMacro(uint8_t id);
 bool getMacroChar(struct keycode *kc);
 bool getMacroCharacter(char *c);
+bool getMacroReport(USB_KeyboardReport_Data_t *report);
 
 
 #endif
