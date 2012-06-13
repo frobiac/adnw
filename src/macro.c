@@ -105,6 +105,11 @@ bool getMacroReport(USB_KeyboardReport_Data_t *report)
             mod=(c & 0x7F);
             c=0;
             sendEmpty = sendEmpty ? 0 : 1;
+            idx++;
+            if( idx < sizeof(macrosC[curMacro])/sizeof(char) ) {
+                c=macrosC[curMacro][idx];
+            }
+
         }
 
         memcpy_P(report, &ascii_table[(uint8_t)c], sizeof(USB_KeyboardReport_Data_t));
