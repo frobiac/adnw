@@ -165,9 +165,8 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 #endif
 
     if(macroMode()) {
-        printMacros();
-        setMacroMode(false);
-        return 0;
+        //setMacroMode(false);
+        //return 0;
 
         // only ascii char from array
         char *ch ='\0';
@@ -544,6 +543,9 @@ void init_active_keys()
         g_mouse_enabled = g_mouse_enabled > 0 ? 0 : 1;
         printf("\nToggle MM to %d ", g_mouse_enabled);
         rowData[7] &= ~(1<<5);
+
+        printMacros();
+
         return;
     }
     // process row/column data to find the active keys

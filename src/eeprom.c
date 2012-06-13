@@ -19,7 +19,7 @@ uint8_t readMacro(uint8_t * macro/*[MACROLEN]*/, uint8_t idx)
 {
     printf("\nEE readMacro #%d @%d", idx,EE_ADDR_MACRO(idx) );
     eeprom_read_block (( void *) macro , ( const void *) EE_ADDR_MACRO(idx) , MACROLEN);
-    //macro[MACROLEN-1]='\0';
+    macro[MACROLEN-1]='\0';
     printf(" : \"%s\"", macro );
 
     return 0;

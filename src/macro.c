@@ -26,21 +26,26 @@ bool macromode=false;
 /**
  * Only standard ascii characters work: No umlauts!
  */
-static const  char  EEmacrosC[][MACROLEN]  =  {
-    /*   "^X!\"X$%&/()=?`",
-    "{[]}\\+*~#'",
-    "<>|,;.:-_",
-    "@´`",
-    */
+/*   "^X!\"X$%&/()=?`",
+"{[]}\\+*~#'",
+"<>|,;.:-_",
+"@´`",
+*/
+//{ (L_CTL|L_ALT)+0x80, 127, '\0' /*CTRL_ALT_DEL*/},
+//{ 'a' },
+/MacroKilled }
+
+static const char EEmacrosC[MACROCOUNT][MACROLEN]  =  {
 "MacroKilled",
 "MacroKilled",
 "MacroKilled",
-    { (L_CTL|L_ALT)+0x80, 127, '\0' /*CTRL_ALT_DEL*/},
-    { 'a' },
-{MacroKilled }
+"MacroKilled",
+"MacroKilled",
+"MacroKilled"
 };
 
 char macrosC[MACROCOUNT][MACROLEN];
+
 bool initMacros()
 {
     for(int i=0; i<MACROCOUNT; ++i)
@@ -80,6 +85,7 @@ void printMacros(void)
     uint8_t str[MACROLEN];
     for(int i=0; i<MACROCOUNT; ++i){
         readMacro(str,i);
+        //printf("\nmacroC size: %d %d", sizeof(macrosC[i])/sizeof(char), strlen(macrosC[i]) );
         //printf("\n  stored: %s", &macrosC[i]);
     }
 }
@@ -141,6 +147,11 @@ bool getMacroReport(USB_KeyboardReport_Data_t *report)
         uint8_t mod = 0;
 
         c=macrosC[curMacro][idx];
+        if( c == '\0' ) {
+            memset(&report->KeyCode[0], 0, 6);
+            endMacro();
+            return false;
+        }
 
         // if > 127, it is a modifier
         if(c & 0x80 ){
