@@ -2,9 +2,7 @@
 //#include "hhstdio.h"
 #include "Keyboard.h"
 
-/// Increasing either too much leads to keyboard not registering at all!
-#define MACROLEN    20
-#define MACROCOUNT  6
+
 
 // end all macros with "_no" as dynamic length detection does not work yet
 struct keycode macros[MACROCOUNT][MACROLEN] = {
@@ -28,7 +26,7 @@ bool macromode=false;
 /**
  * Only standard ascii characters work: No umlauts!
  */
-static const  char  macrosC[][MACROLEN]  =  {
+static const  char  EEmacrosC[][MACROLEN]  =  {
     /*   "^X!\"X$%&/()=?`",
     "{[]}\\+*~#'",
     "<>|,;.:-_",
@@ -41,6 +39,50 @@ static const  char  macrosC[][MACROLEN]  =  {
     { 'a' },
 {MacroKilled }
 };
+
+char macrosC[MACROCOUNT][MACROLEN];
+bool initMacros()
+{
+    for(int i=0; i<MACROCOUNT; ++i)
+        for(int j=0; j<MACROLEN; ++j)
+            macrosC[i][j]='0';
+
+    // This has to be externally
+    for(int i=0; i<MACROCOUNT; ++i){
+        writeMacro(EEmacrosC[i],i);
+    }
+
+    uint8_t str[MACROLEN];
+    for(int i=0; i<MACROCOUNT; ++i){
+        readMacro(str,i);
+        uint8_t len = strlen(str); //sizeof(str)/sizeof(char);
+        printf("\n  %d = len(%s)", len,  str);
+        for(int j=0; j<len; ++j){
+            macrosC[i][j]=str[j];
+        }
+        //strncpy(&macrosC[i][0], str, strlen(str));
+        macrosC[i][len]='\0';
+    }
+
+    return true;
+    /*
+    char str[MACROLEN] = "01234567890123456789";
+    str[MACROLEN-1]='\0';
+    writeMacro(&str,0);
+    writeMacro("1 AllesGut!.......8",1);
+    writeMacro("2-zu_kurz.",2);
+    */
+
+}
+
+void printMacros(void)
+{
+    uint8_t str[MACROLEN];
+    for(int i=0; i<MACROCOUNT; ++i){
+        readMacro(str,i);
+        //printf("\n  stored: %s", &macrosC[i]);
+    }
+}
 
 bool macroMode(void)
 {

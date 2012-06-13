@@ -61,11 +61,11 @@
 
 #include "ps2mouse.h"
 #ifdef ANALOGSTICK
-#include "analog.h"
+    #include "analog.h"
 #endif
 
 #include "version.h"
-
+#include "macro.h"
 
 /** Buffer to hold the previously generated Mouse HID report, for comparison purposes inside the HID class driver. */
 uint8_t PrevMouseHIDReportBuffer[sizeof(USB_MouseReport_Data_t)];
@@ -179,10 +179,8 @@ void led(uint8_t n)
 
 int main(void)
 {
-    /// @todo REMOVE THIS
-    eeprom_example();
-
     SetupHardware();
+
     sei();
 
     for (;;) {
@@ -253,6 +251,9 @@ void SetupHardware()
         printf("\nTrackpoint initialized %d ", g_trackpoint);
     else
         printf("\nTrackpoint FAILED!");
+
+    /// @todo REMOVE THIS
+    initMacros();
 
 #if defined(BOOTLOADER_TEST)
     uint8_t bootloader = eeprom_read_byte(&ee_bootloader);

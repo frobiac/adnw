@@ -12,6 +12,19 @@
 #include "hhstdio.h"
 #include "keymap.h"
 
+#include "eeprom.h"
+
+/**
+ *  Macros are stored in eeprom.
+ *  Content has to be put into a separate file to keep sensitive data
+ *  out of normal sources :)
+ *  Addresses are therefore fixed here.
+*/
+
+
+bool initMacros(void);
+void printMacros(void);
+
 bool macroMode(void);
 void setMacroMode(bool on);
 void endMacro(void);

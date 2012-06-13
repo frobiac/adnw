@@ -165,6 +165,10 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 #endif
 
     if(macroMode()) {
+        printMacros();
+        setMacroMode(false);
+        return 0;
+
         // only ascii char from array
         char *ch ='\0';
         if(getMacroReport(report_data)){
