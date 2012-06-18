@@ -38,7 +38,6 @@
 #include "keyboard_class.h"
 #include "hhstdio.h"
 
-#include "eeprom.h"
 #include "keymap.h"
 #include "macro.h"
 #include "matrix.h"
@@ -377,26 +376,6 @@ uint8_t getActiveLayer()
             layer += getModifier(k.row, k.col,0)-MOD_LAYER_0;
         }
     }
-#ifdef ANALOG_STICK
-    // no other layer modifier pressed
-    if(layer == 0) {
-        if( g_mouse_mode)
-            return 4; /// @todo  hardcoded layer
-        else return analogData.layer;
-    }
-#endif
-
-    /* TP as mode switch
-    if(g_mouse_modifier > 0) {
-        if(g_mouse_modifier & 2)
-            layer=1;
-        else if(g_mouse_modifier & 4)
-            layer=2;
-        else if(g_mouse_modifier & 8)
-            layer=3;
-    }
-    */
-
     return layer;
 }
 
@@ -566,5 +545,5 @@ void init_active_keys()
             }
         }
     }
-
 }
+

@@ -1,28 +1,6 @@
 #include "macro.h"
 #include "Keyboard.h"
 
-#ifdef _private_macros.h_NOT_FOUND
-/** 
- * _private_macros.h
- * Put private macro declaration in this header file and define LEN and COUNT:
- * - use ascii characters/strings, or the corresponding codes from ascii_table directly
- * - any modifier(s) for the following character should be ORed with 0x80
- */
-#define MACROCOUNT   3
-#define MACROLEN    20 
-
-static const char EEmacrosC[MACROCOUNT][MACROLEN]  =  {
-    "SampleString!",
-    // CTRL+ALT+DEL
-    { (L_CTL|L_ALT)+0x80, 127, '\0' },
-    // ^c ^t ^v return for firefox
-    { (L_CTL)+0x80, c , (L_CTL)+0x80, t, (L_CTL)+0x80, v, '\0' },
-};
-#endif
-
-#include "_private_macros.h"
-
-
 uint8_t curMacro  = MACROCOUNT;
 uint8_t sendEmpty = 0;    // empty report needed to send the same character twice in a row
 uint8_t idx=0;
@@ -157,3 +135,35 @@ bool getMacroReport(USB_KeyboardReport_Data_t *report)
     return false;
 }
 
+
+uint8_t readMacro(uint8_t * macro/*[MACROLEN]*/, uint8_t idx)
+{
+    uint8_t len=eeprom_read_byte (( const void *) EE_ADDR_MACRO(idx) );
+    _delay_us(50);
+    printf("\nEE readMacro #%d @%d len=%d", idx, EE_ADDR_MACRO(idx), len );
+    eeprom_read_block (( void *) macro , ( const void *) (EE_ADDR_MACRO(idx)+1) , len);
+    _delay_us(50);
+    macro[len]='\0';
+    // printf(" : \"%s\"", macro );
+
+    return 0;
+}
+
+
+uint8_t writeMacro(const char * macro/*[MACROLEN]*/, uint8_t idx)
+{
+
+    uint8_t len=strlen(macro);
+    if(len>MACROLEN)
+        len=MACROLEN;
+    //printf("\n### EE WRITE #### %d \"%s\"", len, macro);
+    //uint8_t str[MACROLEN];
+    //readMacro(str, idx);
+    eeprom_update_byte ((void *) EE_ADDR_MACRO(idx) , len );
+    _delay_us(50);
+    eeprom_update_block (( const void *) macro , (void *) (EE_ADDR_MACRO(idx)+1) , len );
+    _delay_us(50);
+    //readMacro(str, idx);
+
+    return 0;
+}

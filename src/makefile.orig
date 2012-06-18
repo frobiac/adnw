@@ -122,7 +122,6 @@ SRC =   $(LUFA_SRC_USB) \
 	$(SRCDIR)/macro.c       \
 	$(SRCDIR)/ps2mouse.c       \
 	$(SRCDIR)/jump_bootloader.c       \
-	$(SRCDIR)/eeprom.c       \
 	$(LUFA_SRC)
 
 #	$(SRCDIR)/eepromtest.c       \
