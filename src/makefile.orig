@@ -128,6 +128,7 @@ SRC =   $(LUFA_SRC_USB) \
 #	$(SRCDIR)/eepromtest.c       \
 #   $(SRCDIR)/matrix.c       \
 
+
 # List C++ source files here. (C dependencies are automatically generated.)
 CPPSRC = 
 
@@ -453,7 +454,7 @@ ALL_ASFLAGS =
 
 
 # Default target.
-all: begin gccversion sizebefore version build sizeafter end
+all: begin macro gccversion sizebefore version build sizeafter end
 
 # Change the build target to build a HEX file or a library.
 build: elf hex eep lss sym
@@ -462,6 +463,17 @@ build: elf hex eep lss sym
 # create some version information from git
 version:
 	@$(SRCDIR)/version.sh > $(SRCDIR)/version.h
+
+# test macro existance
+macro:	
+	@if test -f $(SRCDIR)/_private_macros.h; then \
+		echo "*** Macro definition found ";  \
+	else \
+		echo -e "\n\n\n*** ERROR: $(SRCDIR)/_private_macros.h NOT found. \n*** Consider copying template\n\n"; \
+		false; \
+	fi
+
+
 
 elf: $(TARGET).elf
 hex: $(TARGET).hex
