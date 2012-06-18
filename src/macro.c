@@ -40,14 +40,15 @@ static const char EEmacrosC[MACROCOUNT][MACROLEN]  =  {
 "MacroKilled",
 "MacroKilled",
 "MacroKilled",
-"MacroKilled",
-"MacroKilled"
+    { (L_CTL|L_ALT)+0x80, 127, '\0' /*CTRL_ALT_DEL*/},
+{MacroKilled},
 };
 
 char macrosC[MACROCOUNT][MACROLEN];
 
 bool initMacros()
 {
+    // clear array
     for(int i=0; i<MACROCOUNT; ++i)
         for(int j=0; j<MACROLEN; ++j)
             macrosC[i][j]='0';

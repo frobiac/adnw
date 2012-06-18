@@ -17,22 +17,31 @@ static uint8_t EEMEM SFR = 0xFF;
 
 uint8_t readMacro(uint8_t * macro/*[MACROLEN]*/, uint8_t idx)
 {
-    printf("\nEE readMacro #%d @%d", idx,EE_ADDR_MACRO(idx) );
-    eeprom_read_block (( void *) macro , ( const void *) EE_ADDR_MACRO(idx) , MACROLEN);
-    macro[MACROLEN-1]='\0';
-    printf(" : \"%s\"", macro );
+    uint8_t len=eeprom_read_byte (( const void *) EE_ADDR_MACRO(idx) );
+    _delay_us(50);
+    printf("\nEE readMacro #%d @%d len=%d", idx, EE_ADDR_MACRO(idx), len );
+    eeprom_read_block (( void *) macro , ( const void *) (EE_ADDR_MACRO(idx)+1) , len);
+    _delay_us(50);
+    macro[len]='\0';
+    // printf(" : \"%s\"", macro );
 
     return 0;
 }
 
 
-uint8_t writeMacro(uint8_t * macro/*[MACROLEN]*/, uint8_t idx)
+uint8_t writeMacro(const char * macro/*[MACROLEN]*/, uint8_t idx)
 {
 
-    printf("\n### EE WRITE #### ");
+    uint8_t len=strlen(macro);
+    if(len>MACROLEN)
+        len=MACROLEN;
+    //printf("\n### EE WRITE #### %d \"%s\"", len, macro);
     //uint8_t str[MACROLEN];
     //readMacro(str, idx);
-    eeprom_update_block (( const void *) macro , (void *) EE_ADDR_MACRO(idx) , MACROLEN);
+    eeprom_update_byte ((void *) EE_ADDR_MACRO(idx) , len );
+    _delay_us(50);
+    eeprom_update_block (( const void *) macro , (void *) (EE_ADDR_MACRO(idx)+1) , len );
+    _delay_us(50);
     //readMacro(str, idx);
 
     return 0;

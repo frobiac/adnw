@@ -13,10 +13,10 @@
 #define EEPROM_DEF 0xFF
 
 #define EE_ADDR_START       100
-#define EE_ADDR_MACROS      EE_ADDR_START+100
+#define EE_ADDR_MACROS      (EE_ADDR_START+100)
 #define EE_ADDR_MACRO(idx)  (EE_ADDR_MACROS + (idx*MACROLEN))
 
-uint8_t writeMacro(uint8_t macro[MACROLEN], uint8_t idx);
+uint8_t writeMacro(const char    macro[MACROLEN], uint8_t idx);
 uint8_t readMacro (uint8_t macro[MACROLEN], uint8_t idx);
 
 //void eeprom_example (void);

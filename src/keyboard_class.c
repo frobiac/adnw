@@ -116,6 +116,8 @@ void initKeyboard()
 
     stdio_init();
     init_cols();
+
+    initMacros();
 }
 
 
@@ -544,7 +546,7 @@ void init_active_keys()
         printf("\nToggle MM to %d ", g_mouse_enabled);
         rowData[7] &= ~(1<<5);
 
-        printMacros();
+        //printMacros();
 
         return;
     }

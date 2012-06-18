@@ -252,8 +252,6 @@ void SetupHardware()
     else
         printf("\nTrackpoint FAILED!");
 
-    /// @todo REMOVE THIS
-    initMacros();
 
 #if defined(BOOTLOADER_TEST)
     uint8_t bootloader = eeprom_read_byte(&ee_bootloader);
