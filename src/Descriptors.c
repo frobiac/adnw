@@ -63,45 +63,6 @@
  *  This descriptor describes the mouse HID interface's report structure.
  */
 
-#ifdef OLD_MOUSE
-const USB_Descriptor_HIDReport_Datatype_t PROGMEM MouseReport[] =
-
-{
-    0x05, 0x01,          /* Usage Page (Generic Desktop)             */
-    0x09, 0x02,          /* Usage (Mouse)                            */
-    0xA1, 0x01,          /* Collection (Application)                 */
-    0x09, 0x01,          /*   Usage (Pointer)                        */
-    0xA1, 0x00,          /*   Collection (Application)               */
-    0x95, 0x03,          /*     Report Count (3)                     */
-    0x75, 0x01,          /*     Report Size (1)                      */
-    0x05, 0x09,          /*     Usage Page (Button)                  */
-    0x19, 0x01,          /*     Usage Minimum (Button 1)             */
-    0x29, 0x03,          /*     Usage Maximum (Button 3)             */
-    0x15, 0x00,          /*     Logical Minimum (0)                  */
-    0x25, 0x01,          /*     Logical Maximum (1)                  */
-    0x81, 0x02,          /*     Input (Data, Variable, Absolute)     */
-    0x95, 0x01,          /*     Report Count (1)                     */
-    0x75, 0x05,          /*     Report Size (5)                      */
-    0x81, 0x01,          /*     Input (Constant)                     */
-    0x75, 0x08,          /*     Report Size (8)                      */
-    // 0x95, 0x02,          /*     Report Count (2)             */
-    0x95, 0x04,          /*     Report Count (2 + WHEELs)             */
-    0x05, 0x01,          /*     Usage Page (Generic Desktop Control) */
-    0x09, 0x30,          /*     Usage X                              */
-    0x09, 0x31,          /*     Usage Y                              */
-    0x09, 0x38,        // Vertical wheel
-    0x05, 0x0c,        // Horizontal Wheel  USAGE_PAGE (Consumer Devices)
-    0x0a, 0x38, 0x02,  //         USAGE (AC Pan)
-    0x15, 0x81,          /*     Logical Minimum (-127)               */
-    0x25, 0x7F,          /*     Logical Maximum (127)                */
-    0x81, 0x06,          /*     Input (Data, Variable, Relative)     */
-    0xC0,                /*   End Collection                         */
-    0xC0                 /* End Collection                           */
-};
-
-#endif
-// #ifdef NEW_MOUSE
-
 //
 // Wheel Mouse - simplified version - 5 button, vertical and horizontal wheel
 //
@@ -132,7 +93,7 @@ also patch HIDClassCommon.h to include scrollwheel data:
 --- a/trunk/LUFA/Drivers/USB/Class/Common/HIDClassCommon.h
 +++ b/trunk/LUFA/Drivers/USB/Class/Common/HIDClassCommon.h
 @@ -626,6 +626,10 @@
-    uint8_t Button; /**< Button mask for 
+    uint8_t Button; /**< Button mask for
     int8_t  X; /**< Current delta X movem
     int8_t  Y; /**< Current delta Y movem
 +   // also adjust descriptors
@@ -216,7 +177,6 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM MouseReport[] =
     0xc0,              //   END_COLLECTION
     0xc0               // END_COLLECTION
 };
-// #endif
 
 
 /** HID class report descriptor. This is a special descriptor constructed with values from the

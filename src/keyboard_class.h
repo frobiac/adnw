@@ -65,8 +65,6 @@ void scan_matrix(void);
 uint8_t fillReport(USB_KeyboardReport_Data_t *report_data);
 uint8_t fillMacroReport(USB_KeyboardReport_Data_t *report_data);
 
-void copyCurrentKeys(void);
-bool keysChanged(void);
 void printCurrentKeys(void);
 
 #endif // __KEYBOARD_CLASS_H__

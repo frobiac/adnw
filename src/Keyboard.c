@@ -138,9 +138,6 @@ USB_ClassInfo_HID_Device_t DBG_HID_Interface = {
 
 uint8_t g_num_lock, g_caps_lock, g_scrl_lock;
 
-/* EEPROM Data */
-//static KeyMap  EEMEM ee_persistent_map;
-
 /** Main program entry point. This routine contains the overall program flow, including initial
  *  setup of all components and the main program loop.
  */
@@ -189,7 +186,7 @@ int main(void)
             HID_Device_USBTask(&DBG_HID_Interface);
             if(g_trackpoint == 1)
                 HID_Device_USBTask(&Mouse_HID_Interface);
-            PRG_Device_USBTask();
+            //PRG_Device_USBTask();
         } else if (USB_Device_RemoteWakeupEnabled ) {
             USB_CLK_Unfreeze();
             USB_Device_SendRemoteWakeup();

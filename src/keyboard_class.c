@@ -152,13 +152,6 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
     clearActiveKeys();
     scan_matrix();
 
-    /*
-    if ( keysChanged() )
-    {
-        copyCurrentKeys();
-        printCurrentKeys();
-    }
-    */
     init_active_keys();
 
 #ifdef ANALOGSTICK
@@ -191,7 +184,6 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
         }
 */
     }
-
     return fillReport(report_data);
 }
 
@@ -217,7 +209,6 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
                 printf(" %d ", report_data->KeyCode[k]);
             break;
         }
-
     }
 
     report_data->Modifier=getActiveModifiers()|getActiveKeyCodeModifier();
@@ -315,20 +306,6 @@ void scan_matrix(void)
         printf("\nGMOUSEMODE=%d", g_mouse_mode);
     }
     */
-}
-
-void copyCurrentKeys(void)
-{
-    for(uint8_t r=0; r<ROWS; ++r)
-        prevRowData[r] = rowData[r];
-}
-
-bool keysChanged(void)
-{
-    for(uint8_t r=0; r<ROWS; ++r)
-        if(prevRowData[r] != rowData[r])
-            return true;
-    return false;
 }
 
 void printCurrentKeys(void)
