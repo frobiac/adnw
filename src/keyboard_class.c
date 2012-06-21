@@ -122,20 +122,20 @@ void initKeyboard()
 
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
-/*
-   if(g_mouse_double == 1 ) {
-        printf(" COPY ");
-        g_mouse_double=0;
-        //stdio_fill_report('c',report_data);
-        //report_data->Modifier = (1<<(MOD_L_CTRL-MOD_BEGIN));
-        //return sizeof(USB_KeyboardReport_Data_t);
-    } else if(g_mouse_keys == 4 ) {
-        printf("+");
-        //stdio_fill_report('v',report_data);
-        //report_data->Modifier = (1<<(MOD_L_CTRL-MOD_BEGIN));
-        //return sizeof(USB_KeyboardReport_Data_t);
-    }
-*/
+    /*
+       if(g_mouse_double == 1 ) {
+            printf(" COPY ");
+            g_mouse_double=0;
+            //stdio_fill_report('c',report_data);
+            //report_data->Modifier = (1<<(MOD_L_CTRL-MOD_BEGIN));
+            //return sizeof(USB_KeyboardReport_Data_t);
+        } else if(g_mouse_keys == 4 ) {
+            printf("+");
+            //stdio_fill_report('v',report_data);
+            //report_data->Modifier = (1<<(MOD_L_CTRL-MOD_BEGIN));
+            //return sizeof(USB_KeyboardReport_Data_t);
+        }
+    */
     //testMKT();
     if(mkt_timer+MKT_TIMEOUT < idle_count)
         mkt_state = MKT_RESET;
@@ -164,7 +164,7 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 
         // only ascii char from array
         char *ch ='\0';
-        if(getMacroReport(report_data)){
+        if(getMacroReport(report_data)) {
             return sizeof(USB_KeyboardReport_Data_t);
         }
         /*
@@ -173,16 +173,16 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
             return sizeof(USB_KeyboardReport_Data_t);
         }
         */
-/*
-        struct keycode k;
-        k.ch = ' '; k.hid=0; k.mods=NONE;
-        if(getMacroChar(&k)) {
-            //printf("\n%c %d ",k.ch,  k.hid);
-            report_data->KeyCode[0] = k.hid;
-            report_data->Modifier = k.mods;
-            return sizeof(USB_KeyboardReport_Data_t);
-        }
-*/
+        /*
+                struct keycode k;
+                k.ch = ' '; k.hid=0; k.mods=NONE;
+                if(getMacroChar(&k)) {
+                    //printf("\n%c %d ",k.ch,  k.hid);
+                    report_data->KeyCode[0] = k.hid;
+                    report_data->Modifier = k.mods;
+                    return sizeof(USB_KeyboardReport_Data_t);
+                }
+        */
     }
     return fillReport(report_data);
 }
@@ -508,7 +508,7 @@ void init_active_keys()
     }
     // process row/column data to find the active keys
     for (uint8_t row = 0; row < ROWS; ++row) {
-//		printf("\n%d : ", row);
+//      printf("\n%d : ", row);
         for (uint8_t col = 0; col < COLS; ++col) {
             if (rowData[row] & (1UL << col)) {
                 //printf("\n%d x %d", row, col);

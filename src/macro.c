@@ -18,16 +18,16 @@ bool initMacros()
             macrosC[i][j]='0';
 
     // This has to be externally
-    for(int i=0; i<MACROCOUNT; ++i){
+    for(int i=0; i<MACROCOUNT; ++i) {
         writeMacro(EEmacrosC[i],i);
     }
 
     uint8_t str[MACROLEN];
-    for(int i=0; i<MACROCOUNT; ++i){
+    for(int i=0; i<MACROCOUNT; ++i) {
         readMacro(str,i);
         uint8_t len = strlen(str);
         // printf("\n  %d = len(%s)", len,  str);
-        for(int j=0; j<len; ++j){
+        for(int j=0; j<len; ++j) {
             macrosC[i][j]=str[j];
         }
         //strncpy(&macrosC[i][0], str, strlen(str));
@@ -40,7 +40,7 @@ bool initMacros()
 void printMacros(void)
 {
     uint8_t str[MACROLEN];
-    for(int i=0; i<MACROCOUNT; ++i){
+    for(int i=0; i<MACROCOUNT; ++i) {
         readMacro(str,i);
     }
 }
@@ -109,7 +109,7 @@ bool getMacroReport(USB_KeyboardReport_Data_t *report)
         }
 
         // if > 127, it is a modifier
-        if(c & 0x80 ){
+        if(c & 0x80 ) {
             mod=(c & 0x7F);
             c=0;
             sendEmpty = sendEmpty ? 0 : 1;

@@ -61,7 +61,7 @@
 
 #include "ps2mouse.h"
 #ifdef ANALOGSTICK
-    #include "analog.h"
+#include "analog.h"
 #endif
 
 #include "version.h"
@@ -81,11 +81,11 @@ USB_ClassInfo_HID_Device_t Mouse_HID_Interface = {
         .InterfaceNumber              = 2,
 
         .ReportINEndpoint             =
-            {
-                .Address              = MOUSE_IN_EPADDR,
-                .Size                 = HID_EPSIZE,
-                .Banks                = 1,
-            },
+        {
+            .Address              = MOUSE_IN_EPADDR,
+            .Size                 = HID_EPSIZE,
+            .Banks                = 1,
+        },
 
         .PrevReportINBuffer           = PrevMouseHIDReportBuffer,
         .PrevReportINBufferSize       = sizeof(PrevMouseHIDReportBuffer),
@@ -106,11 +106,11 @@ USB_ClassInfo_HID_Device_t Keyboard_HID_Interface = {
         .InterfaceNumber              = 0,
 
         .ReportINEndpoint             =
-            {
-                .Address              = KEYBOARD_IN_EPADDR,
-                .Size                 = KEYBOARD_EPSIZE,
-                .Banks                = 1,
-            },
+        {
+            .Address              = KEYBOARD_IN_EPADDR,
+            .Size                 = KEYBOARD_EPSIZE,
+            .Banks                = 1,
+        },
 
         .PrevReportINBuffer           = PrevKeyboardHIDReportBuffer,
         .PrevReportINBufferSize       = sizeof(PrevKeyboardHIDReportBuffer),
@@ -125,11 +125,11 @@ USB_ClassInfo_HID_Device_t DBG_HID_Interface = {
         .InterfaceNumber              = 1,
 
         .ReportINEndpoint             =
-            {
-                .Address              = DBG_IN_EPADDR,
-                .Size                 = DBG_EPSIZE,
-                .Banks                = 1,
-            },
+        {
+            .Address              = DBG_IN_EPADDR,
+            .Size                 = DBG_EPSIZE,
+            .Banks                = 1,
+        },
 
         .PrevReportINBuffer           = PrevDBGHIDReportBuffer,
         .PrevReportINBufferSize       = sizeof(PrevDBGHIDReportBuffer),

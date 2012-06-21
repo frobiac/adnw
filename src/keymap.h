@@ -97,7 +97,7 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
 // on BlueCube, the innermost thumb-buttons are on outermost columns in matrix!
 //         0  5
 // 2 3 4 5 1  4 0 1 2 3
-// 
+//
 #define _MACRO _no
 #define _THUMB_ROW_LEFT     _no /*macro*/, _L_GUI,     _L_SHIFT,    _L_ALT , _L_CTRL, _SPACE
 #define _THUMB_ROW_RIGHT    _MOD_1,      _MOD_2,   _R_ALT,  _COMPOSE, _MOD_3, _H
@@ -129,7 +129,7 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
         { _B,     _P,         _W,         _M,         _Z,         _no  },
         { _THUMB_ROW_RIGHT}
     },
-   
+
     // MOD2 layer (special chars)
     {
         { _no, _AT,      _no,       _L_BRACKET, _R_BRACKET, _HASH },

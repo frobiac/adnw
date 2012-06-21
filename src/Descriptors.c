@@ -93,14 +93,14 @@ also patch HIDClassCommon.h to include scrollwheel data:
 --- a/trunk/LUFA/Drivers/USB/Class/Common/HIDClassCommon.h
 +++ b/trunk/LUFA/Drivers/USB/Class/Common/HIDClassCommon.h
 @@ -626,6 +626,10 @@
-    uint8_t Button; /**< Button mask for currently pressed buttons in the mouse. */
-    int8_t  X; /**< Current delta X movement of the mouse. */
-    int8_t  Y; /**< Current delta Y movement on the mouse. */
+uint8_t Button; /**< Button mask for currently pressed buttons in the mouse. */
+int8_t  X; /**< Current delta X movement of the mouse. */
+int8_t  Y; /**< Current delta Y movement on the mouse. */
 +   // also adjust descriptors
 +   int8_t  V; /**< Vertical wheel */
 +   int8_t  H; /**< Horizontal wheel */
 +
-    } ATTR_PACKED USB_MouseReport_Data_t;
+} ATTR_PACKED USB_MouseReport_Data_t;
 #endif
 
 const USB_Descriptor_HIDReport_Datatype_t PROGMEM MouseReport[] =

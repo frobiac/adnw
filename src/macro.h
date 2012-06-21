@@ -15,23 +15,23 @@
 
 
 #ifdef _private_macros.h_NOT_FOUND
-    /**
-     * _private_macros.h
-     * Put private macro declaration in this header file and define LEN and COUNT:
-     * - use ascii characters/strings, or the corresponding codes from ascii_table directly
-     * - any modifier(s) for the following character should be ORed with 0x80
-     */
-    /// Increasing either too much leads to keyboard not registering at all!
-    #define MACROCOUNT   3
-    #define MACROLEN    20
+/**
+ * _private_macros.h
+ * Put private macro declaration in this header file and define LEN and COUNT:
+ * - use ascii characters/strings, or the corresponding codes from ascii_table directly
+ * - any modifier(s) for the following character should be ORed with 0x80
+ */
+/// Increasing either too much leads to keyboard not registering at all!
+#define MACROCOUNT   3
+#define MACROLEN    20
 
-    static const char EEmacrosC[MACROCOUNT][MACROLEN]  =  {
-        "SampleString!",
-        // CTRL+ALT+DEL
-        { (L_CTL|L_ALT)+0x80, 127, '\0' },
-        // ^c ^t ^v return for firefox
-        { (L_CTL)+0x80, c , (L_CTL)+0x80, t, (L_CTL)+0x80, v, '\0' },
-    };
+static const char EEmacrosC[MACROCOUNT][MACROLEN]  =  {
+    "SampleString!",
+    // CTRL+ALT+DEL
+    { (L_CTL|L_ALT)+0x80, 127, '\0' },
+    // ^c ^t ^v return for firefox
+    { (L_CTL)+0x80, c , (L_CTL)+0x80, t, (L_CTL)+0x80, v, '\0' },
+};
 #endif
 
 #include "_private_macros.h"

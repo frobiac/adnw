@@ -275,7 +275,9 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
             *dx= read_packet();
             *dy= read_packet();
             // raw *dx is of 0xXX
-            int x = *dx; int y = *dy; int xtest = *dx;
+            int x = *dx;
+            int y = *dy;
+            int xtest = *dx;
 
             if(mouseinf&0x10)
                 *dx=-(256-*dx);
@@ -285,7 +287,7 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
 
             return;
 
-            if(mouseinf&0x10){
+            if(mouseinf&0x10) {
                 xtest=-(256-*dx);
                 *dx-=0x100; // Add sign bit to dx
 
@@ -293,7 +295,7 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
             if(mouseinf&0x20)
                 *dy-=0x100; // Add sign bit to dy
 
-            if( x!=0 ){
+            if( x!=0 ) {
                 //printf("\n%4x %4x | %4x %4x", x,*dx,y,*dy);
                 printf("\ninf=0x%04x x:%2d dx:0x%04x xtest: %d dxrevert: ", mouseinf, x,*dx, xtest);
                 if(*dx&0xFF00)
@@ -328,8 +330,7 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
     }
 #endif
 
-    if( (g_mouse_keys & 0x0F) || (btns & 0x07) || (dx+dy) > 0 /* Test for spurious movements */ )
-    {
+    if( (g_mouse_keys & 0x0F) || (btns & 0x07) || (dx+dy) > 0 /* Test for spurious movements */ ) {
         if(g_mouse_mode==0) {
             g_mouse_mode=1;
             accel=0;
@@ -339,15 +340,14 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
         if(accel<ACC_RAMPTIME)
             accel++;
 
-    // reset mouse mode after inactivity: idle_count is incremented 61 times per second
+        // reset mouse mode after inactivity: idle_count is incremented 61 times per second
     } else if(idle_count-mouse_timer > 1/*seconds*/ *61 ) {
         g_mouse_mode=0;
         accel=0;
         scrollcnt=0;
     }
 
-    if(g_mouse_mode || btns)
-    {
+    if(g_mouse_mode || btns) {
         factor= 1 + accel * (ACC_MAX-1) / ACC_RAMPTIME;
 
 #ifdef MOUSE_HAS_SCROLL_WHEELS
