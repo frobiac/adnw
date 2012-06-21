@@ -1,5 +1,0 @@
-- mappings with premodifiers need to mask off those premodifiers @done
-- mappings with premodifiers need to be sent in individual reports
-	This is to prevent the mapping's modifiers from affecting other keys that may also be pressed during the cycle.  This has the downside that keys that were pressed in the previous cycle will be shown as released, even if they are not.
-- if e.g. only shift is pressed, and no mapping with only the shift premodifier exists for a key, then we should try to find a mapping that includes shift, even if other modifiers exist in the set.
-	otherwise, you wouldn't be able to add modifiers to a key that has premodifiers.

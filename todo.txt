@@ -1,32 +1,25 @@
+debug mode to configure features while running (PinkyDrop, ThumpShift)
+
 startup even if TP is disabled
-macro do not echo key after macro
-dedicated macro key
+
 strg stuck
 revert multimodekey
-debug mode to configure features while running (PinkyDrop, ThumpShift)
+
 make matrix a matrix
-copy paste on mouse middle btn
+copy paste on mouse middle btn on Win possible?
+
 ### DONE ####
-PS/2 buttons
-Mouse buttons, move on windows
 move mod4 to shifted mod3 Not very efficient, double usage of modifiers with standard keys is better
 F1-12
-timeout modekey toggle
-trackpoint
-    timeout, mousemode only temporary and on selected button keys!
 
 ### Ideas ####
 
-- new 3D design, mainly thumbkeys
-- Macro + shifted macro causes spurious press?
 - programming macros on edges?
 
 - prntscreen...
 
 - debug output of layout
 - openmoko touchpad?
-
-- macro mode
 
 - multiple layouts -> fixed based layer toggle
 
