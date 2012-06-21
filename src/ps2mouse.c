@@ -31,8 +31,12 @@
 #define ACK 0
 #define DELAY 150
 
-static uint8_t scrollcnt=0;
+#define ACC_RAMPTIME 400 // acc incrementation time till maximum
+#define ACC_MAX      2.5 // maximum accelleration factor reachable
 
+volatile uint8_t     scrollcnt;
+volatile uint32_t    mouse_timer; /// toggle mouse mode for a specified time
+volatile uint16_t    accel; /// toggle mouse mode for a specified time
 
 void data(uint8_t x)
 {
@@ -151,17 +155,13 @@ bool send_packet(uint8_t byte)
         serout((byte & (1 << 5)) >> 5);
         serout((byte & (1 << 6)) >> 6);
         serout((byte & (1 << 7)) >> 7);
-
-/////////////
         serout(parity);
-        /////////////
+
         serout(1); //Stop
 
         DDDR &= ~(1 << DBIT); //Release the Data line
         DPORT |= (1 << DBIT); //Set the pull up on Data
 
-
-        /////////////
         //if(serin() != ACK )
         //    send_packet(byte); // Try again if ACK has not been received
         errcnt++;
@@ -199,6 +199,7 @@ bool ps2_init_mouse(void)
 {
     g_trackpoint = 0;
     g_mouse_enabled = 0;
+    scrollcnt = 0;
 
     tp_reset();
 
@@ -226,6 +227,7 @@ bool ps2_init_mouse(void)
         return false;
     read_packet(); //Ack
 
+    g_trackpoint=1;
     return true;
 }
 
@@ -304,8 +306,6 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
     }
 }
 
-volatile uint32_t mouse_timer; /// toggle mouse mode for a specified time
-volatile uint16_t accel; /// toggle mouse mode for a specified time
 
 uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 {
@@ -314,6 +314,7 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 
     int16_t dx=0, dy=0;
     uint8_t btns=0;
+    float factor;
 
 #ifdef PS2MOUSE
     if(g_trackpoint) {
@@ -327,14 +328,12 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
     }
 #endif
 
-    if( (btns & 0x07) || (dx+dy) > 0 /* Test for spurious movements */ )
+    if( (g_mouse_keys & 0x0F) || (btns & 0x07) || (dx+dy) > 0 /* Test for spurious movements */ )
     {
         if(g_mouse_mode==0) {
             g_mouse_mode=1;
             accel=0;
         }
-#define ACC_RAMPTIME 400 // acc incrementation time till maximum
-#define ACC_MAX      2.5   // maximum accelleration factor reachable
 
         mouse_timer=idle_count;
         if(accel<ACC_RAMPTIME)
@@ -344,18 +343,20 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
     } else if(idle_count-mouse_timer > 1/*seconds*/ *61 ) {
         g_mouse_mode=0;
         accel=0;
+        scrollcnt=0;
     }
 
-// DISABLED as real mouse buttons are available
-if(g_mouse_mode || btns)
-{
+    if(g_mouse_mode || btns)
+    {
+        factor= 1 + accel * (ACC_MAX-1) / ACC_RAMPTIME;
+
 #ifdef MOUSE_HAS_SCROLL_WHEELS
         MouseReport->V=0;
         MouseReport->H=0;
         MouseReport->Button=0;
 
         // keyboard mouse buttons only in mousemode
-        if( (btns & 0x05)==0x05 || (g_mouse_keys & 0x08)  ) {
+        if( (btns & 0x05)==0x05 || (g_mouse_keys & 0x08)) {
             int8_t sx=0, sy=0;
 
             if( dx!=0 ) {
@@ -371,26 +372,25 @@ if(g_mouse_mode || btns)
                     sy=dy;
             }
 
-
             scrollcnt = scrollcnt+abs(sy)+abs(sx);
 
-            if(scrollcnt>40) {
+            // limit 10 and emiting as is way to fast in windows.
+            if(scrollcnt>10) {
                 scrollcnt=0;
                 MouseReport->X=0;
                 MouseReport->Y=0;
                 // only move by 1 ?!
-                MouseReport->H = -sx;
-                MouseReport->V = -sy;
+                MouseReport->H = -sx*(factor-1)/3;
+                MouseReport->V = -sy*(factor-1)/3;
             }
         } else
 #endif
         {
-            float factor= 1 + accel * (ACC_MAX-1) / ACC_RAMPTIME;
 
             MouseReport->Y = dy * factor;
             MouseReport->X = -dx * factor;
-            //printf("\nBtns: %d / %d", btns, g_mouse_keys );
 
+            // do not emit the scroll button
             MouseReport->Button = g_mouse_keys & ~(0x08);
             MouseReport->Button |= btns;    // PS/2 buttons if set
 
@@ -417,46 +417,5 @@ if(g_mouse_mode || btns)
         return sizeof(USB_MouseReport_Data_t);
 
     }
-    /* Test of TP as modifier switcher
-    else {
-        // no g_mouse_mode;
-        int8_t old = g_mouse_modifier;
-
-        // reset after a certain time
-        if(dx==0 && dy==0) {
-            if( g_tp_counter++ > 12 ) {
-                g_mouse_modifier=0;
-                g_tp_counter=0;
-                for(int i=0; i<4; ++i) {
-                    g_mouse_mode_sum[i] = 0;
-                }
-            }
-        }
-
-        if( dx > 0 )
-            g_mouse_mode_sum[0] += dx;
-        else if( dx & 0xFF00 )
-            g_mouse_mode_sum[1] += (256-(dx+0x100)) ;
-        if( dy > 0 )
-            g_mouse_mode_sum[2] += dy;
-        else if( dy & 0xFF00)
-            g_mouse_mode_sum[3] += (256-(dy+0x100));
-
-
-        uint8_t maxid;
-        for(int i=1; i<4; ++i) {
-            if(g_mouse_mode_sum[i]>g_mouse_mode_sum[maxid]) {
-                maxid=i;
-            }
-        }
-
-        if( g_mouse_mode_sum[maxid] > 30)
-            g_mouse_modifier=(1<<maxid);
-
-        // if(old != g_mouse_modifier)
-        //     printf("\n%5d %5d %5d %5d : %d -> %d | ",g_mouse_mode_sum[0],g_mouse_mode_sum[1],g_mouse_mode_sum[2],g_mouse_mode_sum[3], old, g_mouse_modifier );
-
-    }
-    */ // end TP as modifier
     return 0;
 }

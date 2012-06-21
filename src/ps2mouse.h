@@ -84,10 +84,7 @@ bool ps2_init_mouse(void);
 #define CLK  ((CPIN & (1 << CBIT)) >> CBIT)
 #define RESET ((RPIN & (1 << RBIT)) >> RBIT)))
 ///////////////////////////////
-/*
-#define DELX (dapack[1]-(((dapack[0] & (1 << 4)) >> 4) << 8))
-#define DELY (dapack[2]-(((dapack[0] & (1 << 5)) >> 5) << 8))
-*/
+
 
 bool send_packet(uint8_t);
 uint8_t read_packet(void);

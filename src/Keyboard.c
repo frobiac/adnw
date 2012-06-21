@@ -184,7 +184,7 @@ int main(void)
         if (USB_DeviceState != DEVICE_STATE_Suspended) {
             HID_Device_USBTask(&Keyboard_HID_Interface);
             HID_Device_USBTask(&DBG_HID_Interface);
-            if(g_trackpoint == 1)
+            if( g_trackpoint )
                 HID_Device_USBTask(&Mouse_HID_Interface);
             //PRG_Device_USBTask();
         } else if (USB_Device_RemoteWakeupEnabled ) {
@@ -232,7 +232,9 @@ void SetupHardware()
 
 #ifdef PS2MOUSE
     if( ps2_init_mouse() )
-        g_trackpoint=1;
+        printf("\nTP initialized");
+    else
+        printf("\nTP init FAILED!");
 #endif
 
     /*
@@ -244,10 +246,6 @@ void SetupHardware()
       printf("\n %s\n- ",  BUILDDATE);
     #endif
       */
-    if(g_trackpoint > 0)
-        printf("\nTrackpoint initialized %d ", g_trackpoint);
-    else
-        printf("\nTrackpoint FAILED!");
 
 
 #if defined(BOOTLOADER_TEST)
