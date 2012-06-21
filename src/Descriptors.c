@@ -93,9 +93,9 @@ also patch HIDClassCommon.h to include scrollwheel data:
 --- a/trunk/LUFA/Drivers/USB/Class/Common/HIDClassCommon.h
 +++ b/trunk/LUFA/Drivers/USB/Class/Common/HIDClassCommon.h
 @@ -626,6 +626,10 @@
-    uint8_t Button; /**< Button mask for
-    int8_t  X; /**< Current delta X movem
-    int8_t  Y; /**< Current delta Y movem
+    uint8_t Button; /**< Button mask for currently pressed buttons in the mouse. */
+    int8_t  X; /**< Current delta X movement of the mouse. */
+    int8_t  Y; /**< Current delta Y movement on the mouse. */
 +   // also adjust descriptors
 +   int8_t  V; /**< Vertical wheel */
 +   int8_t  H; /**< Horizontal wheel */
@@ -312,7 +312,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .Header                 = {.Size = sizeof(USB_Descriptor_Configuration_Header_t), .Type = DTYPE_Configuration},
 
         .TotalConfigurationSize = sizeof(USB_Descriptor_Configuration_t),
-        .TotalInterfaces        = 4,  // +1 due to mouse
+        .TotalInterfaces        = 3,  // +1 due to mouse
 
         .ConfigurationNumber    = 1,
         .ConfigurationStrIndex  = NO_DESCRIPTOR,
@@ -394,37 +394,12 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .EndpointSize           = DBG_EPSIZE,
         .PollingIntervalMS      = 0x0A
     },
-    .Programming_Interface =
-    {
-        .Header                 = {.Size = sizeof(USB_Descriptor_Interface_t), .Type = DTYPE_Interface},
-
-        .InterfaceNumber        = 0x02,
-        .AlternateSetting       = 0x00,
-
-        .TotalEndpoints         = 1,
-
-        .Class                  = 0xFF, /* Vendor specific */
-        .SubClass               = 0x00,
-        .Protocol               = 0x00,
-
-        .InterfaceStrIndex      = NO_DESCRIPTOR
-    },
-
-    .Programming_ReportINEndpoint =
-    {
-        .Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
-
-        .EndpointAddress        = PRG_IN_EPADDR,
-        .Attributes             = (EP_TYPE_BULK | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
-        .EndpointSize           = PRG_EPSIZE,
-        .PollingIntervalMS      = 0x00 /* ignored for full-speed bulk transfers */
-    },
 
     .HID_MouseInterface =
     {
         .Header                 = {.Size = sizeof(USB_Descriptor_Interface_t), .Type = DTYPE_Interface},
 
-        .InterfaceNumber        = 0x03,
+        .InterfaceNumber        = 0x02,
         .AlternateSetting       = 0x00,
 
         .TotalEndpoints         = 1,
@@ -538,7 +513,7 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint8_t wIndex,
             Address = (void*)&ConfigurationDescriptor.HIDDBG_HID;
             Size    = sizeof(USB_HID_Descriptor_HID_t);
             break;
-        case 3:
+        case 2:
             Address = (void*)&ConfigurationDescriptor.HID_MouseHID;
             Size    = sizeof(USB_HID_Descriptor_HID_t);
             break;
@@ -554,7 +529,7 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint8_t wIndex,
             Address = (void*)&DBGReport;
             Size    = sizeof(DBGReport);
             break;
-        case 3:
+        case 2:
             Address = (void*)&MouseReport;
             Size    = sizeof(MouseReport);
             break;

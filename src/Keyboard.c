@@ -138,31 +138,6 @@ USB_ClassInfo_HID_Device_t DBG_HID_Interface = {
 
 uint8_t g_num_lock, g_caps_lock, g_scrl_lock;
 
-/** Main program entry point. This routine contains the overall program flow, including initial
- *  setup of all components and the main program loop.
- */
-
-void PRG_Device_USBTask(void);
-
-void PRG_Device_USBTask()
-{
-    if (USB_DeviceState != DEVICE_STATE_Configured)
-        return;
-
-    Endpoint_SelectEndpoint(PRG_IN_EPADDR);
-
-    if (Endpoint_IsConfigured() && Endpoint_IsINReady() && Endpoint_IsReadWriteAllowed()) {
-        static char data[] = "0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF";
-        Endpoint_Write_Stream_LE((void *)data, 64, NULL);
-        // FIXME handle err
-
-        Endpoint_ClearIN();
-    }
-}
-
-
-
-
 void led(uint8_t n)
 {
     DDRD |= (1 << 6);
@@ -173,7 +148,9 @@ void led(uint8_t n)
     return;
 }
 
-
+/** Main program entry point. This routine contains the overall program flow, including initial
+ *  setup of all components and the main program loop.
+ */
 int main(void)
 {
     SetupHardware();
@@ -186,7 +163,6 @@ int main(void)
             HID_Device_USBTask(&DBG_HID_Interface);
             if( g_trackpoint )
                 HID_Device_USBTask(&Mouse_HID_Interface);
-            //PRG_Device_USBTask();
         } else if (USB_Device_RemoteWakeupEnabled ) {
             USB_CLK_Unfreeze();
             USB_Device_SendRemoteWakeup();
@@ -282,10 +258,6 @@ void EVENT_USB_Device_ConfigurationChanged(void)
         LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
 
     if (!(HID_Device_ConfigureEndpoints(&Mouse_HID_Interface)))
-        LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
-
-    if (!(Endpoint_ConfigureEndpoint(PRG_IN_EPADDR, EP_TYPE_BULK, /*ENDPOINT_DIR_IN,*/
-                                     PRG_EPSIZE, 1 /*ENDPOINT_BANK_SINGLE*/)))
         LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
 
     USB_Device_EnableSOFEvents();
