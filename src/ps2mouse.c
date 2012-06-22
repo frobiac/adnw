@@ -256,12 +256,11 @@ uint8_t tp_ram_read(uint8_t addr){
     return( read_packet() );
 }
 
-uint8_t tp_ram_write(uint8_t addr, uint8_t val){
+void tp_ram_write(uint8_t addr, uint8_t val){
     tp_send_read_ack(0xe2);
     tp_send_read_ack(0x81);
     tp_send_read_ack(addr);
     tp_send_read_ack(val);
-    //return( read_packet() );
 }
 
 // TP config register: See p33 of YKT3Eext.pdf
@@ -291,12 +290,11 @@ uint8_t tp_read_config(){
 
 void tp_id(void) {
     uint8_t tmp;
-
-
     // read secondary ID
+/*
     if( tp_send_read_ack(0xe1) )
         printf("\n2nd  ID: %02x%02x \nExt. ID: ", read_packet(),read_packet());
-/*
+
     // read extended ID
     if( tp_send_read_ack(0xd0) ){
         // better scan for ")" == 29 // 41 ?
@@ -317,20 +315,9 @@ void tp_id(void) {
     /* bit  0   1   2    3    4    5    6    7
             Pts res 2clk invX invY invZ ExXY HardTransp
       */
-    //tp_read_config();
-    //tp_ram_toggle(0x2c, (1<<TP_FLIPX) );
     tp_read_config();
     tp_ram_toggle(0x2c, (1<<TP_PTS) );
     tp_read_config();
-
-
-    // PressToSelect toggle
-    //send_packet(0xe2);send_packet(0x47);send_packet(0x2c);send_packet(0x01);
-
-    /*
-    // invertX
-    send_packet(0xe2);send_packet(0x81);send_packet(0x2c);send_packet(0x03);
-    */
 
     /* RAM locations:
      * - Read with E2 80 ADDR
@@ -340,9 +327,15 @@ void tp_id(void) {
      * 5C PtS thres
      */
 
+    // setup PressToSroll by enabling PTS, setting button masks and increasing threshold
     printf("\nPTS btn masks: %02x %02x %02x ", tp_ram_read(0x41), tp_ram_read(0x42), tp_ram_read(0x43) );
+    tp_ram_write(0x41, 0xff);
     tp_ram_write(0x42, 0xff);
     printf("\nPTS btn masks: %02x %02x %02x ", tp_ram_read(0x41), tp_ram_read(0x42), tp_ram_read(0x43) );
+    printf("\nPTS thres: %02x", tp_ram_read(0x5c));
+    tp_ram_write(0x5c, 0x0A); // 08 is default, 10 too hard
+    printf("\nPTS thres: %02x", tp_ram_read(0x5c));
+
 }
 
 /*
