@@ -6,6 +6,6 @@ static const char EEmacrosC[MACROCOUNT][MACROLEN]  =  {
     // CTRL+ALT+DEL
     { (L_CTL|L_ALT)+0x80, 127, '\0' },
     // ^c ^t ^v return for firefox
-    { (L_CTL)+0x80, c , (L_CTL)+0x80, t, (L_CTL)+0x80, v, '\0' },
+    { (L_CTL)+0x80, 'c' , (L_CTL)+0x80, 't', (L_CTL)+0x80, 'v', '\0' },
 };
 
