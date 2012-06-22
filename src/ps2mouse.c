@@ -199,7 +199,7 @@ bool ps2_init_mouse(void)
 
     uint8_t d[10];
 
-    // tp_reset();
+    tp_reset();
 
     if ( ! send_packet(0xff) )
         return false;
@@ -247,6 +247,21 @@ void tp_ram_toggle(uint8_t addr, uint8_t val){
     tp_send_read_ack(0x47);
     tp_send_read_ack(addr);
     tp_send_read_ack(val);
+}
+
+uint8_t tp_ram_read(uint8_t addr){
+    tp_send_read_ack(0xe2);
+    tp_send_read_ack(0x80);
+    tp_send_read_ack(addr);
+    return( read_packet() );
+}
+
+uint8_t tp_ram_write(uint8_t addr, uint8_t val){
+    tp_send_read_ack(0xe2);
+    tp_send_read_ack(0x81);
+    tp_send_read_ack(addr);
+    tp_send_read_ack(val);
+    //return( read_packet() );
 }
 
 // TP config register: See p33 of YKT3Eext.pdf
@@ -308,6 +323,7 @@ void tp_id(void) {
     tp_ram_toggle(0x2c, (1<<TP_PTS) );
     tp_read_config();
 
+
     // PressToSelect toggle
     //send_packet(0xe2);send_packet(0x47);send_packet(0x2c);send_packet(0x01);
 
@@ -315,6 +331,18 @@ void tp_id(void) {
     // invertX
     send_packet(0xe2);send_packet(0x81);send_packet(0x2c);send_packet(0x03);
     */
+
+    /* RAM locations:
+     * - Read with E2 80 ADDR
+     * - Read with E2 81 ADDR VAL
+     *
+     * 41,42,43 pts btn mask
+     * 5C PtS thres
+     */
+
+    printf("\nPTS btn masks: %02x %02x %02x ", tp_ram_read(0x41), tp_ram_read(0x42), tp_ram_read(0x43) );
+    tp_ram_write(0x42, 0xff);
+    printf("\nPTS btn masks: %02x %02x %02x ", tp_ram_read(0x41), tp_ram_read(0x42), tp_ram_read(0x43) );
 }
 
 /*
