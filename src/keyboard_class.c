@@ -497,9 +497,12 @@ void init_active_keys()
 
     if( rowData[7] & (1<<5) ) {
         //if(! g_mouse_mode)
-        //  tp_reset();
-        g_mouse_enabled = g_mouse_enabled > 0 ? 0 : 1;
-        printf("\nToggle MM to %d ", g_mouse_enabled);
+        //tp_reset();
+        //g_mouse_enabled = g_mouse_enabled > 0 ? 0 : 1;
+        //printf("\nToggle MM to %d ", g_mouse_enabled);
+        g_mouse_enabled=1;
+        tp_id();
+
         rowData[7] &= ~(1<<5);
 
         //printMacros();

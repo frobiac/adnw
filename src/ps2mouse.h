@@ -88,9 +88,11 @@ bool ps2_init_mouse(void);
 
 bool send_packet(uint8_t);
 uint8_t read_packet(void);
+bool tp_send_read_ack(uint8_t val);
 
 void reset(void);
 void tp_reset(void);
+void tp_id(void);
 
 void serout(uint8_t bit);
 uint8_t serin(void);

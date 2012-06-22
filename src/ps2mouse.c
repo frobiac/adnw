@@ -60,12 +60,10 @@ void clk(uint8_t x)
 
 void tp_reset()
 {
-
     RDDR |= (1 << RBIT);
     RPORT |= (1 << RBIT);
     _delay_us(DELAY);
     RPORT &= ~(1 << RBIT);
-
     return;
 
     while(CLK) {
@@ -133,7 +131,6 @@ uint8_t oparity(uint8_t byte)
 
 bool send_packet(uint8_t byte)
 {
-
     uint8_t parity;
 
     errcnt=0;
@@ -165,7 +162,6 @@ bool send_packet(uint8_t byte)
         //if(serin() != ACK )
         //    send_packet(byte); // Try again if ACK has not been received
         errcnt++;
-
     } while (serin() != ACK && errcnt < 5 );
 
     if(errcnt >= 5)
@@ -201,13 +197,15 @@ bool ps2_init_mouse(void)
     g_mouse_enabled = 0;
     scrollcnt = 0;
 
-    tp_reset();
+    uint8_t d[10];
+
+    // tp_reset();
 
     if ( ! send_packet(0xff) )
         return false;
-    read_packet(); //Ack
-    read_packet(); //Bat
-    read_packet(); //dev ID
+    d[0]=read_packet(); //Ack
+    d[1]=read_packet(); //Bat
+    d[2]=read_packet(); //dev ID
     //Enable Data reporting
     if ( !send_packet(0xf4) )
         return false;
@@ -225,12 +223,99 @@ bool ps2_init_mouse(void)
     //Set remote mode
     if( ! send_packet(0xf0) )
         return false;
-    read_packet(); //Ack
-
+    d[3]=read_packet(); //Ack
     g_trackpoint=1;
+
+    printf("\nTP init: %02x %02x %02x %02x", d[0],d[1],d[2],d[3]);
+
+    tp_id();
+
     return true;
 }
 
+void tp_ram_toggle(uint8_t addr, uint8_t val){
+    uint8_t tmp;
+
+    tp_send_read_ack(0xe2);
+    tp_send_read_ack(0x2c);
+    tmp=read_packet();
+    if( (tmp & val) != 0x00) {
+        printf("\nAlready set");
+    }
+
+    tp_send_read_ack(0xe2);
+    tp_send_read_ack(0x47);
+    tp_send_read_ack(addr);
+    tp_send_read_ack(val);
+}
+
+// TP config register: See p33 of YKT3Eext.pdf
+enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FTRANS };
+
+bool tp_send_read_ack(uint8_t val)
+{
+    if( ! send_packet(val) ) {
+        printf("\nError: not send");
+        return false;
+    }
+    if(read_packet() != 0xfa) {
+        printf("\nError: not ack");
+        return false;
+    }
+    return true;
+}
+
+uint8_t tp_read_config(){
+    printf("\nTP Config= ");
+    tp_send_read_ack(0xe2);
+    tp_send_read_ack(0x2c);
+    uint8_t config = read_packet();
+    printf("%02x ", config);
+    return config;
+}
+
+void tp_id(void) {
+    uint8_t tmp;
+
+
+    // read secondary ID
+    if( tp_send_read_ack(0xe1) )
+        printf("\n2nd  ID: %02x%02x \nExt. ID: ", read_packet(),read_packet());
+/*
+    // read extended ID
+    if( tp_send_read_ack(0xd0) ){
+        // better scan for ")" == 29 // 41 ?
+        for(uint8_t i=0; i < 31; ++i) {
+            tmp=read_packet();
+            printf("%c",tmp);
+            if( tmp == (uint8_t)')')
+                continue;
+        }
+    }
+*/
+    /* smaller TP:
+     * 2nd  ID:  010e
+     * Ext. ID: M 19990623($IBM3780)
+     */
+
+    // read config byte at 2C: E2 2C or E2 80 2C
+    /* bit  0   1   2    3    4    5    6    7
+            Pts res 2clk invX invY invZ ExXY HardTransp
+      */
+    //tp_read_config();
+    //tp_ram_toggle(0x2c, (1<<TP_FLIPX) );
+    tp_read_config();
+    tp_ram_toggle(0x2c, (1<<TP_PTS) );
+    tp_read_config();
+
+    // PressToSelect toggle
+    //send_packet(0xe2);send_packet(0x47);send_packet(0x2c);send_packet(0x01);
+
+    /*
+    // invertX
+    send_packet(0xe2);send_packet(0x81);send_packet(0x2c);send_packet(0x03);
+    */
+}
 
 /*
  *
