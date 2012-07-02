@@ -15,9 +15,9 @@ BOARD        = teensy
 F_CPU        = 16000000
 F_USB        = $(F_CPU)
 OPTIMIZATION = s
-TARGET       = KeyboardMouse
-#SRC          = $(TARGET).c Descriptors.c $(LUFA_SRC_USB) $(LUFA_SRC_USBCLASS)
+TARGET       = adnw
 SRCDIR       = ./src
+
 # List C source files here. (C dependencies are automatically generated.)
 SRC =   $(LUFA_SRC_USB) \
     $(LUFA_SRC_USBCLASS) \
