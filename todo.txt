@@ -5,8 +5,6 @@ LUFA :  test existance in makefile
         new modular makefile instead of makefile.orig
         scrollwheel patch
 
-        git bad from d13c04e4ca1c24decc5e onwards!
-
 
 Docmentation: 
         code
