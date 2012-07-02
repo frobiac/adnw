@@ -2,7 +2,8 @@ The driver was originally based on humblehackers hhkb firmware, but I found some
 
 PS/2 support is credited in large part to Akshay Srinivasan<akshaysrinivasan@nitk.ac.in>
 
-You will need a recent version of the LUFA usb stack to compile this software, I use git revision 29be35a8 from June 3, 2012 currently. Note that the new makefile system of this lib does not yet work for me. If you want scrollwheel support for the mouse, the included patch needs to be applied.
+You will need a recent version of the LUFA usb stack to compile this software.
+If you want scrollwheel support for the mouse, the included patch needs to be applied.
 From this root directory, execute
   git clone https://github.com/abcminiuser/lufa-lib.git 
   ln -sf lufa-lib/trunk LUFA
@@ -11,7 +12,7 @@ From this root directory, execute
   patch -Np1 -i ../LUFA-scrollwheel.patch
 
 
-To build, please adjust controller type and build switches in src/makefile.orig, but call make from root directory.
+To build, please adjust controller type and build switches in makefile and call make from root directory.
 
 
 #############################################################
