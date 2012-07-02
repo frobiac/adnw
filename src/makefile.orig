@@ -453,7 +453,7 @@ ALL_ASFLAGS =
 
 
 # Default target.
-all: begin macro gccversion sizebefore version build sizeafter end
+all: begin macrocheck gccversion sizebefore version build sizeafter end
 
 # Change the build target to build a HEX file or a library.
 build: elf hex eep lss sym
@@ -464,14 +464,13 @@ version:
 	@$(SRCDIR)/version.sh > $(SRCDIR)/version.h
 
 # test macro existance
-macro:	
+macrocheck:	
 	@if test -f $(SRCDIR)/_private_macros.h; then \
 		echo "*** Macro definition found ";  \
 	else \
 		echo -e "\n\n\n*** ERROR: $(SRCDIR)/_private_macros.h NOT found. \n*** Consider copying template\n\n"; \
 		false; \
 	fi
-
 
 
 elf: $(TARGET).elf

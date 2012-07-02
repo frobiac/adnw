@@ -1,3 +1,38 @@
 The driver was originally based on humblehackers hhkb firmware, but I found some things (while pretty neat and cleanly implemented) a little too difficult to adjust, so I revamped everything but the most basic USB code.
 
-Maybe in the future I might come back to the original source, but for now the hardware prototype needs some more refinements.
+PS/2 support is credited in large part to Akshay Srinivasan<akshaysrinivasan@nitk.ac.in>
+
+You will need a recent version of the LUFA usb stack to compile this software, I use git revision 29be35a8 from June 3, 2012 currently. Note that the new makefile system of this lib does not yet work for me. If you want scrollwheel support for the mouse, the included patch needs to be applied.
+From this root directory, execute
+  git clone https://github.com/abcminiuser/lufa-lib.git 
+  ln -sf lufa-lib/trunk LUFA
+
+
+
+#############################################################
+Current default layout: 
+  ( discussion at http://deskthority.net/keyboards-f2/the-decent-keyboard-layout-discussion-thread-matrix-t2898-30.html )
+
+----- Thumb & MKT ----
+                        Macro    TP
+                        -        -
+LShft LAlt LCtrl Space                  Mod1 Mod3 AltGr Fx
+ -     Esc  Tab  Space                  BkSp Ret  -     -
+                        LWin     Mod2
+                        -        -
+
+------ Layer 0 & Mod1 ( letters shifted)
+K  U  Q  .: J     V  G  C  L  F
+H  I  E  A  O     D  T  R  N  S
+X  Y  -_ ,; /\    B  P  W  M  Z
+
+----- M2 / special ---
+@ _ [ ] #   ! < > = &
+\ / { } *   ? ( ) + :
+  $ | ~ `   ^ % " '
+
+----- M3 / MoveNum ---
+PgUp BkSp  Up  Del  PgDo   ß 7 8 9 ä Ä
+Pos1 Left Down Righ End    . 4 5 6 ö Ö
+Esc  Tab  Ins  Ret  Undo   0 1 2 3 ü Ü
+>>>>>>> a5849ff... Add LUFA install instructions
