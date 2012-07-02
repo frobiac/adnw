@@ -6,11 +6,16 @@ You will need a recent version of the LUFA usb stack to compile this software, I
 From this root directory, execute
   git clone https://github.com/abcminiuser/lufa-lib.git 
   ln -sf lufa-lib/trunk LUFA
+  cd lufa-lib
+  git co 29be35a85 -b adnw
+  patch -Np1 -i ../LUFA-scrollwheel.patch
 
+
+To build, please adjust controller type and build switches in src/makefile.orig, but call make from root directory.
 
 
 #############################################################
-Current default layout: 
+Current default layout as implemented in src/keymap.h : 
   ( discussion at http://deskthority.net/keyboards-f2/the-decent-keyboard-layout-discussion-thread-matrix-t2898-30.html )
 
 ----- Thumb & MKT ----

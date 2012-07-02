@@ -1,3 +1,23 @@
+####
+github markup
+
+LUFA :  test existance in makefile 
+        new modular makefile instead of makefile.orig
+        scrollwheel patch
+
+        git bad from d13c04e4ca1c24decc5e onwards!
+
+
+Docmentation: 
+        code
+        pinout for different controllers
+
+TP:
+        initialization not really thought out
+        refactor tp specifics out from PS/2 code
+        document registers
+        configuration editable at runtime + eeprom store
+
 beautify: 
     for i in *.[ch]; do astyle --style=linux --convert-tabs --lineend=linux --indent=spaces=4  -o -O -K $i ; done
 

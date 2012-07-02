@@ -484,7 +484,7 @@ void init_active_keys()
     if( rowData[3] & (1<<0) ) {
         rowData[3] &= ~(1<<0);
         setMacroMode(true);
-        //return;
+        return;
     }
     // all four corners to reboot
     else if( (rowData[0] & (1<<0)) &&

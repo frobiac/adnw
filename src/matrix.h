@@ -26,8 +26,8 @@ uint8_t read_col(bool swap)
 
 void unselect_rows(void)
 {
-    DDRD  = 0x00;
-    PORTD = 0x00;
+    DDRD  &= 0b00001011;
+    PORTD &= 0b00001011;
     DDRB  &= 0b10001111;
     PORTB &= 0b10001111;
 }
