@@ -62,8 +62,8 @@ else
 	if [ `grep -c "Vertical" LUFA/LUFA/Drivers/USB/Class/Common/HIDClassCommon.h` -eq 1 ] ; then \
         echo "*** and LUFA seems patched, ok"; \
     else \
-    	echo "*** but LUFA not patched for it - run "; \
-		echo -e "*** patch -Np1 -i LUFA-scrollwheel.patch \n*** to fix \n”" ; \
+    	echo "*** ERROR: but LUFA not patched for it - run "; \
+		echo -e "*** patch -Np1 -i LUFA-scrollwheel.patch \n*** to fix \n" ; \
         false; \
     fi 
 endif

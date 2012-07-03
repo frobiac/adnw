@@ -1,3 +1,4 @@
+LUFA
 *.aps
 *.aws
 *.eep
@@ -17,3 +18,5 @@ generated
 build
 log
 version.h
+src/*.d
+src/_private_macros.h
