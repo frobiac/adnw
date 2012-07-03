@@ -41,9 +41,11 @@ LD_FLAGS     =
 # Default target
 all: version macrocheck
 
+
 # create some version information from git
 version:
 	@$(SRCDIR)/version.sh > $(SRCDIR)/version.h
+
 
 # test macro existance
 macrocheck:	
@@ -54,7 +56,18 @@ macrocheck:
 		false; \
 	fi
 
+#
+# DOES nothing - LUFA includes are searched before this, so no helpful msg
+#
+# check that LUFA is there
+ifeq ($(wildcard LUFA/LUFA/Build/lufa.core.in),) 
+	@echo -e "*** ERROR: LUFA/LUFA missing - see README for install instructions"; false;
+else
+	@echo "*** LUFA found.";
+endif 
 
+
+# check whether scrollwheel support is requested and complete
 ifneq (,$(findstring MOUSE_HAS_SCROLL_WHEELS,$(CCFLAGS)))
 	@echo "*** SCROLLWHEEL not defined"
 else
@@ -67,7 +80,6 @@ else
         false; \
     fi 
 endif
-
 
 # Include LUFA build script makefiles
 include $(LUFA_PATH)/Build/lufa.core.in
