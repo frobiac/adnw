@@ -14,7 +14,7 @@
 #include "keymap.h"
 
 
-#ifdef _private_macros.h_NOT_FOUND
+#ifdef _private_macros_h_NOT_FOUND
 /**
  * _private_macros.h
  * Put private macro declaration in this header file and define LEN and COUNT:

@@ -25,7 +25,7 @@ bool initMacros()
     uint8_t str[MACROLEN];
     for(int i=0; i<MACROCOUNT; ++i) {
         readMacro(str,i);
-        uint8_t len = strlen(str);
+        uint8_t len = strlen((char*)str);
         // printf("\n  %d = len(%s)", len,  str);
         for(int j=0; j<len; ++j) {
             macrosC[i][j]=str[j];
