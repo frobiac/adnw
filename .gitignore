@@ -14,9 +14,15 @@ LUFA
 *.vtg
 *.xpr
 .DS_Store
+*.autosave
 generated
 build
 log
 version.h
 src/*.d
 src/_private_macros.h
+# qtcreator files
+*.creator*
+*.files
+*.config
+*.includes
