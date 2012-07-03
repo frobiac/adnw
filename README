@@ -1,3 +1,15 @@
+**** WARNING ****
+**** WARNING ****
+The code is by no means in a state I would normally want to present it, but merely a snapshot of my current work in progress.
+Due to the numerous requests I nonetheless chose to open it to the public, in the hopes that someone may find valuable information or hints even though it is documented poorly and hackish at best - maybe this encourages me enough to clean it up a little, too. 
+*****************
+
+
+This is a firmware for avr controllers like the teensy to simulate a keyboard and a mouse. It was created for a custom split keyboard design with 4x6 keys on each side in a matrix layout but could be adapted easily for other hardware. A presentation of my current keyboard prototype can be found at http://deskthority.net/workshop-f7/my-diy-keyboard-collection-or-how-i-became-a-kb-geek-t2534.html .
+
+It enables a different, more ergonomic layout without any further drivers on any host operating system. In its current state, the well evolved AdNW-layout is implemented with layers 3&4 (special characters, navigational keys and numpad) from neo-layout.org. In addition, an integrated IBM trackpoint is also supported, but any PS/2 compatible device can also be hooked-up to the controller.
+
+
 The driver was originally based on humblehackers hhkb firmware, but I found some things (while pretty neat and cleanly implemented) a little too difficult to adjust, so I revamped everything but the most basic USB code.
 
 PS/2 support is credited in large part to Akshay Srinivasan<akshaysrinivasan@nitk.ac.in>
@@ -5,10 +17,9 @@ PS/2 support is credited in large part to Akshay Srinivasan<akshaysrinivasan@nit
 You will need a recent version of the LUFA usb stack to compile this software.
 If you want scrollwheel support for the mouse, the included patch needs to be applied.
 From this root directory, execute
-  git clone https://github.com/abcminiuser/lufa-lib.git 
-  ln -sf lufa-lib/trunk LUFA
-  cd lufa-lib
-  git co 29be35a85 -b adnw
+  git clone https://github.com/abcminiuser/lufa-lib.git ../lufa-lib
+  ln -sf ../lufa-lib/trunk LUFA
+  cd LUFA
   patch -Np1 -i ../LUFA-scrollwheel.patch
 
 
@@ -41,4 +52,3 @@ X  Y  -_ ,; /\    B  P  W  M  Z
 PgUp BkSp  Up  Del  PgDo   ß 7 8 9 ä Ä
 Pos1 Left Down Righ End    . 4 5 6 ö Ö
 Esc  Tab  Ins  Ret  Undo   0 1 2 3 ü Ü
->>>>>>> a5849ff... Add LUFA install instructions

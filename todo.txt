@@ -17,8 +17,14 @@ TP:
 beautify: 
     for i in *.[ch]; do astyle --style=linux --convert-tabs --lineend=linux --indent=spaces=4  -o -O -K $i ; done
 
-english / german host layout
-BU-TECK
+
+Refactor:
+        english / german host layout
+        
+Layout:
+        BU-TECK better?
+        enable QWERTY for adopters
+
 
 
 debug mode to configure features while running (PinkyDrop, ThumpShift)
