@@ -22,7 +22,7 @@ PS/2 support is credited in large part to Akshay Srinivasan <akshaysrinivasan@ni
 Install
 -------
 You will need a recent version of the LUFA usb stack to compile this software.
-If you want scrollwheel support for the mouse, the included [patch](/frobiac/adnw/LUFA-scrollwheel.patch) needs to be applied.
+If you want scrollwheel support for the mouse, the included [patch](/frobiac/adnw/blob/master/LUFA-scrollwheel.patch) needs to be applied.
 From this root directory, execute
 
     $ git clone https://github.com/abcminiuser/lufa-lib.git ../lufa-lib
@@ -36,8 +36,8 @@ To build, please adjust controller type and build switches in makefile and call 
 
 Current Layout
 ==============
-Current default layout as implemented in [keymap.h](/frobiac/adnw/src/keymap.h) : 
-  ( discussion at [deskthority][DT_layout] )
+Current default layout as implemented in [keymap.h](/frobiac/adnw/blob/master/src/keymap.h) : 
+( discussion at [deskthority][DT_layout] )
 
 ##### Thumb keys & modifiers 
                             Macro    TP
@@ -50,11 +50,11 @@ Current default layout as implemented in [keymap.h](/frobiac/adnw/src/keymap.h) 
 ##### Layer 0 & Mod1 ( letters shifted)
     K  U  Q  .: J     V  G  C  L  F
     H  I  E  A  O     D  T  R  N  S
-    X  Y  -  ,; /\\    B  P  W  M  Z
+    X  Y  -  ,; /\    B  P  W  M  Z
 
 ##### M2 / special
     @  _  [  ]  #     !  <  >  =  &
-    \\  /  {  }  *     ?  (  )  +  :
+    \  /  {  }  *     ?  (  )  +  :
        $  |  ~  `     ^  %  "  '
 
 ##### M3 / MoveNum
