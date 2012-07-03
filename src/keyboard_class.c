@@ -1,31 +1,28 @@
-/**
+/*
+    Copyright 2010-2012 Stefan Fröbe, <frobiac /at/ gmail [d0t] com>
 
-  Copyright 2010, frobiac |At| goolemail /d0t\ com
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-  This project is free software: you can redistribute
-  it and/or modify it under the terms of the GNU General Public License as
-  published by the Free Software Foundation, either version 3 of the
-  License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-  This project is distributed in the hope that it will
-  be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
-  Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-  You should have received a copy of the GNU General Public License along
-  with this project.  If not, see  <http://www.gnu.org/licenses/>.
 
-  --------------------------------------------------------------------------
+    Debounce code based on code from Peter Dannegger [danni/At/specs/d0t/de]
+        described in German at bottom of page
+            http://www.mikrocontroller.net/articles/Entprellung
+        and discussed at
+            http://www.mikrocontroller.net/topic/48465
+    Array extensions inspired by Pult.zip
+            http://www.mikrocontroller.net/topic/48465#1489399
 
-  Debounce code based on code from Peter Dannegger [danni/At/specs/d0t/de]
-  described in German at bottom of page
-      http://www.mikrocontroller.net/articles/Entprellung
-  and discussed at
-      http://www.mikrocontroller.net/topic/48465
-  Array extensions inspired by Pult.zip
-      http://www.mikrocontroller.net/topic/48465#1489399
-
-  --------------------------------------------------------------------------
 */
 
 #include <string.h>

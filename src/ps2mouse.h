@@ -21,6 +21,8 @@
     http://computer-engineering.org/ps2protocol/
 **********************************************************************************/
 
+/// @todo REFACTOR Trackpoint code separate
+
 #include <stdbool.h>
 
 uint8_t     g_trackpoint;
