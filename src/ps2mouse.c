@@ -27,12 +27,8 @@
 
 #include "Keyboard.h"
 #include "ps2mouse.h"
+#include "trackpoint.h"
 
-#define ACK 0
-#define DELAY 150
-
-#define ACC_RAMPTIME 400 // acc incrementation time till maximum
-#define ACC_MAX      2.5 // maximum accelleration factor reachable
 
 volatile uint8_t     scrollcnt;
 volatile uint32_t    mouse_timer; /// toggle mouse mode for a specified time
@@ -58,28 +54,6 @@ void clk(uint8_t x)
     return;
 }
 
-void tp_reset()
-{
-    RDDR |= (1 << RBIT);
-    RPORT |= (1 << RBIT);
-    _delay_us(DELAY);
-    RPORT &= ~(1 << RBIT);
-    return;
-
-    while(CLK) {
-        __asm__("nop");
-    }
-    while(!CLK) {
-        __asm__("nop");
-    }
-    while(CLK) {
-        __asm__("nop");
-    }
-    while(!CLK) {
-        __asm__("nop");
-    }
-    RPORT &= ~(1 << RBIT);
-}
 
 
 #define CNT 500
@@ -131,11 +105,11 @@ uint8_t oparity(uint8_t byte)
 
 bool send_packet(uint8_t byte)
 {
-    uint8_t parity;
+    /// @todo Error checking in PS/2 code
+    uint8_t errcnt=0;
 
-    errcnt=0;
     do {
-        parity = oparity(byte);
+        uint8_t parity = oparity(byte);
         clk(0);
         _delay_us(DELAY);
         data(0); //Start
@@ -193,7 +167,6 @@ uint8_t read_packet(void)
 
 bool ps2_init_mouse(void)
 {
-    g_trackpoint = 0;
     g_mouse_enabled = 0;
     scrollcnt = 0;
 
@@ -224,118 +197,12 @@ bool ps2_init_mouse(void)
     if( ! send_packet(0xf0) )
         return false;
     d[3]=read_packet(); //Ack
-    g_trackpoint=1;
 
     printf("\nTP init: %02x %02x %02x %02x", d[0],d[1],d[2],d[3]);
 
     tp_id();
 
     return true;
-}
-
-void tp_ram_toggle(uint8_t addr, uint8_t val){
-    uint8_t tmp;
-
-    tp_send_read_ack(0xe2);
-    tp_send_read_ack(0x2c);
-    tmp=read_packet();
-    if( (tmp & val) != 0x00) {
-        printf("\nAlready set");
-    }
-
-    tp_send_read_ack(0xe2);
-    tp_send_read_ack(0x47);
-    tp_send_read_ack(addr);
-    tp_send_read_ack(val);
-}
-
-uint8_t tp_ram_read(uint8_t addr){
-    tp_send_read_ack(0xe2);
-    tp_send_read_ack(0x80);
-    tp_send_read_ack(addr);
-    return( read_packet() );
-}
-
-void tp_ram_write(uint8_t addr, uint8_t val){
-    tp_send_read_ack(0xe2);
-    tp_send_read_ack(0x81);
-    tp_send_read_ack(addr);
-    tp_send_read_ack(val);
-}
-
-// TP config register: See p33 of YKT3Eext.pdf
-enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FTRANS };
-
-bool tp_send_read_ack(uint8_t val)
-{
-    if( ! send_packet(val) ) {
-        printf("\nError: not send");
-        return false;
-    }
-    if(read_packet() != 0xfa) {
-        printf("\nError: not ack");
-        return false;
-    }
-    return true;
-}
-
-uint8_t tp_read_config(){
-    printf("\nTP Config= ");
-    tp_send_read_ack(0xe2);
-    tp_send_read_ack(0x2c);
-    uint8_t config = read_packet();
-    printf("%02x ", config);
-    return config;
-}
-
-void tp_id(void) {
-    uint8_t tmp;
-    // read secondary ID
-/*
-    if( tp_send_read_ack(0xe1) )
-        printf("\n2nd  ID: %02x%02x \nExt. ID: ", read_packet(),read_packet());
-
-    // read extended ID
-    if( tp_send_read_ack(0xd0) ){
-        // better scan for ")" == 29 // 41 ?
-        for(uint8_t i=0; i < 31; ++i) {
-            tmp=read_packet();
-            printf("%c",tmp);
-            if( tmp == (uint8_t)')')
-                continue;
-        }
-    }
-*/
-    /* smaller TP:
-     * 2nd  ID:  010e
-     * Ext. ID: M 19990623($IBM3780)
-     */
-
-    // read config byte at 2C: E2 2C or E2 80 2C
-    /* bit  0   1   2    3    4    5    6    7
-            Pts res 2clk invX invY invZ ExXY HardTransp
-      */
-    tp_read_config();
-    tp_ram_toggle(0x2c, (1<<TP_PTS) );
-    tp_read_config();
-
-    /* RAM locations:
-     * - Read with E2 80 ADDR
-     * - Read with E2 81 ADDR VAL
-     *
-     * 41,42,43 pts btn mask
-     * 5C PtS thres
-     */
-
-    // setup PressToSroll by enabling PTS, setting button masks and increasing threshold
-    printf("\nPTS btn masks: %02x %02x %02x ", tp_ram_read(0x41), tp_ram_read(0x42), tp_ram_read(0x43) );
-    tp_ram_write(0x41, 0xff);
-    tp_ram_write(0x42, 0xff);
-    printf("\nPTS btn masks: %02x %02x %02x ", tp_ram_read(0x41), tp_ram_read(0x42), tp_ram_read(0x43) );
-    printf("\nPTS thres: %02x", tp_ram_read(0x5c));
-    tp_ram_write(0x5c, 0x0A); // 08 is default, 10 too hard
-    printf("\nPTS thres: %02x", tp_ram_read(0x5c));
-
 }
 
 /*
@@ -382,7 +249,7 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
             *dy= read_packet();
             // raw *dx is of 0xXX
             int x = *dx;
-            int y = *dy;
+            //int y = *dy;
             int xtest = *dx;
 
             if(mouseinf&0x10)

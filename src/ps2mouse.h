@@ -21,45 +21,26 @@
     http://computer-engineering.org/ps2protocol/
 **********************************************************************************/
 
-/// @todo REFACTOR Trackpoint code separate
+#ifndef PS2MOUSE_H
+#define PS2MOUSE_H
 
 #include <stdbool.h>
+#include "Keyboard.h"  // for USB_Mouse_Report_Data_t
 
-uint8_t     g_trackpoint;
-uint8_t     g_mouse_enabled;
+#define ACK 0
+#define DELAY 150
 
-void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS );
-bool ps2_init_mouse(void);
+#define ACC_RAMPTIME 400 // acc incrementation time till maximum
+#define ACC_MAX      2.5 // maximum accelleration factor reachable
 
 
-#ifndef F_CPU
-#define F_CPU 16000000UL
-#endif
-
-/*
 //Data
 #define DAPORT B
-#define DBIT  7
+#define DBIT   7
 
 //Clock
 #define CLKPORT E
-#define CBIT  6
-
-//reset trackpoimt
-#define RSTPORT C
-#define RBIT 7
-*/
-//Data
-#define DAPORT B
-#define DBIT  7
-
-//Clock
-#define CLKPORT E
-#define CBIT  6
-
-//reset trackpoimt
-#define RSTPORT B
-#define RBIT 3
+#define CBIT    6
 
 /////////////////////////////
 ///General purpose macros////
@@ -88,17 +69,20 @@ bool ps2_init_mouse(void);
 ///////////////////////////////
 
 
-bool send_packet(uint8_t);
+uint8_t     g_mouse_enabled;
+
+void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS );
+bool ps2_init_mouse(void);
+
+bool    send_packet(uint8_t byte);
 uint8_t read_packet(void);
-bool tp_send_read_ack(uint8_t val);
 
-void reset(void);
-void tp_reset(void);
-void tp_id(void);
 
-void serout(uint8_t bit);
+void    serout(uint8_t bit);
 uint8_t serin(void);
 
 uint8_t getMouseReport(USB_MouseReport_Data_t *report_data);
 
 uint8_t errcnt;
+
+#endif // PS2MOUSE_H

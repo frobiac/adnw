@@ -19,18 +19,19 @@ TARGET       = adnw
 SRCDIR       = ./src
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC =   $(LUFA_SRC_USB) \
-    $(LUFA_SRC_USBCLASS) \
-    $(SRCDIR)/Keyboard.c         \
-    $(SRCDIR)/dbg.c              \
-    $(SRCDIR)/Descriptors.c      \
-    $(SRCDIR)/keyboard_class.c   \
-    $(SRCDIR)/hhstdio.c          \
-    $(SRCDIR)/keymap.c       \
-    $(SRCDIR)/analog.c       \
-    $(SRCDIR)/macro.c       \
-    $(SRCDIR)/ps2mouse.c       \
-    $(SRCDIR)/jump_bootloader.c
+SRC =   $(LUFA_SRC_USB)          \
+	$(LUFA_SRC_USBCLASS)         \
+	$(SRCDIR)/Keyboard.c         \
+	$(SRCDIR)/dbg.c              \
+	$(SRCDIR)/Descriptors.c      \
+	$(SRCDIR)/keyboard_class.c   \
+	$(SRCDIR)/hhstdio.c          \
+	$(SRCDIR)/keymap.c           \
+	$(SRCDIR)/analog.c           \
+	$(SRCDIR)/macro.c            \
+	$(SRCDIR)/ps2mouse.c         \
+	$(SRCDIR)/trackpoint.c       \
+	$(SRCDIR)/jump_bootloader.c
 
 
 LUFA_PATH    = LUFA/LUFA
@@ -48,23 +49,23 @@ version:
 
 
 # test macro existance
-macrocheck:	
+macrocheck:
 	@if test -f $(SRCDIR)/_private_macros.h; then \
-		echo "*** Macro definition found ";  \
+	    echo "*** Macro definition found ";  \
 	else \
-		echo -e "\n\n\n*** ERROR: $(SRCDIR)/_private_macros.h NOT found. \n*** Consider copying template\n\n"; \
-		false; \
+	    echo -e "\n\n\n*** ERROR: $(SRCDIR)/_private_macros.h NOT found. \n*** Consider copying template\n\n"; \
+	    false; \
 	fi
 
 #
 # DOES nothing - LUFA includes are searched before this, so no helpful msg
 #
 # check that LUFA is there
-ifeq ($(wildcard LUFA/LUFA/Build/lufa.core.in),) 
+ifeq ($(wildcard LUFA/LUFA/Build/lufa.core.in),)
 	@echo -e "*** ERROR: LUFA/LUFA missing - see README for install instructions"; false;
 else
 	@echo "*** LUFA found.";
-endif 
+endif
 
 
 # check whether scrollwheel support is requested and complete
@@ -73,12 +74,12 @@ ifneq (,$(findstring MOUSE_HAS_SCROLL_WHEELS,$(CCFLAGS)))
 else
 	@echo "*** SCROLLWHEEL defined"; \
 	if [ `grep -c "Vertical" LUFA/LUFA/Drivers/USB/Class/Common/HIDClassCommon.h` -eq 1 ] ; then \
-        echo "*** and LUFA seems patched, ok"; \
-    else \
-    	echo "*** ERROR: but LUFA not patched for it - run "; \
-		echo -e "*** patch -Np1 -i LUFA-scrollwheel.patch \n*** to fix \n" ; \
-        false; \
-    fi 
+	    echo "*** and LUFA seems patched, ok"; \
+	else \
+	    echo "*** ERROR: but LUFA not patched for it - run "; \
+	    echo -e "*** patch -Np1 -i LUFA-scrollwheel.patch \n*** to fix \n" ; \
+	    false; \
+	fi
 endif
 
 # Include LUFA build script makefiles

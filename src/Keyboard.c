@@ -59,7 +59,8 @@
 
 #include "hid_usage.h"
 
-#include "ps2mouse.h"
+#include "trackpoint.h"
+//#include "ps2mouse.h"
 #ifdef ANALOGSTICK
 #include "analog.h"
 #endif
