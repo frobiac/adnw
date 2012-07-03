@@ -1,18 +1,18 @@
+
+
 #ifndef MATRIX_H
-#define  MATRIX_H 1
+#define  MATRIX_H
 
 #include <avr/io.h>
 
-
 #define ALL_COLS_MASK ((1<<COLS)-1)  // 0x63 or all lower 6 bits
 
-uint8_t read_col(bool swap);
+uint8_t read_col(void);
 void unselect_rows(void);
 void activate(uint8_t row);
 
-
 // this must be called once before matrix_scan.
-uint8_t read_col(bool swap)
+uint8_t read_col(void)
 {
 #if defined(__AVR_ATmega32U4__)
     uint8_t res = PINF;
@@ -26,49 +26,42 @@ uint8_t read_col(bool swap)
 
 void unselect_rows(void)
 {
+#if defined(__AVR_ATmega32U4__)
     DDRD  &= 0b00001011;
     PORTD &= 0b00001011;
     DDRB  &= 0b10001111;
     PORTB &= 0b10001111;
+#elif defined(__AVR_AT90USB1286__)             // Teensy++ 2.0
+    #error "PINCONFIG for unselect_rows NOT defined for __AVR_AT90USB1286__ setup"
+#endif
 }
 
 void activate(uint8_t row)
 {
+#if defined(__AVR_ATmega32U4__)
     unselect_rows();
     // swap upper and lower ports to have left half first in matrix
     (row<4) ? (row+=4) : (row-=4);
-
     // B6 B5 B4 D7
     // D6 D4 D2 D5
     switch(row) {
-    case 0:
-        DDRB |= (1<<6);
-        break;
-    case 1:
-        DDRB |= (1<<5);
-        break;
-    case 2:
-        DDRB |= (1<<4);
-        break;
-    case 3:
-        DDRD |= (1<<7);
-        break;
-    case 4:
-        DDRD |= (1<<6);
-        break;
-    case 5:
-        DDRD |= (1<<4);
-        break;
-    case 6:
-        DDRD |= (1<<2);
-        break;
-    case 7:
-        DDRD |= (1<<5);
-        break;
-
+        case 0: DDRB |= (1<<6); break;
+        case 1: DDRB |= (1<<5); break;
+        case 2: DDRB |= (1<<4); break;
+        case 3: DDRD |= (1<<7); break;
+        case 4: DDRD |= (1<<6); break;
+        case 5: DDRD |= (1<<4); break;
+        case 6: DDRD |= (1<<2); break;
+        case 7: DDRD |= (1<<5); break;
     }
     return;
+
+#elif defined(__AVR_AT90USB1286__)             // Teensy++ 2.0
+    #error "PINCONFIG for activate(row) NOT defined for __AVR_AT90USB1286__ setup"
+#endif
 }
+
+/// @todo Why static inline only here ?
 static inline void init_cols(void)
 {
 #if defined(__AVR_ATmega32U4__)

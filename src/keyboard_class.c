@@ -263,7 +263,7 @@ void scan_matrix(void)
 
         // Place data on all column pins for active row
         // into a single 32 bit value.
-        data = read_col( (row>3) );
+        data = read_col();
         /// @see top comment for source of debounce magic
         // Needs to be adjusted for more than 8 columns
         i = kb_state[row] ^ (~data);                    // key changed ?
