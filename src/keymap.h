@@ -37,7 +37,6 @@
 // *************************************************************
 
 struct keycode {
-    uint8_t  ch;    ///< could be useful for dumping the layout
     uint8_t  hid;   ///< HID usage code, will be interpreted by OS keyboard layout!
     uint8_t  mods;  ///< HID modifiers , will be interpreted by OS keyboard layout!
 } ;
