@@ -245,6 +245,33 @@ MS_WH_RIGHT,
 // * differences between qwert_Y and qwert_Z are separate at the bottom
 // **************************************************************
 
+/*
+QWERTY US                                QWERTZ DE
+---------                                ---------
+                                AltGr      ¹ ² ³ ¼ ½   { [ ] } \ ¸
+~ ! @ # $ % ^ & * ( ) - +       shift    ° ! " § $ % & / ( ) = ? `
+` 1 2 3 4 5 6 7 8 9 0 _ =       ROW1     ^ 1 2 3 4 5 6 7 8 9 0 ß ´
+-----                                    -----
+                                           @   €
+  Q W E R T Y U I O P { } |     shift      Q W E R T Z U I O P Ü *
+            y         [ ] \     ROW2                 z         ü +
+-----                                    -----
+
+  A S D F G H J K L : "         shift    A S D F G H J K L Ö Ä '
+                    ; '         ROW3                         ö ä #
+-----                                    -----
+                                         |             µ
+  Z X C V B N M < > ?           shift    > Y X C V B N M ; : _
+  z             , . /           ROW4     < y             , . -
+-----                                    -----
+
+-> Different keys in QWERTZ DE :
+Normal : ^                 ß ´     z ü + ö ä # < y , . -
+Shifted: ^ 2 3 4 6 7 8 9 0 ß ´     z ü + ö ä # < y , . -
+AltGr  :           7 8 9 0 ß   q e     +       <
+
+*/
+
 /// @todo some keycodes are still from QWERTZ and maybe different in QWERTY
 
 
