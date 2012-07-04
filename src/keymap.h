@@ -146,11 +146,11 @@ static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
         { _THUMB_ROW_RIGHT}
     },
 
-    // MOD2 layer (special chars)
+    // MOD2 layer (special char)
     {
-        { _no, _AT,      _no,       _L_BRACKET, _R_BRACKET, _HASH },
+        { _no, _AT,      _DEGREE,   _L_BRACKET, _R_BRACKET, _HASH   },
         { _no, _BSLASH,  _SLASH,    _L_BRACE,   _R_BRACE,   _ASTERIX},
-        { _no, _no,      _DOLLAR,   _BAR,       _TILDE, _GRAVE },
+        { _no, _no,      _DOLLAR,   _PIPE,      _TILDE,     _GRAVE },
         { _THUMB_ROW_LEFT },
 
         { _EXCLAM,  _LESS,      _GREATER,   _EQUAL,     _AMPERSAND, _no },

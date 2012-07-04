@@ -17,7 +17,10 @@
 
 #ifndef _HID_USAGE_H
 #define _HID_USAGE_H 1
-// see also ./trunk/LUFA/Drivers/USB/Class/Common/HID.h
+// see also ../LUFA/LUFA/Drivers/USB/Class/Common/HIDClassCommon.h
+// -> bCountryCode=09 german?
+
+// or http://www.freebsddiary.org/APC/usb_hid_usages
 
 #define MOD_BEGIN 0xE8
 
@@ -93,13 +96,13 @@
 #define HID_SPACE   44
 #define HID_MINUS   45
 #define HID_EQUAL   46
-#define HID_L_BRACE 47
-#define HID_R_BRACE 48
-#define HID_BACKSLASH   49
+#define HID_L_BRACKET 47
+#define HID_R_BRACKET 48
+#define HID_BSLASH   49
 #define HID_NON_US_1    50    // # & ~
 #define HID_SEMICOLON   51
 #define HID_QUOTE   52
-#define HID_TILDE   53      // grave & tilde
+#define HID_GRAVE   53      // grave & tilde
 #define HID_COMMA   54
 #define HID_PERIOD  55
 #define HID_SLASH   56
@@ -240,10 +243,12 @@ MS_WH_RIGHT,
 
 // KEYBOARD Media
 
+// *************************************************************
+// mapping of characters and HID codes
+// differences between qwert_Y and qwert_Z are separate at the bottom
 // **************************************************************
-// * mapping of characters and HID codes
-// * differences between qwert_Y and qwert_Z are separate at the bottom
-// **************************************************************
+
+/// @todo : Also fix qwertz specifics in hhstdio.[ch]
 
 /*
 QWERTY US                                QWERTZ DE
@@ -272,23 +277,17 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 
 */
 
-/// @todo some keycodes are still from QWERTZ and maybe different in QWERTY
-
-
 #define NONE  0x00
 #define CTRL  0x01
 #define SHIFT 0x02
 #define ALTGR 0x40
 
 #define _no         { 0,     NONE  }      // No key defined
-#define _DEGREE     { HID_TILDE, SHIFT  } //  `
-#define _GRAVE      { HID_EQUAL, SHIFT  } //  =
 
 #define _1          { HID_1, NONE  }      //  1
 #define _EXCLAM     { HID_1, SHIFT }      //  !
 #define _2          { HID_2, NONE  }      //  2
 #define _3          { HID_3, NONE  }      //  3
-#define _SQUOTE     { HID_NON_US_1, SHIFT }       //  #
 #define _4          { HID_4, NONE  }      //  4
 #define _DOLLAR     { HID_4, SHIFT }      //  $
 #define _5          { HID_5, NONE  }      //  5
@@ -296,11 +295,11 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _6          { HID_6, NONE  }      //  6
 #define _7          { HID_7, NONE  }      //  7
 #define _8          { HID_8, NONE  }      //  8
-#define _TILDE      { HID_R_BRACE,    ALTGR}
 #define _9          { HID_9, NONE  }      //  9
 #define _0          { HID_0, NONE  }      //  0
 
-#define _BSLASH     { HID_MINUS, ALTGR }      //  Z:ß/?
+
+
 #define _BSPACE     { HID_BACKSPACE, NONE  }  //  Backspace
 #define _TAB        { HID_TAB, NONE  }        //  Tab
 #define _q      { HID_Q, NONE  }      //  q
@@ -322,7 +321,6 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _p      { HID_P, NONE  }      //  p
 #define _P      { HID_P, SHIFT }      //  P
 
-#define _BAR        { HID_NON_US_2,   ALTGR}
 #define _CAPS       { HID_CAPS_LOCK,  NONE  }     //  CapsLock
 
 #define _a      { HID_A, NONE  }      //  a
@@ -450,30 +448,46 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _MS_BTN_3    { MS_BTN_3, NONE  }
 
 
-
-
 #ifdef QWERTY
+/*---------                                ---------
+                                AltGr      ¹ ² ³ ¼ ½   { [ ] } \ ¸
+~ ! @ # $ % ^ & * ( ) - +       shift    ° ! " § $ % & / ( ) = ? `
+` 1 2 3 4 5 6 7 8 9 0 _ =       ROW1     ^ 1 2 3 4 5 6 7 8 9 0 ß ´
+-----                                    -----
+                                           @   €
+  Q W E R T Y U I O P { } |     shift      Q W E R T Z U I O P Ü *
+            y         [ ] \     ROW2                 z         ü +
+-----                                    -----
+
+  A S D F G H J K L : "         shift    A S D F G H J K L Ö Ä '
+                    ; '         ROW3                         ö ä #
+-----                                    -----
+                                         |             µ
+  Z X C V B N M < > ?           shift    > Y X C V B N M ; : _
+  z             , . /           ROW4     < y             , . -
+-----                                    -----
+*/
 
 #define _AMPERSAND { HID_7, SHIFT }       //  &
 #define _ASTERIX   { HID_8, SHIFT }      //  *
 #define _AT        { HID_2, SHIFT }      //  @
-#define _BACKSLASH { HID_BACKSLASH,  NONE  }     //
+#define _BSLASH    { HID_BSLASH,  NONE  }     //
 #define _CARET     { HID_6, SHIFT }      //  &
 #define _COLON     { HID_SEMICOLON, SHIFT }      //  Ö
 #define _DQUOTE    { HID_QUOTE, SHIFT }     // "
 #define _EQUAL     { HID_EQUAL, NONE  }      //  =
 #define _GREATER   { HID_PERIOD, SHIFT }     //  >
 #define _HASH      { HID_3, SHIFT }      //  #
-#define _L_BRACE   { HID_L_BRACE,    NONE  }     //
-#define _L_BRACKET { HID_L_BRACE,    SHIFT }     //  Ü
+#define _L_BRACE   { HID_L_BRACKET,    SHIFT  }     //
+#define _L_BRACKET { HID_L_BRACKET,    NONE }     //  Ü
 #define _LESS      { HID_COMMA , SHIFT }     //  <
 #define _L_PAREN   { HID_9, SHIFT }      //  (
 #define _MINUS     { HID_MINUS, NONE  }      //  Z:ß/?
 #define _PLUS      { HID_EQUAL, SHIFT }      //  +
 #define _QUESTION  { HID_SLASH,  SHIFT }     //  ?
-#define _QUOTE     { HID_QUOTE, NONE  }     //  '
-#define _R_BRACE   { HID_R_BRACE,    NONE  }     //  ]
-#define _R_BRACKET { HID_R_BRACE,    SHIFT }     //  *
+#define _SQUOTE    { HID_QUOTE, NONE  }     //  '
+#define _R_BRACE   { HID_R_BRACKET,    SHIFT }     //  ]
+#define _R_BRACKET { HID_R_BRACKET,    NONE }     //  *
 #define _R_PAREN   { HID_0, SHIFT }      //  )
 #define _SCOLON    { HID_SEMICOLON, NONE  }      //  ö
 #define _SLASH     { HID_SLASH,  NONE  }     //  /
@@ -483,42 +497,63 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _z         { HID_Z, NONE  }      //  z
 #define _Z         { HID_Z, SHIFT  }     //  z
 
+#define _DEGREE     _no
+#define _GRAVE      { HID_GRAVE, NONE  } //  =
+#define _TILDE      { HID_GRAVE,    SHIFT }
+#define _PIPE       { HID_BSLASH,   SHIFT }
+
+#define _SSHARP     { HID_MINUS,     NONE  }      //  Z:ß/?
+#define _a_UML      { HID_QUOTE,     NONE  }     //  '
+#define _A_UML      { HID_QUOTE,     SHIFT }     //  '
+#define _O_UML      { HID_SEMICOLON, SHIFT }
+#define _o_UML      { HID_SEMICOLON, NONE  }
+#define _U_UML      { HID_L_BRACKET,   SHIFT }     //  Ü
+#define _u_UML      { HID_L_BRACKET,   NONE }      //  Ü
+
 #else //qwert_Z_
 
 #define _AMPERSAND  { HID_6, SHIFT }      //  &
-#define _ASTERIX    { HID_R_BRACE,    SHIFT }     //  *
+#define _ASTERIX    { HID_R_BRACKET,    SHIFT }     //  *
 #define _AT         { HID_Q, ALTGR }      //  @
-#define _CARET      { HID_TILDE, NONE  }  //  `
+#define _CARET      { HID_GRAVE, NONE  }  //  `
 #define _COLON      { HID_PERIOD,    SHIFT }
 #define _DQUOTE     { HID_2, SHIFT     }     // "
 #define _EQUAL      { HID_0, SHIFT }          //  )
 #define _GREATER    { HID_NON_US_2,SHIFT}     //  >
-#define _HASH       { HID_BACKSLASH,  NONE  }     //
+#define _HASH       { HID_BSLASH,  NONE  }     
 #define _L_BRACE    { HID_7, ALTGR }      //
 #define _L_BRACKET  { HID_8, ALTGR }      //  Ü
 #define _LESS       { HID_NON_US_2,NONE }     //  <
 #define _L_PAREN    { HID_8, SHIFT }      //  *
 #define _MINUS      { HID_SLASH, NONE  }      //  -
-#define _PLUS       { HID_R_BRACE,    NONE  }     //  ]
+#define _PLUS       { HID_R_BRACKET,    NONE  }     //  ]
 #define _QUESTION   { HID_MINUS,  SHIFT }     //  Z:ß/?
 #define _R_BRACE    { HID_0, ALTGR }      //  ]
 #define _R_BRACKET  { HID_9, ALTGR }      //  *
 #define _R_PAREN    { HID_9, SHIFT }      //  )
 #define _SCOLON     { HID_COMMA,     SHIFT }
 #define _SLASH      { HID_7,      SHIFT }     //  &
+#define _SQUOTE     { HID_NON_US_1, SHIFT }       //  #
 #define _USCORE     { HID_SLASH, SHIFT }      //  _
 #define _y          { HID_Z, NONE  }      //  z
 #define _Y          { HID_Z, SHIFT  }     //  z
 #define _z          { HID_Y, NONE  }      //  z
 #define _Z          { HID_Y, SHIFT  }     //  z
-// Umlauts
-#define _SSHARP     { HID_MINUS,     NONE  }      //  Z:ß/?
-#define _a_UML      { HID_QUOTE,     NONE  }     //  '
-#define _A_UML      { HID_QUOTE,     SHIFT }     //  '
-#define _O_UML      { HID_SEMICOLON, SHIFT }
-#define _o_UML      { HID_SEMICOLON, NONE  }
-#define _U_UML      { HID_L_BRACE,   SHIFT }     //  Ü
-#define _u_UML      { HID_L_BRACE,   NONE }      //  Ü
+
+#define _BSLASH     { HID_MINUS,     ALTGR }      //  Z:ß/?
+#define _TILDE      { HID_R_BRACKET,   ALTGR }
+#define _PIPE        { HID_NON_US_2,  ALTGR }
+#define _DEGREE     { HID_GRAVE, SHIFT  } //  `
+#define _GRAVE      { HID_EQUAL, SHIFT  } //  =
+
+// Umlauts not available
+#define _SSHARP     _no
+#define _a_UML      _no
+#define _A_UML      _no
+#define _O_UML      _no
+#define _o_UML      _no
+#define _U_UML      _no
+#define _u_UML      _no
 
 
 #endif // QWERTY or QWERTZ
