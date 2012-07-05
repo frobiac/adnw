@@ -502,13 +502,15 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _TILDE      { HID_GRAVE,    SHIFT }
 #define _PIPE       { HID_BSLASH,   SHIFT }
 
-#define _SSHARP     { HID_MINUS,     NONE  }      //  Z:ß/?
-#define _a_UML      { HID_QUOTE,     NONE  }     //  '
-#define _A_UML      { HID_QUOTE,     SHIFT }     //  '
-#define _O_UML      { HID_SEMICOLON, SHIFT }
-#define _o_UML      { HID_SEMICOLON, NONE  }
-#define _U_UML      { HID_L_BRACKET,   SHIFT }     //  Ü
-#define _u_UML      { HID_L_BRACKET,   NONE }      //  Ü
+// Umlauts not available
+#define _SSHARP     _no
+#define _a_UML      _no
+#define _A_UML      _no
+#define _O_UML      _no
+#define _o_UML      _no
+#define _U_UML      _no
+#define _u_UML      _no
+
 
 #else //qwert_Z_
 
@@ -546,14 +548,13 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _DEGREE     { HID_GRAVE, SHIFT  } //  `
 #define _GRAVE      { HID_EQUAL, SHIFT  } //  =
 
-// Umlauts not available
-#define _SSHARP     _no
-#define _a_UML      _no
-#define _A_UML      _no
-#define _O_UML      _no
-#define _o_UML      _no
-#define _U_UML      _no
-#define _u_UML      _no
+#define _SSHARP     { HID_MINUS,     NONE  }      //  Z:ß/?
+#define _a_UML      { HID_QUOTE,     NONE  }     //  '
+#define _A_UML      { HID_QUOTE,     SHIFT }     //  '
+#define _O_UML      { HID_SEMICOLON, SHIFT }
+#define _o_UML      { HID_SEMICOLON, NONE  }
+#define _U_UML      { HID_L_BRACKET,   SHIFT }     //  Ü
+#define _u_UML      { HID_L_BRACKET,   NONE }      //  Ü
 
 
 #endif // QWERTY or QWERTZ
