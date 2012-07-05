@@ -14,6 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include <avr/pgmspace.h>
 
 #include "keymap.h"
 
@@ -29,18 +30,18 @@ uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer)
 {
     if( PINKYDROP ) {
         if( (row<4 && row > 0 && col==1) || (row > 4 && col == 4))
-            return KeyMatrix[layer][row-1][col].mods;
+            return ((pgm_read_word((&KeyMatrix[layer][row-1][col])) & 0xFF00 ) >> 8);
     } else
-        return KeyMatrix[layer][row][col].mods;
+            return ((pgm_read_word((&KeyMatrix[layer][row][col])) & 0xFF00 ) >> 8);
 }
 
 uint8_t getKeyCode(uint8_t row, uint8_t col, uint8_t layer)
 {
     if(PINKYDROP) {
         if( (row<4 && row > 0 && col==1) || (row > 4 && col == 4))
-            return KeyMatrix[layer][row-1][col].hid;
+            return pgm_read_word(&KeyMatrix[layer][row-1][col]) & 0x00FF;
     } else
-        return KeyMatrix[layer][row][col].hid;
+        return pgm_read_word(&KeyMatrix[layer][row][col]) & 0x00FF;
 }
 
 

@@ -29,6 +29,7 @@
 
 #define _ANALOG _no
 
+
 // *************************************************************
 // *    Matrix of physical keyboard to key mapping
 // *
@@ -119,7 +120,7 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
 #define _THUMB_ROW_RIGHT    _MOD_1,      _MOD_2,   _R_ALT,  _COMPOSE, _MOD_3, _H
 
 
-static const struct keycode /*PROGMEM*/ KeyMatrix[LAYERS+2][ROWS][COLS] = {
+static const struct keycode KeyMatrix[LAYERS+2][ROWS][COLS] PROGMEM = {
     // normal layer
     {
         { _ESC,   _k, _u, _q, _PERIOD,_j  },
