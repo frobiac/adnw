@@ -522,7 +522,7 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _DQUOTE     { HID_2, SHIFT     }     // "
 #define _EQUAL      { HID_0, SHIFT }          //  )
 #define _GREATER    { HID_NON_US_2,SHIFT}     //  >
-#define _HASH       { HID_BSLASH,  NONE  }     
+#define _HASH       { HID_BSLASH,  NONE  }
 #define _L_BRACE    { HID_7, ALTGR }      //
 #define _L_BRACKET  { HID_8, ALTGR }      //  Ü
 #define _LESS       { HID_NON_US_2,NONE }     //  <
@@ -558,5 +558,137 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 
 
 #endif // QWERTY or QWERTZ
+
+static const uint8_t ascii2hid[128][2] = {
+    _no , // ( nul)   0
+    _no , // ( soh)   1
+    _no , // ( stx)   2
+    _no , // ( etx)   3
+    _no , // ( eot)   4
+    _no , // ( enq)   5
+    _no , // ( ack)   6
+    _no , // ( bel)   7
+    _no , // ( bs)    8
+    _no , // ( ht)    9
+    _no , // ( nl)   10
+    _no , // ( vt)   11
+    _no , // ( np)   12
+    _no , // ( cr)   13
+    _no , // ( so)   14
+    _no , // ( si)   15
+    _no , // ( dle)  16
+    _no , // ( dc1)  17
+    _no , // ( dc2)  18
+    _no , // ( dc3)  19
+    _no , // ( dc4)  20
+    _no , // ( nak)  21
+    _no , // ( syn)  22
+    _no , // ( etb)  23
+    _no , // ( can)  24
+    _no , // ( em)   25
+    _no , // ( sub)  26
+    _no , // ( esc)  27
+    _no , // ( fs)   28
+    _no , // ( gs)   29
+    _no , // ( rs)   30
+    _no , // ( us)   31
+    _no , // ( sp)   32
+    _EXCLAM , // !       33
+    _DQUOTE , // "       34
+    _HASH , // #       35
+    _DOLLAR , // $       36
+    _PERCENT , // %       37
+    _AMPERSAND , // &       38
+    _SQUOTE , // '       39
+    _L_PAREN , // (       40
+    _R_PAREN , // )       41
+    _ASTERIX , // *       42
+    _PLUS , // +       43
+    _COMMA , // ,       44
+    _MINUS , // -       45
+    _PERIOD , // .       46
+    _SLASH , // /       47
+    _0 , // 0       48
+    _1 , // 1       49
+    _2 , // 2       50
+    _3 , // 3       51
+    _4 , // 4       52
+    _5 , // 5       53
+    _6 , // 6       54
+    _7 , // 7       55
+    _8 , // 8       56
+    _9 , // 9       57
+    _COLON , // :       58
+    _SCOLON , // ;       59
+    _LESS , // <       60
+    _EQUAL , // =       61
+    _GREATER , // >       62
+    _QUESTION , // ?       63
+    _AT , // @       64
+    _A , // A       65
+    _B , // B       66
+    _C , // C       67
+    _D , // D       68
+    _E , // E       69
+    _F , // F       70
+    _G , // G       71
+    _H , // H       72
+    _I , // I       73
+    _J , // J       74
+    _K , // K       75
+    _L , // L       76
+    _M , // M       77
+    _N , // N       78
+    _O , // O       79
+    _P , // P       80
+    _Q , // Q       81
+    _R , // R       82
+    _S , // S       83
+    _T , // T       84
+    _U , // U       85
+    _V , // V       86
+    _W , // W       87
+    _X , // X       88
+    _Y , // Y       89
+    _Z , // Z       90
+    _L_BRACKET , // [       91
+    _BSLASH , // \       92
+    _R_BRACKET , // ]       93
+    _CARET , // ^       94
+    _USCORE , // _       95
+    _GRAVE , // `       96
+    _a , // a       97
+    _b , // b       98
+    _c , // c       99
+    _d , // d      100
+    _e , // e      101
+    _f , // f      102
+    _g , // g      103
+    _h , // h      104
+    _i , // i      105
+    _j , // j      106
+    _k , // k      107
+    _l , // l      108
+    _m , // m      109
+    _n , // n      110
+    _o , // o      111
+    _p , // p      112
+    _q , // q      113
+    _r , // r      114
+    _s , // s      115
+    _t , // t      116
+    _u , // u      117
+    _v , // v      118
+    _w , // w      119
+    _x , // x      120
+    _y , // y      121
+    _z , // z      122
+    _L_BRACE , // {      123
+    _PIPE , // |      124
+    _R_BRACE , // }      125
+    _TILDE , // ~      126
+    _no  // ( del) 127
+} ;
+
 #endif // _HID_USAGE_H
 

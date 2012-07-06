@@ -137,11 +137,17 @@ bool getMacroReport(USB_KeyboardReport_Data_t *report)
 
         }
 
+        report->KeyCode[0] = ascii2hid[(uint8_t)c*2];
+        report->Modifier = 0;
+        //report->Modifier = (uint8_t) ascii2hid[(uint8_t)c*2+1];
+        //report->Modifier |= mod;
+        memset(&report->KeyCode[1], 0, 5);
+/*
         memcpy_P(report, &ascii_table[(uint8_t)c], sizeof(USB_KeyboardReport_Data_t));
         report->Modifier |= mod;
         // set remaining 5 bytes to 0
         memset(&report->KeyCode[1], 0, 5);
-
+*/
         idx++;
         return true;
     } else {
