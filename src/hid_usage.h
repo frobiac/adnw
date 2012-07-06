@@ -570,7 +570,7 @@ static const uint8_t ascii2hid[128][2] = {
     _no , // ( bel)   7
     _no , // ( bs)    8
     _no , // ( ht)    9
-    _no , // ( nl)   10
+    _ENTER , // ( nl)   10
     _no , // ( vt)   11
     _no , // ( np)   12
     _no , // ( cr)   13
@@ -687,7 +687,7 @@ static const uint8_t ascii2hid[128][2] = {
     _PIPE , // |      124
     _R_BRACE , // }      125
     _TILDE , // ~      126
-    _no  // ( del) 127
+    _DEL // ( del) 127
 } ;
 
 #endif // _HID_USAGE_H

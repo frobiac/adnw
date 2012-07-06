@@ -48,8 +48,8 @@ stdio_fill_report(char ch, USB_KeyboardReport_Data_t *report)
     // set remaining 5 bytes to 0
     memset(&report->KeyCode[1], 0, 5);
 */
-    report->KeyCode[0]=ascii2hid[(uint8_t)ch*2];
-    report->Modifier  =ascii2hid[(uint8_t)ch*2+1];
+    report->KeyCode[0]=ascii2hid[(uint8_t)ch][0];
+    report->Modifier  =ascii2hid[(uint8_t)ch][1];
     memset(&report->KeyCode[1], 0, 5);
 }
 

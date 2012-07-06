@@ -38,7 +38,10 @@
  * _private_macros.h
  * Put private macro declaration in this header file and define LEN and COUNT:
  * - use ascii characters/strings, or the corresponding codes from ascii_table directly
- * - any modifier(s) for the following character should be ORed with 0x80
+ * - any modifier(s) for the following character should be ORed with 0x80,
+ *   value is 1 for CTRL, 2 for ALT, 4 SHIFT 8 GUI and +16 for right hand modifiers
+ */
+
  */
 /// Increasing either too much leads to keyboard not registering at all!
 #define MACROCOUNT   3
@@ -47,9 +50,9 @@
 static const char EEmacrosC[MACROCOUNT][MACROLEN]  =  {
     "SampleString!",
     // CTRL+ALT+DEL
-    { (L_CTL|L_ALT)+0x80, 127, '\0' },
+    { ((1<<0)|(1<<2)/*L_CTL|L_ALT*/)+0x80, 127, 'p','w','\n' },
     // ^c ^t ^v return for firefox
-    { (L_CTL)+0x80, c , (L_CTL)+0x80, t, (L_CTL)+0x80, v, '\0' },
+    { 0x81, c , 0x81, t, 0x81, v, '\0' },
 };
 #endif
 
