@@ -28,35 +28,12 @@
 #include <avr/eeprom.h>
 
 #include "hhstdio.h"
-
-
 #include "keymap.h"
 
-
-#ifdef _private_macros_h_NOT_FOUND
-/**
- * _private_macros.h
- * Put private macro declaration in this header file and define LEN and COUNT:
- * - use ascii characters/strings, or the corresponding codes from ascii_table directly
- * - any modifier(s) for the following character should be ORed with 0x80,
- *   value is 1 for CTRL, 2 for ALT, 4 SHIFT 8 GUI and +16 for right hand modifiers
- */
-
- */
-/// Increasing either too much leads to keyboard not registering at all!
-#define MACROCOUNT   3
-#define MACROLEN    20
-
-static const char EEmacrosC[MACROCOUNT][MACROLEN]  =  {
-    "SampleString!",
-    // CTRL+ALT+DEL
-    { ((1<<0)|(1<<2)/*L_CTL|L_ALT*/)+0x80, 127, 'p','w','\n' },
-    // ^c ^t ^v return for firefox
-    { 0x81, c , 0x81, t, 0x81, v, '\0' },
-};
-#endif
-
 #include "_private_macros.h"
+
+
+#define MACRO_PAUSE 0x80
 
 /**
  *  Macros are stored in eeprom.
@@ -70,8 +47,8 @@ static const char EEmacrosC[MACROCOUNT][MACROLEN]  =  {
 #define EE_ADDR_MACROS      (EE_ADDR_START+100)
 #define EE_ADDR_MACRO(idx)  (EE_ADDR_MACROS + (idx*MACROLEN))
 
-uint8_t writeMacro(const char    macro[MACROLEN], uint8_t idx);
-uint8_t readMacro (uint8_t macro[MACROLEN], uint8_t idx);
+uint8_t updateEEMacro(const char    macro[MACROLEN], uint8_t idx);
+uint8_t readEEMacro (uint8_t macro[MACROLEN], uint8_t idx);
 
 bool initMacros(void);
 void printMacros(void);

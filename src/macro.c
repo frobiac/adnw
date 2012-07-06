@@ -34,14 +34,15 @@ bool initMacros()
         for(int j=0; j<MACROLEN; ++j)
             macrosC[i][j]='0';
 
-    // This has to be externally
+    // This should eventually be done in command mode or through external flashing
+    // of appropriate eep file.
     for(int i=0; i<MACROCOUNT; ++i) {
-        writeMacro(EEmacrosC[i],i);
+        updateEEMacro(EEmacrosC[i],i);
     }
 
     uint8_t str[MACROLEN];
     for(int i=0; i<MACROCOUNT; ++i) {
-        readMacro(str,i);
+        readEEMacro(str,i);
         uint8_t len = strlen((char*)str);
         // printf("\n  %d = len(%s)", len,  str);
         for(int j=0; j<len; ++j) {
@@ -58,7 +59,7 @@ void printMacros(void)
 {
     uint8_t str[MACROLEN];
     for(int i=0; i<MACROCOUNT; ++i) {
-        readMacro(str,i);
+        readEEMacro(str,i);
     }
 }
 
@@ -124,6 +125,8 @@ bool getMacroReport(USB_KeyboardReport_Data_t *report)
             endMacro();
             return false;
         }
+        if(c == MACRO_PAUSE)
+            _delay_ms(200);
 
         // if > 127, it is a modifier
         if(c & 0x80 ) {
@@ -134,18 +137,12 @@ bool getMacroReport(USB_KeyboardReport_Data_t *report)
             if( idx < sizeof(macrosC[curMacro])/sizeof(char) ) {
                 c=macrosC[curMacro][idx];
             }
-
         }
         report->KeyCode[0] = ascii2hid[(uint8_t)c][0];
         report->Modifier = ascii2hid[(uint8_t)c][1];
         report->Modifier |= mod;
         memset(&report->KeyCode[1], 0, 5);
-/*
-        memcpy_P(report, &ascii_table[(uint8_t)c], sizeof(USB_KeyboardReport_Data_t));
-        report->Modifier |= mod;
-        // set remaining 5 bytes to 0
-        memset(&report->KeyCode[1], 0, 5);
-*/
+
         idx++;
         return true;
     } else {
@@ -156,35 +153,42 @@ bool getMacroReport(USB_KeyboardReport_Data_t *report)
     return false;
 }
 
-
-uint8_t readMacro(uint8_t * macro/*[MACROLEN]*/, uint8_t idx)
+/**
+ * Reads the macro at given index from eeprom into macro and returns its length.
+ * Caller needs to make sure there in enough space allocated!
+ */
+uint8_t readEEMacro(uint8_t * macro, uint8_t idx)
 {
+    eeprom_busy_wait();
     uint8_t len=eeprom_read_byte (( const void *) EE_ADDR_MACRO(idx) );
-    _delay_us(50);
-    printf("\nEE readMacro #%d @%d len=%d", idx, EE_ADDR_MACRO(idx), len );
-    eeprom_read_block (( void *) macro , ( const void *) (EE_ADDR_MACRO(idx)+1) , len);
-    _delay_us(50);
-    macro[len]='\0';
-    // printf(" : \"%s\"", macro );
 
-    return 0;
+    if(len>MACROLEN)
+        len=MACROLEN;
+
+    eeprom_busy_wait();
+    eeprom_read_block (( void *) macro , ( const void *) (EE_ADDR_MACRO(idx)+1) , len);
+
+    macro[len]='\0';
+    //printf("\nEE readEEMacro #%d @%d len=%d \"%s\"", idx, EE_ADDR_MACRO(idx), len, macro );
+
+    return len;
 }
 
 
-uint8_t writeMacro(const char * macro/*[MACROLEN]*/, uint8_t idx)
+/**
+ * Writes the macro to eeprom at given index and returns length of written string.
+ * As eeprom update functions are used, no unnecessary writes are performed.
+ */
+uint8_t updateEEMacro(const char * macro, uint8_t idx)
 {
-
     uint8_t len=strlen(macro);
     if(len>MACROLEN)
         len=MACROLEN;
-    //printf("\n### EE WRITE #### %d \"%s\"", len, macro);
-    //uint8_t str[MACROLEN];
-    //readMacro(str, idx);
-    eeprom_update_byte ((void *) EE_ADDR_MACRO(idx) , len );
-    _delay_us(50);
-    eeprom_update_block (( const void *) macro , (void *) (EE_ADDR_MACRO(idx)+1) , len );
-    _delay_us(50);
-    //readMacro(str, idx);
 
-    return 0;
+    eeprom_busy_wait();
+    eeprom_update_byte ((void *) EE_ADDR_MACRO(idx) , len );
+    eeprom_busy_wait();
+    eeprom_update_block (( const void *) macro , (void *) (EE_ADDR_MACRO(idx)+1) , len );
+
+    return len;
 }
