@@ -1,47 +1,31 @@
 /*
-                   The HumbleHacker Keyboard Project
-                 Copyright © 2008-2010, David Whetstone
-              david DOT whetstone AT humblehacker DOT com
-
-  This file is a part of the HumbleHacker Keyboard Firmware project.
-
-      The HumbleHacker Keyboard Project is free software: you can
-  redistribute it and/or modify it under the terms of the GNU General
-  Public License as published by the Free Software Foundation, either
-  version 3 of the License, or (at your option) any later version.
-
-      The HumbleHacker Keyboard Project is distributed in the
-  hope that it will be useful, but WITHOUT ANY WARRANTY; without even
-  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-  PURPOSE.  See the GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with The HumbleHacker Keyboard Firmware project.  If not, see
-  <http://www.gnu.org/licenses/>.
-
-  --------------------------------------------------------------------
-
-  This code is based on the keyboard demonstration application by
-  Denver Gingerich.
-
-  Copyright 2008  Denver Gingerich (denver [at] ossguy [dot] com)
-
-  --------------------------------------------------------------------
-
-  Gingerich's keyboard demonstration application is based on the MyUSB
-  Mouse demonstration application, written by Dean Camera.
-
-             MyUSB Library
-     Copyright (C) Dean Camera, 2010.
+             LUFA Library
+     Copyright (C) Dean Camera, 2012.
 
   dean [at] fourwalledcubicle [dot] com
-      www.fourwalledcubicle.com
-  --------------------------------------------------------------------
+           www.lufa-lib.org
+*/
 
-  Mouse desciptors added by frobiac, 2010
+/*
+  Copyright 2012  Dean Camera (dean [at] fourwalledcubicle [dot] com)
 
-  --------------------------------------------------------------------
+  Permission to use, copy, modify, distribute, and sell this
+  software and its documentation for any purpose is hereby granted
+  without fee, provided that the above copyright notice appear in
+  all copies and that both that the copyright notice and this
+  permission notice and warranty disclaimer appear in supporting
+  documentation, and that the name of the author not be used in
+  advertising or publicity pertaining to distribution of the
+  software without specific, written prior permission.
 
+  The author disclaim all warranties with regard to this
+  software, including all implied warranties of merchantability
+  and fitness.  In no event shall the author be liable for any
+  special, indirect or consequential damages or any damages
+  whatsoever resulting from loss of use, data or profits, whether
+  in an action of contract, negligence or other tortious action,
+  arising out of or in connection with the use or performance of
+  this software.
 */
 
 /** \file
@@ -57,8 +41,6 @@
 
 #include <LUFA/Drivers/USB/USB.h>
 
-// #include <LUFA/Drivers/USB/Class/HID.h>
-#include <LUFA/Drivers/USB/Class/Device/HIDClassDevice.h>
 
 /* Type Defines: */
 /** Type define for the device configuration descriptor structure. This must be defined in the
@@ -67,12 +49,18 @@
  */
 typedef struct {
     USB_Descriptor_Configuration_Header_t Config;
+
+    // Keyboard HID Interface
     USB_Descriptor_Interface_t            HID_Interface;
     USB_HID_Descriptor_HID_t              HID_KeyboardHID;
     USB_Descriptor_Endpoint_t             HID_ReportINEndpoint;
+
+    // Debug HID Interface
     USB_Descriptor_Interface_t            HIDDBG_Interface;
     USB_HID_Descriptor_HID_t              HIDDBG_HID;
     USB_Descriptor_Endpoint_t             HIDDBG_ReportINEndpoint;
+
+    // Mouse HID Interface
     USB_Descriptor_Interface_t            HID_MouseInterface;
     USB_HID_Descriptor_HID_t              HID_MouseHID;
     USB_Descriptor_Endpoint_t             HID_MouseReportINEndpoint;
@@ -97,7 +85,9 @@ typedef struct {
 #define HID_EPSIZE                    8
 
 /* Function Prototypes: */
-uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint8_t wIndex, const void** const DescriptorAddress)
-ATTR_WARN_UNUSED_RESULT ATTR_NON_NULL_PTR_ARG(3);
+uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
+                                    const uint8_t wIndex,
+                                    const void** const DescriptorAddress)
+                                    ATTR_WARN_UNUSED_RESULT ATTR_NON_NULL_PTR_ARG(3);
 
 #endif

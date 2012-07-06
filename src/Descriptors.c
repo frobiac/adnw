@@ -1,45 +1,34 @@
 /*
-                   The HumbleHacker Keyboard Project
-                 Copyright © 2008-2010, David Whetstone
-              david DOT whetstone AT humblehacker DOT com
-
-  This file is a part of the HumbleHacker Keyboard Firmware project.
-
-      The HumbleHacker Keyboard Project is free software: you can
-  redistribute it and/or modify it under the terms of the GNU General
-  Public License as published by the Free Software Foundation, either
-  version 3 of the License, or (at your option) any later version.
-
-      The HumbleHacker Keyboard Project is distributed in the
-  hope that it will be useful, but WITHOUT ANY WARRANTY; without even
-  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-  PURPOSE.  See the GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with The HumbleHacker Keyboard Firmware project.  If not, see
-  <http://www.gnu.org/licenses/>.
-
-  --------------------------------------------------------------------
-
-  This code is based on the keyboard demonstration application by
-  Denver Gingerich.
-
-  Copyright 2008  Denver Gingerich (denver [at] ossguy [dot] com)
-
-  --------------------------------------------------------------------
-
-  Gingerich's keyboard demonstration application is based on the MyUSB
-  Mouse demonstration application, written by Dean Camera.
-
              LUFA Library
-     Copyright (C) Dean Camera, 2010.
+     Copyright (C) Dean Camera, 2012.
 
   dean [at] fourwalledcubicle [dot] com
-      www.fourwalledcubicle.com
-  --------------------------------------------------------------------
+           www.lufa-lib.org
+*/
 
-  Mouse desciptors added by frobiac, 2010
+/*
+  Copyright 2012  Dean Camera (dean [at] fourwalledcubicle [dot] com)
 
+  Permission to use, copy, modify, distribute, and sell this
+  software and its documentation for any purpose is hereby granted
+  without fee, provided that the above copyright notice appear in
+  all copies and that both that the copyright notice and this
+  permission notice and warranty disclaimer appear in supporting
+  documentation, and that the name of the author not be used in
+  advertising or publicity pertaining to distribution of the
+  software without specific, written prior permission.
+
+  The author disclaim all warranties with regard to this
+  software, including all implied warranties of merchantability
+  and fitness.  In no event shall the author be liable for any
+  special, indirect or consequential damages or any damages
+  whatsoever resulting from loss of use, data or profits, whether
+  in an action of contract, negligence or other tortious action,
+  arising out of or in connection with the use or performance of
+  this software.
+*/
+/*------------------------------------------------------------------
+  Mouse desciptor patched for scrollwheel by frobiac, 2010
   --------------------------------------------------------------------
 */
 
@@ -103,6 +92,7 @@ int8_t  Y; /**< Current delta Y movement on the mouse. */
 } ATTR_PACKED USB_MouseReport_Data_t;
 #endif
 
+/// @todo : use HID_DESCRIPTOR_MOUSE(-1, 1, -1, 1, 3, false) with scrollwheel patch ?
 const USB_Descriptor_HIDReport_Datatype_t PROGMEM MouseReport[] =
     //const BYTE HID_ReportDescriptor[] = {
 {
@@ -120,10 +110,10 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM MouseReport[] =
     0x15, 0x00,        //       LOGICAL_MINIMUM (0)
     0x25, 0x01,        //       LOGICAL_MAXIMUM (1)
     0x75, 0x01,        //       REPORT_SIZE (1)
-    0x95, 0x05,        //       REPORT_COUNT (5)
+    0x95, 0x05,        //       REPORT_COUNT (5 Buttons)
     0x81, 0x02,        //       INPUT (Data,Var,Abs)
     // ------------------------------  Padding
-    0x75, 0x03,        //       REPORT_SIZE (3)
+    0x75, 0x03,        //       REPORT_SIZE (8-5buttons 3)
     0x95, 0x01,        //       REPORT_COUNT (1)
     0x81, 0x03,        //       INPUT (Cnst,Var,Abs)
     // ------------------------------  X,Y position
@@ -284,9 +274,9 @@ const USB_Descriptor_Device_t PROGMEM DeviceDescriptor = {
     .Header                 = {.Size = sizeof(USB_Descriptor_Device_t), .Type = DTYPE_Device},
 
     .USBSpecification       = VERSION_BCD(01.10),
-    .Class                  = 0x00,
-    .SubClass               = 0x00,
-    .Protocol               = 0x00,
+    .Class                  = USB_CSCP_NoDeviceClass,
+    .SubClass               = USB_CSCP_NoDeviceSubclass,
+    .Protocol               = USB_CSCP_NoDeviceProtocol,
 
     .Endpoint0Size          = FIXED_CONTROL_ENDPOINT_SIZE,
 
@@ -312,12 +302,12 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .Header                 = {.Size = sizeof(USB_Descriptor_Configuration_Header_t), .Type = DTYPE_Configuration},
 
         .TotalConfigurationSize = sizeof(USB_Descriptor_Configuration_t),
-        .TotalInterfaces        = 3,  // +1 due to mouse
+        .TotalInterfaces        = 3,  // keyboard, debug and mouse
 
         .ConfigurationNumber    = 1,
         .ConfigurationStrIndex  = NO_DESCRIPTOR,
 
-        .ConfigAttributes       = (USB_CONFIG_ATTR_RESERVED | USB_CONFIG_ATTR_REMOTEWAKEUP),
+        .ConfigAttributes       = (USB_CONFIG_ATTR_RESERVED | USB_CONFIG_ATTR_SELFPOWERED /*USB_CONFIG_ATTR_REMOTEWAKEUP*/),
 
         .MaxPowerConsumption    = USB_CONFIG_POWER_MA(100)
     },
@@ -331,8 +321,8 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
 
         .TotalEndpoints         = 1,
 
-        .Class                  = 0x03,
-        .SubClass               = 0x01,
+        .Class                  = HID_CSCP_HIDClass,
+        .SubClass               = HID_CSCP_BootSubclass,
         .Protocol               = HID_CSCP_KeyboardBootProtocol, /*HID_BOOT_KEYBOARD_PROTOCOL,*/
 
         .InterfaceStrIndex      = NO_DESCRIPTOR
@@ -356,7 +346,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .EndpointAddress        = KEYBOARD_IN_EPADDR,
         .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
         .EndpointSize           = KEYBOARD_EPSIZE,
-        .PollingIntervalMS      = 0x0A
+        .PollingIntervalMS      = 0x05
     },
     .HIDDBG_Interface =
     {
@@ -367,9 +357,9 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
 
         .TotalEndpoints         = 1,
 
-        .Class                  = 0x03,
-        .SubClass               = 0x00,
-        .Protocol               = 0x00,
+        .Class                  = HID_CSCP_HIDClass,
+        .SubClass               = USB_CSCP_NoDeviceSubclass,
+        .Protocol               = USB_CSCP_NoDeviceProtocol,
 
         .InterfaceStrIndex      = NO_DESCRIPTOR
     },
@@ -392,7 +382,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .EndpointAddress        = DBG_IN_EPADDR,
         .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
         .EndpointSize           = DBG_EPSIZE,
-        .PollingIntervalMS      = 0x0A
+        .PollingIntervalMS      = 0x05
     },
 
     .HID_MouseInterface =
@@ -404,9 +394,9 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
 
         .TotalEndpoints         = 1,
 
-        .Class                  = 0x03,
-        .SubClass               = 0x01,
-        .Protocol               = HID_CSCP_NonBootProtocol,
+        .Class                  = HID_CSCP_HIDClass,
+        .SubClass               = HID_CSCP_BootSubclass,
+        .Protocol               = HID_CSCP_MouseBootProtocol,
 
         .InterfaceStrIndex      = NO_DESCRIPTOR
     },
@@ -428,7 +418,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .EndpointAddress        = MOUSE_IN_EPADDR,
         .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
         .EndpointSize           = HID_EPSIZE,
-        .PollingIntervalMS      = 0x0A
+        .PollingIntervalMS      = 0x05
     },
 
 };
@@ -448,9 +438,8 @@ const USB_Descriptor_String_t PROGMEM LanguageString = {
  *  Descriptor.
  */
 const USB_Descriptor_String_t PROGMEM ManufacturerString = {
-    .Header                 = {.Size = MANUFACTURER_NAME_LEN, .Type = DTYPE_String},
-
-    .UnicodeString          = MANUFACTURER_NAME
+    .Header                 = {.Size = USB_STRING_LEN(7), .Type = DTYPE_String},
+    .UnicodeString          = L"frobiac"
 };
 
 /** Product descriptor string. This is a Unicode string containing the product's details in human readable form,
@@ -458,9 +447,8 @@ const USB_Descriptor_String_t PROGMEM ManufacturerString = {
  *  Descriptor.
  */
 const USB_Descriptor_String_t PROGMEM ProductString = {
-    .Header                 = {.Size = PRODUCT_NAME_LEN, .Type = DTYPE_String},
-
-    .UnicodeString          = PRODUCT_NAME
+    .Header                 = {.Size = USB_STRING_LEN(17), .Type = DTYPE_String},
+    .UnicodeString          = L"AdNW TP and mouse"
 };
 
 /** This function is called by the library when in device mode, and must be overridden (see library "USB Descriptors"
