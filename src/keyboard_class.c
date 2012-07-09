@@ -117,6 +117,13 @@ void initKeyboard()
     initMacros();
 }
 
+void clearRowData(){
+    for (uint8_t row = 0; row < ROWS; ++row) {
+        rowData[row]=0;
+        ct0[row]=0xFF;
+        ct1[row]=0xFF;
+    }
+}
 
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {

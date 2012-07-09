@@ -63,5 +63,6 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data);
 uint8_t fillMacroReport(USB_KeyboardReport_Data_t *report_data);
 
 void printCurrentKeys(void);
+void clearRowData(void);
 
 #endif // __KEYBOARD_CLASS_H__

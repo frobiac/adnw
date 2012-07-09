@@ -42,13 +42,13 @@ void handleCommand(void){
     struct Key k=activeKeys.keys[0];
     uint8_t hid =getKeyCode(k.row, k.col, 0);
     clearActiveKeys();
+    clearRowData();
 
     //if(hid == HID_ESC)
     //    setCommandMode(false);
     switch(hid){
         case HID_P:
             printf("\nPrint:"); break;
-            clearActiveKeys();
         case HID_T:
             printf("\nTrackpoint:"); break;
         case HID_ESC:
