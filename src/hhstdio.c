@@ -22,7 +22,6 @@
 */
 
 #include "hhstdio.h"
-#include "hid_usage.h"
 
 static int hid_putc(char, FILE*);
 static FILE buf_stdout = FDEV_SETUP_STREAM(hid_putc, NULL, _FDEV_SETUP_WRITE);

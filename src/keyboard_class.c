@@ -38,6 +38,7 @@
 #include "keymap.h"
 #include "macro.h"
 #include "matrix.h"
+#include "command.h"
 #include "jump_bootloader.h"
 
 // #define TRACE printf
@@ -140,6 +141,14 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
     analogDataAcquire();
 #endif
 
+    if(commandMode()){
+        handleCommand();
+        report_data->Modifier=0;
+        memset(&report_data->KeyCode[0], 0, 6);
+        return sizeof(USB_KeyboardReport_Data_t);
+        return 0;
+    }
+
     if(macroMode()) {
         if(getMacroReport(report_data)) {
             return sizeof(USB_KeyboardReport_Data_t);
@@ -152,7 +161,8 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 {
     if(activeKeys.keycnt==0) {
-        report_data->KeyCode[0]=0;
+        memset(&report_data->KeyCode[0], 0, 6 /*mod+res+6*key*/);
+        report_data->Modifier=0;
         return sizeof(USB_KeyboardReport_Data_t);
     }
 
@@ -431,13 +441,14 @@ void init_active_keys()
              (rowData[6] & (1<<5)) ) {
         printf("\n4 corners pressed, will reboot\n");
         jump_bootloader();
+    } else if ( (rowData[0] & (1<<0)) && (rowData[4] & (1<<5)) ) {
+        rowData[0] &= ~(1<<0);
+        rowData[4] &= ~(1<<5);
+        setCommandMode(true);
     }
 
     if( rowData[7] & (1<<5) ) {
-        //if(! g_mouse_mode)
-        //    tp_reset();
         g_mouse_enabled = g_mouse_enabled > 0 ? 0 : 1;
-
         rowData[7] &= ~(1<<5);
         return;
     }

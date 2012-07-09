@@ -17,6 +17,9 @@
 
 #ifndef _HID_USAGE_H
 #define _HID_USAGE_H 1
+
+#include <stdint.h>
+
 // see also ../LUFA/LUFA/Drivers/USB/Class/Common/HIDClassCommon.h
 // -> bCountryCode=09 german?
 

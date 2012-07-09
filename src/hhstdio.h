@@ -24,6 +24,8 @@
 #ifndef __HHSTDIO_H__
 #define __HHSTDIO_H__
 
+#include "hid_usage.h"
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <LUFA/Drivers/USB/Class/Device/HIDClassDevice.h>
@@ -51,6 +53,5 @@ char stdout_popchar(void);
 
 typedef uint8_t  UsagePage;
 typedef uint8_t  UsageID;
-
 
 #endif // __HHSTDIO_H__
