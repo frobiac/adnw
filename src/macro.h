@@ -53,9 +53,10 @@ uint8_t readEEMacro (uint8_t macro[MACROLEN], uint8_t idx);
 bool initMacros(void);
 void printMacros(void);
 
+void endMacro(void);
+
 bool macroMode(void);
 void setMacroMode(bool on);
-void endMacro(void);
 
 bool activateMacro(uint8_t id);
 bool getMacroChar(struct keycode *kc);

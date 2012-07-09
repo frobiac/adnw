@@ -496,8 +496,6 @@ void init_active_keys()
         //if(! g_mouse_mode)
         //    tp_reset();
         g_mouse_enabled = g_mouse_enabled > 0 ? 0 : 1;
-        printf("\nToggle MM to %d ", g_mouse_enabled);
-        // tp_id();
 
         rowData[7] &= ~(1<<5);
         return;

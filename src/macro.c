@@ -25,8 +25,15 @@ uint8_t idx=0;
 
 bool macromode=false;
 
-char macrosC[MACROCOUNT][MACROLEN];
+char macrosC[MACROCOUNT][MACROLEN]; ///< in-programm storage of macros read from eeprom
 
+
+inline bool macroMode(void)         { return(macromode != 0); };
+inline void setMacroMode( bool on ) { macromode=on; };
+
+/**
+ *  Reads all macros from EEPROM into macrosC for further usage
+ */
 bool initMacros()
 {
     // clear array
@@ -55,39 +62,39 @@ bool initMacros()
     return true;
 }
 
+/**
+ * Prints all macros currently stored in EEPROM
+ */
 void printMacros(void)
 {
+    printf("\nEEPROM macros:");
     uint8_t str[MACROLEN];
     for(int i=0; i<MACROCOUNT; ++i) {
-        readEEMacro(str,i);
+        _delay_ms(50);
+        uint8_t len = readEEMacro(str,i);
+        //printf("\nEE %d %03d %c %s", i, EE_ADDR_MACRO(i), len, str );
+        printf("\n%02d %s", len, str );
     }
 }
 
-bool macroMode(void)
-{
-    return(macromode != 0);
-}
-
-void setMacroMode( bool on )
-{
-    macromode=on;
-}
-
+/**
+ * Ends current macro
+ */
 void endMacro()
 {
-    macromode = 0;
+    macromode = false;
     idx  = 0;
     curMacro=MACROCOUNT;
 }
 
 /**
- * set current active macro
+ * Set currently active macro
  */
 bool activateMacro(uint8_t id)
 {
     if(!macromode)
         return false;
-    // de-bounce not working in current macro detection
+    // de-bounce not working in current macro detection, so return if already active
     if(id==curMacro)
         return true;
     if(id<MACROCOUNT) {
@@ -100,6 +107,12 @@ bool activateMacro(uint8_t id)
     }
 }
 
+
+/**
+ *  Fills report with the next key in the currently activated macro.
+ *  To be called until no more characters are available.
+ *  @return false if macro is done or errors prevent further processing.
+ */
 bool getMacroReport(USB_KeyboardReport_Data_t *report)
 {
     char c;
@@ -138,6 +151,7 @@ bool getMacroReport(USB_KeyboardReport_Data_t *report)
                 c=macrosC[curMacro][idx];
             }
         }
+        // now map characters from macro to HID codes.
         report->KeyCode[0] = ascii2hid[(uint8_t)c][0];
         report->Modifier = ascii2hid[(uint8_t)c][1];
         report->Modifier |= mod;
@@ -149,7 +163,6 @@ bool getMacroReport(USB_KeyboardReport_Data_t *report)
         endMacro();
         return false;
     }
-
     return false;
 }
 

@@ -31,9 +31,10 @@ uint8_t     g_trackpoint;
 #define RBIT    3
 
 
-bool tp_send_read_ack(uint8_t val);
-void tp_reset(void);
-void tp_id(void);
+bool    tp_send_read_ack(uint8_t val);
+void    tp_reset(void);
+void    tp_id(void);
+uint8_t tp_read_config(void);
 
 
 #endif // TRACKPOINT_H
