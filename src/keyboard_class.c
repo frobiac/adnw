@@ -394,25 +394,10 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
     if( g_mouse_mode ) {
         if(isMouseKey(row,col)) {
             g_mouse_keys|=(1<<(getKeyCode(row, col, 4)-MS_BTN_1));
-
-            if(g_mouse_keys == 1) {
-                if(idle_count-g_mouse_lmb > 4) {
-                    if(idle_count-g_mouse_lmb < 20) {
-                        //printf("\n1 %d  ",idle_count-g_mouse_lmb );
-                        g_mouse_double=1;
-                        //printf(" DK ");
-                    }
-                    g_mouse_lmb=idle_count;
-                }
-            } else  {
-                g_mouse_lmb=0;
-                g_mouse_double=0;
-            }
-
+            return;
         } else if(isNormalKey(row,col)) {
             g_mouse_mode = 0;
         }
-
     }
 
     activeKeys.keys[activeKeys.keycnt]=key;
