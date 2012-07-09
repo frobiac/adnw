@@ -119,21 +119,6 @@ void initKeyboard()
 
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
-    /*
-       if(g_mouse_double == 1 ) {
-            printf(" COPY ");
-            g_mouse_double=0;
-            //stdio_fill_report('c',report_data);
-            //report_data->Modifier = (1<<(MOD_L_CTRL-MOD_BEGIN));
-            //return sizeof(USB_KeyboardReport_Data_t);
-        } else if(g_mouse_keys == 4 ) {
-            printf("+");
-            //stdio_fill_report('v',report_data);
-            //report_data->Modifier = (1<<(MOD_L_CTRL-MOD_BEGIN));
-            //return sizeof(USB_KeyboardReport_Data_t);
-        }
-    */
-    //testMKT();
     if(mkt_timer+MKT_TIMEOUT < idle_count)
         mkt_state = MKT_RESET;
     if(activeKeys.keycnt==0) {
@@ -156,30 +141,9 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 #endif
 
     if(macroMode()) {
-        //setMacroMode(false);
-        //return 0;
-
-        // only ascii char from array
-        //char *ch ='\0';
         if(getMacroReport(report_data)) {
             return sizeof(USB_KeyboardReport_Data_t);
         }
-        /*
-        if(getMacroCharacter(ch)) {
-            stdio_fill_report(*ch,report_data);
-            return sizeof(USB_KeyboardReport_Data_t);
-        }
-        */
-        /*
-                struct keycode k;
-                k.ch = ' '; k.hid=0; k.mods=NONE;
-                if(getMacroChar(&k)) {
-                    //printf("\n%c %d ",k.ch,  k.hid);
-                    report_data->KeyCode[0] = k.hid;
-                    report_data->Modifier = k.mods;
-                    return sizeof(USB_KeyboardReport_Data_t);
-                }
-        */
     }
     return fillReport(report_data);
 }
@@ -295,14 +259,6 @@ void scan_matrix(void)
 
         // printf("\n%d: %b", row,  rowData[row]);
     }
-
-
-    // middle two buttons under TP
-    /*if ( (rowData[3] & (1<<5)) && (rowData[7] & (1<<0) ) ) {
-        g_mouse_mode = g_mouse_mode >0 ? 0 : 1;
-        printf("\nGMOUSEMODE=%d", g_mouse_mode);
-    }
-    */
 }
 
 void printCurrentKeys(void)
