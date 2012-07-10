@@ -33,7 +33,7 @@ uint8_t     g_trackpoint;
 
 bool    tp_send_read_ack(uint8_t val);
 void    tp_reset(void);
-void    tp_id(void);
+void    tp_init(void);
 uint8_t tp_read_config(void);
 
 

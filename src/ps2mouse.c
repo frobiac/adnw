@@ -200,7 +200,7 @@ bool ps2_init_mouse(void)
 
     printf("\nTP init: %02x %02x %02x %02x", d[0],d[1],d[2],d[3]);
 
-    tp_id();
+    tp_init();
 
     return true;
 }

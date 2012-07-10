@@ -51,6 +51,8 @@ void tp_reset()
         __asm__("nop");
     }
     RPORT &= ~(1 << RBIT);
+
+    tp_init();
 }
 
 
@@ -110,35 +112,32 @@ uint8_t tp_read_config(){
     return config;
 }
 
+/** Read id from trackpoint.
+ *  smaller TP: 2nd ID=010e  Ext.ID= M 19990623($IBM3780)
+ */
 void tp_id(void) {
-    g_trackpoint=0;
-
-    //uint8_t tmp;
     // read secondary ID
-/*
-    if( tp_send_read_ack(0xe1) )
-        printf("\n2nd  ID: %02x%02x \nExt. ID: ", read_packet(),read_packet());
-
-    // read extended ID
+    if( tp_send_read_ack(0xe1) ) {
+        printf("\n2nd ID=%02x%02x\nExt.ID=", read_packet(),read_packet() );
+    }
+    // read extended ID, which ends in ')'
     if( tp_send_read_ack(0xd0) ){
-        // better scan for ")" == 29 // 41 ?
-        for(uint8_t i=0; i < 31; ++i) {
+        uint8_t tmp='0';
+        while(tmp != (uint8_t)')'){
             tmp=read_packet();
             printf("%c",tmp);
-            if( tmp == (uint8_t)')')
-                continue;
         }
+        printf(")");
     }
-*/
-    /* smaller TP:
-     * 2nd  ID:  010e
-     * Ext. ID: M 19990623($IBM3780)
-     */
+}
+
+
+void tp_init(void) {
+    g_trackpoint=0;
 
     // read config byte at 2C: E2 2C or E2 80 2C
     /* bit  0   1   2    3    4    5    6    7
-            Pts res 2clk invX invY invZ ExXY HardTransp
-      */
+            Pts res 2clk invX invY invZ ExXY HardTrans  */
     tp_read_config();
     tp_ram_toggle(0x2c, (1<<TP_PTS) );
     tp_read_config();
@@ -156,12 +155,9 @@ void tp_id(void) {
     tp_ram_write(0x41, 0xff);
     tp_ram_write(0x42, 0xff);
     printf("\nPTS btn masks: %02x %02x %02x ", tp_ram_read(0x41), tp_ram_read(0x42), tp_ram_read(0x43) );
-    printf("\nPTS thres: %02x", tp_ram_read(0x5c));
     tp_ram_write(0x5c, 0x0A); // 08 is default, 10 too hard
     printf("\nPTS thres: %02x", tp_ram_read(0x5c));
 
     /// @todo Set only on successful init
     g_trackpoint = 1;
-
-
 }
