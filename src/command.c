@@ -19,6 +19,8 @@
 #include "hhstdio.h"
 #include "hid_usage.h"
 #include "keyboard_class.h"
+#include "jump_bootloader.h"
+#include "trackpoint.h"
 
 bool command=false;
 
@@ -47,11 +49,18 @@ void handleCommand(void){
     //if(hid == HID_ESC)
     //    setCommandMode(false);
     switch(hid){
+        case HID_J:
+            printf("\nBootloader::");
+            jump_bootloader();
+            break;;
         case HID_P:
             printf("\nPrint:"); break;
         case HID_T:
-            printf("\nTrackpoint:"); break;
-        case HID_ESC:
+            printf("\nTrackpoint:");
+            tp_id();
+            setCommandMode(false);
+            break;
+        case HID_Q:
             setCommandMode(false); break;
         default:
             printf("\nUnknown:");
