@@ -19,8 +19,12 @@ Trackpoint
 * initialization not really thought out
 * document most important registers ( see trackpoint.[ch] from kernel)
 * configuration editable at runtime + eeprom store
-* tartup even if TP is disabled
+* startup even if TP is disabled
 
+HW
+--
+* PS/2 pull-ups needed
+* LED signalling
 
 Refactor
 --------
@@ -31,7 +35,8 @@ Layout
 ------
 * BU-TECK better?
 * implement QWERTY for adopters
-
+* usage page for system keys
+* copy/paste
 
 Git
 ---
@@ -41,7 +46,7 @@ Git
 
 Macro
 -----
-* configurable (saving to eeprom) while running or separate configtool only flashing eeprom content?
+* configurable (saving to eeprom) while running or separate configtool only flashing eeprom content
 		
 		
 Commandmode

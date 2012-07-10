@@ -190,7 +190,7 @@ static const struct keycode KeyMatrix[LAYERS+2][ROWS][COLS] PROGMEM = {
 
     // COMPOSE or MOD2 + MOD3
     {
-        { _no, _CUT,     _COPY,    _PASTE,    _no,    _no },
+        { _no, _no,     _no,    _no,    _no,    _no },
         { _no, _SSHARP, _no,    _no,    _a_UML, _o_UML},
         { _no, _no,     _no,    _no,    _no,    _no},
         { _THUMB_ROW_LEFT },
