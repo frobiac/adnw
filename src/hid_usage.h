@@ -276,65 +276,65 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _m          { HID_M, NONE  , 'm' }
 #define _M          { HID_M, SHIFT , 'M' }
 
-#define _CAPS       { HID_CAPS_LOCK,NONE  }  //  CapsLock
-#define _BSPACE     { HID_BACKSPACE,NONE  }  //  Backspace
-#define _TAB        { HID_TAB,		NONE  }  //  Tab
+#define _CAPS       { HID_CAPS_LOCK,NONE  , ' ' }  //  CapsLock
+#define _BSPACE     { HID_BACKSPACE,NONE  , ' ' }  //  Backspace
+#define _TAB        { HID_TAB,		NONE  , ' ' }  //  Tab
 
-#define _NON_US_1   { HID_NON_US_1, NONE  }  //  non-US-1
-#define _NON_US_2   { HID_NON_US_2, NONE  }  //  non-US-1
-#define _ENTER      { HID_ENTER,	NONE  }  //  Enter
+#define _NON_US_1   { HID_NON_US_1, NONE  , ' ' }  //  non-US-1
+#define _NON_US_2   { HID_NON_US_2, NONE  , ' ' }  //  non-US-1
+#define _ENTER      { HID_ENTER,	NONE  , ' ' }  //  Enter
 
 #define _COMMA      { HID_COMMA,	NONE  , ',' }
 #define _PERIOD     { HID_PERIOD,	NONE  , '.' }
 #define _SPACE      { HID_SPACE,	NONE  , ' ' }
 
 //L/R 4 modifiers
-#define _L_SHIFT    { HID_L_SHIFT,		MOD_L_SHIFT }  //  LShift
-#define _R_SHIFT    { HID_R_SHIFT,		MOD_R_SHIFT }  //  RShift
-#define _L_CTRL     { HID_L_CONTROL,	MOD_L_CTRL  }  //  LCtrl
-#define _R_CTRL     { HID_R_CONTROL,	MOD_R_CTRL  }  //  RCtrl
-#define _L_ALT      { HID_L_ALT,		MOD_L_ALT   }  //  LAlt
-#define _R_ALT      { HID_R_ALT,		MOD_R_ALT   }  //  RAlt
-#define _L_GUI      { HID_L_GUI,		MOD_L_GUI   }  //  LWin
-#define _R_GUI      { HID_R_GUI,		MOD_R_GUI   }  //  RWin
+#define _L_SHIFT    { HID_L_SHIFT,		MOD_L_SHIFT , ' ' }  //  LShift
+#define _R_SHIFT    { HID_R_SHIFT,		MOD_R_SHIFT , ' ' }  //  RShift
+#define _L_CTRL     { HID_L_CONTROL,	MOD_L_CTRL  , ' ' }  //  LCtrl
+#define _R_CTRL     { HID_R_CONTROL,	MOD_R_CTRL  , ' ' }  //  RCtrl
+#define _L_ALT      { HID_L_ALT,		MOD_L_ALT   , ' ' }  //  LAlt
+#define _R_ALT      { HID_R_ALT,		MOD_R_ALT   , ' ' }  //  RAlt
+#define _L_GUI      { HID_L_GUI,		MOD_L_GUI   , ' ' }  //  LWin
+#define _R_GUI      { HID_R_GUI,		MOD_R_GUI   , ' ' }  //  RWin
 //
-#define _MOD_0      { HID_NO_KEY,		MOD_LAYER_0 }
-#define _MOD_1      { HID_NO_KEY,		MOD_LAYER_1 }
-#define _MOD_2      { HID_NO_KEY,		MOD_LAYER_2 }
-#define _MOD_3      { HID_NO_KEY,		MOD_LAYER_3 }
-#define _MOUSE      { HID_NO_KEY,		MOD_MOUSE   }
-#define _COMPOSE    { HID_NO_KEY,		MOD_COMPOSE }
+#define _MOD_0      { HID_NO_KEY,		MOD_LAYER_0 , ' ' }
+#define _MOD_1      { HID_NO_KEY,		MOD_LAYER_1 , ' ' }
+#define _MOD_2      { HID_NO_KEY,		MOD_LAYER_2 , ' ' }
+#define _MOD_3      { HID_NO_KEY,		MOD_LAYER_3 , ' ' }
+#define _MOUSE      { HID_NO_KEY,		MOD_MOUSE   , ' ' }
+#define _COMPOSE    { HID_NO_KEY,		MOD_COMPOSE , ' ' }
 
-#define _MS_SCROLL   { MS_SCROLL,NONE  }
-#define _MS_BTN_1    { MS_BTN_1, NONE  }
-#define _MS_BTN_2    { MS_BTN_2, NONE  }
-#define _MS_BTN_3    { MS_BTN_3, NONE  }
+#define _MS_SCROLL   { MS_SCROLL,NONE  , ' ' }
+#define _MS_BTN_1    { MS_BTN_1, NONE  , ' ' }
+#define _MS_BTN_2    { MS_BTN_2, NONE  , ' ' }
+#define _MS_BTN_3    { MS_BTN_3, NONE  , ' ' }
 
-#define _INS        { HID_INSERT,		NONE  }  //  Insert
-#define _DEL        { HID_DELETE,		NONE  }  //  Delete
-#define _LEFT       { HID_LEFT,			NONE  }  //  Left
-#define _HOME       { HID_HOME,			NONE  }  //  Home
-#define _END        { HID_END,			NONE  }  //  End
-#define _UP         { HID_UP,			NONE  }  //  Up
-#define _DOWN       { HID_DOWN,			NONE  }  //  Down
-#define _PGUP       { HID_PAGE_UP,		NONE  }  //  PgUp
-#define _PGDN       { HID_PAGE_DOWN,	NONE  }  //  PgDn
-#define _RIGHT      { HID_RIGHT,		NONE  }  //  Right
-#define _NUMLOCK    { HID_NUM_LOCK,   NUMLOCK }  //  NumLock
+#define _INS        { HID_INSERT,		NONE  , ' ' }  //  Insert
+#define _DEL        { HID_DELETE,		NONE  , ' ' }  //  Delete
+#define _LEFT       { HID_LEFT,			NONE  , ' ' }  //  Left
+#define _HOME       { HID_HOME,			NONE  , ' ' }  //  Home
+#define _END        { HID_END,			NONE  , ' ' }  //  End
+#define _UP         { HID_UP,			NONE  , ' ' }  //  Up
+#define _DOWN       { HID_DOWN,			NONE  , ' ' }  //  Down
+#define _PGUP       { HID_PAGE_UP,		NONE  , ' ' }  //  PgUp
+#define _PGDN       { HID_PAGE_DOWN,	NONE  , ' ' }  //  PgDn
+#define _RIGHT      { HID_RIGHT,		NONE  , ' ' }  //  Right
+#define _NUMLOCK    { HID_NUM_LOCK,   NUMLOCK , ' ' }  //  NumLock
 
-#define _ESC        { HID_ESC, NONE  }  //  Esc
-#define _F1         { HID_F1,  NONE  }  //  F1
-#define _F2         { HID_F2,  NONE  }  //  F2
-#define _F3         { HID_F3,  NONE  }  //  F3
-#define _F4         { HID_F4,  NONE  }  //  F4
-#define _F5         { HID_F5,  NONE  }  //  F5
-#define _F6         { HID_F6,  NONE  }  //  F6
-#define _F7         { HID_F7,  NONE  }  //  F7
-#define _F8         { HID_F8,  NONE  }  //  F8
-#define _F9         { HID_F9,  NONE  }  //  F9
-#define _F10        { HID_F10, NONE  }  //  F10
-#define _F11        { HID_F11, NONE  }  //  F11
-#define _F12        { HID_F12, NONE  }  //  F12
+#define _ESC        { HID_ESC, NONE  , ' ' }  //  Esc
+#define _F1         { HID_F1,  NONE  , ' ' }  //  F1
+#define _F2         { HID_F2,  NONE  , ' ' }  //  F2
+#define _F3         { HID_F3,  NONE  , ' ' }  //  F3
+#define _F4         { HID_F4,  NONE  , ' ' }  //  F4
+#define _F5         { HID_F5,  NONE  , ' ' }  //  F5
+#define _F6         { HID_F6,  NONE  , ' ' }  //  F6
+#define _F7         { HID_F7,  NONE  , ' ' }  //  F7
+#define _F8         { HID_F8,  NONE  , ' ' }  //  F8
+#define _F9         { HID_F9,  NONE  , ' ' }  //  F9
+#define _F10        { HID_F10, NONE  , ' ' }  //  F10
+#define _F11        { HID_F11, NONE  , ' ' }  //  F11
+#define _F12        { HID_F12, NONE  , ' ' }  //  F12
 
 
 
@@ -375,7 +375,7 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _MINUS     { HID_MINUS,     NONE  , '-' }
 #define _PLUS      { HID_EQUAL,     SHIFT , '+' }
 #define _QUESTION  { HID_SLASH,     SHIFT , '?' }
-#define _SQUOTE    { HID_QUOTE,     NONE  , '\' }
+#define _SQUOTE    { HID_QUOTE,     NONE  , '\'' }
 #define _R_BRACE   { HID_R_BRACKET, SHIFT , ']' }
 #define _R_BRACKET { HID_R_BRACKET, NONE  , '}' }
 #define _R_PAREN   { HID_0,         SHIFT , ')' }
