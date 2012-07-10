@@ -40,6 +40,7 @@
 struct keycode {
     uint8_t  hid;   ///< HID usage code, will be interpreted by OS keyboard layout!
     uint8_t  mods;  ///< HID modifiers , will be interpreted by OS keyboard layout!
+	uint8_t  ch;
 } ;
 
 /*
@@ -176,7 +177,7 @@ static const struct keycode KeyMatrix[LAYERS+2][ROWS][COLS] PROGMEM = {
     // MOUSE MODE
     /// @todo These should not be shifted, maybe factor out entirely!
     {
-        { _no, _CUT,     _COPY,    _PASTE,      _a_UML,     _o_UML },
+        { _no, _no,     _no,    _no,      _a_UML,     _o_UML },
         { _no, _MS_BTN_1, _MS_BTN_2,_MS_BTN_3, _MS_SCROLL, _no},
         { _no, _no, _no, _no, _no, _no},
         { _no, _no, _no, _L_CTRL, _L_ALT, _L_SHIFT },

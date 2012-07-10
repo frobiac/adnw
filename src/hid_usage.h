@@ -99,10 +99,10 @@
 #define HID_L_BRACKET       47
 #define HID_R_BRACKET       48
 #define HID_BSLASH          49
-#define HID_NON_US_1        50    // # & ~
+#define HID_NON_US_1        50
 #define HID_SEMICOLON       51
 #define HID_QUOTE           52
-#define HID_GRAVE           53      // grave & tilde
+#define HID_GRAVE           53
 #define HID_COMMA           54
 #define HID_PERIOD          55
 #define HID_SLASH           56
@@ -209,72 +209,72 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define SHIFT 0x02
 #define ALTGR 0x40
 
-#define _no         { 0,     NONE  }  // No key defined
+#define _no         { 0,     NONE  , ' ' } // No key defined
 
-#define _1          { HID_1, NONE  }  //  1
-#define _EXCLAM     { HID_1, SHIFT }  //  !
-#define _2          { HID_2, NONE  }  //  2
-#define _3          { HID_3, NONE  }  //  3
-#define _4          { HID_4, NONE  }  //  4
-#define _DOLLAR     { HID_4, SHIFT }  //  $
-#define _5          { HID_5, NONE  }  //  5
-#define _PERCENT    { HID_5, SHIFT }  //  %
-#define _6          { HID_6, NONE  }  //  6
-#define _7          { HID_7, NONE  }  //  7
-#define _8          { HID_8, NONE  }  //  8
-#define _9          { HID_9, NONE  }  //  9
-#define _0          { HID_0, NONE  }  //  0
+#define _1          { HID_1, NONE  , '1' }
+#define _EXCLAM     { HID_1, SHIFT , '!' }
+#define _2          { HID_2, NONE  , '2' }
+#define _3          { HID_3, NONE  , '3' }
+#define _4          { HID_4, NONE  , '4' }
+#define _DOLLAR     { HID_4, SHIFT , '$' }
+#define _5          { HID_5, NONE  , '5' }
+#define _PERCENT    { HID_5, SHIFT , '%' }
+#define _6          { HID_6, NONE  , '6' }
+#define _7          { HID_7, NONE  , '7' }
+#define _8          { HID_8, NONE  , '8' }
+#define _9          { HID_9, NONE  , '9' }
+#define _0          { HID_0, NONE  , '0' }
 
-#define _q          { HID_Q, NONE  }  //  q
-#define _Q          { HID_Q, SHIFT }  //  Q
-#define _w          { HID_W, NONE  }  //  w
-#define _W          { HID_W, SHIFT }  //  W
-#define _e          { HID_E, NONE  }  //  e
-#define _E          { HID_E, SHIFT }  //  E
-#define _r          { HID_R, NONE  }  //  r
-#define _R          { HID_R, SHIFT }  //  R
-#define _t          { HID_T, NONE  }  //  t
-#define _T          { HID_T, SHIFT }  //  T
-#define _u          { HID_U, NONE  }  //  u
-#define _U          { HID_U, SHIFT }  //  U
-#define _i          { HID_I, NONE  }  //  i
-#define _I          { HID_I, SHIFT }  //  I
-#define _o          { HID_O, NONE  }  //  o
-#define _O          { HID_O, SHIFT }  //  O
-#define _p          { HID_P, NONE  }  //  p
-#define _P          { HID_P, SHIFT }  //  P
+#define _q          { HID_Q, NONE  , 'q' }
+#define _Q          { HID_Q, SHIFT , 'Q' }
+#define _w          { HID_W, NONE  , 'w' }
+#define _W          { HID_W, SHIFT , 'W' }
+#define _e          { HID_E, NONE  , 'e' }
+#define _E          { HID_E, SHIFT , 'E' }
+#define _r          { HID_R, NONE  , 'r' }
+#define _R          { HID_R, SHIFT , 'R' }
+#define _t          { HID_T, NONE  , 't' }
+#define _T          { HID_T, SHIFT , 'T' }
+#define _u          { HID_U, NONE  , 'u' }
+#define _U          { HID_U, SHIFT , 'U' }
+#define _i          { HID_I, NONE  , 'i' }
+#define _I          { HID_I, SHIFT , 'I' }
+#define _o          { HID_O, NONE  , 'o' }
+#define _O          { HID_O, SHIFT , 'O' }
+#define _p          { HID_P, NONE  , 'p' }
+#define _P          { HID_P, SHIFT , 'P' }
 
-#define _a          { HID_A, NONE  }  //  a
-#define _A          { HID_A, SHIFT }  //  A
-#define _s          { HID_S, NONE  }  //  s
-#define _S          { HID_S, SHIFT }  //  S
-#define _d          { HID_D, NONE  }  //  d
-#define _D          { HID_D, SHIFT }  //  D
-#define _f          { HID_F, NONE  }  //  f
-#define _F          { HID_F, SHIFT }  //  F
-#define _g          { HID_G, NONE  }  //  g
-#define _G          { HID_G, SHIFT }  //  G
-#define _h          { HID_H, NONE  }  //  h
-#define _H          { HID_H, SHIFT }  //  H
-#define _j          { HID_J, NONE  }  //  j
-#define _J          { HID_J, SHIFT }  //  J
-#define _k          { HID_K, NONE  }  //  k
-#define _K          { HID_K, SHIFT }  //  K
-#define _l          { HID_L, NONE  }  //  l
-#define _L          { HID_L, SHIFT }  //  L
+#define _a          { HID_A, NONE  , 'a' }
+#define _A          { HID_A, SHIFT , 'A' }
+#define _s          { HID_S, NONE  , 's' }
+#define _S          { HID_S, SHIFT , 'S' }
+#define _d          { HID_D, NONE  , 'd' }
+#define _D          { HID_D, SHIFT , 'D' }
+#define _f          { HID_F, NONE  , 'f' }
+#define _F          { HID_F, SHIFT , 'F' }
+#define _g          { HID_G, NONE  , 'g' }
+#define _G          { HID_G, SHIFT , 'G' }
+#define _h          { HID_H, NONE  , 'h' }
+#define _H          { HID_H, SHIFT , 'H' }
+#define _j          { HID_J, NONE  , 'j' }
+#define _J          { HID_J, SHIFT , 'J' }
+#define _k          { HID_K, NONE  , 'k' }
+#define _K          { HID_K, SHIFT , 'K' }
+#define _l          { HID_L, NONE  , 'l' }
+#define _L          { HID_L, SHIFT , 'L' }
 
-#define _x          { HID_X, NONE  }  //  x
-#define _X          { HID_X, SHIFT }  //  X
-#define _c          { HID_C, NONE  }  //  c
-#define _C          { HID_C, SHIFT }  //  C
-#define _v          { HID_V, NONE  }  //  v
-#define _V          { HID_V, SHIFT }  //  V
-#define _b          { HID_B, NONE  }  //  b
-#define _B          { HID_B, SHIFT }  //  B
-#define _n          { HID_N, NONE  }  //  n
-#define _N          { HID_N, SHIFT }  //  N
-#define _m          { HID_M, NONE  }  //  m
-#define _M          { HID_M, SHIFT }  //  M
+#define _x          { HID_X, NONE  , 'x' }
+#define _X          { HID_X, SHIFT , 'X' }
+#define _c          { HID_C, NONE  , 'c' }
+#define _C          { HID_C, SHIFT , 'C' }
+#define _v          { HID_V, NONE  , 'v' }
+#define _V          { HID_V, SHIFT , 'V' }
+#define _b          { HID_B, NONE  , 'b' }
+#define _B          { HID_B, SHIFT , 'B' }
+#define _n          { HID_N, NONE  , 'n' }
+#define _N          { HID_N, SHIFT , 'N' }
+#define _m          { HID_M, NONE  , 'm' }
+#define _M          { HID_M, SHIFT , 'M' }
 
 #define _CAPS       { HID_CAPS_LOCK,NONE  }  //  CapsLock
 #define _BSPACE     { HID_BACKSPACE,NONE  }  //  Backspace
@@ -284,9 +284,9 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _NON_US_2   { HID_NON_US_2, NONE  }  //  non-US-1
 #define _ENTER      { HID_ENTER,	NONE  }  //  Enter
 
-#define _COMMA      { HID_COMMA,	NONE  }  //  ,
-#define _PERIOD     { HID_PERIOD,	NONE  }  //  .
-#define _SPACE      { HID_SPACE,	NONE  }  //  space
+#define _COMMA      { HID_COMMA,	NONE  , ',' }
+#define _PERIOD     { HID_PERIOD,	NONE  , '.' }
+#define _SPACE      { HID_SPACE,	NONE  , ' ' }
 
 //L/R 4 modifiers
 #define _L_SHIFT    { HID_L_SHIFT,		MOD_L_SHIFT }  //  LShift
@@ -305,7 +305,11 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _MOUSE      { HID_NO_KEY,		MOD_MOUSE   }
 #define _COMPOSE    { HID_NO_KEY,		MOD_COMPOSE }
 
-//
+#define _MS_SCROLL   { MS_SCROLL,NONE  }
+#define _MS_BTN_1    { MS_BTN_1, NONE  }
+#define _MS_BTN_2    { MS_BTN_2, NONE  }
+#define _MS_BTN_3    { MS_BTN_3, NONE  }
+
 #define _INS        { HID_INSERT,		NONE  }  //  Insert
 #define _DEL        { HID_DELETE,		NONE  }  //  Delete
 #define _LEFT       { HID_LEFT,			NONE  }  //  Left
@@ -317,33 +321,6 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _PGDN       { HID_PAGE_DOWN,	NONE  }  //  PgDn
 #define _RIGHT      { HID_RIGHT,		NONE  }  //  Right
 #define _NUMLOCK    { HID_NUM_LOCK,   NUMLOCK }  //  NumLock
-
-#define _KP_7       { HID_KEYPAD_7 ,	NONE  }  //  KP_7
-#define _KP_HOME    { HID_KEYPAD_7 ,	SHIFT }  //  Home
-#define _KP_4       { HID_KEYPAD_4 ,	NONE  }  //  KP_4
-#define _KP_LEFT    { HID_KEYPAD_4 ,	SHIFT }  //  Left
-#define _KP_1       { HID_KEYPAD_1 ,	NONE  }  //  KP_1
-#define _KP_END     { HID_KEYPAD_1 ,	SHIFT }  //  End
-#define _KP_SLASH   { HID_KEYPAD_SLASH, NONE  }  //  KP_/
-#define _KP_8       { HID_KEYPAD_8 ,	NONE  }  //  KP_8
-#define _KP_UP      { HID_KEYPAD_8 ,	SHIFT }  //  Up
-#define _KP_5       { HID_KEYPAD_5 ,	NONE  }  //  KP_5
-#define _KP_2       { HID_KEYPAD_2,		NONE  }  //  KP_2
-#define _KP_DOWN    { HID_KEYPAD_2 ,	SHIFT }  //  Down
-#define _KP_0       { HID_KEYPAD_0 ,	NONE  }  //  KP_0
-#define _KP_INS     { HID_KEYPAD_0 ,	SHIFT }  //  Ins
-#define _KP_MUL     { HID_KEYPAD_ASTERIX,NONE }  //  KP_*
-#define _KP_9       { HID_KEYPAD_9,		NONE  }  //  KP_9
-#define _KP_PGUP    { HID_KEYPAD_9,		SHIFT }  //  PgUp
-#define _KP_6       { HID_KEYPAD_6,		NONE  }  //  KP_6
-#define _KP_RIGHT   { HID_KEYPAD_6,		SHIFT }  //  Right
-#define _KP_3       { HID_KEYPAD_3,		NONE  }  //  KP_3
-#define _KP_PGDN    { HID_KEYPAD_3,		SHIFT }  //  PgDn
-#define _KP_PERIOD  { HID_KEYPAD_PERIOD,NONE  }		  //  KP_.
-#define _KP_DEL     { HID_KEYPAD_PERIOD,SHIFT }  //  Del
-#define _KP_MINUS   { HID_KEYPAD_MINUS,	NONE  }  //  KP_-
-#define _KP_PLUS    { HID_KEYPAD_PLUS,	NONE  }  //  KP_+
-#define _KP_ENTER   { HID_KEYPAD_ENTER,	NONE  }  //  KP_Enter
 
 #define _ESC        { HID_ESC, NONE  }  //  Esc
 #define _F1         { HID_F1,  NONE  }  //  F1
@@ -359,11 +336,6 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _F11        { HID_F11, NONE  }  //  F11
 #define _F12        { HID_F12, NONE  }  //  F12
 
-
-#define _MS_SCROLL   { MS_SCROLL,NONE  }
-#define _MS_BTN_1    { MS_BTN_1, NONE  }
-#define _MS_BTN_2    { MS_BTN_2, NONE  }
-#define _MS_BTN_3    { MS_BTN_3, NONE  }
 
 
 #ifdef QWERTY
@@ -386,39 +358,39 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 -----                                    -----
 */
 
-#define _AMPERSAND { HID_7,         SHIFT }  //  &
-#define _ASTERIX   { HID_8,         SHIFT }  //  *
-#define _AT        { HID_2,         SHIFT }  //  @
-#define _BSLASH    { HID_BSLASH,    NONE  }  //
-#define _CARET     { HID_6,         SHIFT }  //  &
-#define _COLON     { HID_SEMICOLON, SHIFT }  //  Ö
-#define _DQUOTE    { HID_QUOTE,     SHIFT }  // "
-#define _EQUAL     { HID_EQUAL,     NONE  }  //  =
-#define _GREATER   { HID_PERIOD,    SHIFT }  //  >
-#define _HASH      { HID_3,         SHIFT }  //  #
-#define _L_BRACE   { HID_L_BRACKET, SHIFT }  //
-#define _L_BRACKET { HID_L_BRACKET, NONE  }  //  Ü
-#define _LESS      { HID_COMMA ,    SHIFT }  //  <
-#define _L_PAREN   { HID_9,         SHIFT }  //  (
-#define _MINUS     { HID_MINUS,     NONE  }  //  Z:ß/?
-#define _PLUS      { HID_EQUAL,     SHIFT }  //  +
-#define _QUESTION  { HID_SLASH,     SHIFT }  //  ?
-#define _SQUOTE    { HID_QUOTE,     NONE  }  //  '
-#define _R_BRACE   { HID_R_BRACKET, SHIFT }  //  ]
-#define _R_BRACKET { HID_R_BRACKET, NONE  }  //  *
-#define _R_PAREN   { HID_0,         SHIFT }  //  )
-#define _SCOLON    { HID_SEMICOLON, NONE  }  //  ö
-#define _SLASH     { HID_SLASH,     NONE  }  //  /
-#define _USCORE    { HID_MINUS,     SHIFT }  //  _
-#define _y         { HID_Y,         NONE  }  //  y
-#define _Y         { HID_Y,         SHIFT }  //  Y
-#define _z         { HID_Z,         NONE  }  //  z
-#define _Z         { HID_Z,         SHIFT }  //  Z
+#define _AMPERSAND { HID_7,         SHIFT , '&' }
+#define _ASTERIX   { HID_8,         SHIFT , '*' }
+#define _AT        { HID_2,         SHIFT , '@' }
+#define _BSLASH    { HID_BSLASH,    NONE  , '\\'}
+#define _CARET     { HID_6,         SHIFT , '&' }
+#define _COLON     { HID_SEMICOLON, SHIFT , 'Ö' }
+#define _DQUOTE    { HID_QUOTE,     SHIFT , '"' }
+#define _EQUAL     { HID_EQUAL,     NONE  , '=' }
+#define _GREATER   { HID_PERIOD,    SHIFT , '>' }
+#define _HASH      { HID_3,         SHIFT , '#' }
+#define _L_BRACE   { HID_L_BRACKET, SHIFT , '[' } 
+#define _L_BRACKET { HID_L_BRACKET, NONE  , '{' }
+#define _LESS      { HID_COMMA ,    SHIFT , '<' }
+#define _L_PAREN   { HID_9,         SHIFT , '(' }
+#define _MINUS     { HID_MINUS,     NONE  , '-' }
+#define _PLUS      { HID_EQUAL,     SHIFT , '+' }
+#define _QUESTION  { HID_SLASH,     SHIFT , '?' }
+#define _SQUOTE    { HID_QUOTE,     NONE  , '\' }
+#define _R_BRACE   { HID_R_BRACKET, SHIFT , ']' }
+#define _R_BRACKET { HID_R_BRACKET, NONE  , '}' }
+#define _R_PAREN   { HID_0,         SHIFT , ')' }
+#define _SCOLON    { HID_SEMICOLON, NONE  , ';' }
+#define _SLASH     { HID_SLASH,     NONE  , '/' }
+#define _USCORE    { HID_MINUS,     SHIFT , '_' }
+#define _y         { HID_Y,         NONE  , 'y' }
+#define _Y         { HID_Y,         SHIFT , 'Y' }
+#define _z         { HID_Z,         NONE  , 'z' }
+#define _Z         { HID_Z,         SHIFT , 'Z' }
 
 #define _DEGREE     _no
-#define _GRAVE      { HID_GRAVE,    NONE  }  //  =
-#define _TILDE      { HID_GRAVE,    SHIFT }
-#define _PIPE       { HID_BSLASH,   SHIFT }
+#define _GRAVE      { HID_GRAVE,    NONE  , '^' }
+#define _TILDE      { HID_GRAVE,    SHIFT , '~' }
+#define _PIPE       { HID_BSLASH,   SHIFT , '|' }
 
 // Umlauts not available
 #define _SSHARP     _no
@@ -432,52 +404,52 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 
 #else //qwert_Z_
 
-#define _AMPERSAND  { HID_6,            SHIFT }  //  &
-#define _ASTERIX    { HID_R_BRACKET,    SHIFT }  //  *
-#define _AT         { HID_Q,            ALTGR }  //  @
-#define _CARET      { HID_GRAVE,        NONE  }  //  `
-#define _COLON      { HID_PERIOD,       SHIFT }
-#define _DQUOTE     { HID_2,            SHIFT }  // "
-#define _EQUAL      { HID_0,            SHIFT }  //  )
-#define _GREATER    { HID_NON_US_2,     SHIFT }  //  >
-#define _HASH       { HID_BSLASH,       NONE  }
-#define _L_BRACE    { HID_7,            ALTGR }  //
-#define _L_BRACKET  { HID_8,            ALTGR }  //  Ü
-#define _LESS       { HID_NON_US_2,     NONE  }  //  <
-#define _L_PAREN    { HID_8,            SHIFT }  //  *
-#define _MINUS      { HID_SLASH,        NONE  }  //  -
-#define _PLUS       { HID_R_BRACKET,    NONE  }  //  ]
-#define _QUESTION   { HID_MINUS,        SHIFT }  //  Z:ß/?
-#define _R_BRACE    { HID_0,            ALTGR }  //  ]
-#define _R_BRACKET  { HID_9,            ALTGR }  //  *
-#define _R_PAREN    { HID_9,            SHIFT }  //  )
-#define _SCOLON     { HID_COMMA,        SHIFT }
-#define _SLASH      { HID_7,            SHIFT }  //  &
-#define _SQUOTE     { HID_NON_US_1,     SHIFT }  //  #
-#define _USCORE     { HID_SLASH,        SHIFT }  //  _
-#define _y          { HID_Z,            NONE  }  //  z
-#define _Y          { HID_Z,            SHIFT }  //  z
-#define _z          { HID_Y,            NONE  }  //  z
-#define _Z          { HID_Y,            SHIFT }  //  z
+#define _AMPERSAND  { HID_6,            SHIFT , '&' }
+#define _ASTERIX    { HID_R_BRACKET,    SHIFT , '*' }
+#define _AT         { HID_Q,            ALTGR , '@' }
+#define _CARET      { HID_GRAVE,        NONE  , '`' }
+#define _COLON      { HID_PERIOD,       SHIFT , ':' }
+#define _DQUOTE     { HID_2,            SHIFT , '"' }
+#define _EQUAL      { HID_0,            SHIFT , '=' }
+#define _GREATER    { HID_NON_US_2,     SHIFT , '>' }
+#define _HASH       { HID_BSLASH,       NONE  , '#' }
+#define _L_BRACE    { HID_7,            ALTGR , '[' }
+#define _L_BRACKET  { HID_8,            ALTGR , '{' }
+#define _LESS       { HID_NON_US_2,     NONE  , '<' }
+#define _L_PAREN    { HID_8,            SHIFT , '(' }
+#define _MINUS      { HID_SLASH,        NONE  , '-' }
+#define _PLUS       { HID_R_BRACKET,    NONE  , '+' }
+#define _QUESTION   { HID_MINUS,        SHIFT , '?' }
+#define _R_BRACE    { HID_0,            ALTGR , ']' }
+#define _R_BRACKET  { HID_9,            ALTGR , '}' }
+#define _R_PAREN    { HID_9,            SHIFT , ')' }
+#define _SCOLON     { HID_COMMA,        SHIFT , ';'}
+#define _SLASH      { HID_7,            SHIFT , '/' }
+#define _SQUOTE     { HID_NON_US_1,     SHIFT , '\'' }
+#define _USCORE     { HID_SLASH,        SHIFT , '_' }
+#define _y          { HID_Z,            NONE  , 'y' }
+#define _Y          { HID_Z,            SHIFT , 'Y' }
+#define _z          { HID_Y,            NONE  , 'z' }
+#define _Z          { HID_Y,            SHIFT , 'Z' }
 
-#define _BSLASH     { HID_MINUS,        ALTGR }  //  Z:ß/?
-#define _TILDE      { HID_R_BRACKET,    ALTGR }
-#define _PIPE       { HID_NON_US_2,     ALTGR }
-#define _DEGREE     { HID_GRAVE,        SHIFT }  //  `
-#define _GRAVE      { HID_EQUAL,        SHIFT }  //  =
+#define _BSLASH     { HID_MINUS,        ALTGR , '\\' }  //  Z:ß/?
+#define _TILDE      { HID_R_BRACKET,    ALTGR , '~' }
+#define _PIPE       { HID_NON_US_2,     ALTGR , '|' }
+#define _DEGREE     { HID_GRAVE,        SHIFT , ' ' }
+#define _GRAVE      { HID_EQUAL,        SHIFT , '^' }
 
-#define _SSHARP     { HID_MINUS,        NONE  }  //  Z:ß/?
-#define _a_UML      { HID_QUOTE,        NONE  }  //  '
-#define _A_UML      { HID_QUOTE,        SHIFT }  //  '
-#define _O_UML      { HID_SEMICOLON,    SHIFT }
-#define _o_UML      { HID_SEMICOLON,    NONE  }
-#define _U_UML      { HID_L_BRACKET,    SHIFT }  //  Ü
-#define _u_UML      { HID_L_BRACKET,    NONE  }  //  Ü
+#define _SSHARP     { HID_MINUS,        NONE  , 'S' }  //  Z:ß/?
+#define _a_UML      { HID_QUOTE,        NONE  , 'a' }
+#define _A_UML      { HID_QUOTE,        SHIFT , 'A' }
+#define _O_UML      { HID_SEMICOLON,    SHIFT , 'o' }
+#define _o_UML      { HID_SEMICOLON,    NONE  , 'O' }
+#define _U_UML      { HID_L_BRACKET,    SHIFT , 'u' }
+#define _u_UML      { HID_L_BRACKET,    NONE  , 'Ü' }
 
 
 #endif // QWERTY or QWERTZ
 
-static const uint8_t ascii2hid[128][2] = {
+static const uint8_t ascii2hid[128][3] = {
     _no , // ( nul)   0
     _no , // ( soh)   1
     _no , // ( stx)   2
