@@ -42,64 +42,12 @@ typedef struct {
     char     ch;
 } keycode;
 
-
-/*
-bu-TECK-DE
-b u . , ü   p c l m f x
-h i e a o   d t r n s
-k y ö ä q   j g w v z
-
-bu-TECK-DE SFR
-b u . ,     p c l m f x
-h i e a o   d t r n s
-k y     q   j g w v z
-
-
-AdNW-SFR
-k u q . j   v g c l f
-h i e a o   d t r n s
-x y - . "   b p w m z
-*/
-
-/*
-   ----- Thumb & MKT ----
-   M   W 2 C A  3 1 A    â«
-   ? ?  ? ?  ?
-
-   ----- M0 Default AdNW (Ulf) -----
-   k u q . j   v g c l f
-   h i e a o   d t r n s
-   x y - . "   b p w m z
-
-   ----- M2 / special ---
-   @ _ [ ] #   ! < > = &
-   \ / { } *   ? ( ) + -
-     $ | ~ `   ^ % " '
-
-   ----- M3 / MoveNum ---
-    ? ? ? ? ?     7 8 9 +
-    ? ? ? ? ?     4 5 6 -
-      ? ? ?     0 1 2 3
-
-   ----- Mouse ----------
-   S
-   1 2 3
-
-
-   ----- Compose --------
-    F1.....F6
-    F7....F12
-
-
-   ----------------------
- */
-
+bool g_alternateLayer;
 
 uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer);
 uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 uint8_t getKeyChar (uint8_t row, uint8_t col, uint8_t layer);
 void    printLayout(uint8_t l);
-
 
 
 static const keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
@@ -121,10 +69,9 @@ static const keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
 //
 #define _MACRO _no
 #define _THUMB_ROW_LEFT     _no /*macro*/, _L_GUI,     _L_SHIFT,    _L_ALT , _L_CTRL, _SPACE
-#define _THUMB_ROW_RIGHT    _L_SHIFT,/*_MOD_1,*/      _MOD_2,   _R_ALT,  _COMPOSE, _MOD_3, _H
+#define _THUMB_ROW_RIGHT    _L_SHIFT,/*_MOD_1,*/      _MOD_2,   _R_ALT,  _MOUSE,  _MOD_3, _H
 
-
-static const  keycode KeyMatrix[LAYERS+2][ROWS][COLS] PROGMEM = {
+static const keycode KeyMatrix[LAYERS+2][ROWS][COLS] PROGMEM = {
     // normal layer
     {
         { _ESC,   _k, _u, _q, _PERIOD,_j  },
@@ -185,23 +132,22 @@ static const  keycode KeyMatrix[LAYERS+2][ROWS][COLS] PROGMEM = {
         { _no, _no, _no, _no, _no, _no},
         { _no, _no, _no, _L_CTRL, _L_ALT, _L_SHIFT },
 
-        { _no, _no, _no, _no, _no, _no },
-        { _no, _no, _no, _no, _no, _no },
-        { _no, _no, _no, _no, _no, _no },
-        { _no, _no, _no, _no, _no, _no },
-//        { _MS_BTN_2,      _MS_BTN_3,     _no,    _no ,_MOUSE, _MOUSE}
-    },
-
-    // COMPOSE or MOD2 + MOD3
-    {
-        { _no, _no,     _no,    _no,    _no,    _no },
-        { _no, _SSHARP, _no,    _no,    _a_UML, _o_UML},
-        { _no, _no,     _no,    _no,    _no,    _no},
-        { _THUMB_ROW_LEFT },
-
         { _F1,      _F2,        _F3,        _F4,        _F5,    _F6     },
         { _F7,      _F8,        _F9,        _F10,       _F11,   _F12    },
         { _no,      _no,        _no,        _no,        _no,    _no     },
+        { _THUMB_ROW_RIGHT},
+    },
+
+    // BU-TECK
+    {
+        { _ESC,   _b, _u, _q, _PERIOD,_x  },
+        { _TAB,   _h, _i, _e, _a, _o  },
+        { _DQUOTE,_k, _y, _MINUS, _COMMA, _SLASH },
+        { _THUMB_ROW_LEFT },
+
+        { _p,   _c, _l, _m, _f, _BSPACE },
+        { _d,   _t, _r, _n, _s, _ENTER  },
+        { _j,   _g, _w, _v, _z, _no  },
         { _THUMB_ROW_RIGHT}
     }
 }; // end of matrix[][][]

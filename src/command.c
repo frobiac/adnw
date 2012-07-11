@@ -69,6 +69,22 @@ void handleCommand(void){
         case HID_Q:
             setCommandMode(false);
             break;
+        case HID_L:
+            g_alternateLayer=!g_alternateLayer;
+            printf("\nAlternate layer %s", g_alternateLayer ? "selected." : "off.");
+            setCommandMode(false);
+            break;
+        case HID_A:
+            for(uint8_t i=32; i<255; ++i){
+                if(i%16==0)
+                    printf("\n %03d", i);
+                printf("%c ", (char)(i));
+               if(i==127)
+                   i+=33;
+            }
+            setCommandMode(false);
+            break;
+
         default:
             printf("\nUnknown:");
             //setCommandMode(false);

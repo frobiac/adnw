@@ -21,8 +21,6 @@
 #include <stdint.h>
 
 // see also ../LUFA/LUFA/Drivers/USB/Class/Common/HIDClassCommon.h
-// -> bCountryCode=09 german?
-
 // or http://www.freebsddiary.org/APC/usb_hid_usages
 
 #define HID_NO_KEY			0
@@ -153,8 +151,8 @@
 #define MS_SCROLL		(3 + MS_BTNS)
 
 
-// modifier bits to use, actual HID-modifier is (1<<(modbit-MOD_CTRL))
 enum {
+    // modifier bits to use, actual HID-modifier is (1<<(modbit-MOD_CTRL))
     MOD_L_CTRL=0xE0,
     MOD_L_SHIFT,
     MOD_L_ALT,
@@ -164,6 +162,8 @@ enum {
     MOD_R_ALT,
     MOD_R_GUI,
     MOD_END,
+
+    // layer modifiers
     MOD_LAYER_0=0xF2,
     MOD_LAYER_1,
     MOD_LAYER_2,
@@ -279,16 +279,16 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _M          { HID_M, SHIFT , 'M' }
 
 #define _CAPS       { HID_CAPS_LOCK,0     , ' ' }  //  CapsLock
-#define _BSPACE     { HID_BACKSPACE,0     , ' ' }  //  Backspace
-#define _TAB        { HID_TAB,		0     , ' ' }  //  Tab
+#define _BSPACE     { HID_BACKSPACE,0     , 171 }  //  Backspace
+#define _TAB        { HID_TAB,      0     , 187 }  //  Tab
 
 #define _NON_US_1   { HID_NON_US_1, 0     , ' ' }  //  non-US-1
 #define _NON_US_2   { HID_NON_US_2, 0     , ' ' }  //  non-US-1
-#define _ENTER      { HID_ENTER,	0     , ' ' }  //  Enter
+#define _ENTER      { HID_ENTER,    0     , 182 }  //  Enter
 
-#define _COMMA      { HID_COMMA,	0     , ',' }
-#define _PERIOD     { HID_PERIOD,	0     , '.' }
-#define _SPACE      { HID_SPACE,	0     , ' ' }
+#define _COMMA      { HID_COMMA,    0     , ',' }
+#define _PERIOD     { HID_PERIOD,   0     , '.' }
+#define _SPACE      { HID_SPACE,    0     , ' ' }
 
 //L/R 4 modifiers
 #define _L_SHIFT    { HID_L_SHIFT,		MOD_L_SHIFT , ' ' }  //  LShift
@@ -363,7 +363,7 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _AMPERSAND { HID_7,         SHIFT , '&' }
 #define _ASTERIX   { HID_8,         SHIFT , '*' }
 #define _AT        { HID_2,         SHIFT , '@' }
-#define _BSLASH    { HID_BSLASH,    0,      '/'}
+#define _BSLASH    { HID_BSLASH,    0,      '\\'}
 #define _CARET     { HID_6,         SHIFT , '&' }
 #define _COLON     { HID_SEMICOLON, SHIFT , 'Ö' }
 #define _DQUOTE    { HID_QUOTE,     SHIFT , '"' }
@@ -377,7 +377,7 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _MINUS     { HID_MINUS,     0,      '-' }
 #define _PLUS      { HID_EQUAL,     SHIFT , '+' }
 #define _QUESTION  { HID_SLASH,     SHIFT , '?' }
-#define _SQUOTE    { HID_QUOTE,     0,      '\'' }
+#define _SQUOTE    { HID_QUOTE,     0,      '\''}
 #define _R_BRACE   { HID_R_BRACKET, SHIFT , ']' }
 #define _R_BRACKET { HID_R_BRACKET, 0,      '}' }
 #define _R_PAREN   { HID_0,         SHIFT , ')' }
@@ -425,29 +425,28 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _R_BRACE    { HID_0,            ALTGR , ']' }
 #define _R_BRACKET  { HID_9,            ALTGR , '}' }
 #define _R_PAREN    { HID_9,            SHIFT , ')' }
-#define _SCOLON     { HID_COMMA,        SHIFT , ';'}
+#define _SCOLON     { HID_COMMA,        SHIFT , ';' }
 #define _SLASH      { HID_7,            SHIFT , '/' }
-#define _SQUOTE     { HID_NON_US_1,     SHIFT , '\'' }
+#define _SQUOTE     { HID_NON_US_1,     SHIFT , '\''}
 #define _USCORE     { HID_SLASH,        SHIFT , '_' }
 #define _y          { HID_Z,            0,      'y' }
 #define _Y          { HID_Z,            SHIFT , 'Y' }
 #define _z          { HID_Y,            0,      'z' }
 #define _Z          { HID_Y,            SHIFT , 'Z' }
 
-#define _BSLASH     { HID_MINUS,        ALTGR , '/' }
+#define _BSLASH     { HID_MINUS,        ALTGR , '\\'}
 #define _TILDE      { HID_R_BRACKET,    ALTGR , '~' }
 #define _PIPE       { HID_NON_US_2,     ALTGR , '|' }
 #define _DEGREE     { HID_GRAVE,        SHIFT , ' ' }
 #define _GRAVE      { HID_EQUAL,        SHIFT , '^' }
 
 #define _SSHARP     { HID_MINUS,        0,      'S' }
-#define _a_UML      { HID_QUOTE,        0,      'a' }
-#define _A_UML      { HID_QUOTE,        SHIFT , 'A' }
-#define _o_UML      { HID_SEMICOLON,    0,      'o' }
-#define _O_UML      { HID_SEMICOLON,    SHIFT , 'O' }
-#define _u_UML      { HID_L_BRACKET,    0,      'u' }
-#define _U_UML      { HID_L_BRACKET,    SHIFT , 'U' }
-
+#define _a_UML      { HID_QUOTE,        0,      228 }
+#define _A_UML      { HID_QUOTE,        SHIFT , 196 }
+#define _o_UML      { HID_SEMICOLON,    0,      246 }
+#define _O_UML      { HID_SEMICOLON,    SHIFT , 214 }
+#define _u_UML      { HID_L_BRACKET,    0,      252 }
+#define _U_UML      { HID_L_BRACKET,    SHIFT , 220 }
 
 #endif // QWERTY or QWERTZ
 
@@ -582,7 +581,6 @@ static const uint8_t ascii2hid[128][3] = {
     _TILDE ,    // ~      126
     _DEL        // ( del) 127
 } ;
-
 
 #endif // _HID_USAGE_H
 

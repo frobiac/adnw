@@ -1,0 +1,84 @@
+// BU-TECK
+
+
+    B   X | PCLM
+          |
+    K     | JG V
+
+        X | PCLM
+          |
+    B     | JG V
+
+
+bu-TECK-DE
+b u . , ü   p c l m f x
+h i e a o   d t r n s
+k y ö ä q   j g w v z
+
+bu-TECK-DE SFR
+b u . ,     p c l m f x
+h i e a o   d t r n s
+k y     q   j g w v z
+
+
+AdNW-SFR
+k u q . j   v g c l f
+h i e a o   d t r n s
+x y - . "   b p w m z
+*/
+
+/*
+   ----- Thumb & MKT ----
+   M   W 2 C A  3 1 A    â«
+   ? ?  ? ?  ?
+
+   ----- M0 Default AdNW (Ulf) -----
+   k u q . j   v g c l f
+   h i e a o   d t r n s
+   x y - . "   b p w m z
+
+   ----- M2 / special ---
+   @ _ [ ] #   ! < > = &
+   \ / { } *   ? ( ) + -
+     $ | ~ `   ^ % " '
+
+   ----- M3 / MoveNum ---
+    ? ? ? ? ?     7 8 9 +
+    ? ? ? ? ?     4 5 6 -
+      ? ? ?     0 1 2 3
+
+   ----- Mouse ----------
+   S
+   1 2 3
+
+
+   ----- Compose --------
+    F1.....F6
+    F7....F12
+
+
+/*
+ 30 :    ! " # $ % & '
+ 40 :( ) * + , - . / 0 1
+ 50 :2 3 4 5 6 7 8 9 : ;
+ 60 :< = > ? @ A B C D E
+ 70 :F G H I J K L M N O
+ 80 :P Q R S T U V W X Y
+ 90 :Z [ \ ] ^ _ ` a b c
+100 :d e f g h i j k l m
+110 :n o p q r s t u v w
+120 :x y z { | } ~
+130 :
+140 :
+150 :
+160 :  ¡ ¢ £ ¤ ¥ ¦ § ¨ ©
+170 :ª « ¬ ­ ® ¯ ° ± ² ³
+180 :´ µ ¶ · ¸ ¹ º » ¼ ½
+190 :¾ ¿ À Á Â Ã Ä Å Æ Ç
+200 :È É Ê Ë Ì Í Î Ï Ð Ñ
+210 :Ò Ó Ô Õ Ö × Ø Ù Ú Û
+220 :Ü Ý Þ ß à á â ã ä å
+230 :æ ç è é ê ë ì í î ï
+240 :ð ñ ò ó ô õ ö ÷ ø ù
+250 :ú û ü ý þ ÿ
+*/
