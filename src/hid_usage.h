@@ -53,7 +53,7 @@
 #define HID_ERROR_ROLLOVER  1
 #define HID_POST_FAIL       2
 #define HID_ERROR_UNDEFINED 3
-#define HID_A               4  
+#define HID_A               4
 #define HID_B               5
 #define HID_C               6
 #define HID_D               7
@@ -361,14 +361,14 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _AMPERSAND { HID_7,         SHIFT , '&' }
 #define _ASTERIX   { HID_8,         SHIFT , '*' }
 #define _AT        { HID_2,         SHIFT , '@' }
-#define _BSLASH    { HID_BSLASH,    NONE  , '\\'}
+#define _BSLASH    { HID_BSLASH,    NONE  , '/'}
 #define _CARET     { HID_6,         SHIFT , '&' }
 #define _COLON     { HID_SEMICOLON, SHIFT , 'Ö' }
 #define _DQUOTE    { HID_QUOTE,     SHIFT , '"' }
 #define _EQUAL     { HID_EQUAL,     NONE  , '=' }
 #define _GREATER   { HID_PERIOD,    SHIFT , '>' }
 #define _HASH      { HID_3,         SHIFT , '#' }
-#define _L_BRACE   { HID_L_BRACKET, SHIFT , '[' } 
+#define _L_BRACE   { HID_L_BRACKET, SHIFT , '[' }
 #define _L_BRACKET { HID_L_BRACKET, NONE  , '{' }
 #define _LESS      { HID_COMMA ,    SHIFT , '<' }
 #define _L_PAREN   { HID_9,         SHIFT , '(' }
@@ -432,19 +432,19 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _z          { HID_Y,            NONE  , 'z' }
 #define _Z          { HID_Y,            SHIFT , 'Z' }
 
-#define _BSLASH     { HID_MINUS,        ALTGR , '\\' }  //  Z:ß/?
+#define _BSLASH     { HID_MINUS,        ALTGR , '/' }
 #define _TILDE      { HID_R_BRACKET,    ALTGR , '~' }
 #define _PIPE       { HID_NON_US_2,     ALTGR , '|' }
 #define _DEGREE     { HID_GRAVE,        SHIFT , ' ' }
 #define _GRAVE      { HID_EQUAL,        SHIFT , '^' }
 
-#define _SSHARP     { HID_MINUS,        NONE  , 'S' }  //  Z:ß/?
+#define _SSHARP     { HID_MINUS,        NONE  , 'S' }
 #define _a_UML      { HID_QUOTE,        NONE  , 'a' }
 #define _A_UML      { HID_QUOTE,        SHIFT , 'A' }
-#define _O_UML      { HID_SEMICOLON,    SHIFT , 'o' }
-#define _o_UML      { HID_SEMICOLON,    NONE  , 'O' }
-#define _U_UML      { HID_L_BRACKET,    SHIFT , 'u' }
-#define _u_UML      { HID_L_BRACKET,    NONE  , 'Ü' }
+#define _o_UML      { HID_SEMICOLON,    NONE  , 'o' }
+#define _O_UML      { HID_SEMICOLON,    SHIFT , 'O' }
+#define _u_UML      { HID_L_BRACKET,    NONE  , 'u' }
+#define _U_UML      { HID_L_BRACKET,    SHIFT , 'U' }
 
 
 #endif // QWERTY or QWERTZ
