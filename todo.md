@@ -51,8 +51,9 @@ Macro
 		
 Commandmode
 -----------
-* debug mode to configure features while running (PinkyDrop, ThumbShift)
-
+* layer switching between different layouts
+* read data like tp settings
+* hierarchical command structure
 
 BUGS
 ----
@@ -65,16 +66,11 @@ Coding style
 * astyle --style=linux --convert-tabs --lineend=linux --indent=spaces=4  -o -O -K src/\*.[ch]
 
 
-DONE
-----
-* move mod4 to shifted mod3 Not very efficient, double usage of modifiers with standard keys is better
-
 
 Ideas
 -----
 - copy paste on mouse middle btn on Win possible?
 - prntscreen...
-- debug output of layout
 - openmoko touchpad?
 - multiple layouts -> fixed based layer toggle
 

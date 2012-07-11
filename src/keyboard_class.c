@@ -347,7 +347,7 @@ uint8_t getActiveModifiers()
     for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
         struct Key k = activeKeys.keys[i];
         if( isModifierKey(k.row, k.col) ) {
-            modifiers |= (1<<(getModifier(k.row, k.col,0)-MOD_BEGIN));
+            modifiers |= (1 << (getModifier(k.row, k.col,0)-MOD_L_CTRL));
         }
     }
 #ifdef ANALOGSTICK
@@ -359,12 +359,13 @@ uint8_t getActiveModifiers()
 
 
 /**
-  * check whether layer 0 key is a modifier )
+  * check whether layer 0 key is a modifier
   */
 bool isModifierKey(uint8_t row, uint8_t col)
 {
     TRACE("iMK ");
-    if( getModifier(row,col,0) >= MOD_BEGIN && getModifier(row,col,0) < MOD_LAYER_0)
+    if( getModifier(row,col,0) >= MOD_L_CTRL  && getModifier(row,col,0) < MOD_END)
+    //if( getKeyCode(row,col,0) >= HID_L_CONTROL  && getKeyCode(row,col,0) <= HID_R_GUI)
         return true;
     return false;
 }

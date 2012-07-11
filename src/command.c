@@ -26,7 +26,7 @@
 bool command=false;
 
 void setCommandMode(bool on) {
-    printf("\nCMD %s : [qtp]", on ? "active" : "off" );
+    printf("\nCMD %s ", on ? "active [qtp] " : "off" );
     command=on;
     clearActiveKeys();
 }
