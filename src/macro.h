@@ -59,7 +59,7 @@ bool macroMode(void);
 void setMacroMode(bool on);
 
 bool activateMacro(uint8_t id);
-bool getMacroChar(struct keycode *kc);
+bool getMacroChar(keycode *kc);
 bool getMacroCharacter(char *c);
 bool getMacroReport(USB_KeyboardReport_Data_t *report);
 

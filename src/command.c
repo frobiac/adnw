@@ -19,13 +19,14 @@
 #include "hhstdio.h"
 #include "hid_usage.h"
 #include "keyboard_class.h"
+#include "keymap.h"
 #include "jump_bootloader.h"
 #include "trackpoint.h"
 
 bool command=false;
 
 void setCommandMode(bool on) {
-    printf("\nCommandMode %s", on ? "active" : "off" );
+    printf("\nCMD %s : [qtp]", on ? "active" : "off" );
     command=on;
     clearActiveKeys();
 }
@@ -33,6 +34,7 @@ void setCommandMode(bool on) {
 
 bool commandMode(void){ return command; }
 
+static uint8_t layer=0;
 
 void handleCommand(void){
     if(!commandMode())
@@ -54,14 +56,19 @@ void handleCommand(void){
             jump_bootloader();
             break;;
         case HID_P:
-            printf("\nPrint:"); break;
+            printLayout(layer);
+            layer=(layer+1)%LAYERS;
+            if(layer==0)
+                setCommandMode(false);
+            break;
         case HID_T:
             printf("\nTrackpoint:");
             tp_id();
             setCommandMode(false);
             break;
         case HID_Q:
-            setCommandMode(false); break;
+            setCommandMode(false);
+            break;
         default:
             printf("\nUnknown:");
             //setCommandMode(false);

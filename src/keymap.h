@@ -36,12 +36,12 @@
 // * @todo  PROGMEM and configuration
 // *        Shift != Mod1, see "/'
 // *************************************************************
-
-struct keycode {
+typedef struct {
     uint8_t  hid;   ///< HID usage code, will be interpreted by OS keyboard layout!
     uint8_t  mods;  ///< HID modifiers , will be interpreted by OS keyboard layout!
-	uint8_t  ch;
-} ;
+    char     ch;
+} keycode;
+
 
 /*
 bu-TECK-DE
@@ -97,9 +97,12 @@ x y - . "   b p w m z
 
 uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer);
 uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
+uint8_t getKeyChar (uint8_t row, uint8_t col, uint8_t layer);
+void    printLayout(uint8_t l);
 
 
-static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
+
+static const keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
     // Left half
     { _no,     _no,     _no,     _no,       _no,     _no },
     { _no,     _no,     _no,     _no,       _no,     _no },
@@ -121,7 +124,7 @@ static const struct keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
 #define _THUMB_ROW_RIGHT    _MOD_1,      _MOD_2,   _R_ALT,  _COMPOSE, _MOD_3, _H
 
 
-static const struct keycode KeyMatrix[LAYERS+2][ROWS][COLS] PROGMEM = {
+static const  keycode KeyMatrix[LAYERS+2][ROWS][COLS] PROGMEM = {
     // normal layer
     {
         { _ESC,   _k, _u, _q, _PERIOD,_j  },

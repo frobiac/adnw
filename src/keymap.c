@@ -15,7 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <avr/pgmspace.h>
-
+#include "hhstdio.h"
 #include "keymap.h"
 
 /**
@@ -26,23 +26,51 @@
  *
  *  All indices are zero-based.
  */
+static keycode getKeyStruct(uint8_t row, uint8_t col, uint8_t layer);
+
 uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer)
 {
-    if( PINKYDROP ) {
-        if( (row<4 && row > 0 && col==1) || (row > 4 && col == 4))
-            return ((pgm_read_word((&KeyMatrix[layer][row-1][col])) & 0xFF00 ) >> 8);
-    } else
-            return ((pgm_read_word((&KeyMatrix[layer][row][col])) & 0xFF00 ) >> 8);
+    return getKeyStruct(row, col, layer).mods;
 }
 
 uint8_t getKeyCode(uint8_t row, uint8_t col, uint8_t layer)
 {
-    if(PINKYDROP) {
-        if( (row<4 && row > 0 && col==1) || (row > 4 && col == 4))
-            return pgm_read_word(&KeyMatrix[layer][row-1][col]) & 0x00FF;
-    } else
-        return pgm_read_word(&KeyMatrix[layer][row][col]) & 0x00FF;
+    return getKeyStruct(row, col, layer).hid;
 }
 
+uint8_t getKeyChar(uint8_t row, uint8_t col, uint8_t layer)
+{
+    uint8_t ch = getKeyStruct(row, col, layer).ch;
+    if(ch > 127 || ch < 33)
+        return ' '; // '_' (uint8_t)('a');
+    return ch;
+}
+
+keycode getKeyStruct(uint8_t row, uint8_t col, uint8_t layer)
+{
+    keycode kc;
+    if(PINKYDROP) {
+        if( (row<4 && row > 0 && col==1) || (row > 4 && col == 4))
+            memcpy_P(&kc, &KeyMatrix[layer][row-1][col], sizeof(kc));
+    } else {
+        memcpy_P(&kc, &KeyMatrix[layer][row][col], sizeof(kc));
+    }
+
+    //printf("\n%d %d %d=%c", kc.hid, kc.mods, kc.ch, kc.ch);
+    return kc;
+}
+
+void printLayout(uint8_t l)
+{
+    printf("\n------  ------" );
+    for(uint8_t r=0; r<ROWS/2-1; ++r){
+        printf("\n");
+        for(uint8_t c=0; c<COLS; ++c)
+            printf("%c", getKeyChar(r,c,l) );
+        printf("  ");
+        for(uint8_t c=0; c<COLS; ++c)
+            printf("%c", getKeyChar(r+ROWS/2,c,l) );
+    }
+}
 
 
