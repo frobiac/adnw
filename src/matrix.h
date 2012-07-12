@@ -21,7 +21,6 @@
 
 #include <avr/io.h>
 
-#define ALL_COLS_MASK ((1<<COLS)-1)  // 0x63 or all lower 6 bits
 
 uint8_t read_col(void);
 void unselect_rows(void);

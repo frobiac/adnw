@@ -176,7 +176,8 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 {
     if(activeKeys.keycnt==0) {
-        memset(&report_data->KeyCode[0], 0, 6 /*mod+res+6*key*/);
+        // empty report
+        memset(&report_data->KeyCode[0], 0, 6 );
         report_data->Modifier=0;
         return sizeof(USB_KeyboardReport_Data_t);
     }
@@ -388,14 +389,13 @@ bool isNormalKey(uint8_t row, uint8_t col)
     return !(isLayerKey(row,col) || isModifierKey(row,col));
 }
 
-bool isMouseKey(uint8_t row, uint8_t col)
+
+uint8_t getMouseKey(uint8_t row, uint8_t col)
 {
-    TRACE("iMK ");
-    /// @todo : hard-coded mouse layer
-    uint16_t hid = getKeyCode(row, col, MOUSE_LAYER);
+    uint16_t hid = ModeKeyMatrix[row][col].hid;
     if ( hid >= MS_BTNS && hid < MS_BTNS +4 )
-        return true;
-    return false;
+        return (1<<(hid-MS_BTN_1));
+    return 0;
 }
 
 /**
@@ -416,11 +416,11 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
 
     // quit early if mouse key is pressed in mouse mode, or end it on other keypress.
     if( g_mouse_keys_enabled ) {
-        if(isMouseKey(row,col)) {
-            /// @todo : hard-coded mouse layer
-            g_mouse_keys|=(1<<(getKeyCode(row, col, MOUSE_LAYER)-MS_BTN_1));
+        uint8_t btns = getMouseKey(row, col);
+        if(btns) {
+            g_mouse_keys |= btns;
             return;
-        } else if(isNormalKey(row,col)) {
+        } else if(isNormalKey(row,col)) { // quicker exit from mousekey mode on other key
             g_mouse_keys_enabled = 0;
         }
     }

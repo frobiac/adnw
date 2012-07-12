@@ -47,12 +47,14 @@ struct sfrActiveKeys {
 
 void clearActiveKeys(void);
 
-bool isModifierKey(uint8_t row, uint8_t col);
-bool isLayerKey(uint8_t row, uint8_t col);
-bool isNormalKey(uint8_t row, uint8_t col);
+bool    isModifierKey(uint8_t row, uint8_t col);
+bool    isLayerKey   (uint8_t row, uint8_t col);
+bool    isNormalKey  (uint8_t row, uint8_t col);
+uint8_t getMouseKey  (uint8_t row, uint8_t col);
 
-uint8_t getKeyCode(uint8_t row, uint8_t col, uint8_t layer);
+uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer);
+
 uint8_t getActiveModifiers(void);
 uint8_t getActiveLayer(void);
 uint8_t getActiveKeyCodeModifier(void);
