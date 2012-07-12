@@ -144,16 +144,16 @@
 
 #define HID_SYSRQ           0x9A
 
-#define MS_BTNS			0x90
-#define MS_BTN_1		(0 + MS_BTNS)
-#define MS_BTN_2		(2 + MS_BTNS)
-#define MS_BTN_3		(1 + MS_BTNS)
-#define MS_SCROLL		(3 + MS_BTNS)
-
 
 enum {
+    // mouse buttons
+    MS_BTN_1,
+    MS_BTN_2,
+    MS_BTN_3,
+    MS_SCROLL,  //keep at end
+
     // modifier bits to use, actual HID-modifier is (1<<(modbit-MOD_CTRL))
-    MOD_L_CTRL=0xE0,
+    MOD_L_CTRL=0xE0, // E0 is rather arbitrarily taken to be same as HID
     MOD_L_SHIFT,
     MOD_L_ALT,
     MOD_L_GUI,

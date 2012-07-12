@@ -393,7 +393,7 @@ bool isNormalKey(uint8_t row, uint8_t col)
 uint8_t getMouseKey(uint8_t row, uint8_t col)
 {
     uint16_t hid = ModeKeyMatrix[row][col].hid;
-    if ( hid >= MS_BTNS && hid < MS_BTNS +4 )
+    if ( hid >= MS_BTN_1 && hid <= MS_SCROLL )
         return (1<<(hid-MS_BTN_1));
     return 0;
 }
