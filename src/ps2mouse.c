@@ -317,8 +317,8 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 #endif
 
     if( (g_mouse_keys & 0x0F) || (btns & 0x07) || (dx+dy) > 0 /* Test for spurious movements */ ) {
-        if(g_mouse_mode==0) {
-            g_mouse_mode=1;
+        if(g_mouse_keys_enabled==0) {
+            g_mouse_keys_enabled=1;
             accel=0;
         }
 
@@ -328,12 +328,12 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 
         // reset mouse mode after inactivity: idle_count is incremented 61 times per second
     } else if(idle_count-mouse_timer > 1/*seconds*/ *61 ) {
-        g_mouse_mode=0;
+        g_mouse_keys_enabled=0;
         accel=0;
         scrollcnt=0;
     }
 
-    if(g_mouse_mode || btns) {
+    if(g_mouse_keys_enabled || btns) {
         factor= 1 + accel * (ACC_MAX-1) / ACC_RAMPTIME;
 
 #ifdef MOUSE_HAS_SCROLL_WHEELS

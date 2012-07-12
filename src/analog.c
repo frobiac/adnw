@@ -112,7 +112,7 @@ void analogDataAcquire(void)
     g_mouse_keys = 0;
     analogData.layer=analogData.mods=0;
 
-    if(g_mouse_mode) {
+    if(g_mouse_keys_enabled) {
         /*  //should be handled in key detection routine
         if(rowData[5] & (1<<1))
             g_mouse_keys = 0x01;

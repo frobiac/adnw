@@ -77,8 +77,6 @@ static int32_t rpt[ROWS];
   * ISR that should get called 61 times a second.
   * Allows exact timers
   */
-//volatile uint32_t idle_count = 0;
-
 ISR(TIMER0_OVF_vect)
 {
     idle_count++;
@@ -94,7 +92,6 @@ ISR(TIMER0_OVF_vect)
  */
 void initKeyboard()
 {
-
     idle_count=0;
     // not strictly necessary
     for (uint8_t row = 0; row < ROWS; ++row) {
@@ -103,10 +100,8 @@ void initKeyboard()
         ct1[row]=0xFF;
     }
 
-    g_mouse_modifier = 0;
-    g_mouse_mode = 0;
+    g_mouse_keys_enabled = 0;
     g_mouse_keys = 0;
-    g_tp_counter = 0;
     mkt_timer=idle_count + MKT_TIMEOUT;
 
     stdio_init();
@@ -266,13 +261,6 @@ void scan_matrix(void)
         r=get_kb_release(ALL_COLS_MASK, row);
 
         rowData[row] = ((rowData[row]|(p|h)) & ~r);
-
-        // permanent layer toggles go here!
-        //if(row==3 && (p & 0x05)) {
-        //   g_mouse_mode = g_mouse_mode>0 ? 0 : 1;
-        //}
-
-        // printf("\n%d: %b", row,  rowData[row]);
     }
 }
 
@@ -308,7 +296,7 @@ uint8_t getActiveLayer()
 {
     TRACE("gAL ");
 
-    if( g_mouse_mode)
+    if( g_mouse_keys_enabled)
         return 4; /// @todo  hardcoded layer
 
     uint8_t layer=0;
@@ -388,7 +376,8 @@ bool isNormalKey(uint8_t row, uint8_t col)
 bool isMouseKey(uint8_t row, uint8_t col)
 {
     TRACE("iMK ");
-    uint16_t hid = getKeyCode(row, col, 4);
+    /// @todo : hard-coded mouse layer
+    uint16_t hid = getKeyCode(row, col, MOUSE_LAYER);
     if ( hid >= MS_BTNS && hid < MS_BTNS +4 )
         return true;
     return false;
@@ -407,12 +396,13 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
     key.normalKey = isNormalKey(row,col);
 
     // quit early if mouse key is pressed in mouse mode, or end it on other keypress.
-    if( g_mouse_mode ) {
+    if( g_mouse_keys_enabled ) {
         if(isMouseKey(row,col)) {
-            g_mouse_keys|=(1<<(getKeyCode(row, col, 4)-MS_BTN_1));
+            /// @todo : hard-coded mouse layer
+            g_mouse_keys|=(1<<(getKeyCode(row, col, MOUSE_LAYER)-MS_BTN_1));
             return;
         } else if(isNormalKey(row,col)) {
-            g_mouse_mode = 0;
+            g_mouse_keys_enabled = 0;
         }
     }
 
@@ -440,7 +430,7 @@ void init_active_keys()
         setMacroMode(true);
         return;
     }
-    // all four corners to reboot
+    // all four corners pressed: switch to command mode
     else if( (rowData[0] & (1<<0)) &&
              (rowData[2] & (1<<0)) &&
              (rowData[4] & (1<<5)) &&
@@ -450,10 +440,8 @@ void init_active_keys()
 
     // process row/column data to find the active keys
     for (uint8_t row = 0; row < ROWS; ++row) {
-//      printf("\n%d : ", row);
         for (uint8_t col = 0; col < COLS; ++col) {
             if (rowData[row] & (1UL << col)) {
-                //printf("\n%d x %d", row, col);
                 // Check macro and inhibit any keys if valid macro is selected.
                 if(macroMode() && activateMacro(row*ROWS+col)) {
                     rowData[row] &= ~(1UL << col);

@@ -69,7 +69,7 @@
 ///////////////////////////////
 
 
-uint8_t     g_mouse_enabled;
+uint8_t     g_mouse_enabled; ///< >0 if mouse/trackpoint is active and reports shall be generated
 
 void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS );
 bool ps2_init_mouse(void);

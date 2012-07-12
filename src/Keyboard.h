@@ -94,16 +94,9 @@ void CALLBACK_HID_Device_ProcessHIDReport(USB_ClassInfo_HID_Device_t* const HIDI
         const uint8_t ReportType, const void* ReportData, const uint16_t ReportSize);
 
 
+uint8_t     g_mouse_keys;       ///< stores keys to be interpreted as mouse buttons
+uint8_t     g_mouse_keys_enabled;       ///< temporarily active while mouse in in use,
 
-
-uint8_t     g_mouse_keys;
-int8_t      g_mouse_modifier;
-uint16_t    g_mouse_mode_sum[4];
-uint8_t     g_tp_counter;
-uint8_t     g_mouse_mode;
-uint32_t    g_mouse_lmb;
-uint8_t     g_mouse_double;
-
-volatile uint32_t idle_count;
+volatile uint32_t idle_count;   ///< interupt-incremented timer used for timeouts of MKT and mousekeys
 
 #endif
