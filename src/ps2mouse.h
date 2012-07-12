@@ -74,8 +74,9 @@ uint8_t     g_mouse_enabled;
 void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS );
 bool ps2_init_mouse(void);
 
+bool     send_packet(uint8_t byte);
+uint8_t  read_packet(void);
 bool ps2_send_expect(uint8_t send, uint8_t expect);
-
 
 uint8_t getMouseReport(USB_MouseReport_Data_t *report_data);
 

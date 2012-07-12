@@ -42,6 +42,11 @@
 #include <LUFA/Drivers/USB/USB.h>
 
 
+#define VENDOR_ID             0x05AF
+#define PRODUCT_ID            0x2033
+#define RELEASE_NUMBER        0xF001
+
+
 /* Type Defines: */
 /** Type define for the device configuration descriptor structure. This must be defined in the
  *  application code, as the configuration descriptor contains several sub-descriptors which

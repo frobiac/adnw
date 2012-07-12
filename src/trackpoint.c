@@ -55,12 +55,11 @@ void tp_reset()
 
 
 
-void tp_ram_toggle(uint8_t addr, uint8_t val){
-    uint8_t tmp;
-
+void tp_ram_toggle(uint8_t addr, uint8_t val)
+{
     tp_send_read_ack(0xe2);
     tp_send_read_ack(0x2c);
-    tmp=read_packet();
+    uint8_t tmp=read_packet();
     if( (tmp & val) != 0x00) {
         printf("\nAlready set");
     }
@@ -71,28 +70,34 @@ void tp_ram_toggle(uint8_t addr, uint8_t val){
     tp_send_read_ack(val);
 }
 
-uint8_t tp_ram_read(uint8_t addr){
+uint8_t tp_ram_read(uint8_t addr)
+{
     tp_send_read_ack(0xe2);
     tp_send_read_ack(0x80);
     tp_send_read_ack(addr);
     return( read_packet() );
 }
 
-void tp_ram_write(uint8_t addr, uint8_t val){
+void tp_ram_write(uint8_t addr, uint8_t val)
+{
     tp_send_read_ack(0xe2);
     tp_send_read_ack(0x81);
     tp_send_read_ack(addr);
     tp_send_read_ack(val);
 }
 
-// TP config register: See p33 of YKT3Eext.pdf
-enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FTRANS };
-
 bool tp_send_read_ack(uint8_t val)
 {
     return ps2_send_expect(val, 0xfa);
 }
 
+
+// TP config register: See p33 of YKT3Eext.pdf
+enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FTRANS };
+
+/**
+ * Print out trackpoint config register
+ */
 uint8_t tp_read_config(){
     printf("\nTP Config= ");
     tp_send_read_ack(0xe2);

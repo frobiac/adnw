@@ -1,14 +1,14 @@
 **UNSORTED TODO LIST**
 ==================
 
-LUFA 
+LUFA
 ----
-* test existance in makefile 
+* test existance in makefile
 
 
 Documentation
 -------------
-* license check on older files (PS2,hhkb)
+* license check on older files (hhkb)
 * code
 * pinout for different controllers
 * case files and pictures
@@ -29,7 +29,7 @@ HW
 Refactor
 --------
 * english / german host layout
- 
+
 
 Layout
 ------
@@ -47,8 +47,8 @@ Git
 Macro
 -----
 * configurable (saving to eeprom) while running or separate configtool only flashing eeprom content
-		
-		
+
+
 Commandmode
 -----------
 * layer switching between different layouts
@@ -62,7 +62,7 @@ BUGS
 
 
 Coding style
------------- 
+------------
 * astyle --style=linux --convert-tabs --lineend=linux --indent=spaces=4  -o -O -K src/\*.[ch]
 
 
