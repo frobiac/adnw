@@ -56,7 +56,7 @@ void    printLayout(uint8_t l);
 static const keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
     // Left half
     { _no,     _no,     _no,     _no,       _no,     _no },
-    { _no,     _no,     _no,     _no,       _no,     _no },
+    { _no,_MS_BTN_1,_MS_BTN_2,_MS_BTN_3, _MS_SCROLL, _no },
     { _no,     _no,     _no,     _no,       _no,     _no },
     { _no,     _no,     _no,     _ESC,      _TAB,    _no /*is real SPACE*/ },
 
@@ -118,7 +118,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM = {
     /// @todo These should not be shifted, maybe factor out entirely!
     {
         { _no, _no,     _no,    _no,      _a_UML,     _o_UML },
-        { _no, _MS_BTN_1, _MS_BTN_2,_MS_BTN_3, _MS_SCROLL, _no},
+        { _no, _no, _no, _no, _no, _no},
         { _no, _no, _no, _no, _no, _no},
         { _no, _no, _no, _L_CTRL, _L_ALT, _L_SHIFT },
 

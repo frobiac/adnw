@@ -49,9 +49,20 @@ uint8_t lastKeyCode;
 uint8_t rowData[ROWS];
 uint8_t prevRowData[ROWS];
 
-/// used for MODE-key press/release cycle detection
-enum { MKT_RESET, MKT_MODEKEYFIRST, MKT_TOOMANYKEYS, MKT_YES , MKT_INIT };
+/**
+ * ModeKeyToggle is a simple state machine that enables keys to:
+ * 1) emit a normal keycode, including its modifiers, if pressed without any other key being
+ *         held down AND immediately released again.
+ * 2) act as a modifier if pressed together with another normal key.
 
+ * This enables keys in good locations (e.g. thumb buttons) to be used either as frequent keys
+ * such as space, return or backspace to also act as layer or control modifiers, thus minimizing
+ * finger travel across the board.
+ *
+ * @todo : several MKTs together do not work unless they all act as modifiers
+ *
+ */
+enum { MKT_RESET, MKT_TOOMANYKEYS, MKT_YES , MKT_INIT };
 
 #define MKT_TIMEOUT 30 // = x/61 [s]: a modekey will NOT send normal key if pressed this long
 
@@ -69,8 +80,9 @@ volatile uint8_t kb_rpt[ROWS];      // key long press and repeat
 static uint8_t ct0[ROWS], ct1[ROWS];
 static int32_t rpt[ROWS];
 
-#define REPEAT_MASK    ALL_COLS_MASK    // repeat: key0 = 0x3F = 63
-#define REPEAT_START   31               // 61 = 1000ms
+#define ALL_COLS_MASK ((1<<COLS)-1)  // 0x63 or all lower 6 bits
+#define REPEAT_MASK    ALL_COLS_MASK // repeat: key0 = 0x3F = 63
+#define REPEAT_START   31            // 61 = 1000ms
 #define REPEAT_NEXT    15
 
 /**
@@ -120,8 +132,10 @@ void clearRowData(){
 
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
+    // handle MKT: timeout resets state machine
     if(mkt_timer+MKT_TIMEOUT < idle_count)
         mkt_state = MKT_RESET;
+    // no more keys pressed, so test whether last released key was MKT
     if(activeKeys.keycnt==0) {
         if(mkt_state == MKT_YES) {
             report_data->KeyCode[0] = ModeKeyMatrix[mkt_key.row][mkt_key.col].hid;
@@ -149,6 +163,7 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
         return 0;
     }
 
+    // while macro mode is on, acquire data from it
     if(macroMode()) {
         if(getMacroReport(report_data)) {
             return sizeof(USB_KeyboardReport_Data_t);
@@ -383,7 +398,11 @@ bool isMouseKey(uint8_t row, uint8_t col)
     return false;
 }
 
-
+/**
+ * Appends a row/column pair to the currently active key list unless
+ * g_mouse_keys are enabled (for a short while after mouse movement)
+ * MKT is either stopped or initialyzed, depending on the situation.
+ */
 void ActiveKeys_Add(uint8_t row, uint8_t col)
 {
     if(activeKeys.keycnt>= MAX_ACTIVE_KEYS) {
@@ -409,15 +428,15 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
     activeKeys.keys[activeKeys.keycnt]=key;
     activeKeys.keycnt++;
 
+    // MKT can only be active for a single pressed key, more than that and we use it as modifier
     if(activeKeys.keycnt>1)
         mkt_state = MKT_TOOMANYKEYS;
-    if(mkt_state == MKT_INIT && activeKeys.keycnt==1 && !key.normalKey) {
+    // a possible MKT was found, save timer for timeout
+    else if(mkt_state == MKT_INIT && !key.normalKey /*&& activeKeys.keycnt==1*/ ) {
         mkt_state = MKT_YES;
         mkt_key = key;
         mkt_timer=idle_count;
     }
-    if(mkt_state == key.normalKey)
-        mkt_state = MKT_RESET;
 }
 
 /** key matrix is read into rowData[] at this point,
