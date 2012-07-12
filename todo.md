@@ -51,7 +51,7 @@ Macro
 
 Commandmode
 -----------
-* layer switching between different layouts
+* cleanup layer switching between different layouts
 * read data like tp settings
 * hierarchical command structure
 
@@ -72,7 +72,6 @@ Ideas
 - copy paste on mouse middle btn on Win possible?
 - prntscreen...
 - openmoko touchpad?
-- multiple layouts -> fixed based layer toggle
 
 
 Problems with layout

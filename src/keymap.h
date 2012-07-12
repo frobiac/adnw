@@ -21,28 +21,32 @@
 #include <stdint.h>
 #include "hid_usage.h"
 
-#define LAYERS 4
+#define LAYERS 5
 #define ROWS   8
 #define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
 
+
+
 #define PINKYDROP 0  ///<  drop pinky column by one for more ergonomic layout
 
-#define _ANALOG _no
 
+/** *********************************************************
+ *    Matrix of physical keyboard to key mapping
+ *
+ * @todo  configuration
+ *        could be much more memory efficient by
+ *           - not duplicating thumbs everywhere
+ *           - only have mode keys on selected keys
+ *           - drop shifted layer in favor of speciality handling for '/'
+ ************************************************************/
 
-// *************************************************************
-// *    Matrix of physical keyboard to key mapping
-// *
-// * @todo  PROGMEM and configuration
-// *        Shift != Mod1, see "/'
-// *************************************************************
 typedef struct {
     uint8_t  hid;   ///< HID usage code, will be interpreted by OS keyboard layout!
     uint8_t  mods;  ///< HID modifiers , will be interpreted by OS keyboard layout!
     char     ch;
 } keycode;
 
-bool g_alternateLayer;
+bool g_alternateLayer; ///< toggle using an alternate layout for layer 1
 
 uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer);
 uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
@@ -69,9 +73,9 @@ static const keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
 //
 #define _MACRO _no
 #define _THUMB_ROW_LEFT     _no /*macro*/, _L_GUI,     _L_SHIFT,    _L_ALT , _L_CTRL, _SPACE
-#define _THUMB_ROW_RIGHT    _L_SHIFT,/*_MOD_1,*/      _MOD_2,   _R_ALT,  _MOUSE,  _MOD_3, _H
+#define _THUMB_ROW_RIGHT    _L_SHIFT,      _MOD_1,   _R_ALT,  _MOD_3,  _MOD_2, _MOD_3
 
-static const keycode KeyMatrix[LAYERS+2][ROWS][COLS] PROGMEM = {
+static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM = {
     // normal layer
     {
         { _ESC,   _k, _u, _q, _PERIOD,_j  },
@@ -85,20 +89,7 @@ static const keycode KeyMatrix[LAYERS+2][ROWS][COLS] PROGMEM = {
         { _THUMB_ROW_RIGHT}
     },
 
-    // MOD1 layer (shifted)
-    {
-        { _ESC,   _K,         _U,         _Q,         _COLON,     _J},
-        { _TAB,   _H,         _I,         _E,         _A,         _O},
-        { _no,_X,         _Y,         _USCORE,    _SCOLON,    _BSLASH /** @todo Does not work with regular Shift as 2nd layer*/},
-        { _THUMB_ROW_LEFT },
-
-        { _V,     _G,         _C,         _L,         _F,         _DEL },
-        { _D,     _T,         _R,         _N,         _S,         _ENTER  },
-        { _B,     _P,         _W,         _M,         _Z,         _no  },
-        { _THUMB_ROW_RIGHT}
-    },
-
-    // MOD2 layer (special char)
+    // MOD1 layer (special char)
     {
         { _no, _AT,      _DEGREE,   _L_BRACKET, _R_BRACKET, _HASH   },
         { _no, _BSLASH,  _SLASH,    _L_BRACE,   _R_BRACE,   _ASTERIX},
@@ -111,7 +102,7 @@ static const keycode KeyMatrix[LAYERS+2][ROWS][COLS] PROGMEM = {
         { _THUMB_ROW_RIGHT}
     },
 
-    // MOD3 layer (movement controls and numbers)
+    // MOD2 layer (movement controls and numbers)
     {
         { _no, _PGUP,   _BSPACE,    _UP,        _DEL ,      _PGDN},
         { _no, _HOME,   _LEFT,      _DOWN,      _RIGHT,     _END },
@@ -124,7 +115,7 @@ static const keycode KeyMatrix[LAYERS+2][ROWS][COLS] PROGMEM = {
         { _THUMB_ROW_RIGHT}
     },
 
-    // MOUSE MODE
+    // MOD3 MOUSE MODE
     /// @todo These should not be shifted, maybe factor out entirely!
     {
         { _no, _no,     _no,    _no,      _a_UML,     _o_UML },
@@ -138,7 +129,7 @@ static const keycode KeyMatrix[LAYERS+2][ROWS][COLS] PROGMEM = {
         { _THUMB_ROW_RIGHT},
     },
 
-    // BU-TECK
+    // MOD4 BU-TECK
     {
         { _ESC,   _b, _u, _q, _PERIOD,_x  },
         { _TAB,   _h, _i, _e, _a, _o  },
@@ -153,4 +144,3 @@ static const keycode KeyMatrix[LAYERS+2][ROWS][COLS] PROGMEM = {
 }; // end of matrix[][][]
 
 #endif
-
