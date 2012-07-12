@@ -138,7 +138,7 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
     // no more keys pressed, so test whether last released key was MKT
     if(activeKeys.keycnt==0) {
         if(mkt_state == MKT_YES) {
-            report_data->KeyCode[0] = ModeKeyMatrix[mkt_key.row][mkt_key.col].hid;
+            report_data->KeyCode[0] = SecondaryUsage[mkt_key.row][mkt_key.col]; //ModeKeyMatrix[mkt_key.row][mkt_key.col].hid;
             report_data->Modifier = 0;
             mkt_state = MKT_INIT;
             return sizeof(USB_KeyboardReport_Data_t);
@@ -392,7 +392,7 @@ bool isNormalKey(uint8_t row, uint8_t col)
 
 uint8_t getMouseKey(uint8_t row, uint8_t col)
 {
-    uint16_t hid = ModeKeyMatrix[row][col].hid;
+    uint16_t hid = SecondaryUsage[row][col];
     if ( hid >= MS_BTN_1 && hid <= MS_SCROLL )
         return (1<<(hid-MS_BTN_1));
     return 0;

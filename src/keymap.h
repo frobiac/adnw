@@ -52,19 +52,25 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 uint8_t getKeyChar (uint8_t row, uint8_t col, uint8_t layer);
 void    printLayout(uint8_t l);
 
+/**
+ * MKT keycode if single key and mousekey location is stored in here.
+ * In contrast to the keymatrix below, only actual HID-usage codes are used, as
+ * there should be no need for modifiers with MKTs.
+ * The mouse button locations are put here as there is no overlap whith other keys,
+ * but strictly not the right place here.
+ */
+static const uint8_t SecondaryUsage[ROWS][COLS] = {
+    { 0,             0,             0,              0,              0,              0 },
+    { 0,            MS_BTN_1,       MS_BTN_2,       MS_BTN_3,       MS_SCROLL,      0 },
+    { 0,             0,             0,              0,              0,              0 },
+    { 0,             0,             0,              HID_ESC,        HID_TAB,        0 /*is real SPACE*/ },
 
-static const keycode /*PROGMEM*/ ModeKeyMatrix[ROWS][COLS] = {
-    // Left half
-    { _no,     _no,     _no,     _no,       _no,     _no },
-    { _no,_MS_BTN_1,_MS_BTN_2,_MS_BTN_3, _MS_SCROLL, _no },
-    { _no,     _no,     _no,     _no,       _no,     _no },
-    { _no,     _no,     _no,     _ESC,      _TAB,    _no /*is real SPACE*/ },
-
-    { _no,     _no,     _no,     _no,       _no,     _no },
-    { _no,     _no,     _no,     _no,       _no,     _no },
-    { _no,     _no,     _no,     _no,       _no,     _no },
-    { _BSPACE, _ENTER,  _no,     _no,       _no,     _no }
+    { 0,             0,             0,              0,              0,              0 },
+    { 0,             0,             0,              0,              0,              0 },
+    { 0,             0,             0,              0,              0,              0 },
+    { HID_BACKSPACE, HID_ENTER,     0,              0,              0,              0 }
 };
+
 
 // on BlueCube, the innermost thumb-buttons are on outermost columns in matrix!
 //         0  5
