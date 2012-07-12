@@ -24,17 +24,24 @@
 #include "trackpoint.h"
 
 bool command=false;
+static uint8_t layer=0;
+enum { SUB_NONE=0, SUB_TP, SUB_READ }; ///< possible subcommands
+static uint8_t subcmd;           ///< currently active subcommand
+
+#define MAXLEN 20
+static uint8_t idx =0;
+static uint8_t str[MAXLEN];
 
 void setCommandMode(bool on) {
     printf("\nCMD %s ", on ? "active [qtp] " : "off" );
     command=on;
     clearActiveKeys();
+    subcmd = SUB_NONE;
 }
 
-
 bool commandMode(void){ return command; }
+void handleSubCmd(struct Key k);
 
-static uint8_t layer=0;
 
 void handleCommand(void){
     if(!commandMode())
@@ -44,12 +51,15 @@ void handleCommand(void){
         return;
 
     struct Key k=activeKeys.keys[0];
-    uint8_t hid =getKeyCode(k.row, k.col, 0);
+    uint8_t hid = getKeyCode(k.row, k.col, 0);
+
+    if(subcmd){
+        handleSubCmd(k);
+        return;
+    }
     clearActiveKeys();
     clearRowData();
 
-    //if(hid == HID_ESC)
-    //    setCommandMode(false);
     switch(hid){
         case HID_J:
             printf("\nBootloader::");
@@ -89,12 +99,43 @@ void handleCommand(void){
             printf("\nMouse %sabled", g_mouse_enabled ? "en" : "dis");
             setCommandMode(false);
             break;
-
+        case HID_R:
+            printf("\nRead active.");
+            subcmd=SUB_READ;
+            idx=0;
+            break;
         default:
             printf("\nUnknown:");
             //setCommandMode(false);
             break;
     }
+}
+
+void handleSubCmd(struct Key k){
+    switch( subcmd )
+    {
+        uint8_t hid = getKeyCode(k.row, k.col, getActiveLayer());
+        case SUB_READ:
+            if(hid == HID_ESC){
+                printf("\nSubRead terminated");
+                setCommandMode(false);
+            }else {
+                if(idx>=MAXLEN) {
+                    idx=0;
+                    setCommandMode(false);
+                }
+                str[idx++]=hid;
+                printf("\n%2d: ",idx);
+                for(uint8_t i=0; i<idx; ++i)
+                    printf("%02x", str[i]);
+            }
+            break;
+        default:
+            break;
+    }
+    clearActiveKeys();
+    clearRowData();
+
 }
 
 

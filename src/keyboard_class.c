@@ -160,7 +160,6 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
         report_data->Modifier=0;
         memset(&report_data->KeyCode[0], 0, 6);
         return sizeof(USB_KeyboardReport_Data_t);
-        return 0;
     }
 
     // while macro mode is on, acquire data from it
@@ -450,9 +449,9 @@ void init_active_keys()
         return;
     }
     // all four corners pressed: switch to command mode
-    else if( (rowData[0] & (1<<0)) &&
+    else if(// (rowData[0] & (1<<0)) &&
              (rowData[2] & (1<<0)) &&
-             (rowData[4] & (1<<5)) &&
+            // (rowData[4] & (1<<5)) &&
              (rowData[6] & (1<<5)) ) {
         setCommandMode(true);
     }
