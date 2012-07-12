@@ -220,6 +220,9 @@ bool ps2_init_mouse(void)
 
     tp_init();
 
+    /// @todo Set only on successful init
+    g_mouse_enabled = 1;
+
     return true;
 }
 
@@ -310,15 +313,7 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
     float factor;
 
 #ifdef PS2MOUSE
-    if(g_trackpoint) {
-        ps2_read_mouse(&dx, &dy, &btns);
-        /*
-        if( dx != 0|| dy!=0 || btns != 0) {
-            printf("\nPS/2 is %d: %2d %2d -> %d  , ", g_mouse_mode, dx, dy, dx*dx + dy*dy );
-            printf(" Btns: %d / %d", btns, g_mouse_keys );
-        }
-        */
-    }
+    ps2_read_mouse(&dx, &dy, &btns);
 #endif
 
     if( (g_mouse_keys & 0x0F) || (btns & 0x07) || (dx+dy) > 0 /* Test for spurious movements */ ) {

@@ -45,8 +45,6 @@
 // #define TRACE false || printf
 #define TRACE(...)
 
-extern uint8_t g_mouse_enabled;
-
 uint8_t lastKeyCode;
 uint8_t rowData[ROWS];
 uint8_t prevRowData[ROWS];
@@ -450,11 +448,6 @@ void init_active_keys()
         setCommandMode(true);
     }
 
-    if( rowData[7] & (1<<5) ) {
-        g_mouse_enabled = g_mouse_enabled > 0 ? 0 : 1;
-        rowData[7] &= ~(1<<5);
-        return;
-    }
     // process row/column data to find the active keys
     for (uint8_t row = 0; row < ROWS; ++row) {
 //      printf("\n%d : ", row);

@@ -84,6 +84,11 @@ void handleCommand(void){
             }
             setCommandMode(false);
             break;
+        case HID_M:
+            g_mouse_enabled = g_mouse_enabled > 0 ? 0 : 1;
+            printf("\nMouse %sabled", g_mouse_enabled ? "en" : "dis");
+            setCommandMode(false);
+            break;
 
         default:
             printf("\nUnknown:");

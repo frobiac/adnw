@@ -20,8 +20,6 @@
 
 #include "ps2mouse.h"
 
-uint8_t     g_trackpoint;
-
 #ifndef F_CPU
 #define F_CPU 16000000UL
 #endif

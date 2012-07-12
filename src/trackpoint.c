@@ -127,9 +127,8 @@ void tp_id(void) {
 }
 
 
-void tp_init(void) {
-    g_trackpoint=0;
-
+void tp_init(void)
+{
     // read config byte at 2C: E2 2C or E2 80 2C
     /* bit  0   1   2    3    4    5    6    7
             Pts res 2clk invX invY invZ ExXY HardTrans  */
@@ -152,7 +151,4 @@ void tp_init(void) {
     printf("\nPTS btn masks: %02x %02x %02x ", tp_ram_read(0x41), tp_ram_read(0x42), tp_ram_read(0x43) );
     tp_ram_write(0x5c, 0x0A); // 08 is default, 10 too hard
     printf("\nPTS thres: %02x", tp_ram_read(0x5c));
-
-    /// @todo Set only on successful init
-    g_trackpoint = 1;
 }

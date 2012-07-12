@@ -162,7 +162,7 @@ int main(void)
         if (USB_DeviceState != DEVICE_STATE_Suspended) {
             HID_Device_USBTask(&Keyboard_HID_Interface);
             HID_Device_USBTask(&DBG_HID_Interface);
-            if( g_trackpoint )
+            if( g_mouse_enabled )
                 HID_Device_USBTask(&Mouse_HID_Interface);
         } else if (USB_Device_RemoteWakeupEnabled ) {
             USB_CLK_Unfreeze();

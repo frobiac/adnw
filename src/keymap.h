@@ -37,7 +37,6 @@
  *        could be much more memory efficient by
  *           - not duplicating thumbs everywhere
  *           - only have mode keys on selected keys
- *           - drop shifted layer in favor of speciality handling for '/'
  ************************************************************/
 
 typedef struct {
