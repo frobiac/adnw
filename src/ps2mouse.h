@@ -27,7 +27,7 @@
 #include <stdbool.h>
 #include "Keyboard.h"  // for USB_Mouse_Report_Data_t
 
-#define ACK 0
+#define PS2_ACK 0xFA
 #define DELAY 150
 
 #define ACC_RAMPTIME 400 // acc incrementation time till maximum
@@ -74,12 +74,8 @@ uint8_t     g_mouse_enabled;
 void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS );
 bool ps2_init_mouse(void);
 
-bool    send_packet(uint8_t byte);
-uint8_t read_packet(void);
+bool ps2_send_expect(uint8_t send, uint8_t expect);
 
-
-void    serout(uint8_t bit);
-uint8_t serin(void);
 
 uint8_t getMouseReport(USB_MouseReport_Data_t *report_data);
 

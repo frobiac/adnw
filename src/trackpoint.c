@@ -51,8 +51,6 @@ void tp_reset()
         __asm__("nop");
     }
     RPORT &= ~(1 << RBIT);
-
-    tp_init();
 }
 
 
@@ -92,15 +90,7 @@ enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FT
 
 bool tp_send_read_ack(uint8_t val)
 {
-    if( ! send_packet(val) ) {
-        printf("\nError: not send");
-        return false;
-    }
-    if(read_packet() != 0xfa) {
-        printf("\nError: not ack");
-        return false;
-    }
-    return true;
+    return ps2_send_expect(val, 0xfa);
 }
 
 uint8_t tp_read_config(){

@@ -34,6 +34,11 @@ volatile uint8_t     scrollcnt;
 volatile uint32_t    mouse_timer; /// toggle mouse mode for a specified time
 volatile uint16_t    accel; /// toggle mouse mode for a specified time
 
+// only used here
+void    serout(uint8_t bit);
+uint8_t serin (void);
+
+
 void data(uint8_t x)
 {
     DDDR |= (1 << DBIT);
@@ -133,10 +138,10 @@ bool send_packet(uint8_t byte)
         DDDR &= ~(1 << DBIT); //Release the Data line
         DPORT |= (1 << DBIT); //Set the pull up on Data
 
-        //if(serin() != ACK )
-        //    send_packet(byte); // Try again if ACK has not been received
+        //if(serin() != PS2_ACK )
+        //    send_packet(byte); // Try again if PS2_ACK has not been received
         errcnt++;
-    } while (serin() != ACK && errcnt < 5 );
+    } while (serin() != 0 && errcnt < 5 );
 
     if(errcnt >= 5)
         return false;
@@ -164,26 +169,40 @@ uint8_t read_packet(void)
     return byte;
 }
 
+bool ps2_send_expect(uint8_t send, uint8_t expect)
+{
+    if( ! send_packet(send) ) {
+        printf("\nPS/2: send %x failed, expect %x", send, expect);
+        return false;
+    }
+    uint8_t read = read_packet();
+    if(read != expect) {
+        printf("\nPS/2: send %x, read %x != %x", send, read, expect);
+        return false;
+    }
+    return true;
+}
+
 
 bool ps2_init_mouse(void)
 {
     g_mouse_enabled = 0;
     scrollcnt = 0;
 
-    uint8_t d[10];
+    uint8_t d[2];
 
     tp_reset();
 
-    if ( ! send_packet(0xff) )
+    if ( ! ps2_send_expect(0xff, PS2_ACK) )
         return false;
-    d[0]=read_packet(); //Ack
-    d[1]=read_packet(); //Bat
-    d[2]=read_packet(); //dev ID
+
+    d[0]=read_packet(); //Bat
+    d[1]=read_packet(); //dev ID
+
     //Enable Data reporting
-    if ( !send_packet(0xf4) )
+    if ( ! ps2_send_expect(0xf4, PS2_ACK) )
         return false;
-    read_packet();  // Ack
-    ////
+
     //send_packet(0xe8); //Set Resolution
     //read_packet(); //Ack
     //send_packet(0x01); //8counts/mm
@@ -194,11 +213,10 @@ bool ps2_init_mouse(void)
     //send_packet(0x64); //200 smaples a second
 
     //Set remote mode
-    if( ! send_packet(0xf0) )
+    if( ! ps2_send_expect(0xf0, PS2_ACK) )
         return false;
-    d[3]=read_packet(); //Ack
 
-    printf("\nTP init: %02x %02x %02x %02x", d[0],d[1],d[2],d[3]);
+    printf("\nTP init: Bat:%02x Id:%02x",d[0],d[1]);
 
     tp_init();
 
