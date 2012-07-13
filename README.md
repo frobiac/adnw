@@ -27,8 +27,9 @@ From this root directory, execute
 
     $ git clone https://github.com/abcminiuser/lufa-lib.git ../lufa-lib
     $ ln -sf ../lufa-lib/trunk LUFA
+    $ cp LUFA-scrollwheel.patch LUFA
     $ cd LUFA
-    $ patch -Np1 -i ../LUFA-scrollwheel.patch
+    $ patch -Np2 -i LUFA-scrollwheel.patch
 
 
 To build, please adjust controller type and build switches in makefile and call make from root directory.

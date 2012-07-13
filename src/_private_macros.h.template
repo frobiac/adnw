@@ -17,5 +17,5 @@ static const char EEmacrosC[MACROCOUNT][MACROLEN]  =  {
     // CTRL+ALT+DEL
     { ((1<<0)|(1<<2)/*L_CTL|L_ALT*/)+0x80, 127, 'p','w','\n' },
     // ^c ^t ^v return for firefox
-    { 0x81, c , 0x81, t, 0x81, v, '\0' },
+    { 0x81, 'c' , 0x81, 't', 0x81, 'v', '\0' },
 };
