@@ -112,11 +112,11 @@ void handleCommand(void){
 }
 
 void handleSubCmd(struct Key k){
+    uint8_t h =getKeyCode(k.row, k.col, getActiveLayer());
     switch( subcmd )
     {
-        uint8_t hid = getKeyCode(k.row, k.col, getActiveLayer());
         case SUB_READ:
-            if(hid == HID_ESC){
+            if(h == HID_ESC){
                 printf("\nSubRead terminated");
                 setCommandMode(false);
             }else {
@@ -124,8 +124,8 @@ void handleSubCmd(struct Key k){
                     idx=0;
                     setCommandMode(false);
                 }
-                str[idx++]=hid;
-                printf("\n%2d: ",idx);
+                str[idx++]=h;
+                printf("\n%2d %d: ",idx,h);
                 for(uint8_t i=0; i<idx; ++i)
                     printf("%02x", str[i]);
             }
@@ -135,7 +135,6 @@ void handleSubCmd(struct Key k){
     }
     clearActiveKeys();
     clearRowData();
-
 }
 
 
