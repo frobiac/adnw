@@ -311,9 +311,6 @@ uint8_t getActiveLayer()
 {
     TRACE("gAL ");
 
-    if( g_mouse_keys_enabled)
-        return 4; /// @todo  hardcoded layer
-
     uint8_t layer=0;
     for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
         struct Key k = activeKeys.keys[i];
@@ -366,7 +363,6 @@ bool isModifierKey(uint8_t row, uint8_t col)
 {
     TRACE("iMK ");
     if( getModifier(row,col,0) >= MOD_L_CTRL  && getModifier(row,col,0) < MOD_END)
-    //if( getKeyCode(row,col,0) >= HID_L_CONTROL  && getKeyCode(row,col,0) <= HID_R_GUI)
         return true;
     return false;
 }
@@ -416,7 +412,7 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
     // quit early if mouse key is pressed in mouse mode, or end it on other keypress.
     if( g_mouse_keys_enabled ) {
         uint8_t btns = getMouseKey(row, col);
-        if(btns) {
+        if(btns != 0) {
             g_mouse_keys |= btns;
             return;
         } else if(isNormalKey(row,col)) { // quicker exit from mousekey mode on other key

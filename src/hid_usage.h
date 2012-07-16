@@ -146,8 +146,9 @@
 
 
 enum {
-    // mouse buttons
-    MS_BTN_1,
+    UNUSED=0,
+    // mouse buttons;
+    MS_BTN_1=0x10,
     MS_BTN_2,
     MS_BTN_3,
     MS_SCROLL,  //keep at end
