@@ -41,10 +41,10 @@
 
 #include <LUFA/Drivers/USB/USB.h>
 
-
-#define VENDOR_ID             0x05AF
-#define PRODUCT_ID            0x2033
-#define RELEASE_NUMBER        0xF001
+// thanks to Openmoko, Inc we now have a dedicated USB Product ID 
+#define VENDOR_ID             0x1D50
+#define PRODUCT_ID            0x6033
+#define RELEASE_NUMBER        0x0001
 
 
 /* Type Defines: */
