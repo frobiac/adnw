@@ -212,15 +212,14 @@ void SetupHardware()
         printf("\nTP init FAILED!");
 #endif
 
-    /*
+    
     #ifdef VERSIONINFO
-      printf("\n-\n %s", VERSIONINFO);
+		printf("\nAdNW KB %s - ", VERSIONINFO);
     #endif
 
     #ifdef BUILDDATE
-      printf("\n %s\n- ",  BUILDDATE);
+		printf("%s",  BUILDDATE);
     #endif
-      */
 
 
 #if defined(BOOTLOADER_TEST)
