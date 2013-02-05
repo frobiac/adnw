@@ -239,6 +239,24 @@ typedef enum {
 #define SHIFT (1<<1)
 #define ALTGR (1<<6)
 
+typedef enum
+{
+    NONE  = 0,
+    L_CTL = (1<<0),
+    L_SHF = (1<<1),
+    L_ALT = (1<<2),
+    L_GUI = (1<<3),
+    R_CTL = (1<<4),
+    R_SHF = (1<<5),
+    R_ALT = (1<<6), // alias ALTGR
+    ALTGR = (1<<6), // alias R_ALT
+    R_GUI = (1<<7),
+    A_CTL = (1<<8),
+    A_SHF = (1<<9),
+    A_ALT = (1<<10),
+    A_GUI = (1<<11),
+} Modifier;
+
 // *************************************************************
 // mapping of characters and HID codes
 // differences between qwert_Y and qwert_Z are separate at the bottom
