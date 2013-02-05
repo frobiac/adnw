@@ -44,7 +44,7 @@ CC_FLAGS    += -DUSE_HHSTDIO -DNEW_MOUSE  -DPS2MOUSE -DMOUSE_HAS_SCROLL_WHEELS
 LD_FLAGS     =
 
 # Default target
-all: version macrocheck
+all: version lufacheck macrocheck
 
 
 # create some version information from git
@@ -65,11 +65,13 @@ macrocheck:
 # DOES nothing - LUFA includes are searched before this, so no helpful msg
 #
 # check that LUFA is there
-ifeq ($(wildcard LUFA/LUFA/Build/lufa_core.mk),)
-	@echo -e "*** ERROR: LUFA/LUFA missing - see README for install instructions"; false;
-else
-	@echo "*** LUFA found.";
-endif
+# ifeq ($(wildcard LUFA/LUFA/Build/lufa_core.mk),)
+lufacheck:
+	@if test -d LUFA/LUFA ; then \
+		echo "*** LUFA found.";\
+	else \
+		echo -e "*** ERROR: LUFA/LUFA missing - see README for install instructions.\n***        Try to checkout LUFA source with\n***            git submodule init && git submodule update\n\n"; false;\
+	fi
 
 
 # check whether scrollwheel support is requested and complete
@@ -87,12 +89,12 @@ else
 endif
 
 # Include LUFA build script makefiles
-include $(LUFA_PATH)/Build/lufa_core.mk
-include $(LUFA_PATH)/Build/lufa_sources.mk
-include $(LUFA_PATH)/Build/lufa_build.mk
-include $(LUFA_PATH)/Build/lufa_cppcheck.mk
-include $(LUFA_PATH)/Build/lufa_doxygen.mk
-include $(LUFA_PATH)/Build/lufa_dfu.mk
-include $(LUFA_PATH)/Build/lufa_hid.mk
-include $(LUFA_PATH)/Build/lufa_avrdude.mk
-include $(LUFA_PATH)/Build/lufa_atprogram.mk
+-include $(LUFA_PATH)/Build/lufa_core.mk
+-include $(LUFA_PATH)/Build/lufa_sources.mk
+-include $(LUFA_PATH)/Build/lufa_build.mk
+-include $(LUFA_PATH)/Build/lufa_cppcheck.mk
+-include $(LUFA_PATH)/Build/lufa_doxygen.mk
+-include $(LUFA_PATH)/Build/lufa_dfu.mk
+-include $(LUFA_PATH)/Build/lufa_hid.mk
+-include $(LUFA_PATH)/Build/lufa_avrdude.mk
+-include $(LUFA_PATH)/Build/lufa_atprogram.mk
