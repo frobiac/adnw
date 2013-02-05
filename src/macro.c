@@ -17,6 +17,7 @@
 
 #include "macro.h"
 #include "Keyboard.h"
+#include "keymap.h"
 
 uint8_t curMacro  = MACROCOUNT;
 uint8_t sendEmpty = 0;    // empty report needed to send the same character twice in a row
@@ -152,8 +153,12 @@ bool getMacroReport(USB_KeyboardReport_Data_t *report)
             }
         }
         // now map characters from macro to HID codes.
-        report->KeyCode[0] = ascii2hid[(uint8_t)c][0];
-        report->Modifier = ascii2hid[(uint8_t)c][1];
+        // report->KeyCode[0] = ascii2hid[(uint8_t)c][0];
+        // report->Modifier = ascii2hid[(uint8_t)c][1];
+        InterimsKeycode ikc=ascii2hid[(uint8_t)c];
+        keycode kc = getKeyStruct_Ic(ikc);
+        report->KeyCode[0]=USAGE_ID(kc.hid);
+        report->Modifier  =kc.mods;
         report->Modifier |= mod;
         memset(&report->KeyCode[1], 0, 5);
 
