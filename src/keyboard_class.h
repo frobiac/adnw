@@ -66,7 +66,6 @@ bool    isLayerKey   (uint8_t row, uint8_t col);
 bool    isNormalKey  (uint8_t row, uint8_t col);
 uint8_t getMouseKey  (uint8_t row, uint8_t col);
 
-uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer);
 
 uint8_t getActiveModifiers(void);
