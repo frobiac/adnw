@@ -417,7 +417,8 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
                 // secondaryModifierUsageMatrix-Code ermitteln
                 uint8_t currentLayoutNr = eeprom_read_byte(&alternateLayoutNr);
                 // den MK-key als (einzigen) Nichtmodifier hinzufŸgen:
-                report_data->KeyCode[0] = USAGE_ID(secondaryModifierUsageMatrix[currentLayoutNr][secondUse_key.row][secondUse_key.col]);;
+                // report_data->KeyCode[0] = USAGE_ID(secondaryModifierUsageMatrix[currentLayoutNr][secondUse_key.row][secondUse_key.col]);;
+                report_data->KeyCode[0] = SecondaryUsage[secondUse_key.row][secondUse_key.col];;
                 changeSecondUseState(SECOND_USE_ACTIVE, SECOND_USE_PASSIVE);
                 // Restliche Modifier zusammen mit secondUse_key Ÿbermitteln und nicht weiter verzšgern
                 handleModifierTransmission(report_data, MOD_TRANS_ON);
