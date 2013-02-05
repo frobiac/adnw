@@ -10,6 +10,7 @@
 # --------------------------------------
 
 MCU          = atmega32u4
+#MCU          = at90usb1286 
 ARCH         = AVR8
 BOARD        = TEENSY2
 F_CPU        = 16000000
@@ -38,6 +39,8 @@ SRC =   $(LUFA_SRC_USB)          \
 LUFA_PATH    = LUFA/LUFA
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/
 CC_FLAGS    += -DUSE_HHSTDIO -DNEW_MOUSE  -DPS2MOUSE -DMOUSE_HAS_SCROLL_WHEELS
+#CC_FLAGS    += -DMACOS
+#CC_FLAGS    += -DQWERTY
 LD_FLAGS     =
 
 # Default target
@@ -62,7 +65,7 @@ macrocheck:
 # DOES nothing - LUFA includes are searched before this, so no helpful msg
 #
 # check that LUFA is there
-ifeq ($(wildcard LUFA/LUFA/Build/lufa.core.in),)
+ifeq ($(wildcard LUFA/LUFA/Build/lufa_core.mk),)
 	@echo -e "*** ERROR: LUFA/LUFA missing - see README for install instructions"; false;
 else
 	@echo "*** LUFA found.";
@@ -84,12 +87,12 @@ else
 endif
 
 # Include LUFA build script makefiles
-include $(LUFA_PATH)/Build/lufa.core.in
-include $(LUFA_PATH)/Build/lufa.sources.in
-include $(LUFA_PATH)/Build/lufa.build.in
-include $(LUFA_PATH)/Build/lufa.cppcheck.in
-include $(LUFA_PATH)/Build/lufa.doxygen.in
-include $(LUFA_PATH)/Build/lufa.dfu.in
-include $(LUFA_PATH)/Build/lufa.hid.in
-include $(LUFA_PATH)/Build/lufa.avrdude.in
-include $(LUFA_PATH)/Build/lufa.atprogram.in
+include $(LUFA_PATH)/Build/lufa_core.mk
+include $(LUFA_PATH)/Build/lufa_sources.mk
+include $(LUFA_PATH)/Build/lufa_build.mk
+include $(LUFA_PATH)/Build/lufa_cppcheck.mk
+include $(LUFA_PATH)/Build/lufa_doxygen.mk
+include $(LUFA_PATH)/Build/lufa_dfu.mk
+include $(LUFA_PATH)/Build/lufa_hid.mk
+include $(LUFA_PATH)/Build/lufa_avrdude.mk
+include $(LUFA_PATH)/Build/lufa_atprogram.mk
