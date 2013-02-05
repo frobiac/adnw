@@ -14,5 +14,5 @@ maltron:
 	Date:   Wed Aug 15 16:40:25 2012 +0000
 
 LUFA NEW:
-master f93bcc3
-
+master  f93bcc3
+maltron a27d1c7
