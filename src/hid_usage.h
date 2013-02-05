@@ -528,8 +528,199 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 
 #endif // QWERTY or QWERTZ
 
+
+
+typedef enum
+{
+    _ik_no = 0     ,     //{ 0,     0,      ' ' } // No key defined
+    _ik_1          ,     //{ HID_1, 0,      '1' }
+    _ik_EXCLAM     ,     //{ HID_1, L_SHF , '!' }
+    _ik_EXCLAMI    ,     //{ HID_1, ALTGR , 'ç' }
+    _ik_2          ,     //{ HID_2, 0,      '2' }
+    _ik_3          ,     //{ HID_3, 0,      '3' }
+    _ik_4          ,     //{ HID_4, 0,      '4' }
+    _ik_DOLLAR     ,     //{ HID_4, L_SHF , '$' }
+    _ik_5          ,     //{ HID_5, 0,      '5' }
+    _ik_PERCENT    ,     //{ HID_5, L_SHF , '%' }
+    _ik_6          ,     //{ HID_6, 0,      '6' }
+    _ik_7          ,     //{ HID_7, 0,      '7' }
+    _ik_8          ,     //{ HID_8, 0,      '8' }
+    _ik_9          ,     //{ HID_9, 0,      '9' }
+    _ik_0          ,     //{ HID_0, 0,      '0' }
+    _ik_q          ,     //{ HID_Q, 0,      'q' }
+    _ik_Q          ,     //{ HID_Q, L_SHF , 'Q' }
+    _ik_w          ,     //{ HID_W, 0,      'w' }
+    _ik_W          ,     //{ HID_W, L_SHF , 'W' }
+    _ik_e          ,     //{ HID_E, 0,      'e' }
+    _ik_E          ,     //{ HID_E, L_SHF , 'E' }
+    _ik_r          ,     //{ HID_R, 0,      'r' }
+    _ik_R          ,     //{ HID_R, L_SHF , 'R' }
+    _ik_t          ,     //{ HID_T, 0,      't' }
+    _ik_T          ,     //{ HID_T, L_SHF , 'T' }
+    _ik_u          ,     //{ HID_U, 0,      'u' }
+    _ik_U          ,     //{ HID_U, L_SHF , 'U' }
+    _ik_i          ,     //{ HID_I, 0,      'i' }
+    _ik_I          ,     //{ HID_I, L_SHF , 'I' }
+    _ik_o          ,     //{ HID_O, 0,      'o' }
+    _ik_O          ,     //{ HID_O, L_SHF , 'O' }
+    _ik_p          ,     //{ HID_P, 0,      'p' }
+    _ik_P          ,     //{ HID_P, L_SHF , 'P' }
+    _ik_a          ,     //{ HID_A, 0,      'a' }
+    _ik_A          ,     //{ HID_A, L_SHF , 'A' }
+    _ik_s          ,     //{ HID_S, 0,      's' }
+    _ik_S          ,     //{ HID_S, L_SHF , 'S' }
+    _ik_d          ,     //{ HID_D, 0,      'd' }
+    _ik_D          ,     //{ HID_D, L_SHF , 'D' }
+    _ik_f          ,     //{ HID_F, 0,      'f' }
+    _ik_F          ,     //{ HID_F, L_SHF , 'F' }
+    _ik_g          ,     //{ HID_G, 0,      'g' }
+    _ik_G          ,     //{ HID_G, L_SHF , 'G' }
+    _ik_h          ,     //{ HID_H, 0,      'h' }
+    _ik_H          ,     //{ HID_H, L_SHF , 'H' }
+    _ik_j          ,     //{ HID_J, 0,      'j' }
+    _ik_J          ,     //{ HID_J, L_SHF , 'J' }
+    _ik_k          ,     //{ HID_K, 0,      'k' }
+    _ik_K          ,     //{ HID_K, L_SHF , 'K' }
+    _ik_l          ,     //{ HID_L, 0,      'l' }
+    _ik_L          ,     //{ HID_L, L_SHF , 'L' }
+    _ik_x          ,     //{ HID_X, 0,      'x' }
+    _ik_X          ,     //{ HID_X, L_SHF , 'X' }
+    _ik_c          ,     //{ HID_C, 0,      'c' }
+    _ik_C          ,     //{ HID_C, L_SHF , 'C' }
+    _ik_v          ,     //{ HID_V, 0,      'v' }
+    _ik_V          ,     //{ HID_V, L_SHF , 'V' }
+    _ik_b          ,     //{ HID_B, 0,      'b' }
+    _ik_B          ,     //{ HID_B, L_SHF , 'B' }
+    _ik_n          ,     //{ HID_N, 0,      'n' }
+    _ik_N          ,     //{ HID_N, L_SHF , 'N' }
+    _ik_m          ,     //{ HID_M, 0,      'm' }
+    _ik_M          ,     //{ HID_M, L_SHF , 'M' }
+    _ik_CAPS       ,     //{ HID_CAPS_LOCK,0     , ' ' }  //  CapsLock
+    _ik_APP        ,     //{ HID_APPLICATION, 0  , ' ' }  //  App
+    _ik_BSPACE     ,     //{ HID_BACKSPACE,0     , 171 }  //  Backspace
+    _ik_TAB        ,     //{ HID_TAB,      0     , 187 }  //  Tab
+    _ik_noN_US_1   ,     //{ HID_NON_US_1, 0     , ' ' }  //  non-US-1
+    _ik_noN_US_2   ,     //{ HID_NON_US_2, 0     , ' ' }  //  non-US-1
+    _ik_ENTER      ,     //{ HID_ENTER,    0     , 182 }  //  Enter
+    _ik_COMMA      ,     //{ HID_COMMA,    0     , ',' }
+    _ik_PERIOD     ,     //{ HID_PERIOD,   0     , '.' }
+    _ik_DOT3       ,     //{ HID_PERIOD,   ALTGR , '.' } // '...'
+    _ik_SPACE      ,     //{ HID_SPACE,    0     , ' ' }
+    _ik_L_SHIFT    ,     //{ HID_L_SHIFT,    MOD_L_SHIFT , ' ' }  //  LShift
+    _ik_R_SHIFT    ,     //{ HID_R_SHIFT,    MOD_R_SHIFT , ' ' }  //  RShift
+    _ik_L_CTRL     ,     //{ HID_L_CONTROL,  MOD_L_CTRL  , ' ' }  //  LCtrl
+    _ik_R_CTRL     ,     //{ HID_R_CONTROL,  MOD_R_CTRL  , ' ' }  //  RCtrl
+    _ik_L_ALT      ,     //{ HID_L_ALT,      MOD_L_ALT   , ' ' }  //  LAlt
+    _ik_R_ALT      ,     //{ HID_R_ALT,      MOD_R_ALT   , ' ' }  //  RAlt alias ALTGR alias AltGr
+    _ik_ALTGR = _ik_R_ALT,  //                                       //  AltGr identical to CTRL+ left ALT
+    _ik_L_GUI      ,     //{ HID_L_GUI,      MOD_L_GUI   , ' ' }  //  LWin
+    _ik_R_GUI      ,     //{ HID_R_GUI,      MOD_R_GUI   , ' ' }  //  RWin
+    _ik_MOD_0      ,     //{ HID_NO_KEY,     MOD_LAYER_0 , ' ' } // normale Ebene
+    _ik_MOD_1      ,     //{ HID_NO_KEY,     MOD_LAYER_1 , ' ' } // Neo Mod 3
+    _ik_MOD_2      ,     //{ HID_NO_KEY,     MOD_LAYER_2 , ' ' } // Neo Mod 4
+    _ik_MOD_3      ,     //{ HID_NO_KEY,     MOD_LAYER_3 , ' ' }
+    _ik_MOUSE      ,     //{ HID_NO_KEY,     MOD_MOUSE   , ' ' }
+    _ik_COMPOSE    ,     //{ HID_NO_KEY,     MOD_COMPOSE , ' ' }
+    _ik_MS_SCROLL  ,     //{ MS_SCROLL,0,    ' ' }
+    _ik_MS_BTN_1   ,     // { MS_BTN_1, 0,    ' ' }
+    _ik_MS_BTN_2   ,     // { MS_BTN_2, 0,    ' ' }
+    _ik_MS_BTN_3   ,     // { MS_BTN_3, 0,    ' ' }
+    _ik_INS        ,     //{ HID_INSERT,   0     , ' ' }  //  Insert
+    _ik_DEL        ,     //{ HID_DELETE,   0     , ' ' }  //  Delete
+    _ik_LEFT       ,     //{ HID_LEFT,     0     , ' ' }  //  Left
+    _ik_HOME       ,     //{ HID_HOME,     0     , ' ' }  //  Home
+    _ik_END        ,     //{ HID_END,      0     , ' ' }  //  End
+    _ik_UP         ,     //{ HID_UP,       0     , ' ' }  //  Up
+    _ik_DOWN       ,     //{ HID_DOWN,     0     , ' ' }  //  Down
+    _ik_PGUP       ,     //{ HID_PAGE_UP,  0     , ' ' }  //  PgUp
+    _ik_PGDN       ,     //{ HID_PAGE_DOWN,0     , ' ' }  //  PgDn
+    _ik_RIGHT      ,     //{ HID_RIGHT,    0     , ' ' }  //  Right
+    _ik_NUMLOCK    ,     //{ HID_NUM_LOCK,NUMLOCK, ' ' }  //  NumLock
+    _ik_PRTSC      ,     //{ HID_PRINTSCREEN,0   , ' ' }  //  PrtSc
+    _ik_ESC        ,     //{ HID_ESC, 0,    ' ' }  //  Esc
+    _ik_F1         ,     //{ HID_F1,  0,    ' ' }  //  F1
+    _ik_F2         ,     //{ HID_F2,  0,    ' ' }  //  F2
+    _ik_F3         ,     //{ HID_F3,  0,    ' ' }  //  F3
+    _ik_F4         ,     //{ HID_F4,  0,    ' ' }  //  F4
+    _ik_F5         ,     //{ HID_F5,  0,    ' ' }  //  F5
+    _ik_F6         ,     //{ HID_F6,  0,    ' ' }  //  F6
+    _ik_F7         ,     //{ HID_F7,  0,    ' ' }  //  F7
+    _ik_F8         ,     //{ HID_F8,  0,    ' ' }  //  F8
+    _ik_F9         ,     //{ HID_F9,  0,    ' ' }  //  F9
+    _ik_F10        ,     //{ HID_F10, 0,    ' ' }  //  F10
+    _ik_F11        ,     //{ HID_F11, 0,    ' ' }  //  F11
+    _ik_F12        ,     //{ HID_F12, 0,    ' ' }  //  F12
+    _ik_SYSTEM_POWER      ,    //{ KB_SYSTEM_POWER,0         , ' ' }  //  PC Power
+    _ik_SYSTEM_SLEEP      ,    //{ KB_SYSTEM_SLEEP,0         , ' ' }
+    _ik_SYSTEM_WAKE       ,    //{ KB_SYSTEM_WAKE,0          , ' ' }
+    _ik_AUDIO_MUTE        ,    //{ KB_AUDIO_MUTE,0           , ' ' }
+    _ik_AUDIO_VOL_UP      ,    //{ KB_AUDIO_VOL_UP,0         , ' ' }
+    _ik_AUDIO_VOL_DOWN    ,    //{ KB_AUDIO_VOL_DOWN,0       , ' ' }
+    _ik_MEDIA_NEXT_TRACK  ,    //{ KB_MEDIA_NEXT_TRACK,0     , ' ' }
+    _ik_MEDIA_PREV_TRACK  ,    //{ KB_MEDIA_PREV_TRACK,0     , ' ' }
+    _ik_MEDIA_STOP        ,    //{ KB_MEDIA_STOP,0           , ' ' }
+    _ik_MEDIA_PLAY_PAUSE  ,    //{ KB_MEDIA_PLAY_PAUSE,0     , ' ' }
+    _ik_MEDIA_SELECT      ,    //{ KB_MEDIA_SELECT,0         , ' ' }
+    _ik_MAIL              ,    //{ KB_MAIL,0                 , ' ' }
+    _ik_CALCULATOR        ,    //{ KB_CALCULATOR,0           , ' ' }
+    _ik_MY_COMPUTER       ,    //{ KB_MY_COMPUTER,0          , ' ' }
+    _ik_WWW_SEARCH        ,    //{ KB_WWW_SEARCH,0           , ' ' }
+    _ik_WWW_HOME          ,    //{ KB_WWW_HOME,0             , ' ' }
+    _ik_WWW_BACK          ,    //{ KB_WWW_BACK,0             , ' ' }
+    _ik_WWW_FORWARD       ,    //{ KB_WWW_FORWARD,0          , ' ' }
+    _ik_WWW_STOP          ,    //{ KB_WWW_STOP,0             , ' ' }
+    _ik_WWW_REFRESH       ,    //{ KB_WWW_REFRESH,0          , ' ' }
+    _ik_WWW_FAVORITES     ,    //{ KB_WWW_FAVORITES,0        , ' ' }
+    _ik_UNDO         ,     //{ HID_Z,        L_GUI , 'Z' }
+    _ik_REDO         ,     //{ HID_Z,        L_GUI | L_SHF , 'Z' }
+    _ik_BSLASH       ,     //{ HID_GRAVE,        0,      '\\' }
+    _ik_PIPE         ,     //{ HID_GRAVE,        L_SHF , '|' }
+    _ik_GRAVE        ,     //{ HID_NON_US_2,     0,      '`' }
+    _ik_DEGUE        ,     //{ HID_NON_US_2,        L_SHF , 'Ç' }
+    _ik_POUND     ,     //{ HID_3,L_SHF           ,'£' }
+    _ik_SL_QUOTM  ,     //{ HID_3,L_SHF |L_ALT    ,'†' }
+    _ik_SR_QUOTM  ,     //{ HID_4,L_SHF |L_ALT    ,' ' }
+    _ik_AMPERSAND ,     //{ HID_7,         L_SHF , '&' }
+    _ik_ASTERIX   ,     //{ HID_8,         L_SHF , '*' }
+    _ik_AT        ,     //{ HID_2,         L_SHF , '@' }
+    _ik_CARET     ,     //{ HID_6,         L_SHF , '&' }
+    _ik_COLON     ,     //{ HID_SEMICOLON, L_SHF, ' ' }
+    _ik_DQUOTE    ,     //{ HID_QUOTE,     L_SHF , '"' }
+    _ik_EQUAL     ,     //{ HID_EQUAL,     0,      '=' }
+    _ik_GREATER   ,     //{ HID_PERIOD,    L_SHF , '>' }
+    _ik_HASH      ,     //{ HID_NON_US_1,    0   , '#' }
+    _ik_L_BRACE   ,     //{ HID_L_BRACKET, 0 ,     '[' }
+    _ik_L_BRACKET ,     //{ HID_L_BRACKET, L_SHF,  '{' }
+    _ik_LESS      ,     //{ HID_COMMA ,    L_SHF , '<' }
+    _ik_L_PAREN   ,     //{ HID_9,         L_SHF , '(' }
+    _ik_MINUS     ,     //{ HID_MINUS,     0,      '-' }
+    _ik_PLUS      ,     //{ HID_EQUAL,     L_SHF , '+' }
+    _ik_QUESTION  ,     //{ HID_SLASH,     L_SHF , '?' }
+    _ik_QUESTIONI ,     //{ HID_SLASH,L_ALT | L_SHF,'Ë'}
+    _ik_SQUOTE    ,     //{ HID_QUOTE,     0,      '\''}
+    _ik_R_BRACE   ,     //{ HID_R_BRACKET, 0 ,     ']' }
+    _ik_R_BRACKET ,     //{ HID_R_BRACKET, L_SHF,  '}' }
+    _ik_R_PAREN   ,     //{ HID_0,         L_SHF , ')' }
+    _ik_SCOLON    ,     //{ HID_SEMICOLON, 0,      ';' }
+    _ik_SLASH     ,     //{ HID_SLASH,     0,      '/' }
+    _ik_USCORE    ,     //{ HID_MINUS,     L_SHF , '_' }
+    _ik_y         ,     //{ HID_Y,         0,      'y' }
+    _ik_Y         ,     //{ HID_Y,         L_SHF , 'Y' }
+    _ik_z         ,     //{ HID_Z,         0,      'z' }
+    _ik_Z         ,     //{ HID_Z,         L_SHF , 'Z' }
+    _ik_DEGREE    , // _no
+    _ik_TILDE     ,     //{ HID_NON_US_1,   L_SHF , '~' }
+    _ik_SSHARP    , // _no
+    _ik_a_UML     , // _no
+    _ik_A_UML     , // _no
+    _ik_O_UML     , // _no
+    _ik_o_UML     , // _no
+    _ik_U_UML     , // _no
+    _ik_u_UML     ,// _no
+    _ik_NUMBERoF
+} InterimsKeycode;
+
 /// @todo .data usage: this adds 3*128 bytes and is needed only for macro and printf
-// needed for debug printf and macro replay
 static const uint8_t ascii2hid[128][3] = {
     _no , // ( nul)   0
     _no , // ( soh)   1
