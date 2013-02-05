@@ -21,84 +21,56 @@
 
 /** @file matrix.h
  *
- *  This is a description of the hardware setup used in the BlueCube.
- *  Uses Teensy-2.0 .
+ *  This is a description of the hardware setup used in the Maltron keyboard
+ *  Uses Teensy-2.0++ / at90usb1286
  *
  */
 
 #include "config.h"
 
 // this must be called once before matrix_scan.
-static inline uint8_t read_col(void)
+static inline uint16_t read_col(void)
 {
-    uint8_t res = PINF;
-
-    // flipped teensy 2.0: F 01  4567 for columns
-#ifdef BLUECUBE
-    return (( res & 0b11) | ((res & 0b11110000)>>2 ));
-#endif
-#ifdef HYPERNANO
-    return (
-               ((res & 0b00000001) << 5) |
-               ((res & 0b00000010) << 3) |
-               ((res & 0b00010000) >> 1) |
-               ((res & 0b00100000) >> 3) |
-               ((res & 0b01000000) >> 5) |
-               ((res & 0b10000000) >> 7)
-           );
-#endif
-
+    // 12 cols ordered left to right: PIND:0123457 and PINF:34567
+    uint16_t resLow=PIND & 0b10111111;
+    uint16_t resHigh=PINF;
+    uint16_t resHigh1=(resHigh & 0b11110000)<<4;
+    uint16_t resHigh0=(resHigh & 0b00001000)<<3;
+    uint16_t result = (resHigh1 | resHigh0 | resLow);
+    return result;
 }
 
 static inline void unselect_rows(void)
 {
-#ifdef BLUECUBE
-    DDRD  &= 0b00001011;
-    PORTD &= 0b00001011;
-    DDRB  &= 0b10001111;
-    PORTB &= 0b10001111;
-#endif
-#ifdef HYPERNANO
-    DDRD  &= 0b00000000;
-    PORTD &= 0b00000000;
-#endif
+    // B:76543210 in use
+    // set all row pins as inputs
+    DDRB  &= 0b00000000;
+    // drive all row pins low
+    PORTB &= 0b00000000;
 }
 
 
 static inline void activate(uint8_t row)
 {
     unselect_rows();
-
-#ifdef BLUECUBE
-    // swap upper and lower ports to have left half first in matrix
-    (row<4) ? (row+=4) : (row-=4);
-
-    // B6 B5 B4 D7
-    // D6 D4 D2 D5
-    switch(row) {
-        case 0: DDRB |= (1<<6); break;
-        case 1: DDRB |= (1<<5); break;
-        case 2: DDRB |= (1<<4); break;
-        case 3: DDRD |= (1<<7); break;
-        case 4: DDRD |= (1<<6); break;
-        case 5: DDRD |= (1<<4); break;
-        case 6: DDRD |= (1<<2); break;
-        case 7: DDRD |= (1<<5); break;
+    // B:76543210 in use
+    // set current row pin as output
+    if (row<8) {
+        DDRB |= (1<<row);
     }
-#endif
-#ifdef HYPERNANO
-    // Row 7 on pin 0
-    DDRD |= (1<<(7-row));
-#endif
+    return;
 }
 
 static inline void init_cols(void)
 {
-    // teensy 2.0: 2&3 unused, F 01  4567
-    /* Columns are inputs */
-    DDRF  &= ((1<<2) | (1<<3)); // 192 or upper 2 bits
+    // 12 cols ordered left to right: PIND:0123457 and PINF:34567
+    // set all column pins as inputs
+    DDRD  &= 0b00000000;
+    DDRF  &= 0b00000111;
     /* Enable pull-up resistors on inputs */
-    PORTF |= (0b11110011);
+    PORTD |= (0b11111111);
+    PORTF |= (0b11111000);
+    return;
 }
 
 #endif
