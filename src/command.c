@@ -179,6 +179,36 @@ void handleSubCmd(struct Key k) {
                     printf("%02x", str[i]);
             }
             break;
+        case SUB_LAYOUT:
+        {
+            // das nächste Layout auf die gedrückte Spalte setzen, also 12 verschiedene Layouts verfügbar
+            /*
+            Layout nextLayout = k.col < LAYOUTS ? k.col : eeprom_read_byte (&alternateLayoutNr);
+            eeprom_write_byte(&alternateLayoutNr, nextLayout);
+            PrintConfiguration();
+            */
+            printf("\nLAYOUTS not yet implemented");
+            setCommandMode(false);
+            break;
+        }
+        case SUB_GEOAREA:
+        {
+            // den geografischen Bereich auf die gedrückte Spalte setzen, DE, GB und US verfügbar
+            GeoArea nextAlternateGeoArea = k.col < 3 ? k.col : eeprom_read_byte (&alternateGeoArea);
+            eeprom_write_byte(&alternateGeoArea, nextAlternateGeoArea);
+            PrintConfiguration();
+            setCommandMode(false);
+            break;
+        }
+        case SUB_PC_MAC:
+        {
+            // die Hardware auf die gedrückte Spalte setzen, PC/Mac verfügbar
+            MacOrPC  nextAltMacOrPC = k.col < 2 ? k.col : eeprom_read_byte (&altMacOrPC);
+            eeprom_write_byte(&altMacOrPC, nextAltMacOrPC);
+            PrintConfiguration();
+            setCommandMode(false);
+            break;
+        }
         default:
             break;
     }
