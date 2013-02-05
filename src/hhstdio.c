@@ -22,6 +22,7 @@
 */
 
 #include "hhstdio.h"
+#include "keymap.h"
 
 static int hid_putc(char, FILE*);
 static FILE buf_stdout = FDEV_SETUP_STREAM(hid_putc, NULL, _FDEV_SETUP_WRITE);
@@ -43,13 +44,14 @@ stdio_init(void)
 void
 stdio_fill_report(char ch, USB_KeyboardReport_Data_t *report)
 {
-    /*
-        memcpy_P(report, &ascii_table[(uint8_t)ch], sizeof(USB_KeyboardReport_Data_t));
-        // set remaining 5 bytes to 0
-        memset(&report->KeyCode[1], 0, 5);
-    */
-    report->KeyCode[0]=ascii2hid[(uint8_t)ch][0];
-    report->Modifier  =ascii2hid[(uint8_t)ch][1];
+    // test: memcpy_P(report, &ascii_table[(uint8_t)ch], sizeof(USB_KeyboardReport_Data_t));
+    // report->KeyCode[0]=ascii2hid[(uint8_t)ch][0];
+    // report->Modifier  =ascii2hid[(uint8_t)ch][1];
+    InterimsKeycode ikc=ascii2hid[(uint8_t)ch];
+    keycode kc = getKeyStruct_Ic(ikc);
+    report->KeyCode[0]=USAGE_ID(kc.hid);
+    report->Modifier  =kc.mods;
+    // set remaining 5 bytes to 0
     memset(&report->KeyCode[1], 0, 5);
 }
 
