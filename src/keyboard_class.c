@@ -446,6 +446,7 @@ void init_active_keys()
         // (rowData[4] & (1<<5)) &&
         (rowData[6] & (1<<5)) ) {
         setCommandMode(true);
+        return;
     }
 
     // process row/column data to find the active keys
