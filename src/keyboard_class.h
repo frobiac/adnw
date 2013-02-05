@@ -44,6 +44,7 @@ uint8_t   getExtraReport(USB_ExtraReport_Data_t *report_data);
 void analogDataAcquire(void);
 
 struct sfrActiveKeys activeKeys;
+struct sfrActiveKeys secondUse_Prev_activeKeys;
 
 struct Key {
     uint8_t row;
