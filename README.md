@@ -25,11 +25,8 @@ You will need a recent version of the LUFA usb stack to compile this software.
 If you want scrollwheel support for the mouse, the included [patch](/frobiac/adnw/blob/master/LUFA-scrollwheel.patch) needs to be applied.
 From this root directory, execute
 
-    $ git clone https://github.com/abcminiuser/lufa-lib.git ../lufa-lib
-    $ ln -sf ../lufa-lib/trunk LUFA
-    $ cp LUFA-scrollwheel.patch LUFA
-    $ cd LUFA
-    $ patch -Np2 -i LUFA-scrollwheel.patch
+    $ git submodule init
+    $ git submodule update
 
 
 To build, please adjust controller type and build switches in makefile and call make from root directory.
