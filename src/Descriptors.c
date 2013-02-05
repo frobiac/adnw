@@ -277,6 +277,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .MaxPowerConsumption    = USB_CONFIG_POWER_MA(100)
     },
 
+    // Keyboard
     .HID_Interface =
     {
         .Header                 = {.Size = sizeof(USB_Descriptor_Interface_t), .Type = DTYPE_Interface},
@@ -313,6 +314,8 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .EndpointSize           = KEYBOARD_EPSIZE,
         .PollingIntervalMS      = 0x05
     },
+
+    // Debug-Interface
     .HIDDBG_Interface =
     {
         .Header                 = {.Size = sizeof(USB_Descriptor_Interface_t), .Type = DTYPE_Interface},
@@ -350,6 +353,8 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .PollingIntervalMS      = 0x05
     },
 
+
+    // Mouse
     .HID_MouseInterface =
     {
         .Header                 = {.Size = sizeof(USB_Descriptor_Interface_t), .Type = DTYPE_Interface},
