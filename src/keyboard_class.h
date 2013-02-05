@@ -33,6 +33,14 @@ void      init_active_keys(void);
 uint8_t   getKeyboardReport(USB_KeyboardReport_Data_t *report);
 
 
+typedef struct {
+    uint8_t  report_id;
+    uint16_t usage;
+} __attribute__ ((packed)) USB_ExtraReport_Data_t;
+
+uint8_t   getExtraReport(USB_ExtraReport_Data_t *report_data);
+
+
 void analogDataAcquire(void);
 
 struct sfrActiveKeys activeKeys;
