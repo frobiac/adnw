@@ -50,6 +50,15 @@ void setCommandMode(bool on) {
 bool commandMode(void) { return command; }
 void handleSubCmd(struct Key k);
 
+void PrintConfiguration() {
+    // G:GeoArea umschalten
+    printf("\nC:Config::\n");
+    printf("\nLayout:  %u (0=QWERTZ_DE, 1=KO.,Y, 2=Malt90, 3=QWERTY_GB)",
+           eeprom_read_byte(&alternateLayoutNr));
+    printf("\nGeoArea: %u (0=DE,        1=GB,    2=US)",
+           eeprom_read_byte(&alternateGeoArea));
+    printf("\nMac/PC:  %u (0=PC,        1=Mac)\n", eeprom_read_byte(&altMacOrPC));
+}
 
 void handleCommand(void) {
     if(!commandMode())

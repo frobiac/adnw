@@ -30,6 +30,7 @@
 
 #define PINKYDROP 0  ///<  drop pinky column by one for more ergonomic layout
 
+#define GEOGRAPHICAL_AREAS 3 // QWERTZ(de), QWERTY(gb), QWERTY(us)
 
 /** *********************************************************
  *    Matrix of physical keyboard to key mapping
@@ -47,6 +48,31 @@ typedef struct {
 } keycode;
 
 bool g_alternateLayer; ///< toggle using an alternate layout for layer 1
+
+// gespeichert im EEPROM. ca. 100.000 Schreibzugriffe.
+typedef enum
+{
+    QWERTZ_DE,
+    KOY,
+    Malt90,
+    QWERTY_GB
+} Layout;
+
+EEMEM extern Layout alternateLayoutNr; // der Wert des aktiven Layouts; wird persistent gespeichert
+typedef enum
+{
+    DE,
+    GB,
+    US
+} GeoArea;
+EEMEM extern GeoArea alternateGeoArea;  // der Wert des aktiven geografischen Bereichs; wird persistent gespeichert
+
+typedef enum
+{
+    PC,
+    Mac
+} MacOrPC;
+EEMEM extern MacOrPC altMacOrPC;  // der Wert des aktiven Rechnertyps; wird persistent gespeichert
 
 uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer);
 uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
