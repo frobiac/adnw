@@ -145,7 +145,7 @@
 #define HID_SYSRQ           0x9A
 
 
-enum {
+typedef enum {
     UNUSED=0,
     // mouse buttons;
     MS_BTN_1=0x10,
