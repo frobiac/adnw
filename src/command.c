@@ -24,7 +24,16 @@
 
 bool command=false;
 static uint8_t layer=0;
-enum { SUB_NONE=0, SUB_TP, SUB_READ }; ///< possible subcommands
+
+/// possible subcommands
+enum {
+    SUB_NONE=0,
+    SUB_TP,
+    SUB_READ,
+    SUB_LAYOUT,
+    SUB_GEOAREA,
+    SUB_PC_MAC
+};
 static uint8_t subcmd;           ///< currently active subcommand
 
 #define MAXLEN 20
