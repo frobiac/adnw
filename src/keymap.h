@@ -31,12 +31,15 @@
 
 
 typedef struct {
-    uint8_t  hid;   ///< HID usage code, will be interpreted by OS keyboard layout!
+    uint16_t  hid;   ///< HID usage code, will be interpreted by OS keyboard layout!
     uint8_t  mods;  ///< HID modifiers , will be interpreted by OS keyboard layout!
-    char     ch;
 } keycode;
 
-bool g_alternateLayer; ///< toggle using an alternate layout for layer 1
+
+typedef struct {
+    InterimsKeycode ikc; // internal usage code, used for layout definition
+    keycode kc[GEOGRAPHICAL_AREAS];
+} local_keycode;
 
 // gespeichert im EEPROM. ca. 100.000 Schreibzugriffe.
 typedef enum
@@ -64,8 +67,9 @@ typedef enum
 EEMEM extern MacOrPC altMacOrPC;  // der Wert des aktiven Rechnertyps; wird persistent gespeichert
 
 uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer);
-uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
+uint16_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 uint8_t getKeyChar (uint8_t row, uint8_t col, uint8_t layer);
+keycode getKeyStruct_Ic(InterimsKeycode ikc);
 void    printLayout(uint8_t l);
 
 #define _MACRO _no
@@ -174,6 +178,8 @@ static const uint8_t MouseUsage[ROWS][COLS] =
 );
 
 
+#ifdef OLD_STRUCTURES
+
 /**
  * MKT keycode if single key and mousekey location is stored in here.
  * In contrast to the keymatrix below, only actual HID-usage codes are used, as
@@ -241,6 +247,425 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
   )
 */
 }; // end of matrix[][][]
+#endif
     
+static const uint16_t secondaryModifierUsageMatrix[LAYOUTS][ROWS][COLS] = {
+    {   // LAYOUT 1: QWERTZ de
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { HID_TAB,   HID_SPACE, HID_BACKSPACE,0,     0,       /**/ HID_ENTER, HID_SPACE, HID_DELETE,0,         0,         0,         0 }, // nur 5 Tasten belegt pro Seite!!
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 }
+    },
+    {   // LAYOUT 2: KO.,Y de
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { HID_ESC,   0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { HID_TAB,   HID_SPACE, HID_BACKSPACE,0,     0,       /**/ HID_ENTER, HID_SPACE, HID_DELETE,0,         0,         0,         0 }, // nur 5 Tasten belegt pro Seite!!
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 }
+    },
+    {   // LAYOUT 3: Malt90 en
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { HID_E,HID_SPACE,HID_BACKSPACE,      0,     0,       /**/ HID_ENTER, HID_SPACE, HID_DELETE,0,         0,         0,         0 }, // nur 5 Tasten belegt pro Seite!!
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 }
+    },
+    {   // LAYOUT 4: QWERTY en
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 },
+        { HID_TAB,HID_SPACE,HID_BACKSPACE,    0,     0,       /**/ HID_ENTER, HID_SPACE, HID_DELETE,0,         0,         0,         0 }, // nur 5 Tasten belegt pro Seite!!
+        { 0,         0,         0,            0,     0,    0, /**/ 0,         0,         0,         0,         0,         0 }
+    }
+};
+
+
+// on BlueCube, the innermost thumb-buttons are on outermost columns in matrix!
+//         0  5
+// 2 3 4 5 1  4 0 1 2 3
+//
+#define _ik_MACRO _ik_no
+
+#define _ik_THUMB_ROW_LEFT_QWERTZ  _ik_L_CTRL,   _ik_L_SHIFT,            _ik_L_ALT,                \
+                                _ik_MOD_2/*FN*/, _ik_APP
+#define _ik_THUMB_ROW_RIGHT_QWERTZ _ik_R_CTRL,           _ik_R_SHIFT,    _ik_L_ALT,                 \
+                                _ik_ALTGR /*_R_ALT*/, _ik_R_GUI,                              _ik_no,            _ik_no
+#define _ik_THUMB_ROW_LEFT_NEO  _ik_MOD_1,   _ik_L_SHIFT,            _ik_MOD_2,                \
+                                _ik_MOD_2/*FN*/, _ik_APP
+#define _ik_THUMB_ROW_RIGHT_NEO _ik_MOD_1,           _ik_R_SHIFT,    _ik_MOD_2,                 \
+                                _ik_ALTGR /*_R_ALT*/, _ik_R_GUI,                              _ik_no,            _ik_no
+
+// #define _ik_THUMB_ROW_RIGHT _ik_L_SHIFT,      _ik_MOD_1,   _ik_R_ALT,  _ik_MOD_3,  _ik_MOD_2, _ik_MOD_3
+#define _ik_EXTRA_KEYS  _ik_MAIL, _ik_CALCULATOR, _ik_MY_COMPUTER, _ik_WWW_SEARCH,_ik_F5,_ik_F6,  /**/ _ik_MEDIA_PREV_TRACK,_ik_MEDIA_PLAY_PAUSE,_ik_MEDIA_NEXT_TRACK,_ik_AUDIO_VOL_DOWN,_ik_AUDIO_VOL_UP,_ik_MEDIA_SELECT
+// von unten nach oben
+#define _ik_MIDDLE_COLUMN  _ik_INS, _ik_SYSTEM_POWER, _ik_AUDIO_MUTE, _ik_no, _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no
+
+PROGMEM static const InterimsKeycode KeyMatrix[LAYOUTS][LAYERS][ROWS][COLS] = {
+    {   // LAYOUT 1: QWERTZ de
+        // normal layer
+        {
+            { _ik_F1,       _ik_F2,       _ik_F3,       _ik_F4,       _ik_F5,       _ik_F6,        /**/ _ik_F7,       _ik_F8,       _ik_F9,       _ik_F10,      _ik_F11,      _ik_F12    },
+            { _ik_CARET,    _ik_1,        _ik_2,        _ik_3,        _ik_4,        _ik_5,         /**/ _ik_6,        _ik_7,        _ik_8,        _ik_9,        _ik_0,        _ik_SSHARP },
+            { _ik_SQUOTE,   _ik_q,        _ik_w,        _ik_e,        _ik_r,        _ik_t,         /**/ _ik_z,        _ik_u,        _ik_i,        _ik_o,        _ik_p,        _ik_u_UML  },
+            { _ik_ESC,      _ik_a,        _ik_s,        _ik_d,        _ik_f,        _ik_g,         /**/ _ik_h,        _ik_j,        _ik_k,        _ik_l,        _ik_o_UML,    _ik_a_UML  },
+            { _ik_LESS,     _ik_y,        _ik_x,        _ik_c,        _ik_v,        _ik_b,         /**/ _ik_n,        _ik_m,        _ik_COMMA,    _ik_PERIOD,   _ik_MINUS,    _ik_PLUS   },
+            { _ik_L_CTRL,   _ik_L_SHIFT,  _ik_PRTSC,    _ik_PGDN,     _ik_PGUP,     _ik_no,        /**/ _ik_no,       _ik_LEFT,     _ik_RIGHT,    _ik_DOWN,     _ik_UP,       _ik_HASH   },
+            {                                           _ik_THUMB_ROW_LEFT_QWERTZ , /**/ _ik_THUMB_ROW_RIGHT_QWERTZ                                        },
+            {                                                            _ik_MIDDLE_COLUMN                                                              }
+        },
+        // dummy MOD3 layer
+        {
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    }
+        },
+        // FN called MOD4 layer -  (movement controls and numbers, media control, layout switch, power, applications)
+        {
+            {                                                                _ik_EXTRA_KEYS                                                              },
+            { _ik_CARET,    _ik_1,        _ik_2,        _ik_3,        _ik_4,        _ik_5,         /**/ _ik_POUND,     _ik_7,        _ik_TAB,      _ik_SLASH,    _ik_ASTERIX,  _ik_SSHARP },
+            { _ik_no,       _ik_PGUP,     _ik_BSPACE,   _ik_UP,       _ik_DEL ,     _ik_PGDN,      /**/ _ik_EXCLAMI,   _ik_7,        _ik_8,        _ik_9,        _ik_PLUS,     _ik_MINUS  },
+            { _ik_ESC,      _ik_HOME,     _ik_LEFT,     _ik_DOWN,     _ik_RIGHT,    _ik_END,       /**/ _ik_QUESTIONI, _ik_4,        _ik_5,        _ik_6,        _ik_COMMA,    _ik_PERIOD },
+            { _ik_no,       _ik_ESC,      _ik_TAB,      _ik_INS,      _ik_ENTER,    _ik_UNDO,      /**/ _ik_REDO,      _ik_1,        _ik_2,        _ik_3,        _ik_no,       _ik_no     },
+            { _ik_L_CTRL,   _ik_L_SHIFT,  _ik_PRTSC,    _ik_PGDN,     _ik_PGUP,     _ik_no,        /**/ _ik_no,        _ik_LEFT,     _ik_0,        _ik_DOWN,     _ik_UP,       _ik_HASH   },
+            {                                           _ik_THUMB_ROW_LEFT_QWERTZ , /**/ _ik_THUMB_ROW_RIGHT_QWERTZ                                         },
+            {                                                            _ik_MIDDLE_COLUMN                                                               }
+        }
+    },
+    {   // LAYOUT 2: KO.,Y de
+        // KO.,Y (meins)
+        {
+            { _ik_F1,       _ik_F2,       _ik_F3,       _ik_F4,       _ik_F5,       _ik_F6,        /**/ _ik_F7,       _ik_F8,       _ik_F9,       _ik_F10,      _ik_F11,      _ik_F12    },
+            { _ik_CARET,    _ik_1,        _ik_2,        _ik_3,        _ik_4,        _ik_5,         /**/ _ik_6,        _ik_7,        _ik_8,        _ik_9,        _ik_0,        _ik_MINUS  },
+            { _ik_TAB,      _ik_k,        _ik_o,        _ik_PERIOD,   _ik_COMMA,    _ik_y,         /**/ _ik_p,        _ik_c,        _ik_l,        _ik_m,        _ik_b,        _ik_x      },
+            { _ik_L_ALT,    _ik_h,        _ik_a,        _ik_e,        _ik_i,        _ik_u,         /**/ _ik_d,        _ik_t,        _ik_r,        _ik_n,        _ik_s,        _ik_SSHARP },
+            { _ik_L_CTRL,   _ik_z,        _ik_q,        _ik_a_UML,    _ik_u_UML,    _ik_o_UML,     /**/ _ik_j,        _ik_g,        _ik_w,        _ik_v,        _ik_f,        _ik_R_CTRL },
+            { _ik_GRAVE,    _ik_L_SHIFT,  _ik_PRTSC,    _ik_PGDN,     _ik_PGUP,     _ik_no,        /**/ _ik_no,       _ik_LEFT,     _ik_RIGHT,    _ik_DOWN,     _ik_UP,       _ik_DEGUE  },
+            {                                           _ik_THUMB_ROW_LEFT_NEO ,    /**/ _ik_THUMB_ROW_RIGHT_NEO                                           },
+            {                                                            _ik_MIDDLE_COLUMN                                                              }
+        },
+        //                                                                      //  BU-TECK
+        //        { _ik_ESC,      _ik_b,        _ik_u,        _ik_q,        _ik_PERIOD,   _ik_x,         /**/ _ik_p,        _ik_c,        _ik_l,        _ik_m,        _ik_f,        _ik_BSPACE },
+        //        { _ik_TAB,      _ik_h,        _ik_i,        _ik_e,        _ik_a,        _ik_o,         /**/ _ik_d,        _ik_t,        _ik_r,        _ik_n,        _ik_s,        _ik_ENTER  },
+        //        { _ik_DQUOTE,   _ik_k,        _ik_y,        _ik_MINUS,    _ik_COMMA,    _ik_SLASH,     /**/ _ik_j,        _ik_g,        _ik_w,        _ik_v,        _ik_z,        _ik_no  },
+        // MOD3 layer (special char)
+        {
+            { _ik_F1,       _ik_F2,       _ik_F3,       _ik_F4,       _ik_F5,       _ik_F6,        /**/ _ik_F7,       _ik_F8,       _ik_F9,       _ik_F10,      _ik_F11,      _ik_F12    },
+            { _ik_CARET,    _ik_1,        _ik_2,        _ik_3,        _ik_SR_QUOTM, _ik_SL_QUOTM,  /**/ _ik_6,        _ik_7,        _ik_8,        _ik_9,        _ik_0,         _ik_MINUS },
+            { _ik_no,       _ik_DOT3,      _ik_USCORE,  _ik_L_BRACKET, _ik_R_BRACKET,_ik_CARET,     /**/ _ik_EXCLAM,   _ik_LESS,     _ik_GREATER,  _ik_EQUAL,    _ik_AMPERSAND,_ik_no     },
+            { _ik_ESC,      _ik_BSLASH,   _ik_SLASH,    _ik_L_BRACE,  _ik_R_BRACE,  _ik_ASTERIX,   /**/ _ik_QUESTION, _ik_L_PAREN,  _ik_R_PAREN,  _ik_MINUS,    _ik_COLON,    _ik_AT     },
+            { _ik_no,       _ik_HASH,     _ik_DOLLAR,   _ik_PIPE,     _ik_TILDE,    _ik_GRAVE,     /**/ _ik_PLUS,     _ik_PERCENT,  _ik_DQUOTE,   _ik_SQUOTE,   _ik_SCOLON,   _ik_R_CTRL },
+            { _ik_L_CTRL,   _ik_L_SHIFT,  _ik_PRTSC,    _ik_PGDN,     _ik_PGUP,     _ik_no,        /**/ _ik_no,       _ik_LEFT,     _ik_RIGHT,    _ik_DOWN,     _ik_UP,       _ik_no     },
+            {                                           _ik_THUMB_ROW_LEFT_NEO ,    /**/ _ik_THUMB_ROW_RIGHT_NEO                                           },
+            {                                                            _ik_MIDDLE_COLUMN                                                              }
+        },
+        // MOD4 layer (movement controls and numbers)
+        {
+            {                                                                _ik_EXTRA_KEYS                                                             },
+            { _ik_CARET,    _ik_1,        _ik_2,        _ik_3,        _ik_4,        _ik_5,         /**/ _ik_POUND,    _ik_7,        _ik_TAB,      _ik_SLASH,    _ik_ASTERIX,  _ik_MINUS  },
+            { _ik_no,       _ik_PGUP,     _ik_BSPACE,   _ik_UP,       _ik_DEL ,     _ik_PGDN,      /**/ _ik_EXCLAMI,  _ik_7,        _ik_8,        _ik_9,        _ik_PLUS,     _ik_MINUS  },
+            { _ik_ESC,      _ik_HOME,     _ik_LEFT,     _ik_DOWN,     _ik_RIGHT,    _ik_END,       /**/ _ik_QUESTIONI,_ik_4,        _ik_5,        _ik_6,        _ik_COMMA,    _ik_PERIOD },
+            { _ik_no,       _ik_ESC,      _ik_TAB,      _ik_INS,      _ik_ENTER,    _ik_UNDO,      /**/ _ik_REDO,     _ik_1,        _ik_2,        _ik_3,        _ik_no,       _ik_no     },
+            { _ik_L_CTRL,   _ik_L_SHIFT,  _ik_PRTSC,    _ik_PGDN,     _ik_PGUP,     _ik_no,        /**/ _ik_no,       _ik_LEFT,     _ik_0,        _ik_DOWN,     _ik_UP,       _ik_HASH   },
+            {                                           _ik_THUMB_ROW_LEFT_NEO ,    /**/ _ik_THUMB_ROW_RIGHT_NEO                                           },
+            {                                                            _ik_MIDDLE_COLUMN                                                              }
+        }
+    },
+    {   // LAYOUT 3: Malt90en
+        // normal layer
+        {
+            { _ik_F1,       _ik_F2,       _ik_F3,       _ik_F4,       _ik_F5,       _ik_F6,        /**/ _ik_F7,       _ik_F8,       _ik_F9,       _ik_F10,      _ik_F11,      _ik_F12    },
+            { _ik_GRAVE,    _ik_1,        _ik_2,        _ik_3,        _ik_4,        _ik_5,         /**/ _ik_6,        _ik_7,        _ik_8,        _ik_9,        _ik_0,        _ik_ESC     },
+            { _ik_EQUAL,    _ik_q,        _ik_p,        _ik_y,        _ik_c,        _ik_b,         /**/ _ik_v,        _ik_m,        _ik_u,        _ik_z,        _ik_l,        _ik_L_BRACKET},
+            { _ik_TAB,      _ik_a,        _ik_n,        _ik_i,        _ik_s,        _ik_f,         /**/ _ik_d,        _ik_t,        _ik_h,        _ik_o,        _ik_r,        _ik_SQUOTE },
+            { _ik_BSLASH,   _ik_COMMA,    _ik_PERIOD,   _ik_j,        _ik_g,        _ik_SLASH,     /**/ _ik_SCOLON,   _ik_w,        _ik_k,        _ik_MINUS,    _ik_x,        _ik_R_BRACKET},
+            { _ik_L_CTRL,   _ik_L_SHIFT,  _ik_PRTSC,    _ik_PGDN,     _ik_PGUP,     _ik_no,        /**/ _ik_no,       _ik_LEFT,     _ik_RIGHT,    _ik_DOWN,     _ik_UP,       _ik_HASH   },
+            {                                           _ik_THUMB_ROW_LEFT_QWERTZ , /**/ _ik_THUMB_ROW_RIGHT_QWERTZ                                        },
+            {                                                            _ik_MIDDLE_COLUMN                                                              }
+        },
+        // dummy MOD3 layer
+        {
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    }
+        },
+        // FN called MOD4 layer -  (movement controls and numbers, media control, layout switch, power, applications)
+        {
+            {                                                                _ik_EXTRA_KEYS                                                              },
+            { _ik_CARET,    _ik_1,        _ik_2,        _ik_3,        _ik_4,        _ik_5,         /**/ _ik_POUND,     _ik_7,        _ik_TAB,      _ik_SLASH,    _ik_ASTERIX,  _ik_no     },
+            { _ik_no,       _ik_PGUP,     _ik_BSPACE,   _ik_UP,       _ik_DEL ,     _ik_PGDN,      /**/ _ik_EXCLAMI,   _ik_7,        _ik_8,        _ik_9,        _ik_PLUS,     _ik_MINUS  },
+            { _ik_TAB,      _ik_HOME,     _ik_LEFT,     _ik_DOWN,     _ik_RIGHT,    _ik_END,       /**/ _ik_QUESTIONI, _ik_4,        _ik_5,        _ik_6,        _ik_COMMA,    _ik_PERIOD },
+            { _ik_no,       _ik_ESC,      _ik_TAB,      _ik_INS,      _ik_ENTER,    _ik_UNDO,      /**/ _ik_REDO,      _ik_1,        _ik_2,        _ik_3,        _ik_no,       _ik_no     },
+            { _ik_L_CTRL,   _ik_L_SHIFT,  _ik_PRTSC,    _ik_PGDN,     _ik_PGUP,     _ik_no,        /**/ _ik_no,        _ik_LEFT,     _ik_0,        _ik_DOWN,     _ik_UP,       _ik_HASH   },
+            {                                           _ik_THUMB_ROW_LEFT_QWERTZ , /**/ _ik_THUMB_ROW_RIGHT_QWERTZ                                         },
+            {                                                            _ik_MIDDLE_COLUMN                                                               }
+        }
+    },
+    {   // LAYOUT 4: QWERTY en
+        // normal layer
+        {
+            { _ik_F1,       _ik_F2,       _ik_F3,       _ik_F4,       _ik_F5,       _ik_F6,        /**/ _ik_F7,       _ik_F8,       _ik_F9,       _ik_F10,      _ik_F11,      _ik_F12    },
+            { _ik_GRAVE,    _ik_1,        _ik_2,        _ik_3,        _ik_4,        _ik_5,         /**/ _ik_6,        _ik_7,        _ik_8,        _ik_9,        _ik_0,        _ik_MINUS  },
+            { _ik_EQUAL,    _ik_q,        _ik_w,        _ik_e,        _ik_r,        _ik_t,         /**/ _ik_y,        _ik_u,        _ik_i,        _ik_o,        _ik_p,        _ik_L_BRACKET},
+            { _ik_ESC,      _ik_a,        _ik_s,        _ik_d,        _ik_f,        _ik_g,         /**/ _ik_h,        _ik_j,        _ik_k,        _ik_l,        _ik_SCOLON,   _ik_SQUOTE },
+            { _ik_BSLASH,   _ik_z,        _ik_x,        _ik_c,        _ik_v,        _ik_b,         /**/ _ik_n,        _ik_m,        _ik_COMMA,    _ik_PERIOD,   _ik_SLASH,    _ik_R_BRACKET},
+            { _ik_L_CTRL,   _ik_L_SHIFT,  _ik_PRTSC,    _ik_PGDN,     _ik_PGUP,     _ik_no,        /**/ _ik_no,       _ik_LEFT,     _ik_RIGHT,    _ik_DOWN,     _ik_UP,       _ik_HASH   },
+            {                                           _ik_THUMB_ROW_LEFT_QWERTZ , /**/ _ik_THUMB_ROW_RIGHT_QWERTZ                                        },
+            {                                                            _ik_MIDDLE_COLUMN                                                              }
+        },
+        // dummy MOD3 layer
+        {
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    },
+            { _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,       _ik_no,        /**/ _ik_no,       _ik_no,       _ik_no,       _ik_no,      _ik_no,      _ik_no    }
+        },
+        // FN called MOD4 layer -  (movement controls and numbers, media control, layout switch, power, applications)
+        {
+            {                                                                _ik_EXTRA_KEYS                                                                },
+            { _ik_CARET,    _ik_1,        _ik_2,        _ik_3,        _ik_4,        _ik_5,         /**/ _ik_POUND,        _ik_7,       _ik_TAB,      _ik_SLASH,    _ik_ASTERIX,  _ik_no     },
+            { _ik_no,       _ik_PGUP,     _ik_BSPACE,   _ik_UP,       _ik_DEL ,     _ik_PGDN,      /**/ _ik_EXCLAMI,      _ik_7,       _ik_8,        _ik_9,        _ik_PLUS,     _ik_MINUS  },
+            { _ik_ESC,      _ik_HOME,     _ik_LEFT,     _ik_DOWN,     _ik_RIGHT,    _ik_END,       /**/ _ik_QUESTIONI,   _ik_4,        _ik_5,        _ik_6,        _ik_COMMA,    _ik_PERIOD },
+            { _ik_no,       _ik_ESC,      _ik_TAB,      _ik_INS,      _ik_ENTER,    _ik_UNDO,      /**/ _ik_REDO,        _ik_1,        _ik_2,        _ik_3,        _ik_no,       _ik_no     },
+            { _ik_L_CTRL,   _ik_L_SHIFT,  _ik_PRTSC,    _ik_PGDN,     _ik_PGUP,     _ik_no,        /**/ _ik_no,          _ik_LEFT,     _ik_0,        _ik_DOWN,     _ik_UP,       _ik_HASH   },
+            {                                           _ik_THUMB_ROW_LEFT_QWERTZ , /**/ _ik_THUMB_ROW_RIGHT_QWERTZ                                           },
+            {                                                            _ik_MIDDLE_COLUMN                                                                 }
+        }
+    }
+}; // end of layouts
+
+
+PROGMEM static const local_keycode localizedMacDifferences[] = {
+    // Index                  DE                          GB                          US
+    {_ik_UNDO              , {{HID_Y,        R_GUI      },{HID_Z,        L_GUI      },{HID_Z,        L_GUI      }}  },
+    {_ik_REDO              , {{HID_Y,    R_GUI | L_SHF  },{HID_Z,    L_GUI | L_SHF  },{HID_Z,    L_GUI | L_SHF  }}  },
+    {_ik_BSLASH            , {{0    , 0                 },{HID_NON_US_1,        0   },{HID_NON_US_1,     0      }}  },
+    {_ik_HASH              , {{0,                0      },{HID_3,       L_ALT       },{0,0                      }}  },
+    {_ik_PIPE              , {{HID_GRAVE,        ALTGR  },{HID_GRAVE,        L_SHF  },{HID_GRAVE,        L_SHF  }}  },
+    {_ik_DEGUE             , {{0    , 0                 },{HID_E,       L_ALT       },{HID_E,       L_ALT       }}  },
+    {_ik_GRAVE             , {{0    , 0                 },{HID_GRAVE,    L_ALT      },{HID_GRAVE,    L_ALT      }}  },
+    {_ik_GREATER           , {{HID_GRAVE,        L_SHF  },{0    , 0                 },{0    , 0                 }}  },
+    {_ik_LESS              , {{HID_GRAVE,        0      },{0    , 0                 },{0    , 0                 }}  },
+    {_ik_DEGREE            , {{HID_NON_US_2,     L_SHF  },{0    , 0                 },{0    , 0                 }}  },
+    {_ik_CARET             , {{HID_NON_US_2,     0      },{0    , 0                 },{0    , 0                 }}  },
+    {_ik_SYSTEM_POWER      , {{HID_MAC_POWER,    0      },{HID_MAC_POWER,    0      },{HID_MAC_POWER,    0      }}  }
+};
+#define MAC_DIFFS_COUNT sizeof(localizedMacDifferences)/sizeof(local_keycode)
+
+PROGMEM static const local_keycode localizationMatrix[_ik_NUMBERoF]   = {
+    // Index                  DE                          GB                          US
+    {_ik_no                , {{0    , 0                 },{0    , 0                 },{0    , 0                 }}  },
+    {_ik_1                 , {{HID_1, 0                 },{HID_1, 0                 },{HID_1, 0                 }}  },
+    {_ik_EXCLAM            , {{HID_1, L_SHF             },{HID_1, L_SHF             },{HID_1, L_SHF             }}  },
+    {_ik_EXCLAMI           , {{HID_1, ALTGR             },{HID_1, ALTGR             },{HID_1, ALTGR             }}  },
+    {_ik_2                 , {{HID_2, 0                 },{HID_2, 0                 },{HID_2, 0                 }}  },
+    {_ik_3                 , {{HID_3, 0                 },{HID_3, 0                 },{HID_3, 0                 }}  },
+    {_ik_4                 , {{HID_4, 0                 },{HID_4, 0                 },{HID_4, 0                 }}  },
+    {_ik_DOLLAR            , {{HID_4, L_SHF             },{HID_4, L_SHF             },{HID_4, L_SHF             }}  },
+    {_ik_5                 , {{HID_5, 0                 },{HID_5, 0                 },{HID_5, 0                 }}  },
+    {_ik_PERCENT           , {{HID_5, L_SHF             },{HID_5, L_SHF             },{HID_5, L_SHF             }}  },
+    {_ik_6                 , {{HID_6, 0                 },{HID_6, 0                 },{HID_6, 0                 }}  },
+    {_ik_7                 , {{HID_7, 0                 },{HID_7, 0                 },{HID_7, 0                 }}  },
+    {_ik_8                 , {{HID_8, 0                 },{HID_8, 0                 },{HID_8, 0                 }}  },
+    {_ik_9                 , {{HID_9, 0                 },{HID_9, 0                 },{HID_9, 0                 }}  },
+    {_ik_0                 , {{HID_0, 0                 },{HID_0, 0                 },{HID_0, 0                 }}  },
+    {_ik_q                 , {{HID_Q, 0                 },{HID_Q, 0                 },{HID_Q, 0                 }}  },
+    {_ik_Q                 , {{HID_Q, L_SHF             },{HID_Q, L_SHF             },{HID_Q, L_SHF             }}  },
+    {_ik_w                 , {{HID_W, 0                 },{HID_W, 0                 },{HID_W, 0                 }}  },
+    {_ik_W                 , {{HID_W, L_SHF             },{HID_W, L_SHF             },{HID_W, L_SHF             }}  },
+    {_ik_e                 , {{HID_E, 0                 },{HID_E, 0                 },{HID_E, 0                 }}  },
+    {_ik_E                 , {{HID_E, L_SHF             },{HID_E, L_SHF             },{HID_E, L_SHF             }}  },
+    {_ik_r                 , {{HID_R, 0                 },{HID_R, 0                 },{HID_R, 0                 }}  },
+    {_ik_R                 , {{HID_R, L_SHF             },{HID_R, L_SHF             },{HID_R, L_SHF             }}  },
+    {_ik_t                 , {{HID_T, 0                 },{HID_T, 0                 },{HID_T, 0                 }}  },
+    {_ik_T                 , {{HID_T, L_SHF             },{HID_T, L_SHF             },{HID_T, L_SHF             }}  },
+    {_ik_u                 , {{HID_U, 0                 },{HID_U, 0                 },{HID_U, 0                 }}  },
+    {_ik_U                 , {{HID_U, L_SHF             },{HID_U, L_SHF             },{HID_U, L_SHF             }}  },
+    {_ik_i                 , {{HID_I, 0                 },{HID_I, 0                 },{HID_I, 0                 }}  },
+    {_ik_I                 , {{HID_I, L_SHF             },{HID_I, L_SHF             },{HID_I, L_SHF             }}  },
+    {_ik_o                 , {{HID_O, 0                 },{HID_O, 0                 },{HID_O, 0                 }}  },
+    {_ik_O                 , {{HID_O, L_SHF             },{HID_O, L_SHF             },{HID_O, L_SHF             }}  },
+    {_ik_p                 , {{HID_P, 0                 },{HID_P, 0                 },{HID_P, 0                 }}  },
+    {_ik_P                 , {{HID_P, L_SHF             },{HID_P, L_SHF             },{HID_P, L_SHF             }}  },
+    {_ik_a                 , {{HID_A, 0                 },{HID_A, 0                 },{HID_A, 0                 }}  },
+    {_ik_A                 , {{HID_A, L_SHF             },{HID_A, L_SHF             },{HID_A, L_SHF             }}  },
+    {_ik_s                 , {{HID_S, 0                 },{HID_S, 0                 },{HID_S, 0                 }}  },
+    {_ik_S                 , {{HID_S, L_SHF             },{HID_S, L_SHF             },{HID_S, L_SHF             }}  },
+    {_ik_d                 , {{HID_D, 0                 },{HID_D, 0                 },{HID_D, 0                 }}  },
+    {_ik_D                 , {{HID_D, L_SHF             },{HID_D, L_SHF             },{HID_D, L_SHF             }}  },
+    {_ik_f                 , {{HID_F, 0                 },{HID_F, 0                 },{HID_F, 0                 }}  },
+    {_ik_F                 , {{HID_F, L_SHF             },{HID_F, L_SHF             },{HID_F, L_SHF             }}  },
+    {_ik_g                 , {{HID_G, 0                 },{HID_G, 0                 },{HID_G, 0                 }}  },
+    {_ik_G                 , {{HID_G, L_SHF             },{HID_G, L_SHF             },{HID_G, L_SHF             }}  },
+    {_ik_h                 , {{HID_H, 0                 },{HID_H, 0                 },{HID_H, 0                 }}  },
+    {_ik_H                 , {{HID_H, L_SHF             },{HID_H, L_SHF             },{HID_H, L_SHF             }}  },
+    {_ik_j                 , {{HID_J, 0                 },{HID_J, 0                 },{HID_J, 0                 }}  },
+    {_ik_J                 , {{HID_J, L_SHF             },{HID_J, L_SHF             },{HID_J, L_SHF             }}  },
+    {_ik_k                 , {{HID_K, 0                 },{HID_K, 0                 },{HID_K, 0                 }}  },
+    {_ik_K                 , {{HID_K, L_SHF             },{HID_K, L_SHF             },{HID_K, L_SHF             }}  },
+    {_ik_l                 , {{HID_L, 0                 },{HID_L, 0                 },{HID_L, 0                 }}  },
+    {_ik_L                 , {{HID_L, L_SHF             },{HID_L, L_SHF             },{HID_L, L_SHF             }}  },
+    {_ik_x                 , {{HID_X, 0                 },{HID_X, 0                 },{HID_X, 0                 }}  },
+    {_ik_X                 , {{HID_X, L_SHF             },{HID_X, L_SHF             },{HID_X, L_SHF             }}  },
+    {_ik_c                 , {{HID_C, 0                 },{HID_C, 0                 },{HID_C, 0                 }}  },
+    {_ik_C                 , {{HID_C, L_SHF             },{HID_C, L_SHF             },{HID_C, L_SHF             }}  },
+    {_ik_v                 , {{HID_V, 0                 },{HID_V, 0                 },{HID_V, 0                 }}  },
+    {_ik_V                 , {{HID_V, L_SHF             },{HID_V, L_SHF             },{HID_V, L_SHF             }}  },
+    {_ik_b                 , {{HID_B, 0                 },{HID_B, 0                 },{HID_B, 0                 }}  },
+    {_ik_B                 , {{HID_B, L_SHF             },{HID_B, L_SHF             },{HID_B, L_SHF             }}  },
+    {_ik_n                 , {{HID_N, 0                 },{HID_N, 0                 },{HID_N, 0                 }}  },
+    {_ik_N                 , {{HID_N, L_SHF             },{HID_N, L_SHF             },{HID_N, L_SHF             }}  },
+    {_ik_m                 , {{HID_M, 0                 },{HID_M, 0                 },{HID_M, 0                 }}  },
+    {_ik_M                 , {{HID_M, L_SHF             },{HID_M, L_SHF             },{HID_M, L_SHF             }}  },
+    {_ik_CAPS              , {{HID_CAPS_LOCK,0          },{HID_CAPS_LOCK,0          },{HID_CAPS_LOCK,0          }}  },
+    {_ik_APP               , {{HID_APPLICATION, 0       },{HID_APPLICATION, 0       },{HID_APPLICATION, 0       }}  },
+    {_ik_BSPACE            , {{HID_BACKSPACE,0          },{HID_BACKSPACE,0          },{HID_BACKSPACE,0          }}  },
+    {_ik_TAB               , {{HID_TAB,      0          },{HID_TAB,      0          },{HID_TAB,      0          }}  },
+    {_ik_noN_US_1          , {{HID_NON_US_1, 0          },{HID_NON_US_1, 0          },{HID_NON_US_1, 0          }}  },
+    {_ik_noN_US_2          , {{HID_NON_US_2, 0          },{HID_NON_US_2, 0          },{HID_NON_US_2, 0          }}  },
+    {_ik_ENTER             , {{HID_ENTER,    0          },{HID_ENTER,    0          },{HID_ENTER,    0          }}  },
+    {_ik_COMMA             , {{HID_COMMA,    0          },{HID_COMMA,    0          },{HID_COMMA,    0          }}  },
+    {_ik_PERIOD            , {{HID_PERIOD,   0          },{HID_PERIOD,   0          },{HID_PERIOD,   0          }}  },
+    {_ik_DOT3              , {{HID_PERIOD,   ALTGR      },{HID_PERIOD,   ALTGR      },{HID_PERIOD,   ALTGR      }}  },
+    {_ik_SPACE             , {{HID_SPACE,    0          },{HID_SPACE,    0          },{HID_SPACE,    0          }}  },
+    {_ik_L_SHIFT           , {{HID_L_SHIFT,  MOD_L_SHIFT},{HID_L_SHIFT,  MOD_L_SHIFT},{HID_L_SHIFT,  MOD_L_SHIFT}}  },
+    {_ik_R_SHIFT           , {{HID_R_SHIFT,  MOD_R_SHIFT},{HID_R_SHIFT,  MOD_R_SHIFT},{HID_R_SHIFT,  MOD_R_SHIFT}}  },
+    {_ik_L_CTRL            , {{HID_L_CONTROL,MOD_L_CTRL },{HID_L_CONTROL,MOD_L_CTRL },{HID_L_CONTROL,MOD_L_CTRL }}  },
+    {_ik_R_CTRL            , {{HID_R_CONTROL,MOD_R_CTRL },{HID_R_CONTROL,MOD_R_CTRL },{HID_R_CONTROL,MOD_R_CTRL }}  },
+    {_ik_L_ALT             , {{HID_L_ALT,    MOD_L_ALT  },{HID_L_ALT,    MOD_L_ALT  },{HID_L_ALT,    MOD_L_ALT  }}  },
+    {_ik_R_ALT/*_ik_ALTGR*/, {{HID_R_ALT,    MOD_R_ALT  },{HID_R_ALT,    MOD_R_ALT  },{HID_R_ALT,    MOD_R_ALT  }}  },
+    {_ik_L_GUI             , {{HID_L_GUI,    MOD_L_GUI  },{HID_L_GUI,    MOD_L_GUI  },{HID_L_GUI,    MOD_L_GUI  }}  },
+    {_ik_R_GUI             , {{HID_R_GUI,    MOD_R_GUI  },{HID_R_GUI,    MOD_R_GUI  },{HID_R_GUI,    MOD_R_GUI  }}  },
+    {_ik_MOD_0             , {{HID_NO_KEY,   MOD_LAYER_0},{HID_NO_KEY,   MOD_LAYER_0},{HID_NO_KEY,   MOD_LAYER_0}}  },
+    {_ik_MOD_1             , {{HID_NO_KEY,   MOD_LAYER_1},{HID_NO_KEY,   MOD_LAYER_1},{HID_NO_KEY,   MOD_LAYER_1}}  },
+    {_ik_MOD_2             , {{HID_NO_KEY,   MOD_LAYER_2},{HID_NO_KEY,   MOD_LAYER_2},{HID_NO_KEY,   MOD_LAYER_2}}  },
+    {_ik_MOD_3             , {{HID_NO_KEY,   MOD_LAYER_3},{HID_NO_KEY,   MOD_LAYER_3},{HID_NO_KEY,   MOD_LAYER_3}}  },
+    {_ik_MOUSE             , {{HID_NO_KEY,   MOD_MOUSE  },{HID_NO_KEY,   MOD_MOUSE  },{HID_NO_KEY,   MOD_MOUSE  }}  },
+    {_ik_COMPOSE           , {{HID_NO_KEY,   MOD_COMPOSE},{HID_NO_KEY,   MOD_COMPOSE},{HID_NO_KEY,   MOD_COMPOSE}}  },
+    {_ik_MS_SCROLL         , {{ MS_SCROLL,   0,         },{ MS_SCROLL,   0,         },{ MS_SCROLL,   0,         }}  },
+    {_ik_MS_BTN_1          , {{ MS_BTN_1,    0,         },{ MS_BTN_1,    0,         },{ MS_BTN_1,    0,         }}  },
+    {_ik_MS_BTN_2          , {{ MS_BTN_2,    0,         },{ MS_BTN_2,    0,         },{ MS_BTN_2,    0,         }}  },
+    {_ik_MS_BTN_3          , {{ MS_BTN_3,    0,         },{ MS_BTN_3,    0,         },{ MS_BTN_3,    0,         }}  },
+    {_ik_INS               , {{HID_INSERT,   0          },{HID_INSERT,   0          },{HID_INSERT,   0          }}  },
+    {_ik_DEL               , {{HID_DELETE,   0          },{HID_DELETE,   0          },{HID_DELETE,   0          }}  },
+    {_ik_LEFT              , {{HID_LEFT,     0          },{HID_LEFT,     0          },{HID_LEFT,     0          }}  },
+    {_ik_HOME              , {{HID_HOME,     0          },{HID_HOME,     0          },{HID_HOME,     0          }}  },
+    {_ik_END               , {{HID_END,      0          },{HID_END,      0          },{HID_END,      0          }}  },
+    {_ik_UP                , {{HID_UP,       0          },{HID_UP,       0          },{HID_UP,       0          }}  },
+    {_ik_DOWN              , {{HID_DOWN,     0          },{HID_DOWN,     0          },{HID_DOWN,     0          }}  },
+    {_ik_PGUP              , {{HID_PAGE_UP,  0          },{HID_PAGE_UP,  0          },{HID_PAGE_UP,  0          }}  },
+    {_ik_PGDN              , {{HID_PAGE_DOWN,0          },{HID_PAGE_DOWN,0          },{HID_PAGE_DOWN,0          }}  },
+    {_ik_RIGHT             , {{HID_RIGHT,    0          },{HID_RIGHT,    0          },{HID_RIGHT,    0          }}  },
+    {_ik_NUMLOCK           , {{HID_NUM_LOCK,0           },{HID_NUM_LOCK,0           },{HID_NUM_LOCK,0           }}  },
+    {_ik_PRTSC             , {{HID_PRINTSCREEN,0        },{HID_PRINTSCREEN,0        },{HID_PRINTSCREEN,0        }}  },
+    {_ik_ESC               , {{HID_ESC, 0               },{HID_ESC, 0               },{HID_ESC, 0               }}  },
+    {_ik_F1                , {{HID_F1,  0               },{HID_F1,  0               },{HID_F1,  0               }}  },
+    {_ik_F2                , {{HID_F2,  0               },{HID_F2,  0               },{HID_F2,  0               }}  },
+    {_ik_F3                , {{HID_F3,  0               },{HID_F3,  0               },{HID_F3,  0               }}  },
+    {_ik_F4                , {{HID_F4,  0               },{HID_F4,  0               },{HID_F4,  0               }}  },
+    {_ik_F5                , {{HID_F5,  0               },{HID_F5,  0               },{HID_F5,  0               }}  },
+    {_ik_F6                , {{HID_F6,  0               },{HID_F6,  0               },{HID_F6,  0               }}  },
+    {_ik_F7                , {{HID_F7,  0               },{HID_F7,  0               },{HID_F7,  0               }}  },
+    {_ik_F8                , {{HID_F8,  0               },{HID_F8,  0               },{HID_F8,  0               }}  },
+    {_ik_F9                , {{HID_F9,  0               },{HID_F9,  0               },{HID_F9,  0               }}  },
+    {_ik_F10               , {{HID_F10, 0               },{HID_F10, 0               },{HID_F10, 0               }}  },
+    {_ik_F11               , {{HID_F11, 0               },{HID_F11, 0               },{HID_F11, 0               }}  },
+    {_ik_F12               , {{HID_F12, 0               },{HID_F12, 0               },{HID_F12, 0               }}  },
+    {_ik_SYSTEM_POWER      , {{HID_SYSTEM_POWER_DOWN,0        },{HID_SYSTEM_POWER_DOWN,0        },{HID_SYSTEM_POWER_DOWN,0        }}  },
+    {_ik_SYSTEM_SLEEP      , {{HID_SYSTEM_SLEEP,0        },{HID_SYSTEM_SLEEP,0        },{HID_SYSTEM_SLEEP,0        }}  },
+    {_ik_SYSTEM_WAKE       , {{HID_SYSTEM_WAKE_UP,0         },{HID_SYSTEM_WAKE_UP,0         },{HID_SYSTEM_WAKE_UP,0         }}  },
+    {_ik_AUDIO_MUTE        , {{HID_AUDIO_MUTE,0          },{HID_AUDIO_MUTE,0          },{HID_AUDIO_MUTE,0          }}  },
+    {_ik_AUDIO_VOL_UP      , {{HID_AUDIO_VOL_UP,0        },{HID_AUDIO_VOL_UP,0        },{HID_AUDIO_VOL_UP,0        }}  },
+    {_ik_AUDIO_VOL_DOWN    , {{HID_AUDIO_VOL_DOWN,0      },{HID_AUDIO_VOL_DOWN,0      },{HID_AUDIO_VOL_DOWN,0      }}  },
+    {_ik_MEDIA_NEXT_TRACK  , {{HID_TRANSPORT_NEXT_TRACK,0    },{HID_TRANSPORT_NEXT_TRACK,0    },{HID_TRANSPORT_NEXT_TRACK,0    }}  },
+    {_ik_MEDIA_PREV_TRACK  , {{HID_TRANSPORT_PREV_TRACK,0    },{HID_TRANSPORT_PREV_TRACK,0    },{HID_TRANSPORT_PREV_TRACK,0    }}  },
+    {_ik_MEDIA_STOP        , {{HID_TRANSPORT_STOP,0          },{HID_TRANSPORT_STOP,0          },{HID_TRANSPORT_STOP,0          }}  },
+    {_ik_MEDIA_PLAY_PAUSE  , {{HID_TRANSPORT_PLAY_PAUSE,0    },{HID_TRANSPORT_PLAY_PAUSE,0    },{HID_TRANSPORT_PLAY_PAUSE,0    }}  },
+    {_ik_MEDIA_SELECT      , {{HID_AL_CC_CONFIG,0        },{HID_AL_CC_CONFIG,0        },{HID_AL_CC_CONFIG,0        }}  },
+    {_ik_MAIL              , {{HID_AL_EMAIL,0                },{HID_AL_EMAIL,0                },{HID_AL_EMAIL,0                }}  },
+    {_ik_CALCULATOR        , {{HID_AL_CALCULATOR,0          },{HID_AL_CALCULATOR,0          },{HID_AL_CALCULATOR,0          }}  },
+    {_ik_MY_COMPUTER       , {{HID_AL_LOCAL_BROWSER,0         },{HID_AL_LOCAL_BROWSER,0         },{HID_AL_LOCAL_BROWSER,0         }}  },
+    {_ik_WWW_SEARCH        , {{HID_AC_SEARCH,0          },{HID_AC_SEARCH,0          },{HID_AC_SEARCH,0          }}  },
+    {_ik_WWW_HOME          , {{HID_AC_HOME,0            },{HID_AC_HOME,0            },{HID_AC_HOME,0            }}  },
+    {_ik_WWW_BACK          , {{HID_AC_BACK,0            },{HID_AC_BACK,0            },{HID_AC_BACK,0            }}  },
+    {_ik_WWW_FORWARD       , {{HID_AC_FORWARD,0         },{HID_AC_FORWARD,0         },{HID_AC_FORWARD,0         }}  },
+    {_ik_WWW_STOP          , {{HID_AC_STOP,0            },{HID_AC_STOP,0            },{HID_AC_STOP,0            }}  },
+    {_ik_WWW_REFRESH       , {{HID_AC_REFRESH,0         },{HID_AC_REFRESH,0         },{HID_AC_REFRESH,0         }}  },
+    {_ik_WWW_FAVORITES     , {{HID_AC_BOOKMARKS,0       },{HID_AC_BOOKMARKS,0       },{HID_AC_BOOKMARKS,0       }}  },
+    {_ik_UNDO              , {{HID_Y,        R_CTL      },{HID_Z,        R_CTL      },{HID_Z,        R_CTL      }}  },
+    {_ik_REDO              , {{HID_Z,        R_CTL      },{HID_Y,    R_CTL          },{HID_Y,    R_CTL          }}  },
+    {_ik_BSLASH            , {{HID_MINUS,        ALTGR  },{HID_NON_US_2,        0   },{HID_BSLASH,    0         }}  },
+    {_ik_PIPE              , {{HID_NON_US_2,     ALTGR  },{HID_NON_US_2,     L_SHF  },{HID_BSLASH,       L_SHF  }}  },
+    {_ik_GRAVE             , {{HID_EQUAL,        L_SHF  },{HID_GRAVE,        0      },{HID_GRAVE,    0          }}  },
+    {_ik_DEGUE             , {{HID_EQUAL,               },{HID_GRAVE,        L_SHF  },{HID_NON_US_2,     L_SHF  }}  },
+    {_ik_POUND             , {{HID_4,L_SHF |L_ALT       },{HID_3,L_SHF              },{HID_3,L_SHF              }}  },
+    {_ik_SL_QUOTM          , {{HID_B,L_SHF |L_ALT |L_GUI},{HID_3,L_SHF |L_ALT       },{HID_3,L_SHF |L_ALT       }}  },
+    {_ik_SR_QUOTM          , {{HID_N,L_SHF |L_ALT |L_GUI},{HID_4,L_SHF |L_ALT       },{HID_4,L_SHF |L_ALT       }}  },
+    {_ik_AMPERSAND         , {{HID_6,            L_SHF  },{HID_7,         L_SHF     },{HID_7,         L_SHF     }}  },
+    {_ik_ASTERIX           , {{HID_R_BRACKET,    L_SHF  },{HID_8,         L_SHF     },{HID_8,         L_SHF     }}  },
+    {_ik_AT                , {{HID_Q,            ALTGR  },{HID_2,         L_SHF     },{HID_2,         L_SHF     }}  },
+    {_ik_CARET             , {{HID_GRAVE,        0      },{HID_6,         L_SHF     },{HID_6,         L_SHF     }}  },
+    {_ik_COLON             , {{HID_PERIOD,       L_SHF  },{HID_SEMICOLON, L_SHF     },{HID_SEMICOLON, L_SHF     }}  },
+    {_ik_DQUOTE            , {{HID_2,            L_SHF  },{HID_QUOTE,     L_SHF     },{HID_QUOTE,     L_SHF     }}  },
+    {_ik_EQUAL             , {{HID_0,            L_SHF  },{HID_EQUAL,     0,        },{HID_EQUAL,     0,        }}  },
+    {_ik_GREATER           , {{HID_NON_US_2,     L_SHF  },{HID_PERIOD,    L_SHF     },{HID_PERIOD,    L_SHF     }}  },
+    {_ik_HASH              , {{HID_BSLASH,       0      },{HID_NON_US_1,    0       },{HID_3,    L_SHF          }}  },
+    {_ik_L_BRACE           , {{HID_7,            ALTGR  },{HID_L_BRACKET, L_SHF     },{HID_L_BRACKET, L_SHF     }}  },
+    {_ik_L_BRACKET         , {{HID_8,            ALTGR  },{HID_L_BRACKET, 0         },{HID_L_BRACKET, 0         }}  },
+    {_ik_LESS              , {{HID_NON_US_2,     0      },{HID_COMMA ,    L_SHF     },{HID_COMMA ,    L_SHF     }}  },
+    {_ik_L_PAREN           , {{HID_8,            L_SHF  },{HID_9,         L_SHF     },{HID_9,         L_SHF     }}  },
+    {_ik_MINUS             , {{HID_SLASH,        0      },{HID_MINUS,     0         },{HID_MINUS,     0         }}  },
+    {_ik_PLUS              , {{HID_R_BRACKET,    0      },{HID_EQUAL,     L_SHF     },{HID_EQUAL,     L_SHF     }}  },
+    {_ik_QUESTION          , {{HID_MINUS,        L_SHF  },{HID_SLASH,     L_SHF     },{HID_SLASH,     L_SHF     }}  },
+    {_ik_QUESTIONI         , {{HID_MINUS, L_ALT | L_CTL },{HID_SLASH,L_ALT | L_SHF  },{HID_SLASH,L_ALT | L_SHF  }}  },
+    {_ik_SQUOTE            , {{HID_NON_US_1,     L_SHF  },{HID_QUOTE,     0         },{HID_QUOTE,     0         }}  },
+    {_ik_R_BRACE           , {{HID_0,            ALTGR  },{HID_R_BRACKET, L_SHF     },{HID_R_BRACKET, L_SHF     }}  },
+    {_ik_R_BRACKET         , {{HID_9,            ALTGR  },{HID_R_BRACKET, 0         },{HID_R_BRACKET, 0         }}  },
+    {_ik_R_PAREN           , {{HID_9,            L_SHF  },{HID_0,         L_SHF     },{HID_0,         L_SHF     }}  },
+    {_ik_SCOLON            , {{HID_COMMA,        L_SHF  },{HID_SEMICOLON, 0         },{HID_SEMICOLON, 0         }}  },
+    {_ik_SLASH             , {{HID_7,            L_SHF  },{HID_SLASH,     0,        },{HID_SLASH,     0,        }}  },
+    {_ik_USCORE            , {{HID_SLASH,        L_SHF  },{HID_MINUS,     L_SHF     },{HID_MINUS,     L_SHF     }}  },
+    {_ik_y                 , {{HID_Z,         0         },{HID_Y,         0         },{HID_Y,         0         }}  },
+    {_ik_Y                 , {{HID_Z,         L_SHF     },{HID_Y,         L_SHF     },{HID_Y,         L_SHF     }}  },
+    {_ik_z                 , {{HID_Y,         0         },{HID_Z,         0         },{HID_Z,         0         }}  },
+    {_ik_Z                 , {{HID_Y,         L_SHF     },{HID_Z,         L_SHF     },{HID_Z,         L_SHF     }}  },
+    {_ik_DEGREE            , {{HID_GRAVE,        L_SHF  },{0    , 0                 },{0    , 0                 }}  },
+    {_ik_TILDE             , {{HID_R_BRACKET,    ALTGR  },{HID_NON_US_1,   L_SHF    },{HID_GRAVE,   L_SHF       }}  },
+    {_ik_SSHARP            , {{HID_MINUS,        0      },{0    , 0                 },{0    , 0                 }}  },
+    {_ik_a_UML             , {{HID_QUOTE,        0      },{0    , 0                 },{0    , 0                 }}  },
+    {_ik_A_UML             , {{HID_QUOTE,        L_SHF  },{0    , 0                 },{0    , 0                 }}  },
+    {_ik_O_UML             , {{HID_SEMICOLON,    L_SHF  },{0    , 0                 },{0    , 0                 }}  },
+    {_ik_o_UML             , {{HID_SEMICOLON,    0      },{0    , 0                 },{0    , 0                 }}  },
+    {_ik_U_UML             , {{HID_L_BRACKET,    L_SHF  },{0    , 0                 },{0    , 0                 }}  },
+    {_ik_u_UML             , {{HID_L_BRACKET,    0      },{0    , 0                 },{0    , 0                 }}  }
+};
+
+
 #endif
 

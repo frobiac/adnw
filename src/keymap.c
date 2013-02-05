@@ -32,16 +32,31 @@ uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer)
     return getKeyStruct(row, col, layer).mods;
 }
 
-uint8_t getKeyCode(uint8_t row, uint8_t col, uint8_t layer)
+uint16_t getKeyCode(uint8_t row, uint8_t col, uint8_t layer)
 {
     return getKeyStruct(row, col, layer).hid;
 }
 
 uint8_t getKeyChar(uint8_t row, uint8_t col, uint8_t layer)
 {
-    uint8_t ch = getKeyStruct(row, col, layer).ch;
-    if(/*ch > 127 ||*/ ch < 33)
-        return ' '; // '_' (uint8_t)('a');
+    uint8_t ch = 'S'; // 'S'pecial
+    InterimsKeycode ikc; // Wert aus Key-Matrix des jeweils ausgewŠhlten Layouts
+    Layout current_layout = eeprom_read_byte (&alternateLayoutNr);
+
+    // now map IntermediateKeycode to ASCII code.
+    memcpy_P(&ikc,&KeyMatrix[current_layout][layer][row][col],sizeof(ikc));
+    if (ikc == _ik_no) {
+        ch = ' ';
+    }
+    // ikc in Tabelle ascii2hid[] suchen
+    else {
+        for (uint8_t i=33; i<127; i++) {
+            if (ascii2hid[i] == ikc) {
+                ch = i;
+                break;
+            }
+        }
+    }
     return ch;
 }
 
@@ -51,37 +66,61 @@ EEMEM GeoArea  alternateGeoArea  = DE;
 
 keycode getKeyStruct(uint8_t row, uint8_t col, uint8_t layer)
 {
-    if( g_alternateLayer && layer==0)
-        layer=5;
-    keycode kc;
-
-    if(PINKYDROP) {
-        if( (row<4 && row > 0 && col==1) || (row > 4 && col == 4))
-            memcpy_P(&kc, &KeyMatrix[layer][row-1][col], sizeof(kc));
-    } else {
-        memcpy_P(&kc, &KeyMatrix[layer][row][col], sizeof(kc));
-    }
-
-    //printf("\n%d %d %d=%c", kc.hid, kc.mods, kc.ch, kc.ch);
+    InterimsKeycode ikc; // Wert aus Key-Matrix des jeweils ausgewŠhlten Layouts
+    keycode kc;          // tatsŠchlichen auszugebenden Keycode
+    Layout current_layout = eeprom_read_byte (&alternateLayoutNr);
+    // ermittle den Interims-Keycode aus dem aktuellen Layout
+    memcpy_P(&ikc,&KeyMatrix[current_layout][layer][row][col],sizeof(ikc));
+    kc = getKeyStruct_Ic(ikc);
     return kc;
 }
 
-void printLayout(uint8_t l)
+keycode getKeyStruct_Ic(InterimsKeycode ikc) {
+    local_keycode lkc;  // Keycode aus Localization-Matrix mit den Keycode-Werten aller geografischen Bereiche
+    GeoArea current_GeoArea = eeprom_read_byte (&alternateGeoArea);
+    MacOrPC current_MacOrPC = eeprom_read_byte (&altMacOrPC);
+    keycode kc_error = {HID_E, L_SHF};   // Fehler-Keycode
+    keycode kc_null = {0, 0};   // Fehler-Keycode
+    keycode kc = kc_null;   // tatsŠchlichen auszugebenden Keycode
+
+    // Mac SonderfŠlle lokalisiert abhandeln
+    if (current_MacOrPC==Mac) {
+        // kucken, ob aktueller Interimscode in der Liste steckt
+        for (int i=0; i<MAC_DIFFS_COUNT; i++) {
+            memcpy_P(&lkc, &localizedMacDifferences[i], sizeof(lkc));
+            if (lkc.ikc == ikc) {
+                kc = lkc.kc[current_GeoArea];
+                break;
+            }
+        }
+    }
+    // wenn kc bei Mac nicht gesetzt wurde, ermittle den local_keycode Eintrag aus der Standard (PC)-Tabelle
+    if (USAGE_ID(kc.hid) == 0 /*kc_null*/) {
+        // ermittle den local_keycode Eintrag
+        memcpy_P(&lkc, &localizationMatrix[ikc], sizeof(lkc));
+        // ermittle keycode je nach aktuellem geografischen Bereich
+        kc = lkc.kc[current_GeoArea];
+        // Falls Fehlzugriff gib "E", wie 'E'rror aus
+        if (lkc.ikc != ikc) {
+            // verrutscht: Reihenfolge in den beiden Strukturen ist anzugleichen
+            kc = kc_error;
+            printf("\nlocalizationMatrix (code:%d) und Enum fŸr InterimsKeycode (code:%d) nicht synchron!",lkc.ikc,ikc);
+        }
+    }
+    return kc;
+}
+
+void printLayout(uint8_t layer)
 {
     uint8_t ch;
-    printf("\n---");
-    for(uint8_t r=0; r<ROWS/2-1; ++r) {
+    printf("\n--- Layer:%u",layer);
+    for(uint8_t row=1; row<ROWS-2; ++row) {
         printf("\n");
-        for(uint8_t c=0; c<COLS; ++c) {
-            ch=getKeyChar(r,c,l);
-            if(ch==92)
-                printf("\\\\");
-            else
-                printf("%c", ch );
+        for(uint8_t col=0; col<COLS; ++col) {
+            if(col==6) printf("  ");
+            ch =getKeyChar(row,col,layer);
+            ch == 92 ? printf("\\\\") : printf("%c", ch);
         }
-        printf("  ");
-        for(uint8_t c=0; c<COLS; ++c)
-            printf("%c", getKeyChar(r+ROWS/2,c,l) );
     }
 }
 
