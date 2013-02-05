@@ -16,3 +16,8 @@ maltron:
 LUFA NEW:
 master  f93bcc3
 maltron a27d1c7
+
+
+CONFIGURABLE:
+  pins
+  ManufacturerString / ProductString..
