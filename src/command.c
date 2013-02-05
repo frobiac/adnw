@@ -77,12 +77,41 @@ void handleCommand(void) {
     clearActiveKeys();
     clearRowData();
 
+    // Char with Meaning:
+    //  A:ASCIIPrint, B:BootL, C:PrintConfig, G:GeoArea, H:HardwarePC/Mac, L: SwitchLayout, M:Macro, P:PrintLayout, Q:QuitCommand,  T: Trackpoint
+    // Char without Meaning:
+    //  O:MouseMode, R:PrintKeyHID
     switch(hid) {
-        case HID_J:
+        case HID_C:
+            // G:GeoArea umschalten
+            PrintConfiguration();
+            break;
+        case HID_G:
+            // G:GeoArea umschalten
+            printf("\nG:GeoArea::");
+            subcmd=SUB_GEOAREA;
+            break;
+        case HID_H:
+            // HardwarePC/Mac umschalten
+            printf("\nHardwarePC/Mac::");
+            subcmd=SUB_PC_MAC;
+            break;
+        case HID_X:
+            // Makro-Modus aktivieren
+            setMacroMode(true);
+            setCommandMode(false);
+            printf("Macro mode true\n");
+            break;
+        case HID_Q:
+            printf("\nLeaving command mode::");
+            setCommandMode(false);
+            break;
+        case HID_B:
             printf("\nBootloader::");
             jump_bootloader();
-            break;;
+            break;
         case HID_P:
+            // Print Layout: one layer per press on key 'p'
             printLayout(layer);
             layer=(layer+1)%LAYERS;
             if(layer==0)
@@ -93,13 +122,15 @@ void handleCommand(void) {
             tp_id();
             setCommandMode(false);
             break;
-        case HID_Q:
-            setCommandMode(false);
-            break;
         case HID_L:
             g_alternateLayer=!g_alternateLayer;
             printf("\nAlternate layer %s", g_alternateLayer ? "selected." : "off.");
             setCommandMode(false);
+            /*
+            // Layout umschalten
+            printf("\nSwitch layout::");
+            subcmd=SUB_LAYOUT;
+            */
             break;
         case HID_A:
             for(uint8_t i=32; i<255; ++i) {
@@ -117,7 +148,8 @@ void handleCommand(void) {
             setCommandMode(false);
             break;
         case HID_R:
-            printf("\nRead active.");
+            // print HID code of pressed key
+            printf("\nHID code read active.");
             subcmd=SUB_READ;
             idx=0;
             break;
