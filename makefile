@@ -57,7 +57,7 @@ macrocheck:
 	@if test -f $(SRCDIR)/_private_macros.h; then \
 	    echo "*** Macro definition found ";  \
 	else \
-	    echo -e "\n\n\n*** ERROR: $(SRCDIR)/_private_macros.h NOT found. \n*** Consider copying template\n\n"; \
+	    echo -e "\n\n\n*** ERROR: $(SRCDIR)/_private_macros.h NOT found. \n*** Please copy template and edit as wanted:\n\n    cp $(SRCDIR)/_private_macros.h.template $(SRCDIR)/_private_macros.h\n\n"; \
 	    false; \
 	fi
 
