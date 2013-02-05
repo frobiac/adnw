@@ -371,8 +371,27 @@ void CALLBACK_HID_Device_ProcessHIDReport(USB_ClassInfo_HID_Device_t* const HIDI
 {
     if (HIDInterfaceInfo == &Mouse_HID_Interface)
         return;
+    // Variante 1
+    /*
+        uint8_t* LEDReport = (uint8_t*)ReportData;
+        LEDs_ChangeLEDs(LED_CAPS_LOCK|LED_SCROLL_LOCK|LED_NUM_LOCK| LED_COMPOSE|LED_KANA, *LEDReport);
+    */
 
-    // uint8_t* LEDReport = (uint8_t*)ReportData;
+    // Variante 2
+    /*
+    uint8_t  LEDMask   = LEDS_NO_LEDS;
+    uint8_t* LEDReport = (uint8_t*)ReportData;
 
-    // LEDs_ChangeLEDs(LED_CAPS_LOCK|LED_SCROLL_LOCK|LED_NUM_LOCK| LED_COMPOSE|LED_KANA, *LEDReport);
+    if (*LEDReport & HID_KEYBOARD_LED_NUMLOCK)
+        LEDMask |= LEDS_LED1;
+
+    if (*LEDReport & HID_KEYBOARD_LED_CAPSLOCK)
+        LEDMask |= LEDS_LED3;
+
+    if (*LEDReport & HID_KEYBOARD_LED_SCROLLLOCK)
+        LEDMask |= LEDS_LED4;
+
+    LEDs_SetAllLEDs(LEDMask);
+    */
+
 }
