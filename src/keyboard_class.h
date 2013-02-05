@@ -59,6 +59,7 @@ struct sfrActiveKeys {
 };
 
 void clearActiveKeys(void);
+//void send_extra(void);
 
 bool    isModifierKey(uint8_t row, uint8_t col);
 bool    isLayerKey   (uint8_t row, uint8_t col);
