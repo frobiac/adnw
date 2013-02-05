@@ -47,7 +47,7 @@ void unselect_rows(void)
     DDRB  &= 0b10001111;
     PORTB &= 0b10001111;
 #elif defined(__AVR_AT90USB1286__)             // Teensy++ 2.0
-    #error "PINCONFIG for unselect_rows NOT defined for __AVR_AT90USB1286__ setup"
+#error "PINCONFIG for unselect_rows NOT defined for __AVR_AT90USB1286__ setup"
 #endif
 }
 
@@ -72,7 +72,7 @@ void activate(uint8_t row)
     return;
 
 #elif defined(__AVR_AT90USB1286__)             // Teensy++ 2.0
-    #error "PINCONFIG for activate(row) NOT defined for __AVR_AT90USB1286__ setup"
+#error "PINCONFIG for activate(row) NOT defined for __AVR_AT90USB1286__ setup"
 #endif
 }
 

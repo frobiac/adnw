@@ -42,11 +42,11 @@ stdio_init(void)
 void
 stdio_fill_report(char ch, USB_KeyboardReport_Data_t *report)
 {
-/*
-    memcpy_P(report, &ascii_table[(uint8_t)ch], sizeof(USB_KeyboardReport_Data_t));
-    // set remaining 5 bytes to 0
-    memset(&report->KeyCode[1], 0, 5);
-*/
+    /*
+        memcpy_P(report, &ascii_table[(uint8_t)ch], sizeof(USB_KeyboardReport_Data_t));
+        // set remaining 5 bytes to 0
+        memset(&report->KeyCode[1], 0, 5);
+    */
     report->KeyCode[0]=ascii2hid[(uint8_t)ch][0];
     report->Modifier  =ascii2hid[(uint8_t)ch][1];
     memset(&report->KeyCode[1], 0, 5);
@@ -87,17 +87,17 @@ stdout_popchar(void)
     front = (front + 1) % OUTPUT_BUFSIZE;
     if (ch == '\\') {
         switch ((ch = output_buffer[front])) {
-        case 'n':
-            ch = (char)10;
-            break;
-        case 't':
-            ch = (char)9;
-            break;
-        case 'b':
-            ch = (char)8;
-            break;
-        case '\\':
-            break;
+            case 'n':
+                ch = (char)10;
+                break;
+            case 't':
+                ch = (char)9;
+                break;
+            case 'b':
+                ch = (char)8;
+                break;
+            case '\\':
+                break;
         }
         front = (front + 1) % OUTPUT_BUFSIZE;
     }

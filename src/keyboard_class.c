@@ -122,7 +122,7 @@ void initKeyboard()
     initMacros();
 }
 
-void clearRowData(){
+void clearRowData() {
     for (uint8_t row = 0; row < ROWS; ++row) {
         rowData[row]=0;
         ct0[row]=0xFF;
@@ -155,7 +155,7 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
     analogDataAcquire();
 #endif
 
-    if(commandMode()){
+    if(commandMode()) {
         handleCommand();
         report_data->Modifier=0;
         memset(&report_data->KeyCode[0], 0, 6);
@@ -446,9 +446,9 @@ void init_active_keys()
     }
     // all four corners pressed: switch to command mode
     else if(// (rowData[0] & (1<<0)) &&
-             (rowData[2] & (1<<0)) &&
-            // (rowData[4] & (1<<5)) &&
-             (rowData[6] & (1<<5)) ) {
+        (rowData[2] & (1<<0)) &&
+        // (rowData[4] & (1<<5)) &&
+        (rowData[6] & (1<<5)) ) {
         setCommandMode(true);
     }
 

@@ -39,11 +39,11 @@ void setCommandMode(bool on) {
     subcmd = SUB_NONE;
 }
 
-bool commandMode(void){ return command; }
+bool commandMode(void) { return command; }
 void handleSubCmd(struct Key k);
 
 
-void handleCommand(void){
+void handleCommand(void) {
     if(!commandMode())
         return;
 
@@ -53,14 +53,14 @@ void handleCommand(void){
     struct Key k=activeKeys.keys[0];
     uint8_t hid = getKeyCode(k.row, k.col, 0);
 
-    if(subcmd){
+    if(subcmd) {
         handleSubCmd(k);
         return;
     }
     clearActiveKeys();
     clearRowData();
 
-    switch(hid){
+    switch(hid) {
         case HID_J:
             printf("\nBootloader::");
             jump_bootloader();
@@ -85,12 +85,12 @@ void handleCommand(void){
             setCommandMode(false);
             break;
         case HID_A:
-            for(uint8_t i=32; i<255; ++i){
+            for(uint8_t i=32; i<255; ++i) {
                 if(i%16==0)
                     printf("\n %03d", i);
                 printf("%c ", (char)(i));
-               if(i==127)
-                   i+=33;
+                if(i==127)
+                    i+=33;
             }
             setCommandMode(false);
             break;
@@ -111,15 +111,15 @@ void handleCommand(void){
     }
 }
 
-void handleSubCmd(struct Key k){
+void handleSubCmd(struct Key k) {
     uint8_t h =getKeyCode(k.row, k.col, getActiveLayer());
     switch( subcmd )
     {
         case SUB_READ:
-            if(h == HID_ESC){
+            if(h == HID_ESC) {
                 printf("\nSubRead terminated");
                 setCommandMode(false);
-            }else {
+            } else {
                 if(idx>=MAXLEN) {
                     idx=0;
                     setCommandMode(false);

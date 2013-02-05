@@ -98,7 +98,7 @@ enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FT
 /**
  * Print out trackpoint config register
  */
-uint8_t tp_read_config(){
+uint8_t tp_read_config() {
     printf("\nTP Config= ");
     tp_send_read_ack(0xe2);
     tp_send_read_ack(0x2c);
@@ -116,9 +116,9 @@ void tp_id(void) {
         printf("\n2nd ID=%02x%02x\nExt.ID=", read_packet(),read_packet() );
     }
     // read extended ID, which ends in ')'
-    if( tp_send_read_ack(0xd0) ){
+    if( tp_send_read_ack(0xd0) ) {
         uint8_t tmp='0';
-        while(tmp != (uint8_t)')'){
+        while(tmp != (uint8_t)')') {
             tmp=read_packet();
             printf("%c",tmp);
         }

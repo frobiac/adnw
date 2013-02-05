@@ -466,63 +466,63 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint8_t wIndex,
     uint16_t Size    = NO_DESCRIPTOR;
 
     switch (DescriptorType) {
-    case DTYPE_Device:
-        Address = (void*)&DeviceDescriptor;
-        Size    = sizeof(USB_Descriptor_Device_t);
-        break;
-    case DTYPE_Configuration:
-        Address = (void*)&ConfigurationDescriptor;
-        Size    = sizeof(USB_Descriptor_Configuration_t);
-        break;
-    case DTYPE_String:
-        switch (DescriptorNumber) {
-        case 0x00:
-            Address = (void*)&LanguageString;
-            Size    = pgm_read_byte(&LanguageString.Header.Size);
+        case DTYPE_Device:
+            Address = (void*)&DeviceDescriptor;
+            Size    = sizeof(USB_Descriptor_Device_t);
             break;
-        case 0x01:
-            Address = (void*)&ManufacturerString;
-            Size    = pgm_read_byte(&ManufacturerString.Header.Size);
+        case DTYPE_Configuration:
+            Address = (void*)&ConfigurationDescriptor;
+            Size    = sizeof(USB_Descriptor_Configuration_t);
             break;
-        case 0x02:
-            Address = (void*)&ProductString;
-            Size    = pgm_read_byte(&ProductString.Header.Size);
-            break;
-        }
+        case DTYPE_String:
+            switch (DescriptorNumber) {
+                case 0x00:
+                    Address = (void*)&LanguageString;
+                    Size    = pgm_read_byte(&LanguageString.Header.Size);
+                    break;
+                case 0x01:
+                    Address = (void*)&ManufacturerString;
+                    Size    = pgm_read_byte(&ManufacturerString.Header.Size);
+                    break;
+                case 0x02:
+                    Address = (void*)&ProductString;
+                    Size    = pgm_read_byte(&ProductString.Header.Size);
+                    break;
+            }
 
-        break;
-    case HID_DTYPE_HID:
-        switch (wIndex) {
-        case 0:
-            Address = (void*)&ConfigurationDescriptor.HID_KeyboardHID;
-            Size    = sizeof(USB_HID_Descriptor_HID_t);
             break;
-        case 1:
-            Address = (void*)&ConfigurationDescriptor.HIDDBG_HID;
-            Size    = sizeof(USB_HID_Descriptor_HID_t);
+        case HID_DTYPE_HID:
+            switch (wIndex) {
+                case 0:
+                    Address = (void*)&ConfigurationDescriptor.HID_KeyboardHID;
+                    Size    = sizeof(USB_HID_Descriptor_HID_t);
+                    break;
+                case 1:
+                    Address = (void*)&ConfigurationDescriptor.HIDDBG_HID;
+                    Size    = sizeof(USB_HID_Descriptor_HID_t);
+                    break;
+                case 2:
+                    Address = (void*)&ConfigurationDescriptor.HID_MouseHID;
+                    Size    = sizeof(USB_HID_Descriptor_HID_t);
+                    break;
+            }
             break;
-        case 2:
-            Address = (void*)&ConfigurationDescriptor.HID_MouseHID;
-            Size    = sizeof(USB_HID_Descriptor_HID_t);
+        case HID_DTYPE_Report:
+            switch (wIndex) {
+                case 0:
+                    Address = (void*)&KeyboardReport;
+                    Size    = sizeof(KeyboardReport);
+                    break;
+                case 1:
+                    Address = (void*)&DBGReport;
+                    Size    = sizeof(DBGReport);
+                    break;
+                case 2:
+                    Address = (void*)&MouseReport;
+                    Size    = sizeof(MouseReport);
+                    break;
+            }
             break;
-        }
-        break;
-    case HID_DTYPE_Report:
-        switch (wIndex) {
-        case 0:
-            Address = (void*)&KeyboardReport;
-            Size    = sizeof(KeyboardReport);
-            break;
-        case 1:
-            Address = (void*)&DBGReport;
-            Size    = sizeof(DBGReport);
-            break;
-        case 2:
-            Address = (void*)&MouseReport;
-            Size    = sizeof(MouseReport);
-            break;
-        }
-        break;
     }
 
     *DescriptorAddress = Address;
