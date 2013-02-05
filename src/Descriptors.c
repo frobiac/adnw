@@ -216,41 +216,6 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM KeyboardReport[] = {
     0xc0                 /* End Collection                                  */
 };
 
-const USB_Descriptor_HIDReport_Datatype_t ConsumerControlReport[] PROGMEM = {
-    0x05, 0x0C,           /* Usage Page (Consumer) */
-    0x09, 0x01,           /*   Usage (Consumer Control ??? ) */
-    0xA1, 0x01,           /*     Collection (Application) */
-
-    0x85, 0x01,           /*       ReportID (1) */
-    0x19, 0x00,           /*       Usage Minimum (0) */
-    0x2A, 0x3C, 0x02,     /*       Usage Maximum (572) */
-    0x15, 0x00,           /*       Logical Minimum (0) */
-    0x26, 0x3C, 0x02,     /*       Logical Maximum (572) */
-    0x95, 0x01,           /*       Report Count (1) */
-    0x75, 0x10,           /*       Report Size (16) */
-    0x81, 0x00,           /*       Input (Data, Array, Absolute) */
-
-    0xC0,                 /*     End Collection (Application */
-    0x05, 0x01,           /* Usage Page (Generic Desktop) */
-    0x09, 0x80,           /*   Usage (System Control) */
-    0xA1, 0x01,           /*     Collection (Application) */
-
-    0x85, 0x02,           /*       ReportID (2) */
-    0x19, 0x81,           /*       Usage Minimum (129) */
-    0x29, 0x83,           /*       Usage Maximum (131) */
-    0x25, 0x01,           /*       Logical Maximum (1) */
-    0x75, 0x01,           /*       Report Size (1) */
-    0x95, 0x03,           /*       Report Count (3) */
-    0x81, 0x02,           /*       Input (Data, Variable, Absolute, No Wrap,
-                                        Linear, Preferred State, No Null
-                                        Position, Bitfield) */
-
-    0x95, 0x05,           /*       Report Count (5) */
-    0x81, 0x01,           /*       Input (Constant, Array, Absolute) */
-
-    0xC0                  /*     End Collection (Application) */
-};
-
 
 const USB_Descriptor_HIDReport_Datatype_t DBGReport[] PROGMEM = {
     0x06, 0x31, 0xFF,    // Usage Page 0xFF31 (vendor defined)
