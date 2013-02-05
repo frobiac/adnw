@@ -130,6 +130,25 @@
 #define HID_F13             104
 #define HID_F14             105
 #define HID_F15             106
+
+/*
+   The largest HID usage code is AC_Distribute_Vertically from the Consumer
+   Control usage page.  Its id is 0x29c, which requires 10 bits.  The largest
+   usage page used by a keyboard, on the other hand, is 0x0c, which requires
+   only 4 bits.  So we pack the usage id in the lower 10 bits of a 16 bit int,
+   and the usage page in the upper 6 bits.
+*/
+
+#define MAKE_USAGE(page,id) (((page)<<10)|(id))
+#define USAGE_ID(usage)     (usage&~(0xffff<<10))
+#define USAGE_PAGE(usage)   (usage>>10)
+
+typedef enum {
+    page_keyboard = 0x07,
+    page_system = 0x01,
+    page_consumer = 0x0c
+} usage_page;
+
 // ... till F24             ...
 #define HID_F24             115
 
