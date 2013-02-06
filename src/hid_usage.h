@@ -23,113 +23,6 @@
 // see also ../LUFA/LUFA/Drivers/USB/Class/Common/HIDClassCommon.h
 // or http://www.freebsddiary.org/APC/usb_hid_usages
 
-#define HID_NO_KEY			0
-#define HID_ERROR_ROLLOVER  1
-#define HID_POST_FAIL       2
-#define HID_ERROR_UNDEFINED 3
-#define HID_A               4
-#define HID_B               5
-#define HID_C               6
-#define HID_D               7
-#define HID_E               8
-#define HID_F               9
-#define HID_G               10
-#define HID_H               11
-#define HID_I               12
-#define HID_J               13
-#define HID_K               14
-#define HID_L               15
-#define HID_M               16
-#define HID_N               17
-#define HID_O               18
-#define HID_P               19
-#define HID_Q               20
-#define HID_R               21
-#define HID_S               22
-#define HID_T               23
-#define HID_U               24
-#define HID_V               25
-#define HID_W               26
-#define HID_X               27
-#define HID_Y               28
-#define HID_Z               29
-#define HID_1               30
-#define HID_2               31
-#define HID_3               32
-#define HID_4               33
-#define HID_5               34
-#define HID_6               35
-#define HID_7               36
-#define HID_8               37
-#define HID_9               38
-#define HID_0               39
-#define HID_ENTER           40
-#define HID_ESC             41
-#define HID_BACKSPACE       42
-#define HID_TAB             43
-#define HID_SPACE           44
-#define HID_MINUS           45
-#define HID_EQUAL           46
-#define HID_L_BRACKET       47
-#define HID_R_BRACKET       48
-#define HID_BSLASH          49
-#define HID_NON_US_1        50
-#define HID_SEMICOLON       51
-#define HID_QUOTE           52
-#define HID_GRAVE           53
-#define HID_COMMA           54
-#define HID_PERIOD          55
-#define HID_SLASH           56
-#define HID_CAPS_LOCK       57
-#define HID_F1              58
-#define HID_F2              59
-#define HID_F3              60
-#define HID_F4              61
-#define HID_F5              62
-#define HID_F6              63
-#define HID_F7              64
-#define HID_F8              65
-#define HID_F9              66
-#define HID_F10             67
-#define HID_F11             68
-#define HID_F12             69
-#define HID_PRINTSCREEN     70
-#define HID_SCROLL_LOCK     71
-#define HID_PAUSE           72
-#define HID_INSERT          73
-#define HID_HOME            74
-#define HID_PAGE_UP         75
-#define HID_DELETE          76
-#define HID_END             77
-#define HID_PAGE_DOWN       78
-#define HID_RIGHT           79
-#define HID_LEFT            80
-#define HID_DOWN            81
-#define HID_UP              82
-#define HID_NUM_LOCK        83
-#define HID_KEYPAD_SLASH    84
-#define HID_KEYPAD_ASTERIX  85
-#define HID_KEYPAD_MINUS    86
-#define HID_KEYPAD_PLUS     87
-#define HID_KEYPAD_ENTER    88
-#define HID_KEYPAD_1        89
-#define HID_KEYPAD_2        90
-#define HID_KEYPAD_3        91
-#define HID_KEYPAD_4        92
-#define HID_KEYPAD_5        93
-#define HID_KEYPAD_6        94
-#define HID_KEYPAD_7        95
-#define HID_KEYPAD_8        96
-#define HID_KEYPAD_9        97
-#define HID_KEYPAD_0        98
-#define HID_KEYPAD_PERIOD   99
-#define HID_NON_US_2        100
-#define HID_APPLICATION     101
-#define HID_MAC_POWER       102
-#define HID_KEYPAD_EQUAL    103
-#define HID_F13             104
-#define HID_F14             105
-#define HID_F15             106
 
 /*
    The largest HID usage code is AC_Distribute_Vertically from the Consumer
@@ -149,19 +42,164 @@ typedef enum {
     page_consumer = 0x0c
 } usage_page;
 
+#define HID_NO_KEY          MAKE_USAGE(page_keyboard, 0)
+#define HID_ERROR_ROLLOVER  MAKE_USAGE(page_keyboard, 1)
+#define HID_POST_FAIL       MAKE_USAGE(page_keyboard, 2)
+#define HID_ERROR_UNDEFINED MAKE_USAGE(page_keyboard, 3)
+#define HID_A               MAKE_USAGE(page_keyboard, 4)
+#define HID_B               MAKE_USAGE(page_keyboard, 5)
+#define HID_C               MAKE_USAGE(page_keyboard, 6)
+#define HID_D               MAKE_USAGE(page_keyboard, 7)
+#define HID_E               MAKE_USAGE(page_keyboard, 8)
+#define HID_F               MAKE_USAGE(page_keyboard, 9)
+#define HID_G               MAKE_USAGE(page_keyboard, 10)
+#define HID_H               MAKE_USAGE(page_keyboard, 11)
+#define HID_I               MAKE_USAGE(page_keyboard, 12)
+#define HID_J               MAKE_USAGE(page_keyboard, 13)
+#define HID_K               MAKE_USAGE(page_keyboard, 14)
+#define HID_L               MAKE_USAGE(page_keyboard, 15)
+#define HID_M               MAKE_USAGE(page_keyboard, 16)
+#define HID_N               MAKE_USAGE(page_keyboard, 17)
+#define HID_O               MAKE_USAGE(page_keyboard, 18)
+#define HID_P               MAKE_USAGE(page_keyboard, 19)
+#define HID_Q               MAKE_USAGE(page_keyboard, 20)
+#define HID_R               MAKE_USAGE(page_keyboard, 21)
+#define HID_S               MAKE_USAGE(page_keyboard, 22)
+#define HID_T               MAKE_USAGE(page_keyboard, 23)
+#define HID_U               MAKE_USAGE(page_keyboard, 24)
+#define HID_V               MAKE_USAGE(page_keyboard, 25)
+#define HID_W               MAKE_USAGE(page_keyboard, 26)
+#define HID_X               MAKE_USAGE(page_keyboard, 27)
+#define HID_Y               MAKE_USAGE(page_keyboard, 28)
+#define HID_Z               MAKE_USAGE(page_keyboard, 29)
+#define HID_1               MAKE_USAGE(page_keyboard, 30)
+#define HID_2               MAKE_USAGE(page_keyboard, 31)
+#define HID_3               MAKE_USAGE(page_keyboard, 32)
+#define HID_4               MAKE_USAGE(page_keyboard, 33)
+#define HID_5               MAKE_USAGE(page_keyboard, 34)
+#define HID_6               MAKE_USAGE(page_keyboard, 35)
+#define HID_7               MAKE_USAGE(page_keyboard, 36)
+#define HID_8               MAKE_USAGE(page_keyboard, 37)
+#define HID_9               MAKE_USAGE(page_keyboard, 38)
+#define HID_0               MAKE_USAGE(page_keyboard, 39)
+#define HID_ENTER           MAKE_USAGE(page_keyboard, 40)
+#define HID_ESC             MAKE_USAGE(page_keyboard, 41)
+#define HID_BACKSPACE       MAKE_USAGE(page_keyboard, 42)
+#define HID_TAB             MAKE_USAGE(page_keyboard, 43)
+#define HID_SPACE           MAKE_USAGE(page_keyboard, 44)
+#define HID_MINUS           MAKE_USAGE(page_keyboard, 45)
+#define HID_EQUAL           MAKE_USAGE(page_keyboard, 46)
+#define HID_L_BRACKET       MAKE_USAGE(page_keyboard, 47)
+#define HID_R_BRACKET       MAKE_USAGE(page_keyboard, 48)
+#define HID_BSLASH          MAKE_USAGE(page_keyboard, 49)
+#define HID_NON_US_1        MAKE_USAGE(page_keyboard, 50)
+#define HID_SEMICOLON       MAKE_USAGE(page_keyboard, 51)
+#define HID_QUOTE           MAKE_USAGE(page_keyboard, 52)
+#define HID_GRAVE           MAKE_USAGE(page_keyboard, 53)
+#define HID_COMMA           MAKE_USAGE(page_keyboard, 54)
+#define HID_PERIOD          MAKE_USAGE(page_keyboard, 55)
+#define HID_SLASH           MAKE_USAGE(page_keyboard, 56)
+#define HID_CAPS_LOCK       MAKE_USAGE(page_keyboard, 57)
+#define HID_F1              MAKE_USAGE(page_keyboard, 58)
+#define HID_F2              MAKE_USAGE(page_keyboard, 59)
+#define HID_F3              MAKE_USAGE(page_keyboard, 60)
+#define HID_F4              MAKE_USAGE(page_keyboard, 61)
+#define HID_F5              MAKE_USAGE(page_keyboard, 62)
+#define HID_F6              MAKE_USAGE(page_keyboard, 63)
+#define HID_F7              MAKE_USAGE(page_keyboard, 64)
+#define HID_F8              MAKE_USAGE(page_keyboard, 65)
+#define HID_F9              MAKE_USAGE(page_keyboard, 66)
+#define HID_F10             MAKE_USAGE(page_keyboard, 67)
+#define HID_F11             MAKE_USAGE(page_keyboard, 68)
+#define HID_F12             MAKE_USAGE(page_keyboard, 69)
+#define HID_PRINTSCREEN     MAKE_USAGE(page_keyboard, 70)
+#define HID_SCROLL_LOCK     MAKE_USAGE(page_keyboard, 71)
+#define HID_PAUSE           MAKE_USAGE(page_keyboard, 72)
+#define HID_INSERT          MAKE_USAGE(page_keyboard, 73)
+#define HID_HOME            MAKE_USAGE(page_keyboard, 74)
+#define HID_PAGE_UP         MAKE_USAGE(page_keyboard, 75)
+#define HID_DELETE          MAKE_USAGE(page_keyboard, 76)
+#define HID_END             MAKE_USAGE(page_keyboard, 77)
+#define HID_PAGE_DOWN       MAKE_USAGE(page_keyboard, 78)
+#define HID_RIGHT           MAKE_USAGE(page_keyboard, 79)
+#define HID_LEFT            MAKE_USAGE(page_keyboard, 80)
+#define HID_DOWN            MAKE_USAGE(page_keyboard, 81)
+#define HID_UP              MAKE_USAGE(page_keyboard, 82)
+#define HID_NUM_LOCK        MAKE_USAGE(page_keyboard, 83)
+#define HID_KEYPAD_SLASH    MAKE_USAGE(page_keyboard, 84)
+#define HID_KEYPAD_ASTERIX  MAKE_USAGE(page_keyboard, 85)
+#define HID_KEYPAD_MINUS    MAKE_USAGE(page_keyboard, 86)
+#define HID_KEYPAD_PLUS     MAKE_USAGE(page_keyboard, 87)
+#define HID_KEYPAD_ENTER    MAKE_USAGE(page_keyboard, 88)
+#define HID_KEYPAD_1        MAKE_USAGE(page_keyboard, 89)
+#define HID_KEYPAD_2        MAKE_USAGE(page_keyboard, 90)
+#define HID_KEYPAD_3        MAKE_USAGE(page_keyboard, 91)
+#define HID_KEYPAD_4        MAKE_USAGE(page_keyboard, 92)
+#define HID_KEYPAD_5        MAKE_USAGE(page_keyboard, 93)
+#define HID_KEYPAD_6        MAKE_USAGE(page_keyboard, 94)
+#define HID_KEYPAD_7        MAKE_USAGE(page_keyboard, 95)
+#define HID_KEYPAD_8        MAKE_USAGE(page_keyboard, 96)
+#define HID_KEYPAD_9        MAKE_USAGE(page_keyboard, 97)
+#define HID_KEYPAD_0        MAKE_USAGE(page_keyboard, 98)
+#define HID_KEYPAD_PERIOD   MAKE_USAGE(page_keyboard, 99)
+#define HID_NON_US_2        MAKE_USAGE(page_keyboard, 100)
+#define HID_APPLICATION     MAKE_USAGE(page_keyboard, 101)
+#define HID_MAC_POWER       MAKE_USAGE(page_keyboard, 102)
+#define HID_KEYPAD_EQUAL    MAKE_USAGE(page_keyboard, 103)
+#define HID_F13             MAKE_USAGE(page_keyboard, 104)
+#define HID_F14             MAKE_USAGE(page_keyboard, 105)
+#define HID_F15             MAKE_USAGE(page_keyboard, 106)
 // ... till F24             ...
-#define HID_F24             115
+#define HID_F24             MAKE_USAGE(page_keyboard, 115)
 
-#define HID_L_CONTROL       0xE0
-#define HID_L_SHIFT         0xE1
-#define HID_L_ALT           0xE2
-#define HID_L_GUI           0xE3
-#define HID_R_CONTROL       0xE4
-#define HID_R_SHIFT         0xE5
-#define HID_R_ALT           0xE6
-#define HID_R_GUI           0xE7
+#define HID_L_CONTROL       MAKE_USAGE(page_keyboard, 0xE0)
+#define HID_L_SHIFT         MAKE_USAGE(page_keyboard, 0xE1)
+#define HID_L_ALT           MAKE_USAGE(page_keyboard, 0xE2)
+#define HID_L_GUI           MAKE_USAGE(page_keyboard, 0xE3)
+#define HID_R_CONTROL       MAKE_USAGE(page_keyboard, 0xE4)
+#define HID_R_SHIFT         MAKE_USAGE(page_keyboard, 0xE5)
+#define HID_R_ALT           MAKE_USAGE(page_keyboard, 0xE6)
+#define HID_R_GUI           MAKE_USAGE(page_keyboard, 0xE7)
 
-#define HID_SYSRQ           0x9A
+#define HID_SYSRQ           MAKE_USAGE(page_keyboard, 0x9A
+
+// Consumer Page(0x0C)
+// following are supported by Windows: http://msdn.microsoft.com/en-us/windows/hardware/gg463372.aspx
+
+#define HID_AUDIO_MUTE              MAKE_USAGE(page_consumer, 0x00E2)
+#define HID_AUDIO_VOL_UP            MAKE_USAGE(page_consumer, 0x00E9)
+#define HID_AUDIO_VOL_DOWN          MAKE_USAGE(page_consumer, 0x00EA)
+#define HID_TRANSPORT_NEXT_TRACK    MAKE_USAGE(page_consumer, 0x00B5)
+#define HID_TRANSPORT_PREV_TRACK    MAKE_USAGE(page_consumer, 0x00B6)
+#define HID_TRANSPORT_STOP          MAKE_USAGE(page_consumer, 0x00B7)
+#define HID_TRANSPORT_PLAY_PAUSE    MAKE_USAGE(page_consumer, 0x00CD)
+#define HID_Bass_Up                 MAKE_USAGE(page_consumer, 0x0152)
+#define HID_Bass_Down               MAKE_USAGE(page_consumer, 0x0153)
+#define HID_Treble_Up               MAKE_USAGE(page_consumer, 0x0154)
+#define HID_Treble_Down             MAKE_USAGE(page_consumer, 0x0155)
+#define HID_AL_CC_CONFIG            MAKE_USAGE(page_consumer, 0x0183) // Media Select
+#define HID_AL_EMAIL                MAKE_USAGE(page_consumer, 0x018A)
+#define HID_AL_CALCULATOR           MAKE_USAGE(page_consumer, 0x0192)
+#define HID_AL_LOCAL_BROWSER        MAKE_USAGE(page_consumer, 0x0194) // My Computer
+#define HID_AC_SEARCH               MAKE_USAGE(page_consumer, 0x0221) // WWW Search
+#define HID_AC_HOME                 MAKE_USAGE(page_consumer, 0x0223) // WWW Home
+#define HID_AC_BACK                 MAKE_USAGE(page_consumer, 0x0224) // WWW Back
+#define HID_AC_FORWARD              MAKE_USAGE(page_consumer, 0x0225) // WWW Forward
+#define HID_AC_STOP                 MAKE_USAGE(page_consumer, 0x0226) // WWW Stop
+#define HID_AC_REFRESH              MAKE_USAGE(page_consumer, 0x0227) // WWW Refresh
+#define HID_AC_BOOKMARKS            MAKE_USAGE(page_consumer, 0x022A) // WWW Favorites
+// supplement for Bluegiga iWRAP HID(not supported by Windows?)
+#define HID_AL_LOCK                 MAKE_USAGE(page_consumer, 0x019E)
+#define HID_TRANSPORT_RECORD        MAKE_USAGE(page_consumer, 0x00B2)
+#define HID_TRANSPORT_REWIND        MAKE_USAGE(page_consumer, 0x00B4)
+#define HID_TRANSPORT_EJECT         MAKE_USAGE(page_consumer, 0x00B8)
+#define HID_AC_MINIMIZE             MAKE_USAGE(page_consumer, 0x0206)
+
+// Generic Desktop Page(0x01)
+#define HID_SYSTEM_POWER_DOWN       MAKE_USAGE(page_system, 0x0081)
+#define HID_SYSTEM_SLEEP            MAKE_USAGE(page_system, 0x0082)
+#define HID_SYSTEM_WAKE_UP          MAKE_USAGE(page_system, 0x0083)
+
 
 /* mouse buttons hid codes */
 #define HID_MOUSEBTN_1 (1<<0)
