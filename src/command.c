@@ -1,5 +1,5 @@
 /*
-    Copyright 2010-2012 Stefan Fröbe, <frobiac /at/ gmail [d0t] com>
+    Copyright 2010-2013 Stefan Fröbe, <frobiac /at/ gmail [d0t] com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
