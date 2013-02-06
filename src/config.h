@@ -19,7 +19,13 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+// Unicode strings describing this keyboard
+#define STR_MANUFACTURER L"frobiac"
+#define STR_PRODUCT      L"AdNW TP and mouse"
+
 // thanks to Openmoko, Inc we now have a dedicated USB Product ID
+// Change this if you indend to make changes to the firmware, or distribute it
+// in any way as these are specifically acquired for this setup!
 #define VENDOR_ID             0x1D50
 #define PRODUCT_ID            0x6033
 #define RELEASE_NUMBER        0x0001
