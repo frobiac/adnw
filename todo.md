@@ -92,7 +92,11 @@ win  alt  shft ctrl  | -  mod3 mod4  altgr
 
 maltron branch(es) cleanup
 --------------------------
-* reduce .data usage to enable code on Teensy 2.0 (ExtraKey, Layouts...)
+* reduce .data usage to enable code on Teensy 2.0 (ExtraKey, Layouts...): #define printf(...) to check
+  -using TRACE:  sed "s/^\( *\)printf\(.*\);\s*/\1TRACE\2;/" src/* -i
+  -comment out:  sed "s/^\( *\)\(printf.*\);\s*/; \1\/\/ \2;/" src/* -i
+
+
 * secondUse (successor of MKT) investigation
 * credit K.W. in future merge
 * modular config for different HW: Pins, Cmd-keys, IDs
