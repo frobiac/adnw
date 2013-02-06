@@ -20,4 +20,3 @@ maltron a27d1c7
 
 CONFIGURABLE:
   pins
-  ManufacturerString / ProductString..

@@ -30,6 +30,9 @@ From this root directory, execute
 
 
 To build, please adjust controller type and build switches in makefile and call make from root directory.
+Further configuration can be achieved by editing src/config.h .
+
+If you change this code, you are at least required to change the vendor and product id!
 
 
 Current Layout
