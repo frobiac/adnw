@@ -762,135 +762,135 @@ typedef enum
 } InterimsKeycode;
 
 /// @todo .data usage: this adds 3*128 bytes and is needed only for macro and printf
-static const uint8_t ascii2hid[128][3] = {
-    _no , // ( nul)   0
-    _no , // ( soh)   1
-    _no , // ( stx)   2
-    _no , // ( etx)   3
-    _no , // ( eot)   4
-    _no , // ( enq)   5
-    _no , // ( ack)   6
-    _no , // ( bel)   7
-    _no , // ( bs)    8
-    _no , // ( ht)    9
-    _ENTER , // ( nl)   10
-    _no , // ( vt)   11
-    _no , // ( np)   12
-    _no , // ( cr)   13
-    _no , // ( so)   14
-    _no , // ( si)   15
-    _no , // ( dle)  16
-    _no , // ( dc1)  17
-    _no , // ( dc2)  18
-    _no , // ( dc3)  19
-    _no , // ( dc4)  20
-    _no , // ( nak)  21
-    _no , // ( syn)  22
-    _no , // ( etb)  23
-    _no , // ( can)  24
-    _no , // ( em)   25
-    _no , // ( sub)  26
-    _no , // ( esc)  27
-    _no , // ( fs)   28
-    _no , // ( gs)   29
-    _no , // ( rs)   30
-    _no , // ( us)   31
-    _no , // ( sp)   32
-    _EXCLAM ,   // !       33
-    _DQUOTE ,   // "       34
-    _HASH ,     // #       35
-    _DOLLAR ,   // $       36
-    _PERCENT ,  // %       37
-    _AMPERSAND, // &       38
-    _SQUOTE ,   // '       39
-    _L_PAREN ,  // (       40
-    _R_PAREN ,  // )       41
-    _ASTERIX ,  // *       42
-    _PLUS ,     // +       43
-    _COMMA ,    // ,       44
-    _MINUS ,    // -       45
-    _PERIOD ,   // .       46
-    _SLASH ,    // /       47
-    _0 , // 0       48
-    _1 , // 1       49
-    _2 , // 2       50
-    _3 , // 3       51
-    _4 , // 4       52
-    _5 , // 5       53
-    _6 , // 6       54
-    _7 , // 7       55
-    _8 , // 8       56
-    _9 , // 9       57
-    _COLON ,    // :       58
-    _SCOLON ,   // ;       59
-    _LESS ,     // <       60
-    _EQUAL ,    // =       61
-    _GREATER ,  // >       62
-    _QUESTION,  // ?       63
-    _AT, // @       64
-    _A , // A       65
-    _B , // B       66
-    _C , // C       67
-    _D , // D       68
-    _E , // E       69
-    _F , // F       70
-    _G , // G       71
-    _H , // H       72
-    _I , // I       73
-    _J , // J       74
-    _K , // K       75
-    _L , // L       76
-    _M , // M       77
-    _N , // N       78
-    _O , // O       79
-    _P , // P       80
-    _Q , // Q       81
-    _R , // R       82
-    _S , // S       83
-    _T , // T       84
-    _U , // U       85
-    _V , // V       86
-    _W , // W       87
-    _X , // X       88
-    _Y , // Y       89
-    _Z , // Z       90
-    _L_BRACKET, // [       91
-    _BSLASH ,   // \       92
-    _R_BRACKET, // ]       93
-    _CARET ,    // ^       94
-    _USCORE ,   // _       95
-    _GRAVE ,    // `       96
-    _a , // a       97
-    _b , // b       98
-    _c , // c       99
-    _d , // d      100
-    _e , // e      101
-    _f , // f      102
-    _g , // g      103
-    _h , // h      104
-    _i , // i      105
-    _j , // j      106
-    _k , // k      107
-    _l , // l      108
-    _m , // m      109
-    _n , // n      110
-    _o , // o      111
-    _p , // p      112
-    _q , // q      113
-    _r , // r      114
-    _s , // s      115
-    _t , // t      116
-    _u , // u      117
-    _v , // v      118
-    _w , // w      119
-    _x , // x      120
-    _y , // y      121
-    _z , // z      122
-    _L_BRACE ,  // {      123
-    _PIPE ,     // |      124
-    _R_BRACE ,  // }      125
-    _TILDE ,    // ~      126
-    _DEL        // ( del) 127
+static const uint8_t ascii2hid[128] = {
+    _ik_no , // ( nul)   0
+    _ik_no , // ( soh)   1
+    _ik_no , // ( stx)   2
+    _ik_no , // ( etx)   3
+    _ik_no , // ( eot)   4
+    _ik_no , // ( enq)   5
+    _ik_no , // ( ack)   6
+    _ik_no , // ( bel)   7
+    _ik_no , // ( bs)    8
+    _ik_no , // ( ht)    9
+    _ik_ENTER , // ( nl)   10
+    _ik_no , // ( vt)   11
+    _ik_no , // ( np)   12
+    _ik_no , // ( cr)   13
+    _ik_no , // ( so)   14
+    _ik_no , // ( si)   15
+    _ik_no , // ( dle)  16
+    _ik_no , // ( dc1)  17
+    _ik_no , // ( dc2)  18
+    _ik_no , // ( dc3)  19
+    _ik_no , // ( dc4)  20
+    _ik_no , // ( nak)  21
+    _ik_no , // ( syn)  22
+    _ik_no , // ( etb)  23
+    _ik_no , // ( can)  24
+    _ik_no , // ( em)   25
+    _ik_no , // ( sub)  26
+    _ik_no , // ( esc)  27
+    _ik_no , // ( fs)   28
+    _ik_no , // ( gs)   29
+    _ik_no , // ( rs)   30
+    _ik_no , // ( us)   31
+    _ik_no , // ( sp)   32
+    _ik_EXCLAM ,   // !       33
+    _ik_DQUOTE ,   // "       34
+    _ik_HASH ,     // #       35
+    _ik_DOLLAR ,   // $       36
+    _ik_PERCENT ,  // %       37
+    _ik_AMPERSAND, // &       38
+    _ik_SQUOTE ,   // '       39
+    _ik_L_PAREN ,  // (       40
+    _ik_R_PAREN ,  // )       41
+    _ik_ASTERIX ,  // *       42
+    _ik_PLUS ,     // +       43
+    _ik_COMMA ,    // ,       44
+    _ik_MINUS ,    // -       45
+    _ik_PERIOD ,   // .       46
+    _ik_SLASH ,    // /       47
+    _ik_0 , // 0       48
+    _ik_1 , // 1       49
+    _ik_2 , // 2       50
+    _ik_3 , // 3       51
+    _ik_4 , // 4       52
+    _ik_5 , // 5       53
+    _ik_6 , // 6       54
+    _ik_7 , // 7       55
+    _ik_8 , // 8       56
+    _ik_9 , // 9       57
+    _ik_COLON ,    // :       58
+    _ik_SCOLON ,   // ;       59
+    _ik_LESS ,     // <       60
+    _ik_EQUAL ,    // =       61
+    _ik_GREATER ,  // >       62
+    _ik_QUESTION,  // ?       63
+    _ik_AT, // @       64
+    _ik_A , // A       65
+    _ik_B , // B       66
+    _ik_C , // C       67
+    _ik_D , // D       68
+    _ik_E , // E       69
+    _ik_F , // F       70
+    _ik_G , // G       71
+    _ik_H , // H       72
+    _ik_I , // I       73
+    _ik_J , // J       74
+    _ik_K , // K       75
+    _ik_L , // L       76
+    _ik_M , // M       77
+    _ik_N , // N       78
+    _ik_O , // O       79
+    _ik_P , // P       80
+    _ik_Q , // Q       81
+    _ik_R , // R       82
+    _ik_S , // S       83
+    _ik_T , // T       84
+    _ik_U , // U       85
+    _ik_V , // V       86
+    _ik_W , // W       87
+    _ik_X , // X       88
+    _ik_Y , // Y       89
+    _ik_Z , // Z       90
+    _ik_L_BRACKET, // [       91
+    _ik_BSLASH ,   // \       92
+    _ik_R_BRACKET, // ]       93
+    _ik_CARET ,    // ^       94
+    _ik_USCORE ,   // _ik_       95
+    _ik_GRAVE ,    // `       96
+    _ik_a , // a       97
+    _ik_b , // b       98
+    _ik_c , // c       99
+    _ik_d , // d      100
+    _ik_e , // e      101
+    _ik_f , // f      102
+    _ik_g , // g      103
+    _ik_h , // h      104
+    _ik_i , // i      105
+    _ik_j , // j      106
+    _ik_k , // k      107
+    _ik_l , // l      108
+    _ik_m , // m      109
+    _ik_n , // n      110
+    _ik_o , // o      111
+    _ik_p , // p      112
+    _ik_q , // q      113
+    _ik_r , // r      114
+    _ik_s , // s      115
+    _ik_t , // t      116
+    _ik_u , // u      117
+    _ik_v , // v      118
+    _ik_w , // w      119
+    _ik_x , // x      120
+    _ik_y , // y      121
+    _ik_z , // z      122
+    _ik_L_BRACE ,  // {      123
+    _ik_PIPE ,     // |      124
+    _ik_R_BRACE ,  // }      125
+    _ik_TILDE ,    // ~      126
+    _ik_DEL        // ( del) 127
 } ;
 
 #endif // _HID_USAGE_H
