@@ -438,6 +438,9 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 -----                                    -----
 */
 
+// #define _L_QUOTM    { HID_Q,L_ALT              ,'Ç' } // nicht umgesetzt
+// #define _R_QUOTM    { HID_Q,L_SHF |L_ALT       ,'È' } // nicht umgesetzt
+
 #define _AMPERSAND { HID_7,         SHIFT , '&' }
 #define _ASTERIX   { HID_8,         SHIFT , '*' }
 #define _AT        { HID_2,         SHIFT , '@' }
