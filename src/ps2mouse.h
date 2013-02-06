@@ -26,6 +26,7 @@
 
 #include <stdbool.h>
 #include "Keyboard.h"  // for USB_Mouse_Report_Data_t
+#include "config.h"
 
 #define PS2_ACK 0xFA
 #define DELAY 150

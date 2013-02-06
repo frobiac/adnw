@@ -22,6 +22,9 @@
 #include "analog.h"
 #endif
 
+#include "config.h"
+
+
 void      initKeyboard(void);
 void      init_active_keys(void);
 
