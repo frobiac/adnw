@@ -254,6 +254,7 @@ typedef enum {
     MOD_LAYER_LAST
 } modbits;
 
+/// @todo fix in IKC
 #define _MS_U     { MS_U, 0,    ' ' }
 #define _MS_D     { MS_D, 0,    ' ' }
 #define _MS_L     { MS_L, 0,    ' ' }
