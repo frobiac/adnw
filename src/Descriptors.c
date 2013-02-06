@@ -40,7 +40,7 @@
  */
 
 #include "Descriptors.h"
-//#include "Board/Identifiers.h"
+#include "config.h"
 
 
 /** HID class report descriptor. This is a special descriptor constructed with values from the

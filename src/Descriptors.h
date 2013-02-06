@@ -41,11 +41,6 @@
 
 #include <LUFA/Drivers/USB/USB.h>
 
-// thanks to Openmoko, Inc we now have a dedicated USB Product ID
-#define VENDOR_ID             0x1D50
-#define PRODUCT_ID            0x6033
-#define RELEASE_NUMBER        0x0001
-
 
 /* Type Defines: */
 /** Type define for the device configuration descriptor structure. This must be defined in the
