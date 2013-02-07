@@ -18,6 +18,17 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+/**
+ * @file config.h
+ *
+ * User specific configuration of the firmware.
+ * Debug and PS/2 options must be set in makefile.
+ * Do not forget to adjust matrix.h to the hardware wiring used.
+ *
+ * @todo : Still need to configure command keys here.
+ */
+
+/// define DEBUG_OUTPUT in makefile to enable printf() for hid_listen.
 #ifdef DEBUG_OUTPUT
     #include "hhstdio.h"
 
