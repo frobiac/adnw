@@ -61,11 +61,7 @@ macrocheck:
 	    false; \
 	fi
 
-#
-# DOES nothing - LUFA includes are searched before this, so no helpful msg
-#
 # check that LUFA is there
-# ifeq ($(wildcard LUFA/LUFA/Build/lufa_core.mk),)
 lufacheck:
 	@if test -d LUFA/LUFA ; then \
 		echo "*** LUFA found.";\
@@ -75,9 +71,7 @@ lufacheck:
 
 
 # check whether scrollwheel support is requested and complete
-ifneq (,$(findstring MOUSE_HAS_SCROLL_WHEELS,$(CCFLAGS)))
-	@echo "*** SCROLLWHEEL not defined"
-else
+ifneq (,$(findstring MOUSE_HAS_SCROLL_WHEELS,$(CC_FLAGS)))
 	@echo "*** SCROLLWHEEL defined"; \
 	if [ `grep -c "Vertical" LUFA/LUFA/Drivers/USB/Class/Common/HIDClassCommon.h` -eq 1 ] ; then \
 	    echo "*** and LUFA seems patched, ok"; \
@@ -86,9 +80,13 @@ else
 	    echo -e "*** patch -Np1 -i LUFA-scrollwheel.patch \n*** to fix \n" ; \
 	    false; \
 	fi
+else
+	@echo "*** SCROLLWHEEL not defined"
 endif
 
+
 # Include LUFA build script makefiles
+# lines begin with "-" so if not found, the lufacheck above prints message 
 -include $(LUFA_PATH)/Build/lufa_core.mk
 -include $(LUFA_PATH)/Build/lufa_sources.mk
 -include $(LUFA_PATH)/Build/lufa_build.mk
