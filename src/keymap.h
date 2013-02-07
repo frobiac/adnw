@@ -18,6 +18,7 @@
 #ifndef KEYMAP_H
 #define KEYMAP_H 1
 
+#include <avr/eeprom.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include "hid_usage.h"
