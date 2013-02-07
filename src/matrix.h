@@ -20,13 +20,8 @@
 #define  MATRIX_H
 
 
-
-uint8_t read_col(void);
-void unselect_rows(void);
-void activate(uint8_t row);
-
 // this must be called once before matrix_scan.
-uint8_t read_col(void)
+static inline uint8_t read_col(void)
 {
 #if defined(__AVR_ATmega32U4__)
     uint8_t res = PINF;
@@ -38,7 +33,7 @@ uint8_t read_col(void)
 #endif
 }
 
-void unselect_rows(void)
+static inline void unselect_rows(void)
 {
 #if defined(__AVR_ATmega32U4__)
     DDRD  &= 0b00001011;
@@ -50,7 +45,7 @@ void unselect_rows(void)
 #endif
 }
 
-void activate(uint8_t row)
+static inline void activate(uint8_t row)
 {
 #if defined(__AVR_ATmega32U4__)
     unselect_rows();
