@@ -33,6 +33,7 @@ SRC =   $(LUFA_SRC_USB)          \
 	$(SRCDIR)/trackpoint.c       \
 	$(SRCDIR)/command.c          \
 	$(SRCDIR)/jump_bootloader.c
+##	$(SRCDIR)/hhstdio.c          \
 
 
 LUFA_PATH    = LUFA/LUFA

@@ -16,7 +16,7 @@
 */
 
 #include "command.h"
-#include "hhstdio.h"
+// #include "hhstdio.h"
 #include "hid_usage.h"
 #include "keyboard_class.h"
 #include "keymap.h"

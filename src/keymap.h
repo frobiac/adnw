@@ -19,6 +19,7 @@
 #define KEYMAP_H 1
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "hid_usage.h"
 
 #define LAYERS 5

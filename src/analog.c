@@ -17,10 +17,10 @@
 
 // Simple analog to digitial conversion
 
-#include <avr/io.h>
+//#include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <stdint.h>
-#include <stdlib.h>
+// #include <stdlib.h>
 #include "analog.h"
 
 #include "Keyboard.h"

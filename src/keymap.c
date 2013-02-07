@@ -15,9 +15,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <avr/pgmspace.h>
-#include "hhstdio.h"
+//#include "hhstdio.h"
 #include "keymap.h"
-
+#include "config.h"
 /**
  *  Mappings of row and columns of the switch matrix to the selected layout matrix.
  *  Currently, the two halves of the keyboard are stacked so that

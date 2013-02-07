@@ -25,7 +25,7 @@
 
 */
 
-#include <string.h>
+//#include <string.h>
 #include <limits.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
@@ -33,7 +33,7 @@
 
 #include "Keyboard.h"
 #include "keyboard_class.h"
-#include "hhstdio.h"
+//#include "hhstdio.h"
 
 #include "keymap.h"
 #include "macro.h"
@@ -112,7 +112,7 @@ void initKeyboard()
     g_mouse_keys = 0;
     mkt_timer=idle_count + MKT_TIMEOUT;
 
-    stdio_init();
+    //stdio_init();
     init_cols();
 
     initMacros();
