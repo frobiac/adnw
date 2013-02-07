@@ -112,7 +112,9 @@ void initKeyboard()
     g_mouse_keys = 0;
     mkt_timer=idle_count + MKT_TIMEOUT;
 
-    //stdio_init();
+#ifdef DEBUG_OUTPUT
+    stdio_init();
+#endif
     init_cols();
 
     initMacros();

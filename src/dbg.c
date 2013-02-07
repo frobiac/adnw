@@ -4,8 +4,8 @@
 uint8_t
 DBG__get_report(USB_DBGReport_Data_t *report_data)
 {
-    return 0;
-/*
+    /// @todo Remove DBGReport altogether if no debug
+#ifdef DEBUG_OUTPUT
     if (!stdout_is_empty()) {
         char ch;
         int index = 0;
@@ -15,5 +15,7 @@ DBG__get_report(USB_DBGReport_Data_t *report_data)
     }
 
     return sizeof(USB_DBGReport_Data_t);
-*/
+#else
+    return 0;
+#endif
 }

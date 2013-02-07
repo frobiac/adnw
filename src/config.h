@@ -15,13 +15,17 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// #define TRACE printf
-// #define TRACE false || printf
-#define TRACE(...)
-#define printf(...) 
-
 #ifndef CONFIG_H
 #define CONFIG_H
+
+#ifdef DEBUG_OUTPUT
+    #include "hhstdio.h"
+
+    #define TRACE printf
+#else
+    #define TRACE(...)
+    #define printf(...) 
+#endif
 
 // Unicode strings describing this keyboard
 #define STR_MANUFACTURER L"frobiac"
