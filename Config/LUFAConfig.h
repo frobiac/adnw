@@ -42,10 +42,6 @@
 #ifndef _LUFA_CONFIG_H_
 #define _LUFA_CONFIG_H_
 
-//#define NEW_MOUSE  
-//#define PS2MOUSE 
-//#define MOUSE_HAS_SCROLL_WHEELS
-
 	#if (ARCH == ARCH_AVR8)
 
 		/* Non-USB Related Configuration Tokens: */

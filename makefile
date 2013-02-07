@@ -26,7 +26,6 @@ SRC =   $(LUFA_SRC_USB)          \
 	$(SRCDIR)/dbg.c              \
 	$(SRCDIR)/Descriptors.c      \
 	$(SRCDIR)/keyboard_class.c   \
-	$(SRCDIR)/hhstdio.c          \
 	$(SRCDIR)/keymap.c           \
 	$(SRCDIR)/analog.c           \
 	$(SRCDIR)/macro.c            \
@@ -38,13 +37,19 @@ SRC =   $(LUFA_SRC_USB)          \
 
 LUFA_PATH    = LUFA/LUFA
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/
-CC_FLAGS    += -DNEW_MOUSE  -DPS2MOUSE -DMOUSE_HAS_SCROLL_WHEELS
+CC_FLAGS    += -DPS2MOUSE -DMOUSE_HAS_SCROLL_WHEELS
+CC_FLAGS    += -DDEBUG_OUTPUT
 #CC_FLAGS    += -DMACOS
 #CC_FLAGS    += -DQWERTY
 LD_FLAGS     =
 
+ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
+	SRC += $(SRCDIR)/hhstdio.c
+endif
+
 # Default target
 all: version lufacheck macrocheck
+
 
 
 # create some version information from git
@@ -68,6 +73,12 @@ lufacheck:
 	else \
 		echo -e "*** ERROR: LUFA/LUFA missing - see README for install instructions.\n***        Try to checkout LUFA source with\n***            git submodule init && git submodule update\n\n"; false;\
 	fi
+
+ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
+	@echo "*** DEBUG is defined" ; 
+else
+	@echo "*** DEBUG is NOT defined";
+endif
 
 
 # check whether scrollwheel support is requested and complete
