@@ -25,7 +25,6 @@
 
 */
 
-//#include <string.h>
 #include <limits.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
@@ -33,7 +32,6 @@
 
 #include "Keyboard.h"
 #include "keyboard_class.h"
-//#include "hhstdio.h"
 
 #include "keymap.h"
 #include "macro.h"

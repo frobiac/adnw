@@ -21,9 +21,7 @@
     http://computer-engineering.org/ps2protocol/
 **********************************************************************************/
 
-//#include <avr/io.h>
 #include <util/delay.h>
-//#include <stdlib.h>
 
 #include "Keyboard.h"
 #include "ps2mouse.h"

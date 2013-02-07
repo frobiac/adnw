@@ -15,13 +15,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-//#include <avr/io.h>
 #include <util/delay.h>
-//#include <stdlib.h>
 
 #include "trackpoint.h"
 #include "Keyboard.h"
-//#include "ps2mouse.h"
 
 #define ACC_RAMPTIME 400 // acc incrementation time till maximum
 #define ACC_MAX      2.5 // maximum accelleration factor reachable

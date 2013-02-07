@@ -51,18 +51,15 @@
 #define _KEYBOARD_H_
 
 /* Includes: */
-//#include <avr/io.h>
 #include <avr/wdt.h>
 #include <avr/power.h>
 #include <avr/interrupt.h>
 #include <stdbool.h>
-//#include <string.h>
 
 #include "Descriptors.h"
 
 #include <LUFA/Version.h>
 #include <LUFA/Drivers/Board/LEDs.h>
-//#include "Board/LEDs.h"
 #include <LUFA/Drivers/USB/USB.h>
 
 

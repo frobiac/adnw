@@ -51,7 +51,6 @@
  */
 
 #include <assert.h>
-// #include <stdlib.h>
 
 #include "Keyboard.h"
 #include "keyboard_class.h"
@@ -60,7 +59,6 @@
 #include "hid_usage.h"
 
 #include "trackpoint.h"
-//#include "ps2mouse.h"
 #ifdef ANALOGSTICK
 #include "analog.h"
 #endif

@@ -27,7 +27,6 @@
 #include <stdbool.h>
 #include <avr/eeprom.h>
 
-// #include "hhstdio.h"
 #include <LUFA/Drivers/USB/Class/Device/HIDClassDevice.h>
 #include "keymap.h"
 

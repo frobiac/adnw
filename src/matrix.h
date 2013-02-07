@@ -19,7 +19,6 @@
 #ifndef MATRIX_H
 #define  MATRIX_H
 
-//#include <avr/io.h>
 
 
 uint8_t read_col(void);

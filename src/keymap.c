@@ -15,7 +15,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <avr/pgmspace.h>
-//#include "hhstdio.h"
 #include "keymap.h"
 #include "config.h"
 /**
