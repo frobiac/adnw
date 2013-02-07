@@ -29,11 +29,13 @@ From this root directory, execute
     $ git submodule update
 
 
-To build, please adjust controller type and build switches in makefile and call make from root directory.
+To build, please adjust controller type and build switches in makefile.
+The hardware wiring needs to be specified in matrix.h .
 Further configuration can be achieved by editing src/config.h .
+If you change the code, you are at least required to change the vendor and product id! Valid ids can be retrieved from AVR demoes, or the keyboard examples of the LUFA lib.
 
-If you change this code, you are at least required to change the vendor and product id!
-
+Then simply call
+    $ make
 
 Current Layout
 ==============
