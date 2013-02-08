@@ -119,7 +119,10 @@ void printLayout(uint8_t layer)
         for(uint8_t col=0; col<COLS; ++col) {
             if(col==6) printf("  ");
             ch =getKeyChar(row,col,layer);
-            ch == 92 ? printf("\\\\") : printf("%c", ch);
+            if(ch == 92) 
+                printf("\\\\");
+            else
+                printf("%c", ch);
         }
     }
 }
