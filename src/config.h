@@ -42,6 +42,10 @@
 #define STR_MANUFACTURER L"frobiac"
 #define STR_PRODUCT      L"AdNW TP and mouse"
 
+ #define WHITERECT
+//#define BLUECUBE
+
+
 // thanks to Openmoko, Inc we now have a dedicated USB Product ID
 // Change this if you indend to make changes to the firmware, or distribute it
 // in any way as these are specifically acquired for this setup!

@@ -26,7 +26,7 @@
  *
  */
 
-#define WHITERECT
+#include "config.h"
 
 // this must be called once before matrix_scan.
 static inline uint8_t read_col(void)
