@@ -81,26 +81,6 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 uint8_t getKeyChar (uint8_t row, uint8_t col, uint8_t layer);
 void    printLayout(uint8_t l);
 
-/**
- * MKT keycode if single key and mousekey location is stored in here.
- * In contrast to the keymatrix below, only actual HID-usage codes are used, as
- * there should be no need for modifiers with MKTs.
- * The mouse button locations are put here as there is no overlap whith other keys,
- * but strictly not the right place here.
- */
-static const uint8_t SecondaryUsage[ROWS][COLS] = {
-    { 0,             0,             0,              0,              0,              0 },
-    { 0,            MS_BTN_1,       MS_BTN_2,       MS_BTN_3,       MS_SCROLL,      0 },
-    { 0,             0,             0,              0,              0,              0 },
-    { 0,             0,             0,              HID_ESC,        HID_TAB,        0 /*is real SPACE*/ },
-
-    { 0,             0,             0,              0,              0,              0 },
-    { 0,             0,             0,              0,              0,              0 },
-    { 0,             0,             0,              0,              0,              0 },
-    { HID_BACKSPACE, HID_ENTER,     0,              0,              0,              0 }
-};
-
-
 #define _MACRO _no
 
 #ifdef BLUECUBE
@@ -121,7 +101,7 @@ static const uint8_t SecondaryUsage[ROWS][COLS] = {
   //#define _THUMB_ROW_RIGHT    _L_SHIFT, _MOD_1,  _R_ALT,   _MOD_3,  _MOD_2,  _MOD_3
          //_X, _L_SHIFT, _L_ALT , _L_CTRL, _SPACE, _L_GUI, _MACRO,
 		//	_Y, _MOD_3,_L_SHIFT, _MOD_1,  _R_ALT, _A, _B
-#define KEYMAP( \
+#define KEYMAP( no, \
    k00,k01,k02,k03,k04,k05,        k40,k41,k42,k43,k44,k45, \
    k10,k11,k12,k13,k14,k15,        k50,k51,k52,k53,k54,k55, \
    k20,k21,k22,k23,k24,k25,        k60,k61,k62,k63,k64,k65, \
@@ -152,19 +132,19 @@ static const uint8_t SecondaryUsage[ROWS][COLS] = {
   //#define _THUMB_ROW_LEFT     _MACRO,   _L_GUI,  _L_SHIFT, _L_ALT , _L_CTRL, _SPACE
   //#define _THUMB_ROW_RIGHT    _L_SHIFT, _MOD_1,  _R_ALT,   _MOD_3,  _MOD_2,  _MOD_3
 
-#define KEYMAP( \
+#define KEYMAP( no, \
   no00,k01,k02,k03,k04,k05,        k40,k41,k42,k43,k44,no45, \
   no10,k11,k12,k13,k14,k15,        k50,k51,k52,k53,k54,no55, \
   no20,k21,k22,k23,k24,k25,        k60,k61,k62,k63,k64,no65, \
    t30,t31,t32,t33,t34,t35,t20,t65,t70,t71,t72,t73,t74,t75   \
 ) { \
-  { _no, k01,k02,k03,k04,k05 }, \
-  { _no, k11,k12,k13,k14,k15 }, \
+  {  no, k01,k02,k03,k04,k05 }, \
+  {  no, k11,k12,k13,k14,k15 }, \
   { t20, k21,k22,k23,k24,k25 }, \
   { t35, t30,t31,t32,t33,t34 }, \
 \
-  { _no, k40, k41,k42,k43,k44 }, \
-  { _no, k50, k51,k52,k53,k54 }, \
+  {  no, k40, k41,k42,k43,k44 }, \
+  {  no, k50, k51,k52,k53,k54 }, \
   { t65, k60, k61,k62,k63,k64 }, \
   { t70, t71, t72,t73,t74,t75 } \
 }
@@ -175,8 +155,24 @@ static const uint8_t SecondaryUsage[ROWS][COLS] = {
 #define _THUMB_ROW_LEFT  _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO
 #define _THUMB_ROW_RIGHT _Y, _MOD_3,   _L_SHIFT, _MOD_1,  _R_ALT, _A,     _B 
 
+/**
+ * MKT keycode if single key and mousekey location is stored in here.
+ * In contrast to the keymatrix below, only actual HID-usage codes are used, as
+ * there should be no need for modifiers with MKTs.
+ * The mouse button locations are put here as there is no overlap whith other keys,
+ * but strictly not the right place here.
+ */
+static const uint8_t SecondaryUsage[ROWS][COLS] =
+  KEYMAP( 0,
+ 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0 ,
+ 0, MS_BTN_1, MS_BTN_2, MS_BTN_3, MS_SCROLL, 0 , 0, 0, 0, 0, 0, 0 ,
+ 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0 ,
+ 0, 0, 0, HID_ESC, HID_TAB, 0 /*is real SPACE*/,0,0 , HID_BACKSPACE, HID_ENTER, 0, 0, 0, 0 
+);
+
+
 static const keycode KeyMatrixTest[ROWS][COLS] PROGMEM =
-KEYMAP( 
+KEYMAP( _no,
          _ESC,   _k, _u, _q,     _PERIOD, _j,      _v, _g, _c, _l, _f, _BSPACE ,
          _TAB,   _h, _i, _e,     _a,      _o,      _d, _t, _r, _n, _s, _ENTER  ,
          _DQUOTE,_x, _y, _MINUS, _COMMA,  _SLASH,  _b, _p, _w, _m, _z, _no  ,
@@ -187,7 +183,7 @@ KEYMAP(
 static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM = 
 {
   // normal layer
- KEYMAP( 
+ KEYMAP( _no,
          _ESC,   _k, _u, _q,     _PERIOD, _j,      _v, _g, _c, _l, _f, _BSPACE ,
          _TAB,   _h, _i, _e,     _a,      _o,      _d, _t, _r, _n, _s, _ENTER  ,
          _DQUOTE,_x, _y, _MINUS, _COMMA,  _SLASH,  _b, _p, _w, _m, _z, _no  ,
@@ -196,7 +192,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
   ),
     
   // MOD1 layer (special char)
-  KEYMAP( 
+  KEYMAP( _no, 
     _no, _AT,      _DEGREE,   _L_BRACKET, _R_BRACKET, _HASH   , _EXCLAM,  _LESS,      _GREATER,   _EQUAL,     _AMPERSAND, _no ,
     _no, _BSLASH,  _SLASH,    _L_BRACE,   _R_BRACE,   _ASTERIX, _QUESTION,_L_PAREN,   _R_PAREN,   _PLUS,      _MINUS,     _no ,
     _no, _no,      _DOLLAR,   _PIPE,      _TILDE,     _GRAVE , _CARET,   _PERCENT,   _DQUOTE,    _SQUOTE,    _no,        _no ,
@@ -204,7 +200,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
   ),
     
   // MOD2 layer (movement controls and numbers)
-  KEYMAP( 
+  KEYMAP( _no,
     _no, _PGUP,   _BSPACE,    _UP,        _DEL ,      _PGDN, _SSHARP,_7,         _8,         _9,     _a_UML, _A_UML ,
     _no, _HOME,   _LEFT,      _DOWN,      _RIGHT,     _END , _PERIOD,_4,         _5,         _6,     _o_UML, _O_UML ,
     _no, _ESC,    _TAB,       _INS,       _ENTER,     _no , _0,     _1,         _2,         _3,     _u_UML, _U_UML ,
@@ -213,7 +209,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
 
   // MOD3 MOUSE MODE
   /// @todo These should not be shifted, maybe factor out entirely!
-  KEYMAP( 
+  KEYMAP( _no,
     _no, _no, _no, _no, _a_UML, _o_UML ,   _F1,      _F2,        _F3,        _F4,        _F5,    _F6     ,
     _no, _no, _no, _no, _no,    _no,       _F7,      _F8,        _F9,        _F10,       _F11,   _F12    ,
     _no, _no, _no, _no, _no,    _no,       _no,      _no,        _no,        _no,        _no,    _no     ,
@@ -221,7 +217,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     ),
     
   // MOD4 BU-TECK
-  KEYMAP( 
+  KEYMAP( _no,
     _ESC,   _b, _u, _q, _PERIOD,_x  , _p,   _c, _l, _m, _f, _BSPACE ,
     _TAB,   _h, _i, _e, _a, _o  , _d,   _t, _r, _n, _s, _ENTER  ,
     _DQUOTE,_k, _y, _MINUS, _COMMA, _SLASH , _j,   _g, _w, _v, _z, _no  ,
