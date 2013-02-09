@@ -31,8 +31,8 @@
 /// define DEBUG_OUTPUT in makefile to enable printf() for hid_listen.
 #ifdef DEBUG_OUTPUT
     #include "hhstdio.h"
-
-    #define TRACE printf
+    //#define TRACE printf
+    #define TRACE(...)
 #else
     #define TRACE(...)
     #define printf(...) 
