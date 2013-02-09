@@ -20,33 +20,59 @@
 #define  MATRIX_H
 
 /** @file matrix.h
- * 
+ *
  *  This is a description of the hardware setup used in the BlueCube.
  *  Uses Teensy-2.0 .
- *  
+ *
  */
+
+#define WHITERECT
 
 // this must be called once before matrix_scan.
 static inline uint8_t read_col(void)
 {
     uint8_t res = PINF;
-    // flipped teensy 2.0: F 01  4567
+
+    // flipped teensy 2.0: F 01  4567 for columns
+#ifdef BLUECUBE
     return (( res & 0b11) | ((res & 0b11110000)>>2 ));
+#endif
+#ifdef WHITERECT
+    return (
+               ((res & 0b00000001) << 5) |
+               ((res & 0b00000010) << 3) |
+               ((res & 0b00010000) >> 1) |
+               ((res & 0b00100000) >> 3) |
+               ((res & 0b01000000) >> 5) |
+               ((res & 0b10000000) >> 7)
+           );
+#endif
+
 }
 
 static inline void unselect_rows(void)
 {
+#ifdef BLUECUBE
     DDRD  &= 0b00001011;
     PORTD &= 0b00001011;
     DDRB  &= 0b10001111;
     PORTB &= 0b10001111;
+#endif
+#ifdef WHITERECT
+    DDRD  &= 0b00000000;
+    PORTD &= 0b00000000;
+#endif
 }
+
 
 static inline void activate(uint8_t row)
 {
     unselect_rows();
+
+#ifdef BLUECUBE
     // swap upper and lower ports to have left half first in matrix
     (row<4) ? (row+=4) : (row-=4);
+
     // B6 B5 B4 D7
     // D6 D4 D2 D5
     switch(row) {
@@ -59,6 +85,11 @@ static inline void activate(uint8_t row)
         case 6: DDRD |= (1<<2); break;
         case 7: DDRD |= (1<<5); break;
     }
+#endif
+#ifdef WHITERECT
+	// Row 7 on pin 0
+    DDRD |= (1<<(7-row));
+#endif
 }
 
 static inline void init_cols(void)
@@ -69,4 +100,5 @@ static inline void init_cols(void)
     /* Enable pull-up resistors on inputs */
     PORTF |= (0b11110011);
 }
+
 #endif
