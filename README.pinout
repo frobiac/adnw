@@ -5,10 +5,16 @@ Diode from column connection to key, black bar at key
 8 Rows use C0-C7
 6 Cols use B0-B5
 
-TP mini: 
-	Blue  D2
-	Black D3
-	Purple  VCC
-	Grey 	GND
-	Red	Reset (default GND)
-	 
+Trackpoint pins  Wing?  BC  HM
+1   Red     RST   -     C7  B0
+2   Brown
+3   Black   DATA  D3    C6  B1
+4   White
+5   Grey    GND 
+6   Purple  VCC
+7   Blue    CLOCK D2    E6  B2
+8   Green   LMB         ?
+9   Yellow  RMB         ?
+10  Orange  MMB         ?
+
+RST defaults to ground

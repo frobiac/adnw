@@ -35,13 +35,19 @@
 #define ACC_MAX      2.5 // maximum accelleration factor reachable
 
 
-//Data
-#define DAPORT B
-#define DBIT   7
-
-//Clock
+#ifdef BLUECUBE
+#define DAPORT  B
+#define DBIT    7
 #define CLKPORT E
 #define CBIT    6
+#endif
+#ifdef HYPERNANO
+#define DAPORT  B
+#define DBIT    1
+#define CLKPORT B
+#define CBIT    2
+#endif
+
 /////////////////////////////
 ///General purpose macros////
 #define CONCAT(a,b)     a ## b
