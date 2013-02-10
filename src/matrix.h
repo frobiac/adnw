@@ -37,7 +37,7 @@ static inline uint8_t read_col(void)
 #ifdef BLUECUBE
     return (( res & 0b11) | ((res & 0b11110000)>>2 ));
 #endif
-#ifdef HYPERMINI
+#ifdef HYPERNANO
     return (
                ((res & 0b00000001) << 5) |
                ((res & 0b00000010) << 3) |
@@ -58,7 +58,7 @@ static inline void unselect_rows(void)
     DDRB  &= 0b10001111;
     PORTB &= 0b10001111;
 #endif
-#ifdef HYPERMINI
+#ifdef HYPERNANO
     DDRD  &= 0b00000000;
     PORTD &= 0b00000000;
 #endif
@@ -86,7 +86,7 @@ static inline void activate(uint8_t row)
         case 7: DDRD |= (1<<5); break;
     }
 #endif
-#ifdef HYPERMINI
+#ifdef HYPERNANO
 	// Row 7 on pin 0
     DDRD |= (1<<(7-row));
 #endif
