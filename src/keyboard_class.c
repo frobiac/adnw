@@ -436,7 +436,7 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
 void init_active_keys()
 {
     uint8_t d=0;
-#ifdef WHITERECT
+#ifdef HYPERMINI
     d=1;
 #endif
 
