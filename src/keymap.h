@@ -128,21 +128,24 @@ void    printLayout(uint8_t l);
  *    31 32 33 34 35 30    70 71 72 73 74 75
  */
 
+//_X, SHFT L_ALT LCTRL, SPACE, GUI, _MACRO,  MOD_3, MOD_2,  L_SHIFT, MOD_1,  AltGr, _A, _B
+
 #define KEYMAP( no, \
   no00,k01,k02,k03,k04,k05,        k40,k41,k42,k43,k44,no45, \
   no10,k11,k12,k13,k14,k15,        k50,k51,k52,k53,k54,no55, \
   no20,k21,k22,k23,k24,k25,        k60,k61,k62,k63,k64,no65, \
+/*                              M3 M2  SHF  M1  AGr A  B  */ \
    t30,t31,t32,t33,t34,t35,t20,t65,t70,t71,t72,t73,t74,t75   \
 ) { \
   {  no, k01,k02,k03,k04,k05 }, \
   {  no, k11,k12,k13,k14,k15 }, \
   { t20, k21,k22,k23,k24,k25 }, \
-  { t30, t31,t32,t33,t34,t35 }, \
+  { t35, t30,t31,t32,t33,t34 }, \
 \
   {  no, k40, k41,k42,k43,k44 }, \
   {  no, k50, k51,k52,k53,k54 }, \
   { no00/*t65*/, k60, k61,k62,k63,k64 }, \
-  { t75, t70, t71,t72,t73,t74 } \
+  { t70, t71, t72,t73,t74,t75 } \
 }
 #endif
 
