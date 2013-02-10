@@ -234,7 +234,6 @@ uint8_t get_kb_rpt( uint8_t key_mask, uint8_t col )
  */
 void scan_matrix(void)
 {
-    TRACE("\ns_m ");
     uint8_t i, data;
 
     for (uint8_t row = 0; row < ROWS; ++row) {
@@ -400,6 +399,7 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
         //printf("ERR: Too many active keys!");
         return;
     }
+
     struct Key key;
     key.row=row;
     key.col=col;
@@ -435,16 +435,20 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
   */
 void init_active_keys()
 {
-    if( rowData[3] & (1<<0) ) {
-        rowData[3] &= ~(1<<0);
+    uint8_t d=0;
+#ifdef WHITERECT
+    d=1;
+#endif
+
+    if( rowData[3-d] & (1<<0) ) {
+        rowData[3-d] &= ~(1<<0);
         setMacroMode(true);
         return;
     }
-    // all four corners pressed: switch to command mode
-    else if(// (rowData[0] & (1<<0)) &&
-        (rowData[2] & (1<<0)) &&
-        // (rowData[4] & (1<<5)) &&
-        (rowData[6] & (1<<5)) ) {
+
+    // bottom two corners pressed: switch to command mode
+    else if( (rowData[2+d] & (1<<(0+d))) &&
+             (rowData[6+d] & (1<<5)) ) {
         setCommandMode(true);
     }
 
