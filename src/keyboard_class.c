@@ -836,7 +836,7 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
 void init_active_keys()
 {
     uint8_t d=0;
-#ifdef HYPERMINI
+#ifdef HYPERNANO
     d=1;
 #endif
 

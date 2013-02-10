@@ -118,7 +118,7 @@ void    printLayout(uint8_t l);
 }
 #endif
 
-#ifdef HYPERMINI
+#ifdef HYPERNANO
 /*  Row/col matrix: (0-based)
  *  unused: 11,21,51,61
  *  innermost thumb buttons: 31,41,71,81 
@@ -150,7 +150,7 @@ void    printLayout(uint8_t l);
 }
 #endif
 
-// (+) : Only on HYPERMINI with 7 keys in thumb-row, these are located at keyboards outside edge.
+// (+) : Only on HYPERNANO with 7 keys in thumb-row, these are located at keyboards outside edge.
 //		 Both from left to right
 #define _THUMB_ROW_LEFT  _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO
 #define _THUMB_ROW_RIGHT _Y, _MOD_3,   _L_SHIFT, _MOD_1,  _R_ALT, _A,     _B 

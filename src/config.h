@@ -42,7 +42,7 @@
 #define STR_MANUFACTURER L"frobiac"
 #define STR_PRODUCT      L"AdNW TP and mouse"
 
- #define HYPERMINI
+ #define HYPERNANO
 //#define BLUECUBE
 
 

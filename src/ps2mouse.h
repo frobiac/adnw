@@ -42,7 +42,6 @@
 //Clock
 #define CLKPORT E
 #define CBIT    6
-
 /////////////////////////////
 ///General purpose macros////
 #define CONCAT(a,b)     a ## b
