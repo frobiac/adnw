@@ -67,13 +67,11 @@ void    printLayout(uint8_t l);
  *
  */
 
-  // on BlueCube, the innermost thumb-buttons are on outermost columns in matrix!
-  //         1  6
-  // 3 4 5 6 2  5 1 2 3 4
-  //#define _THUMB_ROW_LEFT     _MACRO,   _L_GUI,  _L_SHIFT, _L_ALT , _L_CTRL, _SPACE
-  //#define _THUMB_ROW_RIGHT    _L_SHIFT, _MOD_1,  _R_ALT,   _MOD_3,  _MOD_2,  _MOD_3
-         //_X, _L_SHIFT, _L_ALT , _L_CTRL, _SPACE, _L_GUI, _MACRO,
-		//	_Y, _MOD_3,_L_SHIFT, _MOD_1,  _R_ALT, _A, _B
+// on BlueCube, the innermost thumb-buttons are on outermost columns in matrix!
+//         0  5
+// 2 3 4 5 1  4 0 1 2 3 4
+//
+
 #define KEYMAP( no, \
    k00,k01,k02,k03,k04,k05,        k40,k41,k42,k43,k44,k45, \
    k10,k11,k12,k13,k14,k15,        k50,k51,k52,k53,k54,k55, \
@@ -87,7 +85,7 @@ void    printLayout(uint8_t l);
   { k40,k41,k42,k43,k44,k45 }, \
   { k50,k51,k52,k53,k54,k55 }, \
   { k60,k61,k62,k63,k64,k65 }, \
-  { t72,t73,t74,t75,t70,t71 } \
+  { t72,t73,t74,t75,t71,t70 } \
 }
 #endif
 
@@ -102,8 +100,6 @@ void    printLayout(uint8_t l);
  *   21 22 23 24 25 20      60 61 62 63 64 65
  *    31 32 33 34 35 30    70 71 72 73 74 75
  */
-  //#define _THUMB_ROW_LEFT     _MACRO,   _L_GUI,  _L_SHIFT, _L_ALT , _L_CTRL, _SPACE
-  //#define _THUMB_ROW_RIGHT    _L_SHIFT, _MOD_1,  _R_ALT,   _MOD_3,  _MOD_2,  _MOD_3
 
 #define KEYMAP( no, \
   no00,k01,k02,k03,k04,k05,        k40,k41,k42,k43,k44,no45, \
@@ -123,10 +119,6 @@ void    printLayout(uint8_t l);
 }
 #endif
 
-// (+) : Only on HYPERNANO with 7 keys in thumb-row, these are located at keyboards outside edge.
-//		 Both from left to right
-#define _THUMB_ROW_LEFT  _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO
-#define _THUMB_ROW_RIGHT _Y, _MOD_3,   _L_SHIFT, _MOD_1,  _R_ALT, _A,     _B 
 
 /**
  * MKT keycode if single key and mousekey location is stored in here.
@@ -140,7 +132,7 @@ static const uint8_t SecondaryUsage[ROWS][COLS] =
  HID_ESC,  0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0 ,
  0, MS_BTN_1, MS_BTN_2, MS_BTN_3, MS_SCROLL, 0 , 0, 0, 0, 0, 0, 0 ,
  0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0 ,
- 0, 0, 0, HID_ESC, HID_TAB, 0 /*is real SPACE*/,0,HID_ESC , HID_BACKSPACE, HID_ENTER, 0, 0, 0, 0 
+ 0, 0, HID_ESC, HID_TAB,0, 0 /*is real SPACE*/,0,HID_ESC , 0, HID_BACKSPACE, HID_ENTER, 0, 0, 0
 );
 
 
