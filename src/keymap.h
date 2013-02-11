@@ -193,8 +193,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
          _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,     _B 
   ),
 
-  // MOD3 MOUSE MODE
-  /// @todo These should not be shifted, maybe factor out entirely!
+  // MOD3 Fx layer
   KEYMAP( _no,
     _no, _no, _no, _no, _a_UML, _o_UML ,   _F1,      _F2,        _F3,        _F4,        _F5,    _F6     ,
     _no, _no, _no, _no, _no,    _no,       _F7,      _F8,        _F9,        _F10,       _F11,   _F12    ,
@@ -211,77 +210,5 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
   )
 }; // end of matrix[][][]
     
-
-/*
-  #define _THUMB_ROW_LEFT     _MACRO,   _L_GUI,  _L_SHIFT, _L_ALT , _L_CTRL, _SPACE
-  #define _THUMB_ROW_RIGHT    _L_SHIFT, _MOD_1,  _R_ALT,   _MOD_3,  _MOD_2,  _MOD_3
-static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM = {
-    // normal layer
-    {
-        { _ESC,   _k, _u, _q, _PERIOD,_j  },
-        { _TAB,   _h, _i, _e, _a, _o  },
-        { _DQUOTE,_x, _y, _MINUS, _COMMA, _SLASH },
-        { _THUMB_ROW_LEFT },
-
-        { _v,   _g, _c, _l, _f, _BSPACE },
-        { _d,   _t, _r, _n, _s, _ENTER  },
-        { _b,   _p, _w, _m, _z, _no  },
-        { _THUMB_ROW_RIGHT}
-    },
-
-    // MOD1 layer (special char)
-    {
-        { _no, _AT,      _DEGREE,   _L_BRACKET, _R_BRACKET, _HASH   },
-        { _no, _BSLASH,  _SLASH,    _L_BRACE,   _R_BRACE,   _ASTERIX},
-        { _no, _no,      _DOLLAR,   _PIPE,      _TILDE,     _GRAVE },
-        { _THUMB_ROW_LEFT },
-
-        { _EXCLAM,  _LESS,      _GREATER,   _EQUAL,     _AMPERSAND, _no },
-        { _QUESTION,_L_PAREN,   _R_PAREN,   _PLUS,      _MINUS,     _no },
-        { _CARET,   _PERCENT,   _DQUOTE,    _SQUOTE,    _no,        _no },
-        { _THUMB_ROW_RIGHT}
-    },
-
-    // MOD2 layer (movement controls and numbers)
-    {
-        { _no, _PGUP,   _BSPACE,    _UP,        _DEL ,      _PGDN},
-        { _no, _HOME,   _LEFT,      _DOWN,      _RIGHT,     _END },
-        { _no, _ESC,    _TAB,       _INS,       _ENTER,     _no },
-        { _THUMB_ROW_LEFT },
-
-        { _SSHARP,_7,         _8,         _9,     _a_UML, _A_UML },
-        { _PERIOD,_4,         _5,         _6,     _o_UML, _O_UML },
-        { _0,     _1,         _2,         _3,     _u_UML, _U_UML },
-        { _THUMB_ROW_RIGHT}
-    },
-
-    // MOD3 MOUSE MODE
-    /// @todo These should not be shifted, maybe factor out entirely!
-    {
-        { _no, _no,     _no,    _no,      _a_UML,     _o_UML },
-        { _no, _no, _no, _no, _no, _no},
-        { _no, _no, _no, _no, _no, _no},
-        { _no, _no, _no, _L_CTRL, _L_ALT, _L_SHIFT },
-
-        { _F1,      _F2,        _F3,        _F4,        _F5,    _F6     },
-        { _F7,      _F8,        _F9,        _F10,       _F11,   _F12    },
-        { _no,      _no,        _no,        _no,        _no,    _no     },
-        { _THUMB_ROW_RIGHT},
-    },
-
-    // MOD4 BU-TECK
-    {
-        { _ESC,   _b, _u, _q, _PERIOD,_x  },
-        { _TAB,   _h, _i, _e, _a, _o  },
-        { _DQUOTE,_k, _y, _MINUS, _COMMA, _SLASH },
-        { _THUMB_ROW_LEFT },
-
-        { _p,   _c, _l, _m, _f, _BSPACE },
-        { _d,   _t, _r, _n, _s, _ENTER  },
-        { _j,   _g, _w, _v, _z, _no  },
-        { _THUMB_ROW_RIGHT}
-    }
-}; // end of matrix[][][]
-*/
-
 #endif
+
