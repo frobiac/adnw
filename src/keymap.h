@@ -144,7 +144,7 @@ void    printLayout(uint8_t l);
 \
   {  no, k40, k41,k42,k43,k44 }, \
   {  no, k50, k51,k52,k53,k54 }, \
-  { no00, k60, k61,k62,k63,k64 }, \
+  { t65/*no00 ESC*/, k60, k61,k62,k63,k64 }, \
   { t70, t71, t72,t73,t74,/*t75*/no65 } \
 }
 #endif
