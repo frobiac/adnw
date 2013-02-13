@@ -98,14 +98,6 @@ void handleCommand(void) {
             printf("\nHardwarePC/Mac::");
             subcmd=SUB_PC_MAC;
             break;
-    /*  is now a subcommand
-        case HID_X:
-            // Makro-Modus aktivieren
-            setMacroMode(true);
-            setCommandMode(false);
-            printf("Macro mode true\n");
-            break;
-    */
         case HID_Q:
             printf("\nLeaving command mode::");
             setCommandMode(false);
