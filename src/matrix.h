@@ -87,7 +87,7 @@ static inline void activate(uint8_t row)
     }
 #endif
 #ifdef HYPERNANO
-	// Row 7 on pin 0
+    // Row 7 on pin 0
     DDRD |= (1<<(7-row));
 #endif
 }

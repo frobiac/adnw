@@ -173,7 +173,7 @@ typedef enum {
     MS_SCROLL,  //keep at end
 //##########################################
     /* Mousekey */
-	MS_BEGIN=0xEF,
+    MS_BEGIN=0xEF,
     MS_U, //  = 0xF0,
     MS_D,
     MS_L,

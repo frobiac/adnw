@@ -593,21 +593,21 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
         return sizeof(USB_KeyboardReport_Data_t);
     }
 
-	// if layer is set to MOUSEKEY LAYER
-	if(getActiveLayer()==(MOD_MOUSEKEY-MOD_LAYER_0)) {
-		uint16_t mk_mask=0;
-		for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
-			struct Key k=activeKeys.keys[i];
-			mk_mask |= (1<<(getKeyCode(k.row, k.col, (MOD_MOUSEKEY-MOD_LAYER_0))-1-MS_BEGIN));
-		}
-		mk_activate(mk_mask);
+    // if layer is set to MOUSEKEY LAYER
+    if(getActiveLayer()==(MOD_MOUSEKEY-MOD_LAYER_0)) {
+        uint16_t mk_mask=0;
+        for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
+            struct Key k=activeKeys.keys[i];
+            mk_mask |= (1<<(getKeyCode(k.row, k.col, (MOD_MOUSEKEY-MOD_LAYER_0))-1-MS_BEGIN));
+        }
+        mk_activate(mk_mask);
 
-		// empty report
-		// @todo: There could technically be keys on mouse layer, but why?
-		memset(&report_data->KeyCode[0], 0, 6 );
+        // empty report
+        // @todo: There could technically be keys on mouse layer, but why?
+        memset(&report_data->KeyCode[0], 0, 6 );
         report_data->Modifier=0;
-		return sizeof(USB_KeyboardReport_Data_t);
-	}
+        return sizeof(USB_KeyboardReport_Data_t);
+    }
 
     uint8_t idx=0;
 
@@ -754,7 +754,7 @@ uint8_t getActiveLayer()
 /**
  *  Returns the modifier needed to send first normal key in active keys.
  *  Example: For "@" on a german PC layout "q"+"AltGr" needs to be send to host.
- *  @todo : Where are the other keys parsed? Would need to split a report in case 
+ *  @todo : Where are the other keys parsed? Would need to split a report in case
  *          another modifier is pressed or needed for later characters.
  */
 uint8_t getActiveKeyCodeModifier()
@@ -800,7 +800,7 @@ bool isModifierKey(uint8_t row, uint8_t col)
     return false;
 }
 
-/** 
+/**
  * check whether layer 0 key is a modifier )
  * @todo : keys that are not modifiers in layer 0 cannot be in other layers (but no sensible use case)
  */
@@ -866,11 +866,11 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
 void init_active_keys()
 {
     // only working silently if there are no keycodes sent on first press of cmd combo.
-    if(CMD_MODE()) { 
+    if(CMD_MODE()) {
         setCommandMode(true);
         return;
     }
-   
+
     // process row/column data to find the active keys
     for (uint8_t row = 0; row < ROWS; ++row) {
         for (uint8_t col = 0; col < COLS; ++col) {
