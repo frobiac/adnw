@@ -165,7 +165,6 @@ static const uint8_t SecondaryUsage[ROWS][COLS] =
  0, 0, HID_ESC, HID_TAB,0, 0 /*is real SPACE*/,0,HID_ESC , 0, HID_BACKSPACE, HID_ENTER, 0, 0, 0
 );
 
-#define MK_LAYER 3
 static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM = 
 {
   // normal layer

@@ -211,7 +211,7 @@ typedef enum {
     MOD_LAYER_1,
     MOD_LAYER_2,
     MOD_LAYER_3,
-    MOD_MOUSE,
+    MOD_MOUSEKEY,
     MOD_COMPOSE,
     MOD_LAYER_LAST
 } modbits;
@@ -364,7 +364,7 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _MOD_1      { HID_NO_KEY,		MOD_LAYER_1 , ' ' }
 #define _MOD_2      { HID_NO_KEY,		MOD_LAYER_2 , ' ' }
 #define _MOD_3      { HID_NO_KEY,		MOD_LAYER_3 , ' ' }
-#define _MOUSE      { HID_NO_KEY,		MOD_MOUSE   , ' ' }
+#define _MOD_MOUSEKEY { HID_NO_KEY,		MOD_MOUSEKEY, ' ' }
 #define _COMPOSE    { HID_NO_KEY,		MOD_COMPOSE , ' ' }
 
 #define _MS_SCROLL   { MS_SCROLL,0,    ' ' }

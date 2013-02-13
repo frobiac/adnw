@@ -594,11 +594,11 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
     }
 
 	// if layer is set to MOUSEKEY LAYER
-	if(MK_LAYER==getActiveLayer()) {
+	if(getActiveLayer()==(MOD_MOUSEKEY-MOD_LAYER_0)) {
 		uint16_t mk_mask=0;
 		for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
 			struct Key k=activeKeys.keys[i];
-			mk_mask |= (1<<(getKeyCode(k.row, k.col, MK_LAYER)-1-MS_BEGIN));
+			mk_mask |= (1<<(getKeyCode(k.row, k.col, (MOD_MOUSEKEY-MOD_LAYER_0))-1-MS_BEGIN));
 		}
 
 		//printf("\nMK: %04x", mk_mask);
