@@ -120,7 +120,7 @@ void    printLayout(uint8_t l);
 /*  Row/col matrix: (0-based)
  *  unused: 11,21,51,61
  *  innermost thumb buttons: 31,41,71,81 
- *
+ *  mapped to match BlueCube without 31 & 75 using the keycode from the outer lower pinky
  *  
  *     01 02 03 04 05 --  -- 41 42 43 44 45
  *    11 12 13 14 15 --    -- 51 52 53 54 55
@@ -162,7 +162,7 @@ static const uint8_t SecondaryUsage[ROWS][COLS] =
  HID_ESC,  0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0 ,
  0, MS_BTN_1, MS_BTN_2, MS_BTN_3, MS_SCROLL, 0 , 0, 0, 0, 0, 0, 0 ,
  0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0 ,
- 0, 0, HID_ESC, HID_TAB,0, 0 /*is real SPACE*/,0,HID_ESC , 0, HID_BACKSPACE, HID_ENTER, 0, 0, 0
+ 0, 0, HID_ESC, HID_TAB,0, 0 /*is real SPACE*/,0, /* | */ HID_ESC , 0, HID_BACKSPACE, HID_ENTER, 0, 0, 0
 );
 
 static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM = 
@@ -190,14 +190,6 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _no, _ESC,    _TAB,       _INS,       _ENTER,     _no , _0,     _1,         _2,         _3,     _u_UML, _U_UML ,
          _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,     _B 
   ),
-
-  // MOD_MOUSE layer
-  KEYMAP( _no,
-    _no, _no, _MS_W_U,  _MS_U,  _MS_W_D,  _no,  _a_UML, _o_UML ,  _F1,      _F2,        _F3,        _F4,       
-    _no, _no, _MS_L, _MS_D, _MS_R, _no,  _X,     _MS_BTN1, _MS_BTN3, _MS_BTN2, _no, _no,
-    _no, _no, _MS_W_L, _no,      _MS_W_R,  _no,  _no,    _MS_ACC0, _MS_ACC1, _MS_ACC2, _no, _no,
-     _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,     _B 
-    ),
   
   // MOD3 Fx layer
   KEYMAP( _no,
@@ -205,6 +197,14 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _no, _no, _no, _no, _no,    _no,       _F7,      _F8,        _F9,        _F10,       _F11,   _F12    ,
     _no, _no, _no, _no, _no,    _no,       _no,      _no,        _no,        _no,        _no,    _no     ,
          _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,     _B 
+    ),
+
+  // MOD_MOUSE layer
+  KEYMAP( _no,
+    _no, _no, _MS_W_U,  _MS_U,  _MS_W_D,  _no,  _a_UML, _o_UML ,  _F1,      _F2,        _F3,        _F4,
+    _no, _no, _MS_L, _MS_D, _MS_R, _no,  _X,     _MS_BTN1, _MS_BTN3, _MS_BTN2, _no, _no,
+    _no, _no, _MS_W_L, _no,      _MS_W_R,  _no,  _no,    _MS_ACC0, _MS_ACC1, _MS_ACC2, _no, _no,
+     _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,     _B
     ),
 /*  
   // MOD4 BU-TECK

@@ -92,11 +92,11 @@ Thumbkey double usage
 - ESC to M3/ or mouse to pinky
 - Macro to pinky
                                _____         _____
-                              |MACRO|       |MOUSE|
+                              |MACRO|       | M3  |
                               |     |       |     |
-                              |     |       | ESC |
- _____________________________|_____|       |_____|______________________________
-|     |     | ALT |CTRL |     | WIN |       | M3  | M1  | M2  |AltGr|     |      |
+  |- HN:only                  |     |       | ESC |                         |- HN only, uses pinky key
+ _V___________________________|_____|       |_____|_________________________V____
+|     |     | ALT |CTRL |     | WIN |       | M2  | M0  | M1  |AltGr|     |MOUSE |
 |     |     |     |     |     |     |       |     |     |     |     |     |      |
 |     |     |     |     |SPACE| TAB |       |     | <-| |ENTER|     |     |      |
  -----------------------------------         ------------------------------------
