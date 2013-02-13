@@ -600,12 +600,10 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 			struct Key k=activeKeys.keys[i];
 			mk_mask |= (1<<(getKeyCode(k.row, k.col, (MOD_MOUSEKEY-MOD_LAYER_0))-1-MS_BEGIN));
 		}
-
-		//printf("\nMK: %04x", mk_mask);
 		mk_activate(mk_mask);
 
 		// empty report
-		// @todo: There can technically be keys on mouse layer, but why?
+		// @todo: There could technically be keys on mouse layer, but why?
 		memset(&report_data->KeyCode[0], 0, 6 );
         report_data->Modifier=0;
 		return sizeof(USB_KeyboardReport_Data_t);
@@ -867,35 +865,17 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
   */
 void init_active_keys()
 {
-    uint8_t d=0;
-#ifdef HYPERNANO
-    d=1;
-#endif
-
-    if( rowData[3-d] & (1<<0) ) {
-        rowData[3-d] &= ~(1<<0);
-        setMacroMode(true);
-        return;
-    }
-
-    // bottom two corners pressed: switch to command mode
-    else if( (rowData[2+d] & (1<<(0+d))) &&
-             (rowData[6+d] & (1<<5)) ) {
+    // only working silently if there are no keycodes sent on first press of cmd combo.
+    if(CMD_MODE()) { 
         setCommandMode(true);
         return;
     }
-
+   
     // process row/column data to find the active keys
     for (uint8_t row = 0; row < ROWS; ++row) {
         for (uint8_t col = 0; col < COLS; ++col) {
             if (rowData[row] & (1UL << col)) {
-                // Check macro and inhibit any keys if valid macro is selected.
-                if(macroMode() && activateMacro(row*ROWS+col)) {
-                    rowData[row] &= ~(1UL << col);
-                    return;
-                } else {
-                    ActiveKeys_Add(row,col);
-                }
+                ActiveKeys_Add(row,col);
             }
         }
     }

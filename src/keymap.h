@@ -84,6 +84,7 @@ void    printLayout(uint8_t l);
 #define _MACRO _no
 
 #ifdef BLUECUBE
+  #define CMD_MODE() ((rowData[2] & (1<<0)) && (rowData[6] & (1<<5)) ) 
 /*
  * 00 01 02 03 04 05    40 41 42 43 44 45
  * 10 11 12 13 14 15    50 51 52 53 54 55
@@ -117,6 +118,7 @@ void    printLayout(uint8_t l);
 #endif
 
 #ifdef HYPERNANO
+  #define CMD_MODE() ( (rowData[3] & (1<<1)) && (rowData[7] & (1<<5)) ) 
 /*  Row/col matrix: (0-based)
  *  unused: 11,21,51,61
  *  innermost thumb buttons: 31,41,71,81 
