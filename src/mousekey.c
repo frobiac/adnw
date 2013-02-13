@@ -79,9 +79,9 @@ static uint16_t last_timer = 0;
 
 static uint8_t move_unit(void)
 {
-    uint16_t unit;
     return (1+(mousekey_repeat*7/255));
 
+    uint16_t unit;
     if (mousekey_accel & (1<<0)) {
         unit = (MOUSEKEY_MOVE_DELTA * mk_max_speed)/4;
     } else if (mousekey_accel & (1<<1)) {
@@ -100,6 +100,8 @@ static uint8_t move_unit(void)
 
 static uint8_t wheel_unit(void)
 {
+    return (1+(mousekey_repeat*3/255));
+
     uint16_t unit;
     if (mousekey_accel & (1<<0)) {
         unit = (MOUSEKEY_WHEEL_DELTA * mk_wheel_max_speed)/4;

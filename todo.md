@@ -98,9 +98,9 @@ Thumbkey double usage
 Unsorted
 --------
 SecondaryUsage repeat (backspace)
-Mousekey: Slower scroll,...
 Testcases/mode
 Use center keys as mouse btns
+Pinkydrop again ?!
 
 maltron branch(es) cleanup
 --------------------------
