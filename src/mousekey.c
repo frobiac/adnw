@@ -17,15 +17,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdint.h>
 #include <util/delay.h>
-//#include "keycode.h"
 #include "hid_usage.h"
-//#include "host.h"
-//#include "timer.h"
-//#include "print.h"
-//#include "debug.h"
 #include "Keyboard.h" // idle_count, should go into timer
 #include "mousekey.h"
-//#include "Descriptor.h"
+
 /* mouse buttons */
 #define MOUSE_BTN1 (1<<0)
 #define MOUSE_BTN2 (1<<1)
@@ -146,44 +141,6 @@ void mk_activate(uint16_t mask)
 
     }
     //mousekey_debug();
-
-}
-
-
-
-void mousekey_task(void)
-{
-    // milliseconds since last update of timer
-//	if((idle_count-last_timer*1000/61) <
-    //printf(" %5d %5d ", idle_count, last_timer);
-    // reset mouse mode after inactivity: idle_count is incremented 61 times per second
-//	if( (idle_count-last_timer)*1000/61 < (mousekey_repeat ? mk_interval : mk_delay*10))
-//    if (timer_elapsed(last_timer) < (mousekey_repeat ? mk_interval : mk_delay*10))
-
-    if (mouse_report.x == 0 && mouse_report.y == 0 && mouse_report.v == 0 && mouse_report.h == 0)
-        return;
-
-    if (mousekey_repeat != UINT8_MAX)
-        mousekey_repeat++;
-
-
-    if (mouse_report.x > 0) mouse_report.x = move_unit();
-    if (mouse_report.x < 0) mouse_report.x = move_unit() * -1;
-    if (mouse_report.y > 0) mouse_report.y = move_unit();
-    if (mouse_report.y < 0) mouse_report.y = move_unit() * -1;
-
-    /* diagonal move [1/sqrt(2) = 0.7] */
-    if (mouse_report.x && mouse_report.y) {
-        mouse_report.x *= 0.7;
-        mouse_report.y *= 0.7;
-    }
-
-    if (mouse_report.v > 0) mouse_report.v = wheel_unit();
-    if (mouse_report.v < 0) mouse_report.v = wheel_unit() * -1;
-    if (mouse_report.h > 0) mouse_report.h = wheel_unit();
-    if (mouse_report.h < 0) mouse_report.h = wheel_unit() * -1;
-
-    mousekey_send();
 }
 
 void mousekey_on(uint8_t code)
@@ -191,36 +148,36 @@ void mousekey_on(uint8_t code)
     if(code < MS_U || code > MS_ACC2)
         return;
     //mousekey_debug();
-    if      (code == MS_U)       mouse_report.y = move_unit() * -1;
-    else if (code == MS_D)     mouse_report.y = move_unit();
-    else if (code == MS_L)     mouse_report.x = move_unit() * -1;
+    if      (code == MS_U)    mouse_report.y = move_unit() * -1;
+    else if (code == MS_D)    mouse_report.y = move_unit();
+    else if (code == MS_L)    mouse_report.x = move_unit() * -1;
     else if (code == MS_R)    mouse_report.x = move_unit();
-    else if (code == MS_W_U)    mouse_report.v = wheel_unit();
+    else if (code == MS_W_U)  mouse_report.v = wheel_unit();
     else if (code == MS_W_D)  mouse_report.v = wheel_unit() * -1;
     else if (code == MS_W_L)  mouse_report.h = wheel_unit() * -1;
-    else if (code == MS_W_R) mouse_report.h = wheel_unit();
-    else if (code == MS_BTN1)     mouse_report.buttons |= MOUSE_BTN1;
-    else if (code == MS_BTN2)     mouse_report.buttons |= MOUSE_BTN2;
-    else if (code == MS_BTN3)     mouse_report.buttons |= MOUSE_BTN3;
-    else if (code == MS_BTN4)     mouse_report.buttons |= MOUSE_BTN4;
-    else if (code == MS_BTN5)     mouse_report.buttons |= MOUSE_BTN5;
-    else if (code == MS_ACC0)   mousekey_accel |= (1<<0);
-    else if (code == MS_ACC1)   mousekey_accel |= (1<<1);
-    else if (code == MS_ACC2)   mousekey_accel |= (1<<2);
+    else if (code == MS_W_R)  mouse_report.h = wheel_unit();
+    else if (code == MS_BTN1) mouse_report.buttons |= MOUSE_BTN1;
+    else if (code == MS_BTN2) mouse_report.buttons |= MOUSE_BTN2;
+    else if (code == MS_BTN3) mouse_report.buttons |= MOUSE_BTN3;
+    else if (code == MS_BTN4) mouse_report.buttons |= MOUSE_BTN4;
+    else if (code == MS_BTN5) mouse_report.buttons |= MOUSE_BTN5;
+    else if (code == MS_ACC0) mousekey_accel |= (1<<0);
+    else if (code == MS_ACC1) mousekey_accel |= (1<<1);
+    else if (code == MS_ACC2) mousekey_accel |= (1<<2);
 }
 
 void mousekey_off(uint8_t code)
 {
     if(code < MS_U || code > MS_ACC2)
         return;
-    if      (code == MS_U       && mouse_report.y < 0) mouse_report.y = 0;
+    if      (code == MS_U     && mouse_report.y < 0) mouse_report.y = 0;
     else if (code == MS_D     && mouse_report.y > 0) mouse_report.y = 0;
     else if (code == MS_L     && mouse_report.x < 0) mouse_report.x = 0;
-    else if (code == MS_R    && mouse_report.x > 0) mouse_report.x = 0;
-    else if (code == MS_W_U    && mouse_report.v > 0) mouse_report.v = 0;
-    else if (code == MS_W_D  && mouse_report.v < 0) mouse_report.v = 0;
-    else if (code == MS_W_L  && mouse_report.h < 0) mouse_report.h = 0;
-    else if (code == MS_W_R && mouse_report.h > 0) mouse_report.h = 0;
+    else if (code == MS_R     && mouse_report.x > 0) mouse_report.x = 0;
+    else if (code == MS_W_U   && mouse_report.v > 0) mouse_report.v = 0;
+    else if (code == MS_W_D   && mouse_report.v < 0) mouse_report.v = 0;
+    else if (code == MS_W_L   && mouse_report.h < 0) mouse_report.h = 0;
+    else if (code == MS_W_R   && mouse_report.h > 0) mouse_report.h = 0;
     else if (code == MS_BTN1) mouse_report.buttons &= ~MOUSE_BTN1;
     else if (code == MS_BTN2) mouse_report.buttons &= ~MOUSE_BTN2;
     else if (code == MS_BTN3) mouse_report.buttons &= ~MOUSE_BTN3;
@@ -232,13 +189,6 @@ void mousekey_off(uint8_t code)
 
     if (mouse_report.x == 0 && mouse_report.y == 0 && mouse_report.v == 0 && mouse_report.h == 0)
         mousekey_repeat = 0;
-}
-
-void mousekey_send(void)
-{
-    mousekey_debug();
-    //host_mouse_send(&mouse_report);
-    //last_timer = idle_count; //timer_read();
 }
 
 uint8_t getMouseKeyReport(USB_MouseReport_Data_t *MouseReport)
@@ -253,8 +203,6 @@ uint8_t getMouseKeyReport(USB_MouseReport_Data_t *MouseReport)
         return sizeof(USB_MouseReport_Data_t);
 
     }
-//	if((idle_count-last_timer) < 61/1000*500)
-//		return;
 
     if (mouse_report.x == 0 && mouse_report.y == 0 && mouse_report.v == 0 && mouse_report.h == 0  && mouse_report.buttons==0)
         return 0;
