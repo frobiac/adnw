@@ -171,6 +171,29 @@ typedef enum {
     MS_BTN_2,
     MS_BTN_3,
     MS_SCROLL,  //keep at end
+//##########################################
+    /* Mousekey */
+	MS_BEGIN=0xEF,
+    MS_U, //  = 0xF0,
+    MS_D,
+    MS_L,
+    MS_R,
+    MS_BTN1,
+    MS_BTN2,
+    MS_BTN3,
+    MS_BTN4,
+    MS_BTN5,         /* 0xF8 */
+    /* Mousekey wheel */
+    MS_W_U,
+    MS_W_D,
+    MS_W_L,
+    MS_W_R,     /* 0xFC */
+    /* Mousekey accel */
+    MS_ACC0,
+    MS_ACC1,
+    MS_ACC2,        /* 0xFF */
+//##########################################
+
 
     // modifier bits to use, actual HID-modifier is (1<<(modbit-MOD_CTRL))
     MOD_L_CTRL=0xE0, // E0 is rather arbitrarily taken to be same as HID
@@ -192,6 +215,23 @@ typedef enum {
     MOD_COMPOSE,
     MOD_LAYER_LAST
 } modbits;
+
+#define _MS_U     { MS_U, 0,    ' ' }
+#define _MS_D     { MS_D, 0,    ' ' }
+#define _MS_L     { MS_L, 0,    ' ' }
+#define _MS_R     { MS_R, 0,    ' ' }
+#define _MS_W_U     { MS_W_U, 0,    ' ' }
+#define _MS_W_D     { MS_W_D, 0,    ' ' }
+#define _MS_W_L     { MS_W_L, 0,    ' ' }
+#define _MS_W_R     { MS_W_R, 0,    ' ' }
+#define _MS_ACC0    { MS_ACC0, 0,    ' ' }
+#define _MS_ACC1    { MS_ACC1, 0,    ' ' }
+#define _MS_ACC2    { MS_ACC2, 0,    ' ' }
+#define _MS_BTN1    { MS_BTN1, 0,    ' ' }
+#define _MS_BTN2    { MS_BTN2, 0,    ' ' }
+#define _MS_BTN3    { MS_BTN3, 0,    ' ' }
+#define _MS_BTN4    { MS_BTN4, 0,    ' ' }
+#define _MS_BTN5    { MS_BTN5, 0,    ' ' }
 
 /// @todo : cleanup modifiers everywhere
 #define NONE  0

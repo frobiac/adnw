@@ -32,6 +32,7 @@ SRC =   $(LUFA_SRC_USB)          \
 	$(SRCDIR)/ps2mouse.c         \
 	$(SRCDIR)/trackpoint.c       \
 	$(SRCDIR)/command.c          \
+	$(SRCDIR)/mousekey.c         \
 	$(SRCDIR)/jump_bootloader.c
 
 

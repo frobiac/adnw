@@ -34,6 +34,7 @@
 #include "keyboard_class.h"
 
 #include "keymap.h"
+#include "mousekey.h"
 #include "macro.h"
 #include "matrix.h"
 #include "command.h"
@@ -256,6 +257,11 @@ uint8_t getExtraReport(USB_ExtraReport_Data_t *report_data)
     clearActiveKeys();
     scan_matrix();
     init_active_keys();
+
+    if(activeKeys.keycnt==0) {
+        // also need to reset MOUSEKEY
+        mk_activate(0);
+    }
 
     // no keys or macromode or command mode
     // then send empty report
@@ -587,6 +593,24 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
         return sizeof(USB_KeyboardReport_Data_t);
     }
 
+	// if layer is set to MOUSEKEY LAYER
+	if(MK_LAYER==getActiveLayer()) {
+		uint16_t mk_mask=0;
+		for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
+			struct Key k=activeKeys.keys[i];
+			mk_mask |= (1<<(getKeyCode(k.row, k.col, MK_LAYER)-1-MS_BEGIN));
+		}
+
+		//printf("\nMK: %04x", mk_mask);
+		mk_activate(mk_mask);
+
+		// empty report
+		// @todo: There can technically be keys on mouse layer, but why?
+		memset(&report_data->KeyCode[0], 0, 6 );
+        report_data->Modifier=0;
+		return sizeof(USB_KeyboardReport_Data_t);
+	}
+
     uint8_t idx=0;
 
     for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
@@ -729,7 +753,12 @@ uint8_t getActiveLayer()
     return layer;
 }
 
-
+/**
+ *  Returns the modifier needed to send first normal key in active keys.
+ *  Example: For "@" on a german PC layout "q"+"AltGr" needs to be send to host.
+ *  @todo : Where are the other keys parsed? Would need to split a report in case 
+ *          another modifier is pressed or needed for later characters.
+ */
 uint8_t getActiveKeyCodeModifier()
 {
     TRACE("gAKCM ");
@@ -762,7 +791,8 @@ uint8_t getActiveModifiers()
 
 
 /**
-  * check whether layer 0 key is a modifier
+  * check whether layer 0 key is a modifier.
+  * @todo : keys that are not modifiers in layer 0 cannot be in other layers (but no sensible use case)
   */
 bool isModifierKey(uint8_t row, uint8_t col)
 {
@@ -772,8 +802,10 @@ bool isModifierKey(uint8_t row, uint8_t col)
     return false;
 }
 
-/** check whether layer 0 key is a modifier )
-  */
+/** 
+ * check whether layer 0 key is a modifier )
+ * @todo : keys that are not modifiers in layer 0 cannot be in other layers (but no sensible use case)
+ */
 bool isLayerKey(uint8_t row, uint8_t col)
 {
     TRACE("iLK ");

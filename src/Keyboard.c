@@ -59,6 +59,7 @@
 #include "hid_usage.h"
 
 #include "trackpoint.h"
+#include "mousekey.h"
 #ifdef ANALOGSTICK
 #include "analog.h"
 #endif
@@ -332,7 +333,7 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
 
     else if (HIDInterfaceInfo == &Mouse_HID_Interface) {
         USB_MouseReport_Data_t* MouseReport = (USB_MouseReport_Data_t*)ReportData;
-        *ReportSize = getMouseReport(MouseReport);
+        *ReportSize = getMouseKeyReport(MouseReport);
     }
     else if (HIDInterfaceInfo == &Extra_HID_Interface) {
         USB_ExtraReport_Data_t* ExtraReport = (USB_ExtraReport_Data_t*)ReportData;
