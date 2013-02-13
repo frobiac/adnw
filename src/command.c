@@ -32,8 +32,10 @@ enum {
     SUB_READ,
     SUB_LAYOUT,
     SUB_GEOAREA,
-    SUB_PC_MAC
+    SUB_PC_MAC,
+    SUB_MACRO
 };
+
 static uint8_t subcmd;           ///< currently active subcommand
 
 #define MAXLEN 20
@@ -96,12 +98,14 @@ void handleCommand(void) {
             printf("\nHardwarePC/Mac::");
             subcmd=SUB_PC_MAC;
             break;
+    /*  is now a subcommand
         case HID_X:
             // Makro-Modus aktivieren
             setMacroMode(true);
             setCommandMode(false);
             printf("Macro mode true\n");
             break;
+    */
         case HID_Q:
             printf("\nLeaving command mode::");
             setCommandMode(false);
@@ -152,6 +156,10 @@ void handleCommand(void) {
             printf("\nHID code read active.");
             subcmd=SUB_READ;
             idx=0;
+            break;
+        case HID_X:
+            subcmd=SUB_MACRO;
+            printf("Macro mode true\n");
             break;
         default:
             printf("\nUnknown:");
@@ -209,6 +217,11 @@ void handleSubCmd(struct Key k) {
             setCommandMode(false);
             break;
         }
+        case SUB_MACRO:
+            setMacroMode(true);
+            activateMacro(k.row*ROWS+k.col);
+            setCommandMode(false);
+            break;
         default:
             break;
     }
