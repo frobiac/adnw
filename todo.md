@@ -87,9 +87,24 @@ Problems with layout
 
 Thumbkey double usage
 ---------------------
-win  alt  shft ctrl  | -  mod3 mod4  altgr
-     esc  spac tab        back enter del
+- outmost column only on hypernano
+- make lower center keys mousebuttons for TP
+- ESC to M3/ or mouse to pinky
+- Macro to pinky
+                               _____         _____
+                              |MACRO|       |MOUSE|
+                              |     |       |     |
+                              |     |       | ESC |
+ _____________________________|_____|       |_____|______________________________
+|     |     | ALT |CTRL |     | WIN |       | M3  | M1  | M2  |AltGr|     |      |
+|     |     |     |     |     |     |       |     |     |     |     |     |      |
+|     |     |     |     |SPACE| TAB |       |     | <-| |ENTER|     |     |      |
+ -----------------------------------         ------------------------------------
 
+Unsorted
+--------
+SecondaryUsage repeat (backspace)
+Testcases/mode
 Use center keys as mouse btns
 
 maltron branch(es) cleanup
