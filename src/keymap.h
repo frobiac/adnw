@@ -140,12 +140,12 @@ void    printLayout(uint8_t l);
   {  no, k01,k02,k03,k04,k05 }, \
   {  no, k11,k12,k13,k14,k15 }, \
   { t20, k21,k22,k23,k24,k25 }, \
-  { t35, t30,t31,t32,t33,t34 }, \
+  { t35, /*t30*/no20,t31,t32,t33,t34 }, \
 \
   {  no, k40, k41,k42,k43,k44 }, \
   {  no, k50, k51,k52,k53,k54 }, \
-  { no00/*t65*/, k60, k61,k62,k63,k64 }, \
-  { t70, t71, t72,t73,t74,t75 } \
+  { no00, k60, k61,k62,k63,k64 }, \
+  { t70, t71, t72,t73,t74,/*t75*/no65 } \
 }
 #endif
 
@@ -171,9 +171,8 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
  KEYMAP( _no,
          _MOD_3,   _k, _u, _q,     _PERIOD, _j,      _v, _g, _c, _l, _f, _BSPACE ,
          _TAB,   _h, _i, _e,     _a,      _o,      _d, _t, _r, _n, _s, _ENTER  ,
-         _DQUOTE,_x, _y, _MINUS, _COMMA,  _SLASH,  _b, _p, _w, _m, _z, _no  ,
-         _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,     _B 
-// _a,_b,_c,_d,_e,_f,_g, _a,_b,_c,_d,_e,_f,_g
+         _DQUOTE,_x, _y, _MINUS, _COMMA,  _SLASH,  _b, _p, _w, _m, _z, _MOD_MOUSEKEY,
+         _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,  _B  
   ),
     
   // MOD1 layer (special char)
