@@ -3,7 +3,6 @@
 
 LUFA
 ----
-* test existance in makefile
 * inquire about upstream horizontal scroll support
 
 Documentation
@@ -29,7 +28,6 @@ HW
 Refactor
 --------
 * english / german host layout
-* maybe use KEYMAP macro like tmk?
 * check licenses
 
 Layout
@@ -66,8 +64,6 @@ Coding style
 ------------
 * astyle --style=linux --convert-tabs --lineend=linux --indent=spaces=4  -o -O -S src/\*.[ch]
 
-
-
 Ideas
 -----
 - copy paste on mouse middle btn on Win possible?
@@ -89,21 +85,20 @@ Thumbkey double usage
 ---------------------
 - outmost column only on hypernano
 - make lower center keys mousebuttons for TP
-- ESC to M3/ or mouse to pinky
-- Macro to pinky
                                _____         _____
-                              |MACRO|       | M3  |
+                              |     |       | M3  |
                               |     |       |     |
-  |- HN:only                  |     |       | ESC |                         |- HN only, uses pinky key
+  |- HN:only                  |     |       |     |                         |- HN only, uses pinky key
  _V___________________________|_____|       |_____|_________________________V____
 |     |     | ALT |CTRL |     | WIN |       | M2  | M0  | M1  |AltGr|     |MOUSE |
 |     |     |     |     |     |     |       |     |     |     |     |     |      |
-|     |     |     |     |SPACE| TAB |       |     | <-| |ENTER|     |     |      |
+|     |     |     |     |SPACE| TAB |       | ESC | <-| |ENTER|     |     |      |
  -----------------------------------         ------------------------------------
 
 Unsorted
 --------
 SecondaryUsage repeat (backspace)
+Mousekey: Slower scroll,...
 Testcases/mode
 Use center keys as mouse btns
 
