@@ -93,6 +93,10 @@ void handleCommand(void) {
     // Char without Meaning:
     //  O:MouseMode, R:PrintKeyHID
     switch(hid) {
+        case HID_V:
+            printf("\nAdNW %s", FW_VERSION);
+            setCommandMode(false);
+            break;
         case HID_C:
             PrintConfiguration();
             break;

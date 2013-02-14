@@ -96,4 +96,5 @@ uint8_t     g_mouse_keys_enabled;       ///< temporarily active while mouse in i
 
 volatile uint32_t idle_count;   ///< interupt-incremented timer used for timeouts of MKT and mousekeys
 
-#endif
+#endif // _KEYBOARD_H_
+

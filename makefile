@@ -48,14 +48,15 @@ ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
 	SRC += $(SRCDIR)/hhstdio.c
 endif
 
+FW_VERSION := $(shell git describe --tags --always)-$(shell git log --pretty=format:%cd --date=short -n1)-$(shell git describe --tags --always --all | sed s:heads/::| tr " " "_")
+ifeq ('',$(FW_VERSION))
+FW_VERSION := unknown_version-$(shell date +%Y%m%d)
+endif
+
+CC_FLAGS    += -DFW_VERSION=\"$(FW_VERSION)\"
+
 # Default target
-all: version lufacheck macrocheck
-
-
-
-# create some version information from git
-version:
-	@$(SRCDIR)/version.sh > $(SRCDIR)/version.h
+all: lufacheck macrocheck
 
 
 # test macro existance

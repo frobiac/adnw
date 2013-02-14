@@ -64,7 +64,6 @@
 #include "analog.h"
 #endif
 
-#include "version.h"
 #include "macro.h"
 
 /** Buffer to hold the previously generated Mouse HID report, for comparison purposes inside the HID class driver. */
@@ -237,15 +236,7 @@ void SetupHardware()
         printf("\nTP init FAILED!");
 #endif
 
-    
-    #ifdef VERSIONINFO
-		printf("\nAdNW KB %s - ", VERSIONINFO);
-    #endif
-
-    #ifdef BUILDDATE
-		printf("%s",  BUILDDATE);
-    #endif
-
+    printf("\nAdNW : %s", FW_VERSION); 
 
 #if defined(BOOTLOADER_TEST)
     uint8_t bootloader = eeprom_read_byte(&ee_bootloader);
