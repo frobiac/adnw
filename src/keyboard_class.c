@@ -320,7 +320,7 @@ void changeSecondUseState(SecondUse_State currentState, SecondUse_State newState
         if (secondUse_state == SECOND_USE_ACTIVE) stateStr = "SECOND_USE_ACTIVE";
         if (secondUse_state == SECOND_USE_PASSIVE) stateStr = "SECOND_USE_PASSIVE";
         if (secondUse_state == SECOND_USE_OFF) stateStr = "SECOND_USE_OFF";
-        // printf("\nSecondUse: next state: %s",stateStr);
+        TRACE("\nSecondUse: next state: %s",stateStr);
     }
 }
 
@@ -338,7 +338,7 @@ void handleModifierTransmission(USB_KeyboardReport_Data_t* report_data, Modifier
 
         default:
             // ungŸltiger Zustand! Sollte eigentlich nie auftreten
-            printf("ModifierTransmission: illegal state");
+            TRACE("ModifierTransmission: illegal state");
             break;
     }
     // Loggen, wenn sich der Zustand Šndert
@@ -347,7 +347,7 @@ void handleModifierTransmission(USB_KeyboardReport_Data_t* report_data, Modifier
         prev_modTrans_state = newState;
         if (newState == MOD_TRANS_ON) stateStr = "MOD_TRANS_ON";
         if (newState == RETARD_MOD_TRANS) stateStr = "RETARD_MOD_TRANS";
-        printf("; ModifierTransmission: next state: %s\n",stateStr);
+        TRACE("; ModifierTransmission: next state: %s\n",stateStr);
     }
 }
 
