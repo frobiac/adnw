@@ -43,7 +43,8 @@ static uint8_t idx =0;
 static uint8_t str[MAXLEN];
 
 void setCommandMode(bool on) {
-    printf("\nCMD %s ", on ? "active [qtp] " : "off" );
+    if(on!=command)
+        printf("\nCMD %s ", on ? "active [qtp] " : "off" );
     command=on;
     clearActiveKeys();
     subcmd = SUB_NONE;
@@ -62,6 +63,13 @@ void PrintConfiguration() {
     printf("\nMac/PC:  %u (0=PC,        1=Mac)\n", eeprom_read_byte(&altMacOrPC));
 }
 
+/** Called when command mode is active.
+ *
+ *  First pressed key is mapped to first layer defined and evaluated. Use only a-z and 0-9 for commands, others exit this mode. 
+ *
+ *  @todo: leave automatically on unknown command or timeout, or signal mode through leds.
+ *
+ */
 void handleCommand(void) {
     if(!commandMode())
         return;
@@ -70,6 +78,7 @@ void handleCommand(void) {
         return;
 
     struct Key k=activeKeys.keys[0];
+    
     uint8_t hid = getKeyCode(k.row, k.col, 0);
 
     if(subcmd) {
@@ -85,7 +94,6 @@ void handleCommand(void) {
     //  O:MouseMode, R:PrintKeyHID
     switch(hid) {
         case HID_C:
-            // G:GeoArea umschalten
             PrintConfiguration();
             break;
         case HID_G:
@@ -99,6 +107,7 @@ void handleCommand(void) {
             subcmd=SUB_PC_MAC;
             break;
         case HID_Q:
+        case HID_ESC:
             printf("\nLeaving command mode::");
             setCommandMode(false);
             break;
@@ -154,8 +163,7 @@ void handleCommand(void) {
             printf("Macro mode true\n");
             break;
         default:
-            printf("\nUnknown:");
-            //setCommandMode(false);
+            printf("\nUnknown command.");
             break;
     }
 }
