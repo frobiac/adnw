@@ -821,9 +821,14 @@ bool isNormalKey(uint8_t row, uint8_t col)
     return !(isLayerKey(row,col) || isModifierKey(row,col));
 }
 
+/**
+ * Returns the corresponding mouse hid code, or 0 if none is defined for this matrix position.
+ *
+ * This enables overiding normal keys when in mouse mode.
+ */
 uint8_t getMouseKey(uint8_t row, uint8_t col)
 {
-    uint16_t hid = SecondaryUsage[row][col];
+    uint16_t hid = MouseUsage[row][col];
     if ( hid >= MS_BTN_1 && hid <= MS_SCROLL )
         return (1<<(hid-MS_BTN_1));
     return 0;
