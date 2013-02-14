@@ -307,14 +307,14 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
         return 0;
 
     int16_t dx=0, dy=0;
-    uint8_t btns=0;
+    uint8_t ps2_buttons=0;
     float factor;
 
 #ifdef PS2MOUSE
-    ps2_read_mouse(&dx, &dy, &btns);
+    ps2_read_mouse(&dx, &dy, &ps2_buttons);
 #endif
 
-    if( (g_mouse_keys & 0x0F) || (btns & 0x07) || (dx+dy) > 0 /* Test for spurious movements */ ) {
+    if( (g_mouse_keys & 0x0F) || (ps2_buttons & 0x07) || (dx+dy) > 0 /* Test for spurious movements */ ) {
         if(g_mouse_keys_enabled==0) {
             g_mouse_keys_enabled=1;
             accel=0;
@@ -331,7 +331,7 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
         scrollcnt=0;
     }
 
-    if(g_mouse_keys_enabled || btns) {
+    if(g_mouse_keys_enabled || ps2_buttons) {
         factor= 1 + accel * (ACC_MAX-1) / ACC_RAMPTIME;
 
 #ifdef MOUSE_HAS_SCROLL_WHEELS
@@ -340,7 +340,7 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
         MouseReport->Button=0;
 
         // keyboard mouse buttons only in mousemode
-        if( (btns & 0x05)==0x05 || (g_mouse_keys & 0x08)) {
+        if( (ps2_buttons & 0x05)==0x05 || (g_mouse_keys & 0x08)) {
             int8_t sx=0, sy=0;
 
             if( dx!=0 ) {
@@ -376,10 +376,10 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 
             // do not emit the scroll button
             MouseReport->Button = g_mouse_keys & ~(0x08);
-            MouseReport->Button |= btns;    // PS/2 buttons if set
+            MouseReport->Button |= ps2_buttons;    // PS/2 buttons if set
         }
         g_mouse_keys=0;
-        btns=0;
+        ps2_buttons=0;
 
         return sizeof(USB_MouseReport_Data_t);
 
