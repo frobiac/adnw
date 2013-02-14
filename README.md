@@ -14,10 +14,14 @@ It enables a different, more ergonomic layout without any further drivers on any
 
 Credits
 -------
-The driver was originally based on humblehackers hhkb firmware, but I found some things (while pretty neat and cleanly implemented) a little too difficult to adjust, so I revamped everything but the most basic USB code.
+The driver was originally based on humblehackers [hhkb firmware][hhkb], but I found some things (while pretty neat and cleanly implemented) a little too difficult to adjust, so I revamped everything but the most basic USB code.
+
+Implementation of mousekey layer, KEYMAP macro and other neat ideas borrowed from the very advanced [tmk_firmware][tmk].
+
+Klaus Weber contributed greatly to an enhanced secondary use state machine and provided several other modifications, including alternate layouts as well as PC/Mac and host language differentiations.
 
 PS/2 support is credited in large part to Akshay Srinivasan <akshaysrinivasan@nitk.ac.in>
-
+ 
 
 Install
 -------
@@ -65,8 +69,14 @@ Current default layout as implemented in [keymap.h](/src/keymap.h) :
     Pos1 Left Down Righ End    . 4 5 6 ö Ö
     Esc  Tab  Ins  Ret  Undo   0 1 2 3 ü Ü
 
+##### Mousekeys
+    tbd, see keymap.h
+
 
 [DT_hw]:     http://deskthority.net/workshop-f7/my-diy-keyboard-collection-or-how-i-became-a-kb-geek-t2534.html 
 [DT_layout]: http://deskthority.net/keyboards-f2/the-decent-keyboard-layout-discussion-thread-matrix-t2898-30.html
 [adnw]:      http://www.adnw.de
 [neo]:       http://www.neo-layout.org/
+[tmk]:       http://github.com/tmk/tmk_keyboard
+[ergodox]:   http://github.com/benblazak/ergodox-firmware
+[hhkb]:      http://github.com/humblehacker/keyboard
