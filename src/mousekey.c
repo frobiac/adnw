@@ -70,7 +70,7 @@ uint8_t mk_wheel_time_to_max = MOUSEKEY_WHEEL_TIME_TO_MAX;
 
 
 static uint16_t last_timer = 0;
-
+static bool prev_empty=true;
 
 static uint8_t move_unit(void)
 {
@@ -193,18 +193,11 @@ void mousekey_off(uint8_t code)
 
 uint8_t getMouseKeyReport(USB_MouseReport_Data_t *MouseReport)
 {
-    // return an empty report every second time - else it stalls when max accel is reached
-    if(++count%2) {
-        MouseReport->X=0;
-        MouseReport->Y=0;
-        MouseReport->V=0;
-        MouseReport->H=0;
-        MouseReport->Button=0;
-        return sizeof(USB_MouseReport_Data_t);
-    }
-
+    // If sending of reports is not forced in calling function,
+    // return an empty report every second time - else it stalls when max accel is reached.
     if (mouse_report.x == 0 && mouse_report.y == 0 && mouse_report.v == 0 && mouse_report.h == 0  && mouse_report.buttons==0)
         return 0;
+
     MouseReport->X= mouse_report.x;
     MouseReport->Y= mouse_report.y;
     MouseReport->V= mouse_report.v;

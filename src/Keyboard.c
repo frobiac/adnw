@@ -324,6 +324,8 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
 
     else if (HIDInterfaceInfo == &Mouse_HID_Interface) {
         USB_MouseReport_Data_t* MouseReport = (USB_MouseReport_Data_t*)ReportData;
+
+        /// @todo : is this needed?
         // mouse through key emulation only if PS/2 mouse report is "empty" 
         *ReportSize = getMouseReport(MouseReport);
         if( *ReportSize == 0 || ( MouseReport->X == 0 && MouseReport->Y == 0 &&
@@ -335,6 +337,9 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
                MouseReport->Button = 0;
            }
         }
+        // force sending so mouse stops when empty
+        return true;
+
     }
     else if (HIDInterfaceInfo == &Extra_HID_Interface) {
         USB_ExtraReport_Data_t* ExtraReport = (USB_ExtraReport_Data_t*)ReportData;
