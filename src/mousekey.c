@@ -1,18 +1,21 @@
 /*
-Copyright 2011 Jun Wako <wakojun@gmail.com>
+    Based on mousekey implementation from tmk_keyboard project,
+    Copyright 2011 Jun Wako <wakojun@gmail.com>
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or
-(at your option) any later version.
+    Copyright 2013 Stefan Fröbe, <frobiac /at/ gmail [d0t] com>
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <stdint.h>
@@ -32,106 +35,75 @@ typedef struct {
 
 report_mouse_t mouse_report = {0};
 
-static uint8_t mousekey_repeat =  0;
 static uint8_t mousekey_accel = 0;
-//static uint8_t mk_repeat =  0;
-//static uint8_t mk_accel = 0;
-static uint8_t count=0;
 
 static void mousekey_debug(void);
-
-
 /*
  * Mouse keys  acceleration algorithm
  *  http://en.wikipedia.org/wiki/Mouse_keys
  *
  *  speed = delta * max_speed * (repeat / time_to_max)**((1000+curve)/1000)
  */
-/* milliseconds between the initial key press and first repeated motion event (0-2550) */
-uint8_t mk_delay = MOUSEKEY_DELAY/10;
-/* milliseconds between repeated motion events (0-255) */
-uint8_t mk_interval = MOUSEKEY_INTERVAL;
-/* steady speed (in action_delta units) applied each event (0-255) */
-uint8_t mk_max_speed = MOUSEKEY_MAX_SPEED;
-/* number of events (count) accelerating to steady speed (0-255) */
-uint8_t mk_time_to_max = MOUSEKEY_TIME_TO_MAX;
-/* ramp used to reach maximum pointer speed (NOT SUPPORTED) */
-//int8_t mk_curve = 0;
-/* wheel params */
-uint8_t mk_wheel_max_speed = MOUSEKEY_WHEEL_MAX_SPEED;
-uint8_t mk_wheel_time_to_max = MOUSEKEY_WHEEL_TIME_TO_MAX;
+/*
 
-/// @todo: drop every other event!
+*/
 
-#define MK_DELAY        200
-#define MK_TIME_TO_MAX 1200
-#define MK_MOVE_MAX      36
-#define MK_MOVE_MIN       3
-#define MS_PER_REPORT    30 // ms until next report is filled with data
+#define MK_XY_DELAY     200 ///< delay [ms] until start of acceleration
+#define MK_XY_TTM      1200 ///< time  [ms] until maximum acceleration is reached
+#define MK_XY_MAX        27 ///< maximum move increment per event
+#define MK_XY_MIN         3 ///< minimal move incerment per event
+#define MK_VH_DELAY     700
+#define MK_VH_TTM      2000
+#define MK_VH_MAX         5
+#define MK_VH_MIN         1
+
+#define MS_PER_REPORT    30 ///< time [ms] until next report is filled with data
 
 static uint32_t first_press_timer = 0;
 static uint32_t last_sent = 0;
 
 static uint8_t move_unit(void)
 {
-
-    //return (1+(mousekey_repeat*7/255));
-
     uint16_t unit;
-    if (mousekey_accel & (1<<0)) {
-        unit = (MOUSEKEY_MOVE_DELTA * mk_max_speed)/4;
-    } else if (mousekey_accel & (1<<1)) {
-        unit = (MOUSEKEY_MOVE_DELTA * mk_max_speed)/2;
-    } else if (mousekey_accel & (1<<2)) {
-        unit = (MOUSEKEY_MOVE_DELTA * mk_max_speed);
-    } else if (mousekey_repeat == 0 || (idle_count-first_press_timer)< MK_DELAY ) {
-        unit = MOUSEKEY_MOVE_DELTA;
-    } else if (mousekey_repeat*1000/61 >= mk_time_to_max) {
-        unit = MOUSEKEY_MOVE_DELTA * mk_max_speed;
-    } else {
-        unit = (MOUSEKEY_MOVE_DELTA * mk_max_speed * (mousekey_repeat*1000/61)) / mk_time_to_max;
-    }
-    //unit = (1+(mousekey_repeat*7/255));
-    //
     uint32_t delta_in_ms=(idle_count-first_press_timer)*1000/61;
-    if(delta_in_ms < MK_DELAY)
-        unit=MK_MOVE_MIN;
-    else if (delta_in_ms > MK_TIME_TO_MAX)
-        unit=MK_MOVE_MAX;
-    else
-        unit=MK_MOVE_MIN+(MK_MOVE_MAX-MK_MOVE_MIN)*(delta_in_ms-MK_DELAY)/MK_TIME_TO_MAX;
 
-    if(unit>MK_MOVE_MAX)
-        unit=MK_MOVE_MAX;
-    //printf("\nMK:%4d acc=%1d rep=%4d since first:%lu =%lums", unit, mousekey_accel, mousekey_repeat, idle_count-first_press_timer, delta_in_ms);
+    if (mousekey_accel & (1<<0)) {
+        unit = MK_XY_MAX/mousekey_accel;
+    } else if (delta_in_ms < MK_XY_DELAY) {
+        unit = MK_XY_MIN;
+    } else if (delta_in_ms >= MK_XY_TTM) {
+        unit = MK_XY_MAX;
+    } else {
+        unit=MK_XY_MIN+(MK_XY_MAX-MK_XY_MIN)*(delta_in_ms-MK_XY_DELAY)/MK_XY_TTM;
+    }
 
-    return unit;
-    return (unit > MOUSEKEY_MOVE_MAX ? MOUSEKEY_MOVE_MAX : (unit == 0 ? 1 : unit));
+    return (unit > MK_XY_MAX ? MK_XY_MAX : (unit == 0 ? 1 : unit));
 }
 
 static uint8_t wheel_unit(void)
 {
     uint16_t unit;
     uint32_t delta_in_ms=(idle_count-first_press_timer)*1000/61;
-    if(delta_in_ms < 700)
-        unit=1;//MK_MOVE_MIN;
-    else if (delta_in_ms > 2000)
-        unit=5;//MK_MOVE_MAX;
-    else
-        //unit=MK_MOVE_MIN+(MK_MOVE_MAX-MK_MOVE_MIN)*(delta_in_ms-MK_DELAY)/MK_TIME_TO_MAX;
-        unit=1+(5-1)*(delta_in_ms-700)/2000;
 
-    if(unit>5) unit=5;
+    if (mousekey_accel & (1<<0)) {
+        unit = MK_VH_MAX/mousekey_accel;
+    } else if (delta_in_ms < MK_VH_DELAY) {
+        unit = MK_VH_MIN;
+    } else if (delta_in_ms >= MK_VH_TTM) {
+        unit = MK_VH_MAX;
+    } else {
+        unit=MK_VH_MIN+(MK_VH_MAX-MK_VH_MIN)*(delta_in_ms-MK_VH_DELAY)/MK_VH_TTM;
+    }
 
-    return unit;
+    return (unit > MK_VH_MAX ? MK_VH_MAX : (unit == 0 ? 1 : unit));
 }
 
 /** this is called periodically from outside.
- *  we need to set the appropriate values in mouse_report that later get send via getMouseReport.
- */
-void mk_activate(uint16_t mask)
+*  we need to set the appropriate values in mouse_report that later get send via getMouseReport.
+*/
+void mousekey_activate(uint16_t mask)
 {
-    // if no key is pressed, reset!
+// if no key is pressed, reset!
     if(mask==0) {
         mousekey_clear();
         return;
@@ -145,22 +117,13 @@ void mk_activate(uint16_t mask)
         else
             mousekey_off(MS_BEGIN+1+c);
     }
-
-    // increment acceleration slowler
-    if((idle_count - first_press_timer)*1000/61 > MK_DELAY )
-    {
-        if (mousekey_repeat != UINT8_MAX)
-            mousekey_repeat++;
-
-    }
-    //mousekey_debug();
 }
 
 void mousekey_on(uint8_t code)
 {
     if(code < MS_U || code > MS_ACC2)
         return;
-    //mousekey_debug();
+//mousekey_debug();
     switch(code) {
         case MS_U:    mouse_report.y = move_unit() * -1; break;
         case MS_D:    mouse_report.y = move_unit(); break;
@@ -205,15 +168,12 @@ void mousekey_off(uint8_t code)
         case MS_ACC2: mousekey_accel &= ~(1<<2); break;
         default: mousekey_debug();
     }
-
-    if(mouse_report.x == 0 && mouse_report.y == 0 && mouse_report.v == 0 && mouse_report.h == 0)
-        mousekey_repeat = 0;
 }
 
 uint8_t getMouseKeyReport(USB_MouseReport_Data_t *MouseReport)
 {
-    // @note: If sending of reports is not forced in calling function,
-    // return an empty report every second time - else it stalls when max accel is reached.
+// @note: If sending of reports is not forced in calling function,
+// return an empty report every second time - else it stalls when max accel is reached.
     if (mouse_report.buttons == 0) {
         if (mouse_report.x == 0 && mouse_report.y == 0 && mouse_report.v == 0 && mouse_report.h == 0)
             return sizeof(USB_MouseReport_Data_t);
@@ -248,13 +208,12 @@ void mousekey_clear(void)
     for(uint8_t c=0; c<16; ++c)
         mousekey_off(MS_BEGIN+1+c);
     mouse_report = (report_mouse_t) {};
-    mousekey_repeat = 0;
     mousekey_accel = 0;
     first_press_timer=0;
 }
 
 static void mousekey_debug(void)
 {
-    printf("\n%02x |%d,%d %d,%d (%d %d)] ", mouse_report.buttons, mouse_report.x, mouse_report.y, mouse_report.v, mouse_report.h, mousekey_repeat, mousekey_accel);
+    printf("\n%02x |%d,%d %d,%d (acc %d)] ", mouse_report.buttons, mouse_report.x, mouse_report.y, mouse_report.v, mouse_report.h, mousekey_accel);
     printf("%lu", (idle_count-first_press_timer));
 }

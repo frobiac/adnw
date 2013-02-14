@@ -260,7 +260,7 @@ uint8_t getExtraReport(USB_ExtraReport_Data_t *report_data)
 
     if(activeKeys.keycnt==0) {
         // also need to reset MOUSEKEY
-        mk_activate(0);
+        mousekey_activate(0);
     }
 
     // no keys or macromode or command mode
@@ -600,7 +600,7 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
             struct Key k=activeKeys.keys[i];
             mk_mask |= (1<<(getKeyCode(k.row, k.col, (MOD_MOUSEKEY-MOD_LAYER_0))-1-MS_BEGIN));
         }
-        mk_activate(mk_mask);
+        mousekey_activate(mk_mask);
 
         // empty report
         // @todo: There could technically be keys on mouse layer, but why?
@@ -608,7 +608,7 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
         report_data->Modifier=0;
         return sizeof(USB_KeyboardReport_Data_t);
     } else {
-        mk_activate(0);
+        mousekey_activate(0);
     }
 
     uint8_t idx=0;
