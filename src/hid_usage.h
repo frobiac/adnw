@@ -164,11 +164,11 @@ typedef enum {
 #define HID_SYSRQ           0x9A
 
 /* mouse buttons hid codes */
-#define MOUSE_BTN1 (1<<0)
-#define MOUSE_BTN2 (1<<1)
-#define MOUSE_BTN3 (1<<2)
-#define MOUSE_BTN4 (1<<3)
-#define MOUSE_BTN5 (1<<4)
+#define HID_MOUSEBTN_1 (1<<0)
+#define HID_MOUSEBTN_2 (1<<1)
+#define HID_MOUSEBTN_3 (1<<2)
+#define HID_MOUSEBTN_4 (1<<3)
+#define HID_MOUSEBTN_5 (1<<4)
 
 
 typedef enum {

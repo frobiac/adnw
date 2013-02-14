@@ -829,7 +829,7 @@ bool isNormalKey(uint8_t row, uint8_t col)
 uint8_t getMouseKey(uint8_t row, uint8_t col)
 {
     uint16_t hid = MouseUsage[row][col];
-    if ( hid >= MOUSE_BTN1 && hid <= MOUSE_BTN4 )
+    if ( hid >= HID_MOUSEBTN_1 && hid <= HID_MOUSEBTN_4 )
         return (hid);
     return 0;
 }

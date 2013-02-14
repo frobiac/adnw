@@ -174,9 +174,9 @@ static const uint8_t SecondaryUsage[ROWS][COLS] =
 static const uint8_t MouseUsage[ROWS][COLS] =
   KEYMAP( 0,
  HID_ESC,  0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0 ,
- 0, MOUSE_BTN1, MOUSE_BTN3, MOUSE_BTN2, MOUSE_BTN4, 0 , 0, 0, 0, 0, 0, 0 ,
+ 0, HID_MOUSEBTN_1, HID_MOUSEBTN_3, HID_MOUSEBTN_2, HID_MOUSEBTN_4, 0 , 0, 0, 0, 0, 0, 0 ,
  0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0 ,
- 0, 0, HID_ESC, HID_TAB,0, MOUSE_BTN1,0, /* | */ MOUSE_BTN3, MOUSE_BTN2, HID_BACKSPACE, HID_ENTER, 0, 0, 0
+ 0, 0, HID_ESC, HID_TAB,0, HID_MOUSEBTN_1,0, /* | */ HID_MOUSEBTN_3, HID_MOUSEBTN_2, HID_BACKSPACE, HID_ENTER, 0, 0, 0
 );
 
 static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM = 
