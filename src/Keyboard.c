@@ -324,7 +324,17 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
 
     else if (HIDInterfaceInfo == &Mouse_HID_Interface) {
         USB_MouseReport_Data_t* MouseReport = (USB_MouseReport_Data_t*)ReportData;
-        *ReportSize = getMouseKeyReport(MouseReport);
+        // mouse through key emulation only if PS/2 mouse report is "empty" 
+        *ReportSize = getMouseReport(MouseReport);
+        if( *ReportSize == 0 || ( MouseReport->X == 0 && MouseReport->Y == 0 &&
+           MouseReport->V == 0 && MouseReport->H == 0 &&
+           MouseReport->Button == 0 ) ) {
+           *ReportSize = getMouseKeyReport(MouseReport);
+           if( *ReportSize == 0 ){ 
+               MouseReport->X = 0; MouseReport->Y = 0;                       MouseReport->V = 0; MouseReport->H = 0;
+               MouseReport->Button = 0;
+           }
+        }
     }
     else if (HIDInterfaceInfo == &Extra_HID_Interface) {
         USB_ExtraReport_Data_t* ExtraReport = (USB_ExtraReport_Data_t*)ReportData;

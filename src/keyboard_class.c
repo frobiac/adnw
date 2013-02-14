@@ -320,7 +320,7 @@ void changeSecondUseState(SecondUse_State currentState, SecondUse_State newState
         if (secondUse_state == SECOND_USE_ACTIVE) stateStr = "SECOND_USE_ACTIVE";
         if (secondUse_state == SECOND_USE_PASSIVE) stateStr = "SECOND_USE_PASSIVE";
         if (secondUse_state == SECOND_USE_OFF) stateStr = "SECOND_USE_OFF";
-        printf("\nSecondUse: next state: %s",stateStr);
+        // printf("\nSecondUse: next state: %s",stateStr);
     }
 }
 
@@ -607,6 +607,8 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
         memset(&report_data->KeyCode[0], 0, 6 );
         report_data->Modifier=0;
         return sizeof(USB_KeyboardReport_Data_t);
+    } else {
+        mk_activate(0);
     }
 
     uint8_t idx=0;

@@ -201,7 +201,6 @@ uint8_t getMouseKeyReport(USB_MouseReport_Data_t *MouseReport)
         MouseReport->H=0;
         MouseReport->Button=0;
         return sizeof(USB_MouseReport_Data_t);
-
     }
 
     if (mouse_report.x == 0 && mouse_report.y == 0 && mouse_report.v == 0 && mouse_report.h == 0  && mouse_report.buttons==0)
@@ -227,6 +226,8 @@ uint8_t getMouseKeyReport(USB_MouseReport_Data_t *MouseReport)
 
 void mousekey_clear(void)
 {
+    for(uint8_t c=0; c<16; ++c) 
+        mousekey_off(MS_BEGIN+1+c);
     mouse_report = (report_mouse_t) {};
     mousekey_repeat = 0;
     mousekey_accel = 0;
