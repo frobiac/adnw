@@ -36,7 +36,6 @@ static uint8_t mousekey_repeat =  0;
 static uint8_t mousekey_accel = 0;
 //static uint8_t mk_repeat =  0;
 //static uint8_t mk_accel = 0;
-static uint8_t mk_acc_timer = 0;
 static uint8_t count=0;
 
 static void mousekey_debug(void);
@@ -62,13 +61,19 @@ uint8_t mk_time_to_max = MOUSEKEY_TIME_TO_MAX;
 uint8_t mk_wheel_max_speed = MOUSEKEY_WHEEL_MAX_SPEED;
 uint8_t mk_wheel_time_to_max = MOUSEKEY_WHEEL_TIME_TO_MAX;
 
+/// @todo: drop every other event!
 
-static uint16_t last_timer = 0;
-static bool prev_empty=true;
+#define MK_DELAY        200
+#define MK_TIME_TO_MAX 1200
+#define MK_MOVE_MAX      18
+#define MK_MOVE_MIN       2
+
+static uint32_t first_press_timer = 0;
 
 static uint8_t move_unit(void)
 {
-    return (1+(mousekey_repeat*7/255));
+
+    //return (1+(mousekey_repeat*7/255));
 
     uint16_t unit;
     if (mousekey_accel & (1<<0)) {
@@ -77,13 +82,27 @@ static uint8_t move_unit(void)
         unit = (MOUSEKEY_MOVE_DELTA * mk_max_speed)/2;
     } else if (mousekey_accel & (1<<2)) {
         unit = (MOUSEKEY_MOVE_DELTA * mk_max_speed);
-    } else if (mousekey_repeat == 0) {
+    } else if (mousekey_repeat == 0 || (idle_count-first_press_timer)< MK_DELAY ) {
         unit = MOUSEKEY_MOVE_DELTA;
-    } else if (mousekey_repeat >= mk_time_to_max) {
+    } else if (mousekey_repeat*1000/61 >= mk_time_to_max) {
         unit = MOUSEKEY_MOVE_DELTA * mk_max_speed;
     } else {
-        unit = (MOUSEKEY_MOVE_DELTA * mk_max_speed * mousekey_repeat) / mk_time_to_max;
+        unit = (MOUSEKEY_MOVE_DELTA * mk_max_speed * (mousekey_repeat*1000/61)) / mk_time_to_max;
     }
+    //unit = (1+(mousekey_repeat*7/255));
+    //
+    uint32_t delta_in_ms=(idle_count-first_press_timer)*1000/61;
+    if(delta_in_ms < MK_DELAY)
+	unit=MK_MOVE_MIN;
+    else if (delta_in_ms > MK_TIME_TO_MAX)
+	unit=MK_MOVE_MAX;
+    else
+	unit=MK_MOVE_MIN+(MK_MOVE_MAX-MK_MOVE_MIN)*(delta_in_ms-MK_DELAY)/MK_TIME_TO_MAX;
+
+    printf("\nMK:%4d acc=%1d rep=%4d since first:%lu =%lums", unit, mousekey_accel, mousekey_repeat, 
+            idle_count-first_press_timer, delta_in_ms);
+    
+    return unit;
     return (unit > MOUSEKEY_MOVE_MAX ? MOUSEKEY_MOVE_MAX : (unit == 0 ? 1 : unit));
 }
 
@@ -118,6 +137,9 @@ void mk_activate(uint16_t mask)
         mousekey_clear();
         return;
     }
+    if(first_press_timer == 0)
+        first_press_timer = idle_count;
+
     for(uint8_t c=0; c<16; ++c) {
         if(mask & (1<<c))
             mousekey_on(MS_BEGIN+1+c);
@@ -126,12 +148,10 @@ void mk_activate(uint16_t mask)
     }
 
     // increment acceleration slowler
-    if((idle_count - mk_acc_timer) / 20 > 1)
+    if((idle_count - first_press_timer)*1000/61 > MK_DELAY )
     {
         if (mousekey_repeat != UINT8_MAX)
             mousekey_repeat++;
-        // reset accel increase timer
-        mk_acc_timer=idle_count;
 
     }
     //mousekey_debug();
@@ -211,7 +231,6 @@ uint8_t getMouseKeyReport(USB_MouseReport_Data_t *MouseReport)
     }
 
     //mousekey_clear();
-    //last_timer = idle_count; //timer_read();
 
     return sizeof(USB_MouseReport_Data_t);
 
@@ -224,12 +243,11 @@ void mousekey_clear(void)
     mouse_report = (report_mouse_t) {};
     mousekey_repeat = 0;
     mousekey_accel = 0;
-    mk_acc_timer=idle_count;
-    last_timer=idle_count;
+    first_press_timer=0;
 }
 
 static void mousekey_debug(void)
 {
     printf("\n%02x |%d,%d %d,%d (%d %d)] ", mouse_report.buttons, mouse_report.x, mouse_report.y, mouse_report.v, mouse_report.h, mousekey_repeat, mousekey_accel);
-    printf("0x%02x%02x %d", (uint8_t)((idle_count&0xff00)>>8),(uint8_t)(idle_count&0x00ff), (uint8_t)(idle_count-last_timer)&0x00ff);
+    printf("%lu", (idle_count-first_press_timer));
 }
