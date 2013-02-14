@@ -3,6 +3,7 @@
 *.eep
 *.elf
 *.hex
+*.hex.old
 *.lss
 *.lst
 *.map
