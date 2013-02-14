@@ -95,16 +95,16 @@ static uint8_t move_unit(void)
     //
     uint32_t delta_in_ms=(idle_count-first_press_timer)*1000/61;
     if(delta_in_ms < MK_DELAY)
-	unit=MK_MOVE_MIN;
+        unit=MK_MOVE_MIN;
     else if (delta_in_ms > MK_TIME_TO_MAX)
-	unit=MK_MOVE_MAX;
+        unit=MK_MOVE_MAX;
     else
-	unit=MK_MOVE_MIN+(MK_MOVE_MAX-MK_MOVE_MIN)*(delta_in_ms-MK_DELAY)/MK_TIME_TO_MAX;
+        unit=MK_MOVE_MIN+(MK_MOVE_MAX-MK_MOVE_MIN)*(delta_in_ms-MK_DELAY)/MK_TIME_TO_MAX;
 
     if(unit>MK_MOVE_MAX)
         unit=MK_MOVE_MAX;
     //printf("\nMK:%4d acc=%1d rep=%4d since first:%lu =%lums", unit, mousekey_accel, mousekey_repeat, idle_count-first_press_timer, delta_in_ms);
- 
+
     return unit;
     return (unit > MOUSEKEY_MOVE_MAX ? MOUSEKEY_MOVE_MAX : (unit == 0 ? 1 : unit));
 }
@@ -246,7 +246,7 @@ uint8_t getMouseKeyReport(USB_MouseReport_Data_t *MouseReport)
 
 void mousekey_clear(void)
 {
-    for(uint8_t c=0; c<16; ++c) 
+    for(uint8_t c=0; c<16; ++c)
         mousekey_off(MS_BEGIN+1+c);
     mouse_report = (report_mouse_t) {};
     mousekey_repeat = 0;

@@ -63,6 +63,7 @@ BUGS
 Coding style
 ------------
 * astyle --style=linux --convert-tabs --lineend=linux --indent=spaces=4  -o -O -S src/\*.[ch]
+* astyle -o -O -S src/\*.[ch]
 
 Ideas
 -----
