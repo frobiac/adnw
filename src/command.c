@@ -21,6 +21,7 @@
 #include "keymap.h"
 #include "jump_bootloader.h"
 #include "trackpoint.h"
+#include "macro.h"
 
 bool command=false;
 static uint8_t layer=0;
