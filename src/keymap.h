@@ -28,8 +28,6 @@
 #define ROWS   8
 #define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
 
-#define MOUSE_LAYER 3   ///< where they mousekeys reside - @todo: fix detection
-
 #define PINKYDROP 0  ///<  drop pinky column by one for more ergonomic layout
 
 #define GEOGRAPHICAL_AREAS 3 // QWERTZ(de), QWERTY(gb), QWERTY(us)

@@ -821,7 +821,6 @@ bool isNormalKey(uint8_t row, uint8_t col)
     return !(isLayerKey(row,col) || isModifierKey(row,col));
 }
 
-
 uint8_t getMouseKey(uint8_t row, uint8_t col)
 {
     uint16_t hid = SecondaryUsage[row][col];

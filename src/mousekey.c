@@ -196,7 +196,7 @@ uint8_t getMouseKeyReport(USB_MouseReport_Data_t *MouseReport)
     // If sending of reports is not forced in calling function,
     // return an empty report every second time - else it stalls when max accel is reached.
     if (mouse_report.x == 0 && mouse_report.y == 0 && mouse_report.v == 0 && mouse_report.h == 0  && mouse_report.buttons==0)
-        return 0;
+        return sizeof(USB_MouseReport_Data_t);
 
     MouseReport->X= mouse_report.x;
     MouseReport->Y= mouse_report.y;
