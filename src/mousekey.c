@@ -142,46 +142,52 @@ void mousekey_on(uint8_t code)
     if(code < MS_U || code > MS_ACC2)
         return;
     //mousekey_debug();
-    if      (code == MS_U)    mouse_report.y = move_unit() * -1;
-    else if (code == MS_D)    mouse_report.y = move_unit();
-    else if (code == MS_L)    mouse_report.x = move_unit() * -1;
-    else if (code == MS_R)    mouse_report.x = move_unit();
-    else if (code == MS_W_U)  mouse_report.v = wheel_unit();
-    else if (code == MS_W_D)  mouse_report.v = wheel_unit() * -1;
-    else if (code == MS_W_L)  mouse_report.h = wheel_unit() * -1;
-    else if (code == MS_W_R)  mouse_report.h = wheel_unit();
-    else if (code == MS_BTN1) mouse_report.buttons |= HID_MOUSEBTN_1;
-    else if (code == MS_BTN2) mouse_report.buttons |= HID_MOUSEBTN_2;
-    else if (code == MS_BTN3) mouse_report.buttons |= HID_MOUSEBTN_3;
-    else if (code == MS_BTN4) mouse_report.buttons |= HID_MOUSEBTN_4;
-    else if (code == MS_BTN5) mouse_report.buttons |= HID_MOUSEBTN_5;
-    else if (code == MS_ACC0) mousekey_accel |= (1<<0);
-    else if (code == MS_ACC1) mousekey_accel |= (1<<1);
-    else if (code == MS_ACC2) mousekey_accel |= (1<<2);
+    switch(code) {
+        case MS_U:    mouse_report.y = move_unit() * -1; break;
+        case MS_D:    mouse_report.y = move_unit(); break;
+        case MS_L:    mouse_report.x = move_unit() * -1; break;
+        case MS_R:    mouse_report.x = move_unit(); break;
+        case MS_W_U:  mouse_report.v = wheel_unit(); break;
+        case MS_W_D:  mouse_report.v = wheel_unit() * -1; break;
+        case MS_W_L:  mouse_report.h = wheel_unit() * -1; break;
+        case MS_W_R:  mouse_report.h = wheel_unit(); break;
+        case MS_BTN1: mouse_report.buttons |= HID_MOUSEBTN_1; break;
+        case MS_BTN2: mouse_report.buttons |= HID_MOUSEBTN_2; break;
+        case MS_BTN3: mouse_report.buttons |= HID_MOUSEBTN_3; break;
+        case MS_BTN4: mouse_report.buttons |= HID_MOUSEBTN_4; break;
+        case MS_BTN5: mouse_report.buttons |= HID_MOUSEBTN_5; break;
+        case MS_ACC0:
+        case MS_ACC1:
+        case MS_ACC2: mousekey_accel |= (1<<(code-MS_ACC0)); break;
+        default: mousekey_debug();
+    }
 }
 
 void mousekey_off(uint8_t code)
 {
     if(code < MS_U || code > MS_ACC2)
         return;
-    if      (code == MS_U     && mouse_report.y < 0) mouse_report.y = 0;
-    else if (code == MS_D     && mouse_report.y > 0) mouse_report.y = 0;
-    else if (code == MS_L     && mouse_report.x < 0) mouse_report.x = 0;
-    else if (code == MS_R     && mouse_report.x > 0) mouse_report.x = 0;
-    else if (code == MS_W_U   && mouse_report.v > 0) mouse_report.v = 0;
-    else if (code == MS_W_D   && mouse_report.v < 0) mouse_report.v = 0;
-    else if (code == MS_W_L   && mouse_report.h < 0) mouse_report.h = 0;
-    else if (code == MS_W_R   && mouse_report.h > 0) mouse_report.h = 0;
-    else if (code == MS_BTN1) mouse_report.buttons &= ~HID_MOUSEBTN_1;
-    else if (code == MS_BTN2) mouse_report.buttons &= ~HID_MOUSEBTN_2;
-    else if (code == MS_BTN3) mouse_report.buttons &= ~HID_MOUSEBTN_3;
-    else if (code == MS_BTN4) mouse_report.buttons &= ~HID_MOUSEBTN_4;
-    else if (code == MS_BTN5) mouse_report.buttons &= ~HID_MOUSEBTN_5;
-    else if (code == MS_ACC0) mousekey_accel &= ~(1<<0);
-    else if (code == MS_ACC1) mousekey_accel &= ~(1<<1);
-    else if (code == MS_ACC2) mousekey_accel &= ~(1<<2);
+    switch(code) {
+        case MS_U   : if(mouse_report.y < 0) mouse_report.y = 0; break;
+        case MS_D   : if(mouse_report.y > 0) mouse_report.y = 0; break;
+        case MS_L   : if(mouse_report.x < 0) mouse_report.x = 0; break;
+        case MS_R   : if(mouse_report.x > 0) mouse_report.x = 0; break;
+        case MS_W_U : if(mouse_report.v > 0) mouse_report.v = 0; break;
+        case MS_W_D : if(mouse_report.v < 0) mouse_report.v = 0; break;
+        case MS_W_L : if(mouse_report.h < 0) mouse_report.h = 0; break;
+        case MS_W_R : if(mouse_report.h > 0) mouse_report.h = 0; break;
+        case MS_BTN1: mouse_report.buttons &= ~HID_MOUSEBTN_1; break;
+        case MS_BTN2: mouse_report.buttons &= ~HID_MOUSEBTN_2; break;
+        case MS_BTN3: mouse_report.buttons &= ~HID_MOUSEBTN_3; break;
+        case MS_BTN4: mouse_report.buttons &= ~HID_MOUSEBTN_4; break;
+        case MS_BTN5: mouse_report.buttons &= ~HID_MOUSEBTN_5; break;
+        case MS_ACC0: mousekey_accel &= ~(1<<0); break;
+        case MS_ACC1: mousekey_accel &= ~(1<<1); break;
+        case MS_ACC2: mousekey_accel &= ~(1<<2); break;
+        default: mousekey_debug();
+    }
 
-    if (mouse_report.x == 0 && mouse_report.y == 0 && mouse_report.v == 0 && mouse_report.h == 0)
+    if(mouse_report.x == 0 && mouse_report.y == 0 && mouse_report.v == 0 && mouse_report.h == 0)
         mousekey_repeat = 0;
 }
 
