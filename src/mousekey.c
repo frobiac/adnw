@@ -212,19 +212,18 @@ void mousekey_off(uint8_t code)
 
 uint8_t getMouseKeyReport(USB_MouseReport_Data_t *MouseReport)
 {
-    // If sending of reports is not forced in calling function,
+    // @note: If sending of reports is not forced in calling function,
     // return an empty report every second time - else it stalls when max accel is reached.
-    if (mouse_report.x == 0 && mouse_report.y == 0 && mouse_report.v == 0 && mouse_report.h == 0  && mouse_report.buttons==0)
-        return sizeof(USB_MouseReport_Data_t);
-
-    if( (idle_count-last_sent)*1000/61 < MS_PER_REPORT /*ms*/ ) {
-        return sizeof(USB_MouseReport_Data_t);
-    }
-
-    if (mouse_report.x == 0 && mouse_report.y == 0 && mouse_report.buttons==0) {
-        if( (idle_count-last_sent)*1000/61 < 100 /*ms*/ ) {
+    if (mouse_report.buttons == 0) {
+        if (mouse_report.x == 0 && mouse_report.y == 0 && mouse_report.v == 0 && mouse_report.h == 0)
             return sizeof(USB_MouseReport_Data_t);
-        }
+
+        if (mouse_report.v == 0 && mouse_report.h == 0 &&
+                (idle_count-last_sent)*1000/61 < MS_PER_REPORT )
+            return sizeof(USB_MouseReport_Data_t);
+        if (mouse_report.x == 0 && mouse_report.y == 0 &&
+                (idle_count-last_sent)*1000/61 < 100)
+            return sizeof(USB_MouseReport_Data_t);
     }
 
     last_sent=idle_count;
