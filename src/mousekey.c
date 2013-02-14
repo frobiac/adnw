@@ -21,12 +21,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "Keyboard.h" // idle_count, should go into timer
 #include "mousekey.h"
 
-/* mouse buttons */
-#define MOUSE_BTN1 (1<<0)
-#define MOUSE_BTN2 (1<<1)
-#define MOUSE_BTN3 (1<<2)
-#define MOUSE_BTN4 (1<<3)
-#define MOUSE_BTN5 (1<<4)
 
 typedef struct {
     uint8_t buttons;

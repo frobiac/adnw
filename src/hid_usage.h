@@ -163,14 +163,15 @@ typedef enum {
 
 #define HID_SYSRQ           0x9A
 
+/* mouse buttons hid codes */
+#define MOUSE_BTN1 (1<<0)
+#define MOUSE_BTN2 (1<<1)
+#define MOUSE_BTN3 (1<<2)
+#define MOUSE_BTN4 (1<<3)
+#define MOUSE_BTN5 (1<<4)
+
 
 typedef enum {
-    UNUSED=0,
-    // mouse buttons;
-    MS_BTN_1=0x10,
-    MS_BTN_2,
-    MS_BTN_3,
-    MS_SCROLL,  //keep at end
 //##########################################
     /* Mousekey */
     MS_BEGIN=0xEF,
@@ -193,7 +194,6 @@ typedef enum {
     MS_ACC1,
     MS_ACC2,        /* 0xFF */
 //##########################################
-
 
     // modifier bits to use, actual HID-modifier is (1<<(modbit-MOD_CTRL))
     MOD_L_CTRL=0xE0, // E0 is rather arbitrarily taken to be same as HID

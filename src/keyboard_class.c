@@ -829,8 +829,8 @@ bool isNormalKey(uint8_t row, uint8_t col)
 uint8_t getMouseKey(uint8_t row, uint8_t col)
 {
     uint16_t hid = MouseUsage[row][col];
-    if ( hid >= MS_BTN_1 && hid <= MS_SCROLL )
-        return (1<<(hid-MS_BTN_1));
+    if ( hid >= MOUSE_BTN1 && hid <= MOUSE_BTN4 )
+        return (hid);
     return 0;
 }
 
