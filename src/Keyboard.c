@@ -327,16 +327,25 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
 
         /// @todo : is this needed?
         // mouse through key emulation only if PS/2 mouse report is "empty" 
+#ifdef PS2MOUSE
         *ReportSize = getMouseReport(MouseReport);
         if( *ReportSize == 0 || ( MouseReport->X == 0 && MouseReport->Y == 0 &&
-           MouseReport->V == 0 && MouseReport->H == 0 &&
+           #ifdef MOUSE_HAS_SCROLL_WHEELS
+                MouseReport->V == 0 && MouseReport->H == 0 &&
+            #endif
            MouseReport->Button == 0 ) ) {
+#endif
            *ReportSize = getMouseKeyReport(MouseReport);
            if( *ReportSize == 0 ){ 
-               MouseReport->X = 0; MouseReport->Y = 0;                       MouseReport->V = 0; MouseReport->H = 0;
+               MouseReport->X = 0; MouseReport->Y = 0;
+            #ifdef MOUSE_HAS_SCROLL_WHEELS
+               MouseReport->V = 0; MouseReport->H = 0;
+            #endif
                MouseReport->Button = 0;
            }
+#ifdef PS2MOUSE
         }
+#endif
         // force sending so mouse stops when empty
         return true;
 

@@ -127,11 +127,13 @@ void handleCommand(void) {
             if(layer==0)
                 setCommandMode(false);
             break;
+#ifdef MOUSE_HAS_SCROLL_WHEELS
         case HID_T:
             printf("\nTrackpoint:");
             tp_id();
             setCommandMode(false);
             break;
+#endif
         case HID_L:
             g_alternateLayer=!g_alternateLayer;
             printf("\nAlternate layer %s", g_alternateLayer ? "selected." : "off.");

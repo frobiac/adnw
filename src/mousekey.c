@@ -190,9 +190,11 @@ uint8_t getMouseKeyReport(USB_MouseReport_Data_t *MouseReport)
 
     MouseReport->X= mouse_report.x;
     MouseReport->Y= mouse_report.y;
+    MouseReport->Button = mouse_report.buttons;
+#ifdef MOUSE_HAS_SCROLL_WHEELS
     MouseReport->V= mouse_report.v;
     MouseReport->H= mouse_report.h;
-    MouseReport->Button = mouse_report.buttons;
+#endif
 
     // same speed diagonally
     if (mouse_report.x && mouse_report.y) {

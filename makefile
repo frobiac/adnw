@@ -29,16 +29,15 @@ SRC =   $(LUFA_SRC_USB)          \
 	$(SRCDIR)/keymap.c           \
 	$(SRCDIR)/analog.c           \
 	$(SRCDIR)/macro.c            \
-	$(SRCDIR)/ps2mouse.c         \
-	$(SRCDIR)/trackpoint.c       \
 	$(SRCDIR)/command.c          \
 	$(SRCDIR)/mousekey.c         \
-	$(SRCDIR)/jump_bootloader.c
+	$(SRCDIR)/jump_bootloader.c  \
+
 
 
 LUFA_PATH    = LUFA/LUFA
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/
-CC_FLAGS    += -DPS2MOUSE -DMOUSE_HAS_SCROLL_WHEELS
+#CC_FLAGS    += -DPS2MOUSE -DMOUSE_HAS_SCROLL_WHEELS
 CC_FLAGS    += -DDEBUG_OUTPUT
 #CC_FLAGS    += -DMACOS
 #CC_FLAGS    += -DQWERTY
@@ -46,6 +45,11 @@ LD_FLAGS     =
 
 ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
 	SRC += $(SRCDIR)/hhstdio.c
+endif
+
+ifneq (,$(findstring PS2MOUSE,$(CC_FLAGS)))
+	SRC += $(SRCDIR)/ps2mouse.c
+	SRC += $(SRCDIR)/trackpoint.c
 endif
 
 FW_VERSION := $(shell git describe --tags --always)-$(shell git log --pretty=format:%cd --date=short -n1)-$(shell git describe --tags --always --all | sed s:heads/::| tr " " "_")
