@@ -280,7 +280,7 @@ typedef enum {
 
 typedef enum
 {
-    NONE  = 0,
+    // NONE  = 0,
     L_CTL = (1<<0),
     L_SHF = (1<<1),
     L_ALT = (1<<2),
@@ -288,7 +288,6 @@ typedef enum
     R_CTL = (1<<4),
     R_SHF = (1<<5),
     R_ALT = (1<<6), // alias ALTGR
-    ALTGR = (1<<6), // alias R_ALT
     R_GUI = (1<<7),
     A_CTL = (1<<8),
     A_SHF = (1<<9),
