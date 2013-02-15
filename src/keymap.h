@@ -151,6 +151,21 @@ void    printLayout(uint8_t l);
 
 
 /**
+ * Mouse keycodes that temporarily override normal keycodes during trackpoint usage.
+ * Mouse buttons can be mapped to good locations this way.
+ * This is not to be confused with the mousekey implementation, which is activated by switching to its layer.
+ *
+ */
+static const uint8_t MouseUsage[ROWS][COLS] =
+  KEYMAP( 0,
+ HID_ESC,  0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0 ,
+ 0, HID_MOUSEBTN_1, HID_MOUSEBTN_3, HID_MOUSEBTN_2, HID_MOUSEBTN_4, 0 , 0, 0, 0, 0, 0, 0 ,
+ 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0 ,
+ 0, 0, HID_ESC, HID_TAB,0, HID_MOUSEBTN_1,0, /* | */ HID_MOUSEBTN_3, HID_MOUSEBTN_2, HID_BACKSPACE, HID_ENTER, 0, 0, 0
+);
+
+
+/**
  * MKT keycode if single key and mousekey location is stored in here.
  * In contrast to the keymatrix below, only actual HID-usage codes are used, as
  * there should be no need for modifiers with MKTs.
@@ -165,19 +180,6 @@ static const uint8_t SecondaryUsage[ROWS][COLS] =
  0, 0, HID_ESC, HID_TAB,0, 0 /*is real SPACE*/,0, /* | */ 0, HID_ESC, HID_BACKSPACE, HID_ENTER, 0, 0, 0
 );
 
-/**
- * Mouse keycodes that temporarily override normal keycodes during trackpoint usage.
- * Mouse buttons can be mapped to good locations this way.
- * This is not to be confused with the mousekey implementation, which is activated by switching to its layer.
- *
- */
-static const uint8_t MouseUsage[ROWS][COLS] =
-  KEYMAP( 0,
- HID_ESC,  0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0 ,
- 0, HID_MOUSEBTN_1, HID_MOUSEBTN_3, HID_MOUSEBTN_2, HID_MOUSEBTN_4, 0 , 0, 0, 0, 0, 0, 0 ,
- 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0 ,
- 0, 0, HID_ESC, HID_TAB,0, HID_MOUSEBTN_1,0, /* | */ HID_MOUSEBTN_3, HID_MOUSEBTN_2, HID_BACKSPACE, HID_ENTER, 0, 0, 0
-);
 
 static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM = 
 {
