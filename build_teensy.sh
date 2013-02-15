@@ -7,12 +7,14 @@ HEX=$( grep "^TARGET\s*=" makefile | sed "s/.*=\s*//")
 
 mv $HEX.hex $HEX.hex.old 2>/dev/null
 
+rm log log.err 2>/dev/null
+
 if [ ! -z $1 ]; then 
 	echo "*** make clean" 
-	make clean > log 
+	make clean >> log
 fi
 echo "*** make " &&
-make >> log &&
+make >> log 2>log.err &&
 
 if [ -f $HEX.hex ]; then 
   echo "*** Now flashing $MCU with $HEX.hex ..." &
