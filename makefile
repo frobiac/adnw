@@ -19,6 +19,12 @@ OPTIMIZATION = s
 TARGET       = adnw
 SRCDIR       = ./src
 
+# -----------------------------------------------------------
+# Keyboard selection below: HYPERNANO, BLUECUBE or MALTRON_KW
+# -----------------------------------------------------------
+KB_HW		 = HYPERNANO
+#KB_HW		 = MALTRON_KW
+
 # List C source files here. (C dependencies are automatically generated.)
 SRC =   $(LUFA_SRC_USB)          \
 	$(LUFA_SRC_USBCLASS)         \
@@ -37,11 +43,21 @@ SRC =   $(LUFA_SRC_USB)          \
 
 LUFA_PATH    = LUFA/LUFA
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/
-CC_FLAGS    += -DPS2MOUSE -DMOUSE_HAS_SCROLL_WHEELS
 CC_FLAGS    += -DDEBUG_OUTPUT
-#CC_FLAGS    += -DMACOS
-#CC_FLAGS    += -DQWERTY
+CC_FLAGS	+= -DKB_HW=$(KB_HW) -D$(KB_HW)
 LD_FLAGS     =
+
+##################################################################
+#
+# Should not need to change anything below ...
+#
+##################################################################
+
+ifneq (,$(findstring MALTRON_KW,$(CC_FLAGS)))
+CC_FLAGS    += # -DMACOS -DQWERTY
+else
+CC_FLAGS    += -DPS2MOUSE -DMOUSE_HAS_SCROLL_WHEELS
+endif
 
 ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
 	SRC += $(SRCDIR)/hhstdio.c
