@@ -86,6 +86,17 @@ void handleCommand(void) {
         handleSubCmd(k);
         return;
     }
+    // Power-Taste-gedrŸckt? ==> Start Bootloader
+    hid = (k.row == 7 && k.col == 1) ? HID_B : hid;
+    // Mute-Taste-gedrŸckt? ==> Start Makromodus
+    hid = (k.row == 7 && k.col == 2) ? HID_M : hid;
+    // F1-Taste gedrŸckt? ==> Switch Layout
+    hid = (k.row == 0 && k.col == 0) ? HID_L : hid;
+    // F2-Taste-gedrŸckt? ==> Switch GeoArea
+    hid = (k.row == 0 && k.col == 1) ? HID_G : hid;
+    // F3-Taste-gedrŸckt? ==> Switch Mac/PC
+    hid = (k.row == 0 && k.col == 2) ? HID_H : hid;
+
     clearActiveKeys();
     clearRowData();
 
@@ -135,14 +146,14 @@ void handleCommand(void) {
             break;
 #endif
         case HID_L:
+            /*
             g_alternateLayer=!g_alternateLayer;
             printf("\nAlternate layer %s", g_alternateLayer ? "selected." : "off.");
             setCommandMode(false);
-            /*
             // Layout umschalten
+            */
             printf("\nSwitch layout::");
             subcmd=SUB_LAYOUT;
-            */
             break;
         case HID_A:
             for(uint8_t i=32; i<255; ++i) {
