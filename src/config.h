@@ -42,8 +42,9 @@
 #define STR_MANUFACTURER L"frobiac"
 #define STR_PRODUCT      L"AdNW TP and mouse"
 
- #define HYPERNANO
+#define HYPERNANO
 //#define BLUECUBE
+//#define MALTRON_KW
 
 
 // thanks to Openmoko, Inc we now have a dedicated USB Product ID

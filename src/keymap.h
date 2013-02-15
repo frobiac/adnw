@@ -24,22 +24,11 @@
 #include "hid_usage.h"
 #include "config.h"
 
-#define LAYERS 5
-#define ROWS   8
-#define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
-
 #define PINKYDROP 0  ///<  drop pinky column by one for more ergonomic layout
+
 
 #define GEOGRAPHICAL_AREAS 3 // QWERTZ(de), QWERTY(gb), QWERTY(us)
 
-/** *********************************************************
- *    Matrix of physical keyboard to key mapping
- *
- * @todo  configuration
- *        could be much more memory efficient by
- *           - not duplicating thumbs everywhere
- *           - only have mode keys on selected keys
- ************************************************************/
 
 typedef struct {
     uint8_t  hid;   ///< HID usage code, will be interpreted by OS keyboard layout!
@@ -80,9 +69,24 @@ uint8_t getKeyChar (uint8_t row, uint8_t col, uint8_t layer);
 void    printLayout(uint8_t l);
 
 #define _MACRO _no
+#ifdef MALTRON_KW
+  // Menu and Fn pressed simultaneouslye
+  #define CMD_MODE() ((rowData[6] & (1<<4)) && (rowData[6] & (1<<3)) ) 
+
+  #define LAYERS   3
+  #define LAYOUTS  4
+  #define ROWS     8  // F,Nr,3xChars,Subs,Thumb, Middle
+  #define COLS    12  ///< cols of both keyboard halves are "stacked" in layout and physically connected
+#endif
+
 
 #ifdef BLUECUBE
   #define CMD_MODE() ((rowData[2] & (1<<0)) && (rowData[6] & (1<<5)) ) 
+
+  #define LAYERS 5
+  #define ROWS   8
+  #define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
+
 /*
  * 00 01 02 03 04 05    40 41 42 43 44 45
  * 10 11 12 13 14 15    50 51 52 53 54 55
@@ -117,6 +121,11 @@ void    printLayout(uint8_t l);
 
 #ifdef HYPERNANO
   #define CMD_MODE() ( (rowData[3] & (1<<1)) && (rowData[7] & (1<<5)) ) 
+ 
+  #define LAYERS 5
+  #define ROWS   8
+  #define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
+
 /*  Row/col matrix: (0-based)
  *  unused: 11,21,51,61
  *  innermost thumb buttons: 31,41,71,81 
