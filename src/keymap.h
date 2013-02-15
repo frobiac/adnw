@@ -461,6 +461,15 @@ PROGMEM static const InterimsKeycode KeyMatrix[LAYOUTS][LAYERS][ROWS][COLS] = {
 }; // end of layouts
 
 
+/// @see Modifier in hid_usage.h
+#define L_CTL (1<<0)
+#define L_SHF (1<<1)
+#define L_ALT (1<<2)
+#define L_GUI (1<<3)
+#define R_CTL (1<<4)
+#define R_GUI (1<<7)
+
+
 PROGMEM static const local_keycode localizedMacDifferences[] = {
     // Index                  DE                          GB                          US
     {_ik_UNDO              , {{HID_Y,        R_GUI      },{HID_Z,        L_GUI      },{HID_Z,        L_GUI      }}  },
