@@ -166,11 +166,11 @@ void    printLayout(uint8_t l);
  *
  */
 static const uint8_t MouseUsage[ROWS][COLS] =
-  KEYMAP( 0,
- HID_ESC,  0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0 ,
- 0, HID_MOUSEBTN_1, HID_MOUSEBTN_3, HID_MOUSEBTN_2, HID_MOUSEBTN_4, 0 , 0, 0, 0, 0, 0, 0 ,
- 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0 ,
- 0, 0, HID_ESC, HID_TAB,0, HID_MOUSEBTN_1,0, /* | */ HID_MOUSEBTN_3, HID_MOUSEBTN_2, HID_BACKSPACE, HID_ENTER, 0, 0, 0
+  KEYMAP( 0, /* not used code */
+ HID_ESC,  0, 0, 0, 0, 0,                                                     0, 0, 0, 0, 0, 0 ,
+       0, HID_MOUSEBTN_1, HID_MOUSEBTN_3, HID_MOUSEBTN_2, HID_MOUSEBTN_4, 0,  0, 0, 0, 0, 0, 0 ,
+       0, 0, 0, 0, 0, 0 ,                                                     0, 0, 0, 0, 0, 0 ,
+       0, 0, 0, 0 ,0, HID_MOUSEBTN_1,0, /* | */ HID_MOUSEBTN_3, HID_MOUSEBTN_2 , 0, 0, 0, 0, 0
 );
 
 
@@ -182,10 +182,10 @@ static const uint8_t MouseUsage[ROWS][COLS] =
  * but strictly not the right place here.
  */
 static const uint8_t SecondaryUsage[ROWS][COLS] =
-  KEYMAP( 0,
- HID_ESC,  0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0 ,
- 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0 ,
- 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0, 0 ,
+  KEYMAP( 0, /* not used code */
+ HID_ESC, 0, 0, 0, 0, 0,                                  0, 0, 0, 0, 0, 0 ,
+       0, 0, 0, 0, 0, 0,                                  0, 0, 0, 0, 0, 0 ,
+       0, 0, 0, 0, 0, 0,                                  0, 0, 0, 0, 0, 0 ,
  0, 0, HID_ESC, HID_TAB,0, 0 /*is real SPACE*/,0, /* | */ 0, HID_ESC, HID_BACKSPACE, HID_ENTER, 0, 0, 0
 );
 
@@ -194,7 +194,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
 {
   // normal layer
  KEYMAP( _no,
-         _MOD_3,   _k, _u, _q,     _PERIOD, _j,      _v, _g, _c, _l, _f, _BSPACE ,
+         _MOD_3, _k, _u, _q,     _PERIOD, _j,      _v, _g, _c, _l, _f, _BSPACE ,
          _TAB,   _h, _i, _e,     _a,      _o,      _d, _t, _r, _n, _s, _ENTER  ,
          _DQUOTE,_x, _y, _MINUS, _COMMA,  _SLASH,  _b, _p, _w, _m, _z, _MOD_MOUSEKEY,
          _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,  _B  
@@ -204,32 +204,32 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
   KEYMAP( _no, 
     _no, _AT,      _DEGREE,   _L_BRACKET, _R_BRACKET, _HASH   , _EXCLAM,  _LESS,      _GREATER,   _EQUAL,     _AMPERSAND, _no ,
     _no, _BSLASH,  _SLASH,    _L_BRACE,   _R_BRACE,   _ASTERIX, _QUESTION,_L_PAREN,   _R_PAREN,   _PLUS,      _MINUS,     _no ,
-    _no, _no,      _DOLLAR,   _PIPE,      _TILDE,     _GRAVE , _CARET,   _PERCENT,   _DQUOTE,    _SQUOTE,    _no,        _no ,
-         _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,     _B 
+    _no, _no,      _DOLLAR,   _PIPE,      _TILDE,     _GRAVE ,  _CARET,   _PERCENT,   _DQUOTE,    _SQUOTE,    _no,        _no ,
+    _no, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no, _no
   ),
     
   // MOD2 layer (movement controls and numbers)
   KEYMAP( _no,
     _no, _PGUP,   _BSPACE,    _UP,        _DEL ,      _PGDN, _SSHARP,_7,         _8,         _9,     _a_UML, _A_UML ,
     _no, _HOME,   _LEFT,      _DOWN,      _RIGHT,     _END , _PERIOD,_4,         _5,         _6,     _o_UML, _O_UML ,
-    _no, _ESC,    _TAB,       _INS,       _ENTER,     _no , _0,     _1,         _2,         _3,     _u_UML, _U_UML ,
-         _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,     _B 
-  ),
+    _no, _ESC,    _TAB,       _INS,       _ENTER,     _no ,  _0,     _1,         _2,         _3,     _u_UML, _U_UML ,
+  _no, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,    _R_ALT, _no, _no
+    ),
   
   // MOD3 Fx layer
   KEYMAP( _no,
     _no, _no, _no, _u_UML, _A_UML, _O_UML ,_F1,      _F2,        _F3,        _F4,        _F5,    _F6     ,
     _no, _no, _no, _U_UML, _a_UML, _o_UML, _F7,      _F8,        _F9,        _F10,       _F11,   _F12    ,
-    _no, _no, _no, _no, _no,    _no,       _no,      _no,        _no,        _no,        _no,    _no     ,
-         _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,     _B 
+    _no, _no, _no, _no,    _no,    _no,    _no,      _no,        _no,        _no,        _no,    _no     ,
+    _no, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no, _no 
     ),
 
   // MOD_MOUSE layer
   KEYMAP( _no,
-    _no, _no, _MS_W_U,  _MS_U,  _MS_W_D,  _no,  _a_UML, _o_UML ,  _F1,      _F2,        _F3,        _F4,
-    _no, _no, _MS_L, _MS_D, _MS_R, _no,  _X,     _MS_BTN1, _MS_BTN3, _MS_BTN2, _no, _no,
-    _no, _no, _MS_W_L, _no,      _MS_W_R,  _no,  _no,    _MS_ACC0, _MS_ACC1, _MS_ACC2, _no, _no,
-     _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,     _B
+    _no, _no, _MS_W_U, _MS_U, _MS_W_D, _no,  _no,    _no,      _no,      _no,      _no, _no,
+    _no, _no, _MS_L,   _MS_D, _MS_R,   _no,  _no,    _MS_BTN1, _MS_BTN3, _MS_BTN2, _no, _no,
+    _no, _no, _MS_W_L, _no,   _MS_W_R, _no,  _no,    _MS_ACC0, _MS_ACC1, _MS_ACC2, _no, _no,
+    _no, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no,     _no
     ),
 /*  
   // MOD4 BU-TECK
