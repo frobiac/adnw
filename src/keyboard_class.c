@@ -425,16 +425,8 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
                 break; // end switch
             } // less keys than previously
 
-            // timeout of secondUse timer prevents further second use
-            if (secondUse_timer + SECOND_USE_TIMEOUT < idle_count) {
-                changeSecondUseState(SECOND_USE_ACTIVE, SECOND_USE_PASSIVE);
-                fillReport(report_data);
-                handleModifierTransmission(report_data, MOD_TRANS_ON);
-                fill_secondUse_Prev_activeKeys();
-                break; // end switch
-            }
-            // normal key among pressed
-            if (normalKeyPresent) {
+            // normal key or timeout of secondUse timer ends further second use
+            if ( normalKeyPresent || (secondUse_timer + SECOND_USE_TIMEOUT < idle_count) ) {
                 changeSecondUseState(SECOND_USE_ACTIVE, SECOND_USE_PASSIVE);
                 fillReport(report_data);
                 handleModifierTransmission(report_data, MOD_TRANS_ON);
@@ -443,18 +435,9 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
             }
 
             // Only MKTs were and still are pressed, do not yet emit them though
-            // @todo: How about Ctrl-Mouseclick ?
-            if (!normalKeyPresent && activeKeys.keycnt == secondUse_Prev_activeKeys.keycnt) {
-                changeSecondUseState(SECOND_USE_ACTIVE, SECOND_USE_ACTIVE);
-                fillReport(report_data);
-                handleModifierTransmission(report_data, DELAY_MOD_TRANS);
-                fill_secondUse_Prev_activeKeys();
-                break; // end switch
-            }
-            // Only MKTs were pressed, and another one just added
-            if (!normalKeyPresent && activeKeys.keycnt > secondUse_Prev_activeKeys.keycnt) {
-                secondUse_timer=idle_count;
-
+            if (!normalKeyPresent && activeKeys.keycnt >= secondUse_Prev_activeKeys.keycnt) {
+                if(activeKeys.keycnt > secondUse_Prev_activeKeys.keycnt)
+                    secondUse_timer=idle_count;
                 changeSecondUseState(SECOND_USE_ACTIVE, SECOND_USE_ACTIVE);
                 fillReport(report_data);
                 handleModifierTransmission(report_data, DELAY_MOD_TRANS);
@@ -538,7 +521,7 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 
     handleSecondaryKeyUsage(report_data);
     if( secondUse_state == SECOND_USE_ACTIVE || secondUse_state == SECOND_USE_PASSIVE) {
-        // Sendepuffer bereits gefŸllt und los gehts...
+        // buffer already filled by 2nd-use
         return sizeof(USB_KeyboardReport_Data_t);
     }
 
