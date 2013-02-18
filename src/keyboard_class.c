@@ -64,14 +64,14 @@ typedef enum {
 } SecondUse_State;
 typedef enum {
     MOD_TRANS_ON ,
-    RETARD_MOD_TRANS
+    DELAY_MOD_TRANS
 } ModifierTransmission_State;
 
 #define SECOND_USE_TIMEOUT 30 // = x/61 [s]: a modekey will remain modifier key if pressed this long; if released earlier the second use normal key is signaled
 uint32_t    secondUse_timer;
 SecondUse_State secondUse_state=SECOND_USE_OFF;
 SecondUse_State secondUse_state_prev=SECOND_USE_OFF;
-ModifierTransmission_State prev_modTrans_state = RETARD_MOD_TRANS;
+ModifierTransmission_State prev_modTrans_state = DELAY_MOD_TRANS;
 uint8_t modTrans_prev_Mods = 0;
 struct Key  secondUse_key;
 
@@ -304,7 +304,8 @@ uint8_t getExtraReport(USB_ExtraReport_Data_t *report_data)
     return sizeof(USB_ExtraReport_Data_t);
 }
 
-// merke alle gedrŸckten Tasten fŸr spŠter
+
+// Save all currently pressed keys for later evaluation
 void fill_secondUse_Prev_activeKeys(void) {
     secondUse_Prev_activeKeys.keycnt = activeKeys.keycnt;
     for (uint8_t i = 0; i < activeKeys.keycnt; ++i) {
@@ -312,42 +313,42 @@ void fill_secondUse_Prev_activeKeys(void) {
     }
 }
 
+// Updates new and previous state and prints a debug message
 void changeSecondUseState(SecondUse_State currentState, SecondUse_State newState) {
     char * stateStr;
     if (currentState != newState) {
         secondUse_state = newState;
         secondUse_state_prev = currentState;
-        if (secondUse_state == SECOND_USE_ACTIVE) stateStr = "SECOND_USE_ACTIVE";
-        if (secondUse_state == SECOND_USE_PASSIVE) stateStr = "SECOND_USE_PASSIVE";
-        if (secondUse_state == SECOND_USE_OFF) stateStr = "SECOND_USE_OFF";
-        TRACE("\nSecondUse: next state: %s",stateStr);
+        if (secondUse_state == SECOND_USE_ACTIVE) stateStr = "Active";
+        if (secondUse_state == SECOND_USE_PASSIVE) stateStr = "Passive";
+        if (secondUse_state == SECOND_USE_OFF) stateStr = "Off";
+        TRACE("\n2nd: -> %s",stateStr);
     }
 }
 
+// Send out necessary modifiers
 void handleModifierTransmission(USB_KeyboardReport_Data_t* report_data, ModifierTransmission_State newState) {
-    // Jeweils die richtigen Modifier nach drau§en weitergeben
     switch( newState ) {
         case MOD_TRANS_ON:
-            // †bertragene Modifier merken, um sie spŠter wiederholen zu kšnnen
+            // remember sent mods to be able to repeat them later
             modTrans_prev_Mods = report_data->Modifier;
-            break; // switch beenden
+            break;
 
-        case RETARD_MOD_TRANS:
+        case DELAY_MOD_TRANS:
             report_data->Modifier = modTrans_prev_Mods;
-            break; // switch beenden
+            break;
 
-        default:
-            // ungŸltiger Zustand! Sollte eigentlich nie auftreten
+        default:    // invalid state, should not happen!
             TRACE("ModifierTransmission: illegal state");
             break;
     }
-    // Loggen, wenn sich der Zustand Šndert
+
     if (prev_modTrans_state != newState) {
         char * stateStr;
         prev_modTrans_state = newState;
-        if (newState == MOD_TRANS_ON) stateStr = "MOD_TRANS_ON";
-        if (newState == RETARD_MOD_TRANS) stateStr = "RETARD_MOD_TRANS";
-        TRACE("; ModifierTransmission: next state: %s\n",stateStr);
+        if (newState == MOD_TRANS_ON) stateStr = "TRANS_ON";
+        if (newState == DELAY_MOD_TRANS) stateStr = "DELAY";
+        TRACE("; Mod -> %s\n",stateStr);
     }
 }
 
@@ -357,7 +358,7 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
         case SECOND_USE_OFF:
         {
             bool modifierOrLayerKeyPresent = false;
-            // Gibt es eine Modifier-Taste in den bisher gedrŸckten Tasten?
+            // Modifier among pressed keys?
             for (uint8_t i = 0; i < activeKeys.keycnt; ++i) {
                 struct Key current_key = activeKeys.keys[i];
                 if (!current_key.normalKey) {
@@ -366,32 +367,23 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
                 }
             }
 
-            // Wenn ein Modifier gedrŸckt wurde, schalte den SecondUse-Modus scharf
+            // activate 2nd-use when modifier is pressed
             if(modifierOrLayerKeyPresent) {
                 changeSecondUseState(SECOND_USE_OFF, SECOND_USE_ACTIVE);
                 secondUse_timer=idle_count;
-                // senden vorbereiten
-                fillReport(report_data);
-                // Modifier noch nicht Ÿbermitteln
-                handleModifierTransmission(report_data, RETARD_MOD_TRANS);
-                // merke die gedrŸckten Tasten fŸr die nŠchste SecondUse Beurteilung.
-                fill_secondUse_Prev_activeKeys();
-                break; // switch beenden
-            }
-            // normale Tasten gedrŸckt, aber kein Modifier
-            else {
+                fillReport(report_data);    // prepare to send, but modifiers not just yet
+                handleModifierTransmission(report_data, DELAY_MOD_TRANS);
+            } else { // normal key / no modifier
                 changeSecondUseState(SECOND_USE_OFF, SECOND_USE_OFF);
-                // merke die gedrŸckten Tasten fŸr die nŠchste SecondUse Beurteilung.
-                fill_secondUse_Prev_activeKeys();
-                break; // switch beenden
             }
-            printf("SecondUse: unhandled event in SECOND_USE_OFF");
-            break; // switch beenden
+
+            fill_secondUse_Prev_activeKeys();
+            break;
         }
         case SECOND_USE_ACTIVE:
         {
             bool normalKeyPresent = false;
-            // Gibt es normale Taste in den bisher gedrŸckten Tasten?
+            // Normal key among pressed ?
             for (uint8_t i = 0; i < activeKeys.keycnt; ++i) {
                 struct Key current_key = activeKeys.keys[i];
                 if (current_key.normalKey) {
@@ -399,11 +391,9 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
                     break;
                 }
             }
-            // Wenn eine Taste weniger vorliegt, dann prŸfe, welche fehlt und ermittle deren SecondaryUsage-Code
+            // Which key was just released ?
             if (activeKeys.keycnt < secondUse_Prev_activeKeys.keycnt) {
-                // ermittle den MKT-key (den Weggefallenen)
                 bool secondUseNecessityFound = false;
-                // entweder findet sich die unterschiedliche Taste unter den ersten Tasten
                 for (uint8_t i = 0; i < activeKeys.keycnt; ++i) {
                     struct Key current_key = activeKeys.keys[i];
                     struct Key previous_key = secondUse_Prev_activeKeys.keys[i];
@@ -411,136 +401,114 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
                             && current_key.row == previous_key.row)) {
                         secondUseNecessityFound = true;
                         secondUse_key = previous_key;
-                        break; // for beenden
+                        break;
                     }
                 }
-                // oder die unterschiedliche Taste ist die Letzte im Feld der zwischengespeicherten Tasten
+                // the last previously saved key was released
                 if (!secondUseNecessityFound) {
                     secondUse_key = secondUse_Prev_activeKeys.keys[secondUse_Prev_activeKeys.keycnt - 1];
                 }
-                // Report ohne den MKT-key befŸllen
+                // report without the released key
                 fillReport(report_data);
                 // secondaryModifierUsageMatrix-Code ermitteln
                 uint8_t currentLayoutNr = eeprom_read_byte(&alternateLayoutNr);
-                // den MK-key als (einzigen) Nichtmodifier hinzufŸgen:
+                // and add keycode as only keycode
                 // report_data->KeyCode[0] = USAGE_ID(secondaryModifierUsageMatrix[currentLayoutNr][secondUse_key.row][secondUse_key.col]);;
                 report_data->KeyCode[0] = SecondaryUsage[secondUse_key.row][secondUse_key.col];;
                 changeSecondUseState(SECOND_USE_ACTIVE, SECOND_USE_PASSIVE);
-                // Restliche Modifier zusammen mit secondUse_key Ÿbermitteln und nicht weiter verzšgern
+                // send remaining modifiers and stop delaying
                 handleModifierTransmission(report_data, MOD_TRANS_ON);
-                // merke die gedrŸckten Tasten fŸr die nŠchste SecondUse Beurteilung.
+                // store pressed keys for next 2nd-Use run
                 fill_secondUse_Prev_activeKeys();
-                // ziehe Timer fŸr Tasten-Repeat fŸr SecondUse auf:
+
                 repeatGesture_timer = idle_count;
-                break; // switch beenden
-            }
+                break; // end switch
+            } // less keys than previously
+
             // timeout of secondUse timer prevents further second use
             if (secondUse_timer + SECOND_USE_TIMEOUT < idle_count) {
                 changeSecondUseState(SECOND_USE_ACTIVE, SECOND_USE_PASSIVE);
-                // senden vorbereiten
                 fillReport(report_data);
-                // Modifier nun Ÿbermitteln und nicht weiter verzšgern
                 handleModifierTransmission(report_data, MOD_TRANS_ON);
-                // merke die gedrŸckten Tasten fŸr die nŠchste SecondUse Beurteilung.
                 fill_secondUse_Prev_activeKeys();
-                break; // switch beenden
+                break; // end switch
             }
-            // Wenn eine normale Taste in den bisher gedrŸckten Tasten befindet
+            // normal key among pressed
             if (normalKeyPresent) {
                 changeSecondUseState(SECOND_USE_ACTIVE, SECOND_USE_PASSIVE);
-                // senden vorbereiten
                 fillReport(report_data);
-                // Modifier nun Ÿbermitteln und nicht weiter verzšgern
                 handleModifierTransmission(report_data, MOD_TRANS_ON);
-                // merke die gedrŸckten Tasten fŸr die nŠchste SecondUse Beurteilung.
                 fill_secondUse_Prev_activeKeys();
-                break; // switch beenden
+                break; // end switch
             }
-            // Wenn lauter MKTs bisher gedrŸckt waren und weiter gehalten werden
-            // Microsoft mag nicht ALT signalisiert und spŠter ein Buchstabe (z.B. Word: Alt->MenŸshortcutmode: ->BKSP gibt nicht im MenŸ, also 'beep')
-            // also alle allein gedrŸckten Modifier unterdrŸcken, weil wir wollen eh SecondUse ausgeben in diesem Zustand
-            if (!normalKeyPresent &&
-                    activeKeys.keycnt == secondUse_Prev_activeKeys.keycnt) {
+
+            // Only MKTs were and still are pressed, do not yet emit them though
+            // @todo: How about Ctrl-Mouseclick ?
+            if (!normalKeyPresent && activeKeys.keycnt == secondUse_Prev_activeKeys.keycnt) {
                 changeSecondUseState(SECOND_USE_ACTIVE, SECOND_USE_ACTIVE);
-                // senden vorbereiten
                 fillReport(report_data);
-                // Modifier noch nicht Ÿbermitteln
-                handleModifierTransmission(report_data, RETARD_MOD_TRANS);
-                // merke die gedrŸckten Tasten fŸr die nŠchste SecondUse Beurteilung.
+                handleModifierTransmission(report_data, DELAY_MOD_TRANS);
                 fill_secondUse_Prev_activeKeys();
-                break; // switch beenden
+                break; // end switch
             }
-            // Wenn lauter MKTs bisher gedrŸckt waren und nun einer dazukam
-            if (!normalKeyPresent &&
-                    activeKeys.keycnt > secondUse_Prev_activeKeys.keycnt) {
-                // timer neu aufziehen
-                changeSecondUseState(SECOND_USE_ACTIVE, SECOND_USE_ACTIVE);
+            // Only MKTs were pressed, and another one just added
+            if (!normalKeyPresent && activeKeys.keycnt > secondUse_Prev_activeKeys.keycnt) {
                 secondUse_timer=idle_count;
-                // senden vorbereiten
+
+                changeSecondUseState(SECOND_USE_ACTIVE, SECOND_USE_ACTIVE);
                 fillReport(report_data);
-                // Modifier noch nicht Ÿbermitteln
-                handleModifierTransmission(report_data, RETARD_MOD_TRANS);
-                // merke die gedrŸckten Tasten fŸr die nŠchste SecondUse Beurteilung.
+                handleModifierTransmission(report_data, DELAY_MOD_TRANS);
                 fill_secondUse_Prev_activeKeys();
-                break; // switch beenden
+                break; // end switch
             }
             printf("SecondUse: unhandled event in SECOND_USE_ACTIVE");
-            break; // switch beenden
+            break;
         }
 
         case SECOND_USE_PASSIVE:
         {
-            // aktuelle Zahl der Modifier ermitteln
-            uint8_t actModNo=0,prevModNo = 0;
+            // number of modifiers now ...
+            uint8_t actModNo=0, prevModNo = 0;
             for (uint8_t i = 0; i < activeKeys.keycnt; ++i) {
                 struct Key current_key = activeKeys.keys[i];
                 if (!current_key.normalKey) {
                     actModNo++;
                 }
             }
-            // vorherige Zahl der Modifier ermitteln
+            // ... and previously
             for (uint8_t i = 0; i < secondUse_Prev_activeKeys.keycnt; ++i) {
                 struct Key current_key = secondUse_Prev_activeKeys.keys[i];
                 if (!current_key.normalKey) {
                     prevModNo++;
                 }
             }
-            // keine Tasten gedrŸckt?
-            if (activeKeys.keycnt == 0) {
+            if (activeKeys.keycnt == 0) {  // nothing is pressed
                 changeSecondUseState(SECOND_USE_PASSIVE, SECOND_USE_OFF);
-                // merke die gedrŸckten Tasten fŸr die nŠchste SecondUse Beurteilung.
                 fill_secondUse_Prev_activeKeys();
-                break; // switch beenden
+                break; // end switch
             }
-            // ein Modifier weniger? (evtl. zusŠtzlich zu normalen Tasten)
+            // was a modifier released ?
             if(actModNo <= prevModNo) {
                 changeSecondUseState(SECOND_USE_PASSIVE, SECOND_USE_PASSIVE);
-                // senden vorbereiten
                 fillReport(report_data);
-                // Modifier nun Ÿbermitteln und nicht weiter verzšgern
+                // send modifiers now
                 handleModifierTransmission(report_data, MOD_TRANS_ON);
-                // merke die gedrŸckten Tasten fŸr die nŠchste SecondUse Beurteilung.
                 fill_secondUse_Prev_activeKeys();
-                break; // switch beenden
+                break; // end switch
             }
-            // ein Modifier mehr? (evtl. zusŠtzlich zu normalen Tasten)
+            // another modifier pressed?
             if(actModNo > prevModNo) {
-                // timer neu aufziehen
                 changeSecondUseState(SECOND_USE_PASSIVE, SECOND_USE_ACTIVE);
                 secondUse_timer=idle_count;
-                // senden vorbereiten
                 fillReport(report_data);
-                // Modifier noch nicht Ÿbermitteln
-                handleModifierTransmission(report_data, RETARD_MOD_TRANS);
-                // merke die gedrŸckten Tasten fŸr die nŠchste SecondUse Beurteilung.
+                handleModifierTransmission(report_data, DELAY_MOD_TRANS);
                 fill_secondUse_Prev_activeKeys();
-                break; // switch beenden
+                break; // end switch
             }
             printf("SecondUse: unhandled event in SECOND_USE_PASSIVE");
-            break; // switch beenden
+            break; // end switch
         }
         default:
-            // ungŸltiger Zustand! Sollte eigentlich nie auftreten
             printf("SecondUse: illegal state");
             break;
     }
