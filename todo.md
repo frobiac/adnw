@@ -56,8 +56,6 @@ Commandmode
 
 BUGS
 ----
-* Ctrl stuck
-* revert multimodekey
 
 
 Coding style
@@ -71,15 +69,6 @@ Ideas
 - prntscreen...
 - openmoko touchpad?
 - analog input for 2-wire matrix-scan
-
-Problems with layout
---------------------
-- Ctrl-Tab needs separate Tab
-- Ctrl-Alt-Fx
-- Ctrl-Alt-Del
-- ctrl-alt       vmware
-- (ctrl)shift + direction
-- ctrl-mouseclick
 
 
 Thumbkey double usage
@@ -100,9 +89,8 @@ Unsorted
 --------
 SecondaryUsage repeat (backspace)
 Testcases/mode
-Use center keys as mouse btns
 Pinkydrop again ?!
 
-maltron branch(es) cleanup
---------------------------
+maltron 
+-------
 * credit K.W. in future merge
