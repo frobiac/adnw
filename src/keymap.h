@@ -170,7 +170,7 @@ static const uint8_t MouseUsage[ROWS][COLS] =
  HID_ESC,  0, 0, 0, 0, 0,                                                     0, 0, 0, 0, 0, 0 ,
        0, HID_MOUSEBTN_1, HID_MOUSEBTN_3, HID_MOUSEBTN_2, HID_MOUSEBTN_4, 0,  0, 0, 0, 0, 0, 0 ,
        0, 0, 0, 0, 0, 0 ,                                                     0, 0, 0, 0, 0, 0 ,
-       0, 0, 0, 0 ,0, HID_MOUSEBTN_1,0, /* | */ HID_MOUSEBTN_3, HID_MOUSEBTN_2 , 0, 0, 0, 0, 0
+       0, 0, 0, 0 ,0, HID_MOUSEBTN_1,HID_MOUSEBTN_3, /* | */ 0, HID_MOUSEBTN_2 , 0, 0, 0, 0, 0
 );
 
 
