@@ -60,6 +60,7 @@ uint8_t prevRowData[ROWS];
 typedef enum {
     SECOND_USE_OFF ,
     SECOND_USE_ACTIVE ,
+    SECOND_USE_REPEAT ,
     SECOND_USE_PASSIVE
 } SecondUse_State;
 typedef enum {
@@ -321,6 +322,7 @@ void changeSecondUseState(SecondUse_State currentState, SecondUse_State newState
         secondUse_state_prev = currentState;
         if (secondUse_state == SECOND_USE_ACTIVE) stateStr = "Active";
         if (secondUse_state == SECOND_USE_PASSIVE) stateStr = "Passive";
+        if (secondUse_state == SECOND_USE_REPEAT) stateStr = "Repeat";
         if (secondUse_state == SECOND_USE_OFF) stateStr = "Off";
         TRACE("\n2nd: -> %s",stateStr);
     }
@@ -355,8 +357,30 @@ void handleModifierTransmission(USB_KeyboardReport_Data_t* report_data, Modifier
 void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
 
     switch( secondUse_state ) {
+        case SECOND_USE_REPEAT:
+        {
+            if( activeKeys.keycnt==1 ) { // only one => previously determined key to repeat still pressed
+                memset(&report_data->KeyCode[0], 0, 6);
+                report_data->Modifier=0;
+                report_data->KeyCode[0] = SecondaryUsage[activeKeys.keys[0].row][activeKeys.keys[0].col];
+                changeSecondUseState(SECOND_USE_REPEAT, SECOND_USE_REPEAT);
+                break;
+            } else {  // repeated key was released
+                repeatGesture_timer = idle_count;
+                changeSecondUseState(SECOND_USE_REPEAT, SECOND_USE_OFF);
+            }
+        }
         case SECOND_USE_OFF:
         {
+            if( activeKeys.keycnt==1 && ! activeKeys.keys[0].normalKey &&
+                0 != SecondaryUsage[activeKeys.keys[0].row][activeKeys.keys[0].col] &&
+                activeKeys.keys[0].row == secondUse_Prev_activeKeys.keys[0].row &&
+                activeKeys.keys[0].col == secondUse_Prev_activeKeys.keys[0].col &&
+                idle_count-repeatGesture_timer < 10 )
+            {
+                changeSecondUseState(SECOND_USE_OFF, SECOND_USE_REPEAT);
+                break;
+            }
             bool modifierOrLayerKeyPresent = false;
             // Modifier among pressed keys?
             for (uint8_t i = 0; i < activeKeys.keycnt; ++i) {
@@ -520,7 +544,7 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
     }
 
     handleSecondaryKeyUsage(report_data);
-    if( secondUse_state == SECOND_USE_ACTIVE || secondUse_state == SECOND_USE_PASSIVE) {
+    if( secondUse_state == SECOND_USE_ACTIVE || secondUse_state == SECOND_USE_PASSIVE || secondUse_state == SECOND_USE_REPEAT) {
         // buffer already filled by 2nd-use
         return sizeof(USB_KeyboardReport_Data_t);
     }

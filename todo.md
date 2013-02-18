@@ -87,7 +87,6 @@ Thumbkey double usage
 
 Unsorted
 --------
-SecondaryUsage repeat (backspace)
 Testcases/mode
 Pinkydrop again ?!
 
