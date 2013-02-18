@@ -93,6 +93,7 @@ void CALLBACK_HID_Device_ProcessHIDReport(USB_ClassInfo_HID_Device_t* const HIDI
 
 uint8_t     g_mouse_keys;       ///< stores keys to be interpreted as mouse buttons
 uint8_t     g_mouse_keys_enabled;       ///< temporarily active while mouse in in use,
+bool        g_pinkydrop;        ///< is pinky dropped one row below homerow?
 
 volatile uint32_t idle_count;   ///< interupt-incremented timer used for timeouts of MKT and mousekeys
 

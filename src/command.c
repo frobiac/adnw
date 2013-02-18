@@ -94,6 +94,11 @@ void handleCommand(void) {
     // Char without Meaning:
     //  O:MouseMode, R:PrintKeyHID
     switch(hid) {
+        case HID_D:
+            g_pinkydrop = !g_pinkydrop;
+            printf("\nPinkydrop %d", g_pinkydrop);
+            setCommandMode(false);
+            break;
         case HID_V:
             printf("\nAdNW %s", FW_VERSION);
             setCommandMode(false);

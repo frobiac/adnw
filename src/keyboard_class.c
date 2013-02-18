@@ -123,6 +123,7 @@ void initKeyboard()
 
     g_mouse_keys_enabled = 0;
     g_mouse_keys = 0;
+    g_pinkydrop = false;
     secondUse_timer=idle_count + SECOND_USE_TIMEOUT;
 
 #ifdef DEBUG_OUTPUT
@@ -856,7 +857,16 @@ void init_active_keys()
     for (uint8_t row = 0; row < ROWS; ++row) {
         for (uint8_t col = 0; col < COLS; ++col) {
             if (rowData[row] & (1UL << col)) {
-                ActiveKeys_Add(row,col);
+                uint8_t offset=0; 
+#ifdef HYPERNANO         
+                if(g_pinkydrop){
+                    if(col == 1 && row < 4)
+                        offset = (row == 0 ? 3 : -1); //  :o+row-1)%4;
+                    else if( col==5 && row>3)
+                        offset = (row == 4 ? 3 : -1); //+(4+row-1)%4;
+                }
+#endif
+                ActiveKeys_Add(row+offset,col);
             }
         }
     }
