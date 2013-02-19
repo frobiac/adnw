@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>AdNW by frobiac</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>AdNW</h1>
+        <p>AVR keyboard firmware with PS/2 trackpoint support &amp; macro mode.</p>
+
+        <p class="view"><a href="https://github.com/frobiac/adnw">View the Project on GitHub <small>frobiac/adnw</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/frobiac/adnw/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/frobiac/adnw/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/frobiac/adnw">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1><strong>WARNING</strong></h1>
+
+<p>The code is by no means in a state I would normally want to present it, but merely a snapshot of my current work in progress.</p>
+
+<p>Due to the numerous requests I nonetheless chose to open it to the public, in the hopes that someone may find valuable information or hints even though it is documented poorly and hackish at best - maybe this encourages me enough to clean it up a little, too. </p>
+
+<h2>About</h2>
+
+<p>This is a firmware for avr controllers like the teensy to simulate a keyboard and a mouse. It was created for a custom split keyboard design with 4x6 keys on each side in a matrix layout but could be adapted easily for other hardware. A presentation of my current keyboard prototype can be found <a href="http://deskthority.net/workshop-f7/my-diy-keyboard-collection-or-how-i-became-a-kb-geek-t2534.html">here</a>.</p>
+
+<p>It enables a different, more ergonomic layout without any further drivers on any host operating system. In its current state, the well evolved <a href="http://www.adnw.de">AdNW layout</a> is implemented with layers 3&amp;4 (special characters, navigational keys and numpad) from the <a href="http://www.neo-layout.org/">neo layout</a>. In addition, an integrated IBM trackpoint is also supported, but any PS/2 compatible device can also be hooked-up to the controller.</p>
+
+<h2>Credits</h2>
+
+<p>The driver was originally based on humblehackers <a href="http://github.com/humblehacker/keyboard">hhkb firmware</a>, but I found some things (while pretty neat and cleanly implemented) a little too difficult to adjust, so I revamped everything but the most basic USB code.</p>
+
+<p>Implementation of mousekey layer, KEYMAP macro and other neat ideas borrowed from the very advanced <a href="http://github.com/tmk/tmk_keyboard">tmk_firmware</a>.</p>
+
+<p>Klaus Weber contributed greatly to an enhanced secondary use state machine and provided several other modifications, including alternate layouts as well as PC/Mac and host language differentiations.</p>
+
+<p>PS/2 support is credited in large part to Akshay Srinivasan <a href="mailto:akshaysrinivasan@nitk.ac.in">akshaysrinivasan@nitk.ac.in</a></p>
+
+<h2>Install</h2>
+
+<p>You will need a recent version of the LUFA usb stack to compile this software.
+If you want scrollwheel support for the mouse, the included <a href="/LUFA-scrollwheel.patch">patch</a> needs to be applied.
+From this root directory, execute</p>
+
+<pre><code>$ git submodule init
+$ git submodule update
+</code></pre>
+
+<p>To build, please adjust controller type and build switches in makefile.
+The hardware wiring needs to be specified in matrix.h .
+Further configuration can be achieved by editing src/config.h .
+If you change the code, you are at least required to change the vendor and product id! Valid ids can be retrieved from AVR demoes, or the keyboard examples of the LUFA lib.</p>
+
+<p>Then simply call
+    $ make</p>
+
+<h1>Current Layout</h1>
+
+<p>Current default layout as implemented in <a href="/src/keymap.h">keymap.h</a> : 
+( discussion at <a href="http://deskthority.net/keyboards-f2/the-decent-keyboard-layout-discussion-thread-matrix-t2898-30.html">deskthority</a> )</p>
+
+<h5>Thumb keys &amp; modifiers</h5>
+
+<pre><code>                        Macro    TP
+                        -        -
+LShft LAlt LCtrl Space                  Mod1 Mod3 AltGr Fx
+ -     Esc  Tab  Space                  BkSp Ret  -     -
+                        LWin     Mod2
+                        -        -
+</code></pre>
+
+<h5>Layer 0 &amp; Mod1 ( letters shifted)</h5>
+
+<pre><code>K  U  Q  .: J     V  G  C  L  F
+H  I  E  A  O     D  T  R  N  S
+X  Y  -  ,; /\    B  P  W  M  Z
+</code></pre>
+
+<h5>M2 / special</h5>
+
+<pre><code>@  _  [  ]  #     !  &lt;  &gt;  =  &amp;
+\  /  {  }  *     ?  (  )  +  :
+   $  |  ~  `     ^  %  "  '
+</code></pre>
+
+<h5>M3 / MoveNum</h5>
+
+<pre><code>PgUp BkSp  Up  Del  PgDo   ß 7 8 9 ä Ä
+Pos1 Left Down Righ End    . 4 5 6 ö Ö
+Esc  Tab  Ins  Ret  Undo   0 1 2 3 ü Ü
+</code></pre>
+
+<h5>Mousekeys</h5>
+
+<pre><code>tbd, see keymap.h
+</code></pre>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/frobiac">frobiac</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
