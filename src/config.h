@@ -40,7 +40,13 @@
 
 // Unicode strings describing this keyboard
 #define STR_MANUFACTURER L"frobiac"
-#define STR_PRODUCT      L"AdNW TP and mouse"
+#if defined BLUECUBE
+#   define STR_PRODUCT      L"AdNW BlueCube"
+#elif defined HYPERNANO
+#   define STR_PRODUCT      L"AdNW HyperNano"
+#else
+#   define STR_PRODUCT      L"AdNW Keyboard"
+#endif
 
 
 // thanks to Openmoko, Inc we now have a dedicated USB Product ID
