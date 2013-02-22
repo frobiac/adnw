@@ -27,6 +27,10 @@
 #include "ps2mouse.h"
 #include "trackpoint.h"
 
+// >42590 to register connected TP correctly
+// <50000 to not hang if no TP connected
+#define CNT 48000
+volatile uint32_t cnt = 0;
 
 volatile uint8_t     scrollcnt;
 volatile uint32_t    mouse_timer; /// toggle mouse mode for a specified time
@@ -59,10 +63,8 @@ void clk(uint8_t x)
 
 
 
-#define CNT 500
 void serout(uint8_t bit)
 {
-    uint8_t cnt;
     cnt=0;
     while(CLK && cnt++ < CNT) {
         __asm__("nop");
@@ -77,7 +79,6 @@ void serout(uint8_t bit)
 uint8_t serin()
 {
     uint8_t state;
-    uint8_t cnt;
     cnt=0;
     while(CLK && cnt++ < CNT) {
         __asm__("nop");
