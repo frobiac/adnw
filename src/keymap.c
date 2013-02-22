@@ -51,8 +51,9 @@ EEMEM GeoArea  alternateGeoArea  = DE;
 
 keycode getKeyStruct(uint8_t row, uint8_t col, uint8_t layer)
 {
+    // use alternate layout: @todo: convert to altenateLayout ?!
     if( g_alternateLayer && layer==0)
-        layer=5;
+        layer=ALT_ALPHA_LAYER;
     keycode kc;
 
     if(PINKYDROP) {

@@ -68,6 +68,9 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 uint8_t getKeyChar (uint8_t row, uint8_t col, uint8_t layer);
 void    printLayout(uint8_t l);
 
+/// position of an alternate layout in matrix below
+#define ALT_ALPHA_LAYER 5
+
 #define _MACRO _no
 #ifdef MALTRON_KW
   // Menu and Fn pressed simultaneouslye
@@ -83,7 +86,7 @@ void    printLayout(uint8_t l);
 #ifdef BLUECUBE
   #define CMD_MODE() ((rowData[2] & (1<<0)) && (rowData[6] & (1<<5)) ) 
 
-  #define LAYERS 5
+  #define LAYERS 6
   #define ROWS   8
   #define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
 
@@ -122,7 +125,7 @@ void    printLayout(uint8_t l);
 #ifdef HYPERNANO
   #define CMD_MODE() ( (rowData[3] & (1<<1)) && (rowData[7] & (1<<5)) ) 
  
-  #define LAYERS 5
+  #define LAYERS 6
   #define ROWS   8
   #define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
 
@@ -197,7 +200,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
          _MOD_3, _k, _u, _q,     _PERIOD, _j,      _v, _g, _c, _l, _f, _BSPACE ,
          _TAB,   _h, _i, _e,     _a,      _o,      _d, _t, _r, _n, _s, _ENTER  ,
          _DQUOTE,_x, _y, _MINUS, _COMMA,  _SLASH,  _b, _p, _w, _m, _z, _MOD_MOUSEKEY,
-         _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,  _B  
+         _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,  _B
   ),
     
   // MOD1 layer (special char)
@@ -231,15 +234,16 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _no, _no, _MS_W_L, _no,   _MS_W_R, _no,  _no,    _MS_ACC0, _MS_ACC1, _MS_ACC2, _no, _no,
     _no, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no,     _no
     ),
-/*  
-  // MOD4 BU-TECK
+
+  // MOD5 BU-TECK
+  // needs to be layout # ALT_ALPHA_LAYER
   KEYMAP( _no,
-    _ESC,   _b, _u, _q, _PERIOD,_x  , _p,   _c, _l, _m, _f, _BSPACE ,
+    _ESC,   _k, _u, _q, _PERIOD,_x  , _p,   _c, _l, _m, _f, _BSPACE ,
     _TAB,   _h, _i, _e, _a, _o  , _d,   _t, _r, _n, _s, _ENTER  ,
-    _DQUOTE,_k, _y, _MINUS, _COMMA, _SLASH , _j,   _g, _w, _v, _z, _no  ,
-         _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,     _B 
+    _DQUOTE,_b, _y, _MINUS, _COMMA, _SLASH , _j,   _g, _w, _v, _z, _no  ,
+         _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,  _B  
   )
-*/
+
 }; // end of matrix[][][]
     
 #endif
