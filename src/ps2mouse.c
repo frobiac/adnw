@@ -23,13 +23,13 @@
 
 #include <util/delay.h>
 
-#include "Keyboard.h"
 #include "ps2mouse.h"
 #include "trackpoint.h"
 
+
 // >42590 to register connected TP correctly
 // <50000 to not hang if no TP connected
-#define CNT 48000
+#define NOP_MAX_CNT 48000
 volatile uint32_t cnt = 0;
 
 volatile uint8_t     scrollcnt;
@@ -66,12 +66,12 @@ void clk(uint8_t x)
 void serout(uint8_t bit)
 {
     cnt=0;
-    while(CLK && cnt++ < CNT) {
+    while(CLK && ++cnt < NOP_MAX_CNT) {
         __asm__("nop");
     }
     data(bit);
     cnt = 0;
-    while(!CLK && cnt++ < CNT) {
+    while(!CLK && ++cnt < NOP_MAX_CNT) {
         __asm__("nop");
     }
 }
@@ -80,12 +80,12 @@ uint8_t serin()
 {
     uint8_t state;
     cnt=0;
-    while(CLK && cnt++ < CNT) {
+    while(CLK && ++cnt < NOP_MAX_CNT) {
         __asm__("nop");
     }
     state = DATA;
     cnt = 0;
-    while(!CLK && cnt++ < CNT) {
+    while(!CLK && ++cnt < NOP_MAX_CNT) {
         __asm__("nop");
     }
     return state;
@@ -110,7 +110,7 @@ uint8_t oparity(uint8_t byte)
 bool send_packet(uint8_t byte)
 {
     /// @todo Error checking in PS/2 code
-    uint8_t errcnt=0;
+    uint8_t sent_retries=0;
 
     do {
         uint8_t parity = oparity(byte);
@@ -139,10 +139,10 @@ bool send_packet(uint8_t byte)
 
         //if(serin() != PS2_ACK )
         //    send_packet(byte); // Try again if PS2_ACK has not been received
-        errcnt++;
-    } while (serin() != 0 && errcnt < 5 );
+        sent_retries++;
+    } while (serin() != 0 && sent_retries < 5 );
 
-    if(errcnt >= 5)
+    if(sent_retries >= 5)
         return false;
     return true;
 }

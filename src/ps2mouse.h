@@ -40,12 +40,19 @@
 #define DBIT    7
 #define CLKPORT E
 #define CBIT    6
-#endif
-#ifdef HYPERNANO
+#define RSTPORT B
+#define RBIT    3
+
+#elif defined HYPERNANO
 #define DAPORT  B
 #define DBIT    1
 #define CLKPORT B
 #define CBIT    2
+#define RSTPORT B
+#define RBIT    0
+
+#else
+#error "Trackpoint defined only for BLUECUBE and HYPER
 #endif
 
 /////////////////////////////
@@ -75,6 +82,7 @@
 ///////////////////////////////
 
 
+uint8_t errcnt;
 uint8_t     g_mouse_enabled; ///< >0 if mouse/trackpoint is active and reports shall be generated
 
 void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS );
@@ -86,6 +94,5 @@ bool ps2_send_expect(uint8_t send, uint8_t expect);
 
 uint8_t getMouseReport(USB_MouseReport_Data_t *report_data);
 
-uint8_t errcnt;
 
 #endif // PS2MOUSE_H

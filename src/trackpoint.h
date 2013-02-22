@@ -20,20 +20,6 @@
 
 #include "ps2mouse.h"
 
-#ifndef F_CPU
-#define F_CPU 16000000UL
-#endif
-
-//reset trackpoimt
-#ifdef BLUECUBE
-#define RSTPORT B
-#define RBIT    3
-#endif
-#ifdef HYPERNANO
-#define RSTPORT B
-#define RBIT    0
-#endif
-
 bool    tp_send_read_ack( uint8_t val );
 void    tp_reset( void );
 void    tp_init( void );

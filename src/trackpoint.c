@@ -18,14 +18,6 @@
 #include <util/delay.h>
 
 #include "trackpoint.h"
-#include "Keyboard.h"
-
-#define ACC_RAMPTIME 400 // acc incrementation time till maximum
-#define ACC_MAX      2.5 // maximum accelleration factor reachable
-
-volatile uint8_t     scrollcnt;
-volatile uint32_t    mouse_timer; /// toggle mouse mode for a specified time
-volatile uint16_t    accel; /// toggle mouse mode for a specified time
 
 void tp_reset()
 {
@@ -34,20 +26,6 @@ void tp_reset()
     _delay_us(DELAY);
     RPORT &= ~(1 << RBIT);
     return;
-
-    while(CLK) {
-        __asm__("nop");
-    }
-    while(!CLK) {
-        __asm__("nop");
-    }
-    while(CLK) {
-        __asm__("nop");
-    }
-    while(!CLK) {
-        __asm__("nop");
-    }
-    RPORT &= ~(1 << RBIT);
 }
 
 
