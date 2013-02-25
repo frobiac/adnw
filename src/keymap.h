@@ -209,9 +209,9 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
   // MOD5 BU-TECK
   // needs to be layout # ALT_ALPHA_LAYER
   KEYMAP( _no,
-    _ESC,   _k, _u, _q,     _PERIOD,_x  ,   _p,  _c, _l, _m, _f, _BSPACE ,
+    _ESC,   _b, _u, _q,     _PERIOD,_x  ,   _p,  _c, _l, _m, _f, _BSPACE ,
     _TAB,   _h, _i, _e,     _a,     _o  ,   _d,  _t, _r, _n, _s, _ENTER  ,
-    _DQUOTE,_b, _y, _MINUS,_COMMA,_SLASH,   _j,  _g, _w, _v, _z, _no  ,
+    _DQUOTE,_k, _y, _MINUS,_COMMA,_SLASH,   _j,  _g, _w, _v, _z, _no  ,
     _no,_L_SHIFT,_L_ALT,_L_CTRL,_SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,  _B  
   )
 
