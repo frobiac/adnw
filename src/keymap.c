@@ -45,6 +45,8 @@ uint8_t getKeyChar(uint8_t row, uint8_t col, uint8_t layer)
     return ch;
 }
 
+EEMEM uint8_t  ee_alternateLayer = 0;
+EEMEM uint8_t  ee_pinkyDrop      = 0;
 EEMEM Layout   alternateLayoutNr = QWERTZ_DE;
 EEMEM MacOrPC  altMacOrPC        = PC;
 EEMEM GeoArea  alternateGeoArea  = DE;

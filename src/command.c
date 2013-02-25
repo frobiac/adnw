@@ -95,8 +95,9 @@ void handleCommand(void) {
     //  O:MouseMode, R:PrintKeyHID
     switch(hid) {
         case HID_D:
-            g_pinkydrop = !g_pinkydrop;
+            g_pinkydrop = (++g_pinkydrop%2);
             printf("\nPinkydrop %d", g_pinkydrop);
+            eeprom_write_byte(&ee_pinkyDrop, g_pinkydrop);
             setCommandMode(false);
             break;
         case HID_V:
@@ -140,7 +141,8 @@ void handleCommand(void) {
             break;
 #endif
         case HID_L:
-            g_alternateLayer=!g_alternateLayer;
+            g_alternateLayer=(++g_alternateLayer%2);
+            eeprom_write_byte(&ee_alternateLayer,g_alternateLayer);
             printf("\nAlternate layer %s", g_alternateLayer ? "selected." : "off.");
             setCommandMode(false);
             /*

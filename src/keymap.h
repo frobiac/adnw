@@ -33,7 +33,9 @@ typedef struct {
     char     ch;
 } keycode;
 
-bool g_alternateLayer; ///< toggle using an alternate layout for layer 1
+EEMEM extern uint8_t ee_pinkyDrop;
+EEMEM extern uint8_t ee_alternateLayer;
+uint8_t g_alternateLayer; ///< toggle using an alternate layout for layer 1
 
 // gespeichert im EEPROM. ca. 100.000 Schreibzugriffe.
 typedef enum

@@ -123,7 +123,7 @@ void initKeyboard()
 
     g_mouse_keys_enabled = 0;
     g_mouse_keys = 0;
-    g_pinkydrop = false;
+    g_pinkydrop = 0;
     secondUse_timer=idle_count + SECOND_USE_TIMEOUT;
 
 #ifdef DEBUG_OUTPUT
@@ -132,6 +132,14 @@ void initKeyboard()
     init_cols();
 
     initMacros();
+
+    uint8_t tmp = eeprom_read_byte(&ee_pinkyDrop);
+    if(tmp==1) g_pinkydrop = 1;
+
+    tmp = eeprom_read_byte(&ee_alternateLayer);
+    if(tmp==1) g_alternateLayer = 1;
+
+    printf("\nEEPROM pinky/layer: %d/%d", g_pinkydrop, g_alternateLayer);
 }
 
 void clearRowData() {
@@ -864,7 +872,7 @@ void init_active_keys()
 #ifdef HYPERNANO         
                 if(g_pinkydrop){
                     if(col == 1 && row < 4)
-                        offset = (row == 0 ? 3 : -1); //  :o+row-1)%4;
+                        offset = (row == 0 ? 3 : -1); //+(4+row-1)%4;
                     else if( col==5 && row>3)
                         offset = (row == 4 ? 3 : -1); //+(4+row-1)%4;
                 }
