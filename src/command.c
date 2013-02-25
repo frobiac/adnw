@@ -54,16 +54,6 @@ void setCommandMode(bool on) {
 bool commandMode(void) { return command; }
 void handleSubCmd(struct Key k);
 
-void PrintConfiguration() {
-    // G:GeoArea umschalten
-    printf("\nC:Config::\n");
-    printf("\nLayout:  %u (0=QWERTZ_DE, 1=KO.,Y, 2=Malt90, 3=QWERTY_GB)",
-           eeprom_read_byte(&alternateLayoutNr));
-    printf("\nGeoArea: %u (0=DE,        1=GB,    2=US)",
-           eeprom_read_byte(&alternateGeoArea));
-    printf("\nMac/PC:  %u (0=PC,        1=Mac)\n", eeprom_read_byte(&altMacOrPC));
-}
-
 /** Called when command mode is active.
  *
  *  First pressed key is mapped to first layer defined and evaluated. Use only a-z and 0-9 for commands, others exit this mode. 
@@ -104,18 +94,10 @@ void handleCommand(void) {
             printf("\nAdNW %s", FW_VERSION);
             setCommandMode(false);
             break;
-        case HID_C:
-            PrintConfiguration();
-            break;
         case HID_G:
             // G:GeoArea umschalten
             printf("\nG:GeoArea::");
             subcmd=SUB_GEOAREA;
-            break;
-        case HID_H:
-            // HardwarePC/Mac umschalten
-            printf("\nHardwarePC/Mac::");
-            subcmd=SUB_PC_MAC;
             break;
         case HID_Q:
         case HID_ESC:
@@ -145,11 +127,6 @@ void handleCommand(void) {
             eeprom_write_byte(&ee_alternateLayer,g_alternateLayer);
             printf("\nAlternate layer %s", g_alternateLayer ? "selected." : "off.");
             setCommandMode(false);
-            /*
-            // Layout umschalten
-            printf("\nSwitch layout::");
-            subcmd=SUB_LAYOUT;
-            */
             break;
         case HID_A:
             for(uint8_t i=32; i<255; ++i) {
@@ -201,36 +178,6 @@ void handleSubCmd(struct Key k) {
                     printf("%02x", str[i]);
             }
             break;
-        case SUB_LAYOUT:
-        {
-            // das nŠchste Layout auf die gedrŸckte Spalte setzen, also 12 verschiedene Layouts verfŸgbar
-            /*
-            Layout nextLayout = k.col < LAYOUTS ? k.col : eeprom_read_byte (&alternateLayoutNr);
-            eeprom_write_byte(&alternateLayoutNr, nextLayout);
-            PrintConfiguration();
-            */
-            printf("\nLAYOUTS not yet implemented");
-            setCommandMode(false);
-            break;
-        }
-        case SUB_GEOAREA:
-        {
-            // den geografischen Bereich auf die gedrŸckte Spalte setzen, DE, GB und US verfŸgbar
-            GeoArea nextAlternateGeoArea = k.col < 3 ? k.col : eeprom_read_byte (&alternateGeoArea);
-            eeprom_write_byte(&alternateGeoArea, nextAlternateGeoArea);
-            PrintConfiguration();
-            setCommandMode(false);
-            break;
-        }
-        case SUB_PC_MAC:
-        {
-            // die Hardware auf die gedrŸckte Spalte setzen, PC/Mac verfŸgbar
-            MacOrPC  nextAltMacOrPC = k.col < 2 ? k.col : eeprom_read_byte (&altMacOrPC);
-            eeprom_write_byte(&altMacOrPC, nextAltMacOrPC);
-            PrintConfiguration();
-            setCommandMode(false);
-            break;
-        }
         case SUB_MACRO:
             setMacroMode(true);
             activateMacro(k.row*ROWS+k.col);

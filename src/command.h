@@ -26,6 +26,4 @@ void setCommandMode(bool);
 bool commandMode(void);
 void handleCommand(void);
 
-void PrintConfiguration(void);
-
 #endif // _COMMAND_H

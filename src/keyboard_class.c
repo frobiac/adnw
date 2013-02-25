@@ -443,8 +443,6 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
                 }
                 // report without the released key
                 fillReport(report_data);
-                // secondaryModifierUsageMatrix-Code ermitteln
-                uint8_t currentLayoutNr = eeprom_read_byte(&alternateLayoutNr);
                 // and add keycode as only keycode
                 // report_data->KeyCode[0] = USAGE_ID(secondaryModifierUsageMatrix[currentLayoutNr][secondUse_key.row][secondUse_key.col]);;
                 report_data->KeyCode[0] = SecondaryUsage[secondUse_key.row][secondUse_key.col];;
