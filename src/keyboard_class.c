@@ -849,6 +849,9 @@ void init_active_keys()
 {
     // only working silently if there are no keycodes sent on first press of cmd combo.
     if(CMD_MODE()) {
+        for (uint8_t row = 0; row < ROWS; ++row)
+            rowData[row]=0;
+        clearActiveKeys();
         setCommandMode(true);
         return;
     }
