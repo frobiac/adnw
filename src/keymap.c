@@ -56,12 +56,7 @@ keycode getKeyStruct(uint8_t row, uint8_t col, uint8_t layer)
         layer=ALT_ALPHA_LAYER;
     keycode kc;
 
-    if(PINKYDROP) {
-        if( (row<4 && row > 0 && col==1) || (row > 4 && col == 4))
-            memcpy_P(&kc, &KeyMatrix[layer][row-1][col], sizeof(kc));
-    } else {
-        memcpy_P(&kc, &KeyMatrix[layer][row][col], sizeof(kc));
-    }
+    memcpy_P(&kc, &KeyMatrix[layer][row][col], sizeof(kc));
 
     //printf("\n%d %d %d=%c", kc.hid, kc.mods, kc.ch, kc.ch);
     return kc;

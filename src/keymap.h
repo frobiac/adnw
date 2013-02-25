@@ -24,9 +24,6 @@
 #include "hid_usage.h"
 #include "config.h"
 
-#define PINKYDROP 0  ///<  drop pinky column by one for more ergonomic layout
-
-
 #define GEOGRAPHICAL_AREAS 3 // QWERTZ(de), QWERTY(gb), QWERTY(us)
 
 
