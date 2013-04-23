@@ -89,6 +89,7 @@ volatile uint8_t kb_rpt[ROWS];      // key long press and repeat
 static uint8_t ct0[ROWS], ct1[ROWS];
 static int32_t rpt[ROWS];
 
+
 #define ALL_COLS_MASK ((1<<COLS)-1)  // 0x63 or all lower 6 bits
 #define REPEAT_MASK    ALL_COLS_MASK // repeat: key0 = 0x3F = 63
 #define REPEAT_START   31            // 61 = 1000ms
@@ -382,10 +383,10 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
         case SECOND_USE_OFF:
         {
             if( activeKeys.keycnt==1 && ! activeKeys.keys[0].normalKey &&
-                0 != SecondaryUsage[activeKeys.keys[0].row][activeKeys.keys[0].col] &&
-                activeKeys.keys[0].row == secondUse_Prev_activeKeys.keys[0].row &&
-                activeKeys.keys[0].col == secondUse_Prev_activeKeys.keys[0].col &&
-                idle_count-repeatGesture_timer < 10 )
+                    0 != SecondaryUsage[activeKeys.keys[0].row][activeKeys.keys[0].col] &&
+                    activeKeys.keys[0].row == secondUse_Prev_activeKeys.keys[0].row &&
+                    activeKeys.keys[0].col == secondUse_Prev_activeKeys.keys[0].col &&
+                    idle_count-repeatGesture_timer < 10 )
             {
                 changeSecondUseState(SECOND_USE_OFF, SECOND_USE_REPEAT);
                 break;
@@ -648,10 +649,21 @@ uint8_t get_kb_rpt( uint8_t key_mask, uint8_t col )
  *  By means of a neat routine found on http://hackaday.com/2010/11/09/debounce-code-one-post-to-rule-them-all/
  *
  */
+static uint32_t tmpcnt=0;
+
 void scan_matrix(void)
 {
     uint8_t i, data;
 
+    // gets called about every
+    // 4.14 ms with all descriptors (1264/61/5000) : 1264 (~19) = 5000 cnt
+    // 1.02 ms with only debug descriptor            1247 (~19) = 20020 cnt
+    // same for only one row, so bottleneck somewhere else
+    ++tmpcnt;
+    /*if(++tmpcnt % 1000 == 0) {
+        printf("\n%lu (~%lu) = %lu cnt", idle_count,idle_count>>6, tmpcnt);
+    }
+    */
     for (uint8_t row = 0; row < ROWS; ++row) {
         activate(row);
 
@@ -685,8 +697,13 @@ void scan_matrix(void)
         p=get_kb_press  (ALL_COLS_MASK, row);
         h=get_kb_rpt    (ALL_COLS_MASK, row);
         r=get_kb_release(ALL_COLS_MASK, row);
-
         rowData[row] = ((rowData[row]|(p|h)) & ~r);
+
+        // gets called about 75 times/s, or each 13ms
+        if(row==0 && !(ct0[row]==255&&ct1[row]==255 &&kb_press[row]==192 && kb_state[row] == 192 )) {
+            printf("\n%6ld - %4ld: ct: %3d/%3d pr: %3d/%3d data %3d ",  idle_count, tmpcnt, ct0[row],ct1[row],kb_press  [row], kb_state[row], rowData[row]);
+        }
+
     }
 }
 
@@ -866,9 +883,9 @@ void init_active_keys()
     for (uint8_t row = 0; row < ROWS; ++row) {
         for (uint8_t col = 0; col < COLS; ++col) {
             if (rowData[row] & (1UL << col)) {
-                uint8_t offset=0; 
-#ifdef HYPERNANO         
-                if(g_pinkydrop){
+                uint8_t offset=0;
+#ifdef HYPERNANO
+                if(g_pinkydrop) {
                     if(col == 1 && row < 4)
                         offset = (row == 0 ? 3 : -1); //+(4+row-1)%4;
                     else if( col==5 && row>3)
