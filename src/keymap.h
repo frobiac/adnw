@@ -122,16 +122,15 @@ void    printLayout(uint8_t l);
 ) { \
   {  no, k01,k02,k03,k04,k05 }, \
   {  no, k11,k12,k13,k14,k15 }, \
-  { t20, k21,k22,k23,k24,k25 }, \
-  { t35, /*t30*/no20,t31,t32,t33,t34 }, \
+  { no20, k21,k22,k23,k24,k25 }, \
+  { t35 /*t30*/,t31,t32,t33,t34,t20 }, \
 \
   {  no, k40, k41,k42,k43,k44 }, \
   {  no, k50, k51,k52,k53,k54 }, \
-  { t65/*no00 ESC*/, k60, k61,k62,k63,k64 }, \
-  { t70, t71, t72,t73,t74,/*t75*/no65 } \
+  { no65/*no00 ESC*/, k60, k61,k62,k63,k64 }, \
+  { t65, t70, t71, t72,t73,t74,/*t75*/ } \
 }
 #endif
-
 
 /**
  * Mouse keycodes that temporarily override normal keycodes during trackpoint usage.
@@ -141,10 +140,14 @@ void    printLayout(uint8_t l);
  */
 static const uint8_t MouseUsage[ROWS][COLS] =
   KEYMAP( 0, /* not used code */
- HID_ESC,  0, 0, 0, 0, 0,                                                     0, 0, 0, 0, 0, 0 ,
+       HID_ESC,  0, 0, 0, 0, 0,                                               0, 0, 0, 0, 0, 0 ,
        0, HID_MOUSEBTN_1, HID_MOUSEBTN_3, HID_MOUSEBTN_2, HID_MOUSEBTN_4, 0,  0, 0, 0, 0, 0, 0 ,
        0, 0, 0, 0, 0, 0 ,                                                     0, 0, 0, 0, 0, 0 ,
+#ifdef HYPERNANO
        0, 0, 0, 0 ,0, HID_MOUSEBTN_1,HID_MOUSEBTN_3, /* | */ 0, HID_MOUSEBTN_2 , 0, 0, 0, 0, 0
+#else
+       0, 0, 0, 0, 0, 0 ,            0,0,                                     0, 0, 0, 0, 0, 0 
+#endif
 );
 
 
