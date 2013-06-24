@@ -138,11 +138,13 @@ void handleCommand(void) {
             }
             setCommandMode(false);
             break;
+#ifdef PS2MOUSE
         case HID_M:
             g_mouse_enabled = g_mouse_enabled > 0 ? 0 : 1;
             printf("\nMouse %sabled", g_mouse_enabled ? "en" : "dis");
             setCommandMode(false);
             break;
+#endif
         case HID_R:
             // print HID code of pressed key
             printf("\nHID code read active.");

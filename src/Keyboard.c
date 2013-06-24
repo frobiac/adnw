@@ -183,8 +183,10 @@ int main(void)
             /// @todo KW: erzeugt zu viel Last auf dem Bus: verzögerte Tastendrücke ??
             // disabled as getExtraReport() depends on new hid_usage structures not yet integrated
             // HID_Device_USBTask(&Extra_HID_Interface);
+#ifdef PS2MOUSE
             if( g_mouse_enabled )
                 HID_Device_USBTask(&Mouse_HID_Interface);
+#endif
         } else if (USB_Device_RemoteWakeupEnabled ) {
             USB_CLK_Unfreeze();
             USB_Device_SendRemoteWakeup();
