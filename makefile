@@ -22,8 +22,8 @@ SRCDIR       = ./src
 # -----------------------------------------------------------
 # Keyboard selection below: HYPERNANO, BLUECUBE or MALTRON_KW
 # -----------------------------------------------------------
-#KB_HW		 = BLUECUBE
-KB_HW		 = HYPERNANO
+KB_HW		 = BLUECUBE
+#KB_HW		 = HYPERNANO
 #KB_HW		 = MALTRON_KW
 
 # List C source files here. (C dependencies are automatically generated.)
@@ -57,7 +57,11 @@ LD_FLAGS     =
 ifneq (,$(findstring MALTRON_KW,$(CC_FLAGS)))
 CC_FLAGS    += # -DMACOS -DQWERTY
 else
+ifneq (,$(findstring BLUECUBE,$(CC_FLAGS)))
+CC_FLAGS    += #-DPS2MOUSE -DMOUSE_HAS_SCROLL_WHEELS
+else
 CC_FLAGS    += -DPS2MOUSE -DMOUSE_HAS_SCROLL_WHEELS
+endif
 endif
 
 ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
