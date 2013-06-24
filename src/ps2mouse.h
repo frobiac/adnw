@@ -52,7 +52,7 @@
 #define RBIT    0
 
 #else
-#error "Trackpoint defined only for BLUECUBE and HYPER
+#error "Trackpoint defined only for BLUECUBE and HYPER"
 #endif
 
 /////////////////////////////
