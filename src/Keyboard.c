@@ -59,6 +59,7 @@
 #include "hid_usage.h"
 
 #include "trackpoint.h"
+
 #include "mousekey.h"
 #ifdef ANALOGSTICK
 #include "analog.h"

@@ -22,8 +22,9 @@ SRCDIR       = ./src
 # -----------------------------------------------------------
 # Keyboard selection below: HYPERNANO, BLUECUBE or MALTRON_KW
 # -----------------------------------------------------------
-KB_HW		 = BLUECUBE
+#KB_HW		 = BLUECUBE
 #KB_HW		 = HYPERNANO
+KB_HW		 = REDTILT
 #KB_HW		 = MALTRON_KW
 
 # List C source files here. (C dependencies are automatically generated.)

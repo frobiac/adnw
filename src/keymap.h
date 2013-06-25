@@ -54,7 +54,7 @@ void    printLayout(uint8_t l);
 #endif
 
 
-#ifdef BLUECUBE
+#ifdef BLUECUBE 
   #define CMD_MODE() ((rowData[2] & (1<<0)) && (rowData[6] & (1<<5)) ) 
 
   #define LAYERS 6
@@ -81,6 +81,46 @@ void    printLayout(uint8_t l);
    k10,k11,k12,k13,k14,k15,        k50,k51,k52,k53,k54,k55, \
    k20,k21,k22,k23,k24,k25,        k60,k61,k62,k63,k64,k65, \
    no30,t31,t32,t33,t34,t35,t36,t70,t71,t72,t73,t74,t75,no76   \
+) { \
+  { k00,k01,k02,k03,k04,k05 }, \
+  { k10,k11,k12,k13,k14,k15 }, \
+  { k20,k21,k22,k23,k24,k25 }, \
+  { t36,t35,t31,t32,t33,t34 }, \
+  { k40,k41,k42,k43,k44,k45 }, \
+  { k50,k51,k52,k53,k54,k55 }, \
+  { k60,k61,k62,k63,k64,k65 }, \
+  { t72,t73,t74,t75,t71,t70 } \
+}
+#endif
+
+
+#ifdef REDTILT 
+  #define CMD_MODE() ((rowData[2] & (1<<0)) && (rowData[6] & (1<<5)) ) 
+
+  #define LAYERS 6
+  #define ROWS   8
+  #define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
+
+/*
+ * 00 01 02 03 04 05    40 41 42 43 44 45
+ * 10 11 12 13 14 15    50 51 52 53 54 55
+ * 20 21 22 23 24 25    60 61 62 63 64 65
+ *                30    75 
+ *    32 33 34 35 31    74 70 71 72 73
+ *
+ *
+ */
+
+// on BlueCube, the innermost thumb-buttons are on outermost columns in matrix!
+//         0  5
+// 2 3 4 5 1  4 0 1 2 3 4
+//
+
+#define KEYMAP( no, \
+   k00,k01,k02,k03,k04,k05,        k40,k41,k42,k43,k44,k45, \
+   k10,k11,k12,k13,k14,k15,        k50,k51,k52,k53,k54,k55, \
+   k20,k21,k22,k23,k24,k25,        k60,k61,k62,k63,k64,k65, \
+   no30,t31,t32,t33,t34,t35,t36,t71,t72,t73,t74,t75,t70,no76   \
 ) { \
   { k00,k01,k02,k03,k04,k05 }, \
   { k10,k11,k12,k13,k14,k15 }, \

@@ -42,6 +42,8 @@
 #define STR_MANUFACTURER L"frobiac"
 #if defined BLUECUBE
 #   define STR_PRODUCT      L"AdNW BlueCube"
+#elif defined REDTILT
+#   define STR_PRODUCT      L"AdNW RedTilt"
 #elif defined HYPERNANO
 #   define STR_PRODUCT      L"AdNW HyperNano"
 #else

@@ -43,7 +43,7 @@
 #define RSTPORT B
 #define RBIT    3
 
-#elif defined HYPERNANO
+#elif defined HYPERNANO || defined REDTILT
 #define DAPORT  B
 #define DBIT    1
 #define CLKPORT B
