@@ -25,3 +25,5 @@ src/_private_macros.h
 *.files
 *.config
 *.includes
+*.orig
+*.rej
