@@ -65,8 +65,8 @@ static inline void unselect_rows(void)
 #endif
 
 #ifdef REDTILT
-    DDRD  &= 0b01111111;
-    PORTD &= 0b01111111;
+    DDRD  &= 0b01110000;
+    PORTD &= 0b01110000;
     DDRB  &= 0b10001111;
     PORTB &= 0b10001111;
     
@@ -107,11 +107,11 @@ static inline void activate(uint8_t row)
         case 4: DDRB |= (1<<5); break;
         case 5: DDRB |= (1<<4); break;
         case 6: DDRD |= (1<<7); break;
-  /*      case 4: DDRD |= (1<<6); break;
-        case 5: DDRD |= (1<<4); break;
-        case 6: DDRD |= (1<<2); break;
-        case 7: DDRD |= (1<<5); break;
-  */
+        case 3: DDRD |= (1<<0); break;
+        case 2: DDRD |= (1<<1); break;
+        case 1: DDRD |= (1<<2); break;
+        case 0: DDRD |= (1<<3); break;
+  
     }
 #endif
 
