@@ -130,15 +130,19 @@ void    printLayout(uint8_t l);
   { k00,k01,k02,k03,k04,k05 }, \
   { k10,k11,k12,k13,k14,k15 }, \
   { k20,k21,k22,k23,k24,k25 }, \
-  { t36,t32,no30,t33,t34,t35 }, \
+  { t36,t32,no30,t35,t33,t34 }, \
   { k40,k41,k42,k43,k44,k45 }, \
   { k50,k51,k52,k53,k54,k55 }, \
   { k60,k61,k62,k63,k64,k65 }, \
-  { t71,t72,t73,no76,t70,t74 } \
+  { t72,t73,t71,no76,t70,t74 } \
 }
 #endif
 
-
+/* Space/Shift 2nd from middle: 
+  { t36,t32,no30,t33,t34,t35 }, \
+  ...
+  { t71,t72,t73,no76,t70,t74 } \
+*/
 
 #ifdef HYPERNANO
   #define CMD_MODE() ( (rowData[3] & (1<<1)) && (rowData[7] & (1<<5)) ) 
