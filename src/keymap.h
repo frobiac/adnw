@@ -105,33 +105,40 @@ void    printLayout(uint8_t l);
  * 00 01 02 03 04 05    40 41 42 43 44 45
  * 10 11 12 13 14 15    50 51 52 53 54 55
  * 20 21 22 23 24 25    60 61 62 63 64 65
- *                30    75 
- *    32 33 34 35 31    74 70 71 72 73
+                  30    75 
+      32 33 34 35 31    74 70 71 72 73
+   30 31    33 34 35    70 71 72    74 75
+
  *
  *
  */
 
-// on BlueCube, the innermost thumb-buttons are on outermost columns in matrix!
-//         0  5
-// 2 3 4 5 1  4 0 1 2 3 4
+// on RedTilt, outermost "thumb" keys are in topmost row, and ring finger one is missing
+// 0 1                    4 5
+//       3 4 5 |  0 1 2
 //
+
+//    _no,_L_SHIFT,_L_ALT,_L_CTRL,_SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,  _B  
+//    _X, _Y, _Z ,  _L_CTRL, _SPACE, _G, _M,   _MOD_3, _MOD_2,  _S, _1,  _R_ALT, _A,  _B
 
 #define KEYMAP( no, \
    k00,k01,k02,k03,k04,k05,        k40,k41,k42,k43,k44,k45, \
    k10,k11,k12,k13,k14,k15,        k50,k51,k52,k53,k54,k55, \
    k20,k21,k22,k23,k24,k25,        k60,k61,k62,k63,k64,k65, \
-   no30,t31,t32,t33,t34,t35,t36,t71,t72,t73,t74,t75,t70,no76   \
+   no30,no31,t32,t33,t34,t35,t36,  t70,t71,t72,t73,t74,no75,no76   \
 ) { \
   { k00,k01,k02,k03,k04,k05 }, \
   { k10,k11,k12,k13,k14,k15 }, \
   { k20,k21,k22,k23,k24,k25 }, \
-  { t36,t35,t31,t32,t33,t34 }, \
+  { t36,t32,no30,t33,t34,t35 }, \
   { k40,k41,k42,k43,k44,k45 }, \
   { k50,k51,k52,k53,k54,k55 }, \
   { k60,k61,k62,k63,k64,k65 }, \
-  { t72,t73,t74,t75,t71,t70 } \
+  { t71,t72,t73,no76,t70,t74 } \
 }
 #endif
+
+
 
 #ifdef HYPERNANO
   #define CMD_MODE() ( (rowData[3] & (1<<1)) && (rowData[7] & (1<<5)) ) 
@@ -266,6 +273,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _TAB,   _h, _i, _e,     _a,     _o  ,   _d,  _t, _r, _n, _s, _ENTER  ,
     _DQUOTE,_x, _y, _MINUS,_COMMA,_SLASH,   _b,  _g, _w, _v, _z, _no  ,
     _no,_L_SHIFT,_L_ALT,_L_CTRL,_SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,  _B  
+    //_X, _Y, _Z ,  _L_CTRL, _SPACE, _L_GUI, _M,   _MOD_3, _MOD_2, _L_SHIFT, _MOD_1,  _R_ALT, _A,  _B
   )
 
 }; // end of matrix[][][]
