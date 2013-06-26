@@ -65,6 +65,10 @@ CC_FLAGS    += -DPS2MOUSE -DMOUSE_HAS_SCROLL_WHEELS
 endif
 endif
 
+ifneq (,$(findstring REDTILT,$(CC_FLAGS)))
+CC_FLAGS    += -DTP_ROTATE
+endif
+
 ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
 	SRC += $(SRCDIR)/hhstdio.c
 endif

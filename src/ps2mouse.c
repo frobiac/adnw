@@ -264,9 +264,13 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
             // swap lower two buttons on "blue cube"
             *BTNS = (LMB<<0) | (MMB<<1) | (RMB << 2);
 
-
+            #ifdef TP_ROTATE
             *dx= read_packet();
             *dy= read_packet();
+            #else
+            *dx= read_packet();
+            *dy= read_packet();
+            #endif
             // raw *dx is of 0xXX
             int x = *dx;
             //int y = *dy;
@@ -365,16 +369,25 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
                 MouseReport->X=0;
                 MouseReport->Y=0;
                 // only move by 1 ?!
+            #ifdef TP_ROTATE
+                MouseReport->V =  sx*(factor-1)/3;
+                MouseReport->H = -sy*(factor-1)/3;
+            #else
                 MouseReport->H = -sx*(factor-1)/3;
                 MouseReport->V = -sy*(factor-1)/3;
+            #endif
             }
         } else
 #endif
         {
 
+            #ifdef TP_ROTATE
+            MouseReport->X = -dy * factor;
+            MouseReport->Y = -dx * factor;
+            #else
             MouseReport->Y = dy * factor;
             MouseReport->X = -dx * factor;
-
+            #endif
             // do not emit the scroll button
             MouseReport->Button = g_mouse_keys & ~(0x08);
             MouseReport->Button |= ps2_buttons;    // PS/2 buttons if set
@@ -382,8 +395,11 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
         g_mouse_keys=0;
         ps2_buttons=0;
 
+
+
         return sizeof(USB_MouseReport_Data_t);
 
     }
     return 0;
 }
+
