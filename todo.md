@@ -1,6 +1,11 @@
 **UNSORTED TODO LIST**
 ==================
 
+BUGS
+----
+* Compiled with TP support, firmware hangs on init if TP error / not connected
+* Investigate mod3 <> strangeness when rolling them
+
 LUFA
 ----
 * inquire about upstream horizontal scroll support
