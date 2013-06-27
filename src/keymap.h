@@ -280,7 +280,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
   KEYMAP( _no,
     _ESC,   _k, _u, _q,     _PERIOD,_j  ,   _p,  _c, _l, _m, _f, _BSPACE ,
     _TAB,   _h, _i, _e,     _a,     _o  ,   _d,  _t, _r, _n, _s, _ENTER  ,
-    _DQUOTE,_x, _y, _MINUS,_COMMA,_SLASH,   _b,  _g, _w, _v, _z, _no  ,
+    _DQUOTE,_x, _y, _MINUS,_COMMA,_SLASH,   _b,  _g, _w, _v, _z, _MOD_MOUSEKEY,
     _no,_L_SHIFT,_L_ALT,_L_CTRL,_SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,  _B  
     //_X, _Y, _Z ,  _L_CTRL, _SPACE, _L_GUI, _M,   _MOD_3, _MOD_2, _L_SHIFT, _MOD_1,  _R_ALT, _A,  _B
   )
