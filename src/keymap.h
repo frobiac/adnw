@@ -134,11 +134,16 @@ void    printLayout(uint8_t l);
   { k40,k41,k42,k43,k44,k45 }, \
   { k50,k51,k52,k53,k54,k55 }, \
   { k60,k61,k62,k63,k64,k65 }, \
-  { t72,t73,t71,no76,t70,t74 } \
+  { t71,t72,t73,no76,t70,t74 } \
 }
 #endif
 
-/* Space/Shift 2nd from middle: 
+/* Space/Shift in center
+  { t36,t32,no30,t35,t33,t34 }, \
+  ...
+  { t72,t73,t71,no76,t70,t74 } \
+
+ * Space/Shift 2nd from middle:
   { t36,t32,no30,t33,t34,t35 }, \
   ...
   { t71,t72,t73,no76,t70,t74 } \
