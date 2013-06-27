@@ -15,6 +15,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+
+// see drivers/input/mouse/trackpoint.h in linux source for config registers
+
+// or 
+// wwwcssrv.almaden.ibm.com/trackpoint/files/YKT3Eext.pdf
+
 #include <util/delay.h>
 
 #include "trackpoint.h"
@@ -117,6 +123,8 @@ void tp_init(void)
      *
      * 41,42,43 pts btn mask
      * 5C PtS thres
+     * 4A sensitivity
+     * 60 speed 
      */
 
     // setup PressToSroll by enabling PTS, setting button masks and increasing threshold
@@ -126,4 +134,12 @@ void tp_init(void)
     printf("\nPTS btn masks: %02x %02x %02x ", tp_ram_read(0x41), tp_ram_read(0x42), tp_ram_read(0x43) );
     tp_ram_write(0x5c, 0x0A); // 08 is default, 10 too hard
     printf("\nPTS thres: %02x", tp_ram_read(0x5c));
+    
+    //printf("\nSens/Speed (orig): %02x %02x ", tp_ram_read(0x4A), tp_ram_read(0x60) );
+#ifdef REDTILT
+    tp_ram_write(0x4A, 0x60);
+    tp_ram_write(0x60, 0x53);
+#endif
+    printf("\nSens  (orig=80): %02x ", tp_ram_read(0x4A) );
+    printf("\nSpeed (orig=61): %02x ", tp_ram_read(0x60) );
 }
