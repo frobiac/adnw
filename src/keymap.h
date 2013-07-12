@@ -118,23 +118,24 @@ void    printLayout(uint8_t l);
 //       3 4 5 |  0 1 2
 //
 
-//    _no,_L_SHIFT,_L_ALT,_L_CTRL,_SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,  _B  
-//    _X, _Y, _Z ,  _L_CTRL, _SPACE, _G, _M,   _MOD_3, _MOD_2,  _S, _1,  _R_ALT, _A,  _B
+//    _no,_L_SHIFT, _L_ALT, _L_CTRL,_SPACE, _L_GUI, _MACRO, _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1, _R_ALT, _A,  _B  
+//   no30, no31,    t32,    t33,    t34,    t35,    t36,    t70,    t71,     t72,      t73,    t74,    no75,no76   \
+//    _X,  _Y,      _Z ,    _L_CTRL, _SPACE, _G, _M,   _MOD_3, _MOD_2,  _S, _1,  _R_ALT, _A,  _B
 
 #define KEYMAP( no, \
    k00,k01,k02,k03,k04,k05,        k40,k41,k42,k43,k44,k45, \
    k10,k11,k12,k13,k14,k15,        k50,k51,k52,k53,k54,k55, \
    k20,k21,k22,k23,k24,k25,        k60,k61,k62,k63,k64,k65, \
-   no30,no31,t32,t33,t34,t35,t36,  t70,t71,t72,t73,t74,no75,no76   \
+   no30,no31,ALT,CTL,SPC,GUI,MAC,  M3,M2,SHF,M1,AGR,no75,no76   \
 ) { \
   { k00,k01,k02,k03,k04,k05 }, \
   { k10,k11,k12,k13,k14,k15 }, \
   { k20,k21,k22,k23,k24,k25 }, \
-  { t36,t32,no30,t35,t33,t34 }, \
+  { MAC,ALT,no30,GUI,CTL,SPC }, \
   { k40,k41,k42,k43,k44,k45 }, \
   { k50,k51,k52,k53,k54,k55 }, \
   { k60,k61,k62,k63,k64,k65 }, \
-  { t71,t72,t73,no76,t70,t74 } \
+  { M2,SHF,M1,no76,M3,AGR } \
 }
 #endif
 
