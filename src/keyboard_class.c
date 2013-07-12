@@ -841,7 +841,7 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
         if(btns != 0) {
             g_mouse_keys |= btns;
             return;
-        } else if(isNormalKey(row,col)) { // quicker exit from mousekey mode on other key
+        } else /*if(isNormalKey(row,col))*/ { // quicker exit from mousekey mode on other key
             g_mouse_keys_enabled = 0;
         }
     }
