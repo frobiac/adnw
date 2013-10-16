@@ -333,7 +333,7 @@ void changeSecondUseState(SecondUse_State currentState, SecondUse_State newState
         if (secondUse_state == SECOND_USE_PASSIVE) stateStr = "Passive";
         if (secondUse_state == SECOND_USE_REPEAT) stateStr = "Repeat";
         if (secondUse_state == SECOND_USE_OFF) stateStr = "Off";
-        TRACE("\n2nd: -> %s",stateStr);
+        // printf("\n2nd: -> %s (%d->%d active)",stateStr, secondUse_Prev_activeKeys.keycnt, activeKeys.keycnt);
     }
 }
 
@@ -359,7 +359,7 @@ void handleModifierTransmission(USB_KeyboardReport_Data_t* report_data, Modifier
         prev_modTrans_state = newState;
         if (newState == MOD_TRANS_ON) stateStr = "TRANS_ON";
         if (newState == DELAY_MOD_TRANS) stateStr = "DELAY";
-        TRACE("; Mod -> %s\n",stateStr);
+        //printf("; Mod %d->%d %s\n",prev_modTrans_state, newState, stateStr);
     }
 }
 
@@ -404,6 +404,8 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
             if(modifierOrLayerKeyPresent) {
                 changeSecondUseState(SECOND_USE_OFF, SECOND_USE_ACTIVE);
                 secondUse_timer=idle_count;
+                // fix for repeat of last released modifier if another one is held directly afterwards.
+                modTrans_prev_Mods=0;
                 fillReport(report_data);    // prepare to send, but modifiers not just yet
                 handleModifierTransmission(report_data, DELAY_MOD_TRANS);
             } else { // normal key / no modifier
