@@ -4,7 +4,8 @@
 BUGS
 ----
 * Compiled with TP support, firmware hangs on init if TP error / not connected
-* Investigate mod3 <> strangeness when rolling them
+*
+* RESOLVED (on same key on German keyboard): Investigate mod3 <> strangeness when rolling them
 
 LUFA
 ----
@@ -37,10 +38,12 @@ Refactor
 
 Layout
 ------
+* Alt on redtilt, Ctrl-Alt usage
 * BU-TECK better?
 * implement QWERTY for adopters
 * usage page for system keys
 * copy/paste
+
 
 Git
 ---
