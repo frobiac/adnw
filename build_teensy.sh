@@ -2,6 +2,9 @@
 #
 # Get hid_listen from 
 # http://www.pjrc.com/teensy/hid_listen_1.01.zip
+# and allow user to run via
+# username ALL=(ALL) NOPASSWD: /usr/sbin/hid_listen
+
 
 MCU=$( grep "^MCU\s*=" makefile | sed "s/.*=\s*//")
 HEX=$( grep "^TARGET\s*=" makefile | sed "s/.*=\s*//")
