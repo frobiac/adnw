@@ -37,7 +37,8 @@ uint8_t g_alternateLayer; ///< toggle using an alternate layout for layer 1
 uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer);
 uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 uint8_t getKeyChar (uint8_t row, uint8_t col, uint8_t layer);
-void    printLayout(uint8_t l);
+
+// void    printLayout(uint8_t l);
 
 /// position of an alternate layout in matrix below
 #define ALT_ALPHA_LAYER 5

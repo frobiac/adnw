@@ -24,23 +24,18 @@
 #include "macro.h"
 
 bool command=false;
-static uint8_t layer=0;
+// static uint8_t layer=0;
 
 /// possible subcommands
 enum {
     SUB_NONE=0,
     SUB_TP,
-    SUB_READ,
     SUB_LAYOUT,
     SUB_MACRO,
     SUB_MACRO_REC
 };
 
 static uint8_t subcmd;           ///< currently active subcommand
-
-#define MAXLEN 20
-static uint8_t idx =0;
-static uint8_t str[MAXLEN];
 
 void setCommandMode(bool on) {
     if(on!=command)
@@ -102,6 +97,7 @@ void handleCommand(void) {
             printf("\nBootloader::");
             jump_bootloader();
             break;
+/*
         case HID_P:
             // Print Layout: one layer per press on key 'p'
             printLayout(layer);
@@ -109,6 +105,7 @@ void handleCommand(void) {
             if(layer==0)
                 setCommandMode(false);
             break;
+*/
 #ifdef MOUSE_HAS_SCROLL_WHEELS
         case HID_T:
             printf("\nTrackpoint:");
@@ -129,12 +126,6 @@ void handleCommand(void) {
             setCommandMode(false);
             break;
 #endif
-        case HID_R:
-            // print HID code of pressed key
-            printf("\nHID code read active.");
-            subcmd=SUB_READ;
-            idx=0;
-            break;
         case HID_X:
             subcmd=SUB_MACRO;
             printf("Macro mode true\n");
@@ -150,24 +141,8 @@ void handleCommand(void) {
 }
 
 void handleSubCmd(struct Key k) {
-    uint8_t h =getKeyCode(k.row, k.col, getActiveLayer());
     switch( subcmd )
     {
-        case SUB_READ:
-            if(h == HID_ESC) {
-                printf("\nSubRead terminated");
-                setCommandMode(false);
-            } else {
-                if(idx>=MAXLEN) {
-                    idx=0;
-                    setCommandMode(false);
-                }
-                str[idx++]=h;
-                printf("\n%2d %d: ",idx,h);
-                for(uint8_t i=0; i<idx; ++i)
-                    printf("%02x", str[i]);
-            }
-            break;
         case SUB_MACRO:
             setMacroMode(true);
             activateMacro(k.row*ROWS+k.col);
@@ -178,6 +153,7 @@ void handleSubCmd(struct Key k) {
             setCommandMode(false);
             break;
         default:
+            setCommandMode(false);
             break;
     }
     clearActiveKeys();

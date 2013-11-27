@@ -36,15 +36,15 @@ uint8_t getKeyCode(uint8_t row, uint8_t col, uint8_t layer)
 {
     return getKeyStruct(row, col, layer).hid;
 }
-
+/*
 uint8_t getKeyChar(uint8_t row, uint8_t col, uint8_t layer)
 {
     uint8_t ch = getKeyStruct(row, col, layer).ch;
-    if(/*ch > 127 ||*/ ch < 33)
+    if(ch < 33)
         return ' '; // '_' (uint8_t)('a');
     return ch;
 }
-
+*/
 EEMEM uint8_t  ee_alternateLayer = 0;
 EEMEM uint8_t  ee_pinkyDrop      = 0;
 
@@ -61,6 +61,7 @@ keycode getKeyStruct(uint8_t row, uint8_t col, uint8_t layer)
     return kc;
 }
 
+/*
 void printLayout(uint8_t l)
 {
     uint8_t ch;
@@ -79,5 +80,5 @@ void printLayout(uint8_t l)
             printf("%c", getKeyChar(r+ROWS/2,c,l) );
     }
 }
-
+*/
 
