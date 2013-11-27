@@ -4,6 +4,9 @@
 # http://www.pjrc.com/teensy/hid_listen_1.01.zip
 # and allow user to run via
 # username ALL=(ALL) NOPASSWD: /usr/sbin/hid_listen
+#
+# teensy_loader_cli needs udev rules for user access:
+#   www.pjrc.com/teensy/49-teensy.rules
 
 
 MCU=$( grep "^MCU\s*=" makefile | sed "s/.*=\s*//")
