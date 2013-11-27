@@ -237,6 +237,8 @@ typedef enum {
 #define NONE  0
 #define CTRL  (1<<0)
 #define SHIFT (1<<1)
+#define ALT   (1<<2)
+#define GUI   (1<<3)
 #define ALTGR (1<<6)
 
 // *************************************************************
@@ -475,15 +477,15 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _EQUAL      { HID_0,            SHIFT , '=' }
 #define _GREATER    { HID_NON_US_2,     SHIFT , '>' }
 #define _HASH       { HID_BSLASH,       0,      '#' }
-#define _L_BRACE    { HID_7,            ALTGR , '[' }
-#define _L_BRACKET  { HID_8,            ALTGR , '{' }
+#define _L_BRACE    { HID_7,            ALTGR , '{' }
+#define _L_BRACKET  { HID_8,            ALTGR , '[' }
 #define _LESS       { HID_NON_US_2,     0,      '<' }
 #define _L_PAREN    { HID_8,            SHIFT , '(' }
 #define _MINUS      { HID_SLASH,        0,      '-' }
 #define _PLUS       { HID_R_BRACKET,    0,      '+' }
 #define _QUESTION   { HID_MINUS,        SHIFT , '?' }
-#define _R_BRACE    { HID_0,            ALTGR , ']' }
-#define _R_BRACKET  { HID_9,            ALTGR , '}' }
+#define _R_BRACE    { HID_0,            ALTGR , '}' }
+#define _R_BRACKET  { HID_9,            ALTGR , ']' }
 #define _R_PAREN    { HID_9,            SHIFT , ')' }
 #define _SCOLON     { HID_COMMA,        SHIFT , ';' }
 #define _SLASH      { HID_7,            SHIFT , '/' }
