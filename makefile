@@ -34,12 +34,10 @@ SRC =   $(LUFA_SRC_USB)          \
 	$(SRCDIR)/Descriptors.c      \
 	$(SRCDIR)/keyboard_class.c   \
 	$(SRCDIR)/keymap.c           \
-	$(SRCDIR)/analog.c           \
 	$(SRCDIR)/macro.c            \
 	$(SRCDIR)/command.c          \
 	$(SRCDIR)/mousekey.c         \
 	$(SRCDIR)/jump_bootloader.c  \
-
 
 
 LUFA_PATH    = LUFA/LUFA
@@ -71,6 +69,10 @@ endif
 ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
 	SRC += $(SRCDIR)/hhstdio.c \
 		   $(SRCDIR)/dbg.c
+endif
+
+ifneq (,$(findstring ANALOGSTICK,$(CC_FLAGS)))
+	SRC += $(SRCDIR)/analog.c
 endif
 
 ifneq (,$(findstring PS2MOUSE,$(CC_FLAGS)))
