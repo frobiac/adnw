@@ -325,15 +325,17 @@ void fill_secondUse_Prev_activeKeys(void) {
 
 // Updates new and previous state and prints a debug message
 void changeSecondUseState(SecondUse_State currentState, SecondUse_State newState) {
-    char * stateStr;
     if (currentState != newState) {
         secondUse_state = newState;
         secondUse_state_prev = currentState;
+        /*
+        char * stateStr;
         if (secondUse_state == SECOND_USE_ACTIVE) stateStr = "Active";
         if (secondUse_state == SECOND_USE_PASSIVE) stateStr = "Passive";
         if (secondUse_state == SECOND_USE_REPEAT) stateStr = "Repeat";
         if (secondUse_state == SECOND_USE_OFF) stateStr = "Off";
         // printf("\n2nd: -> %s (%d->%d active)",stateStr, secondUse_Prev_activeKeys.keycnt, activeKeys.keycnt);
+        */
     }
 }
 
@@ -355,11 +357,13 @@ void handleModifierTransmission(USB_KeyboardReport_Data_t* report_data, Modifier
     }
 
     if (prev_modTrans_state != newState) {
-        char * stateStr;
         prev_modTrans_state = newState;
+        /*
+        char * stateStr;
         if (newState == MOD_TRANS_ON) stateStr = "TRANS_ON";
         if (newState == DELAY_MOD_TRANS) stateStr = "DELAY";
         //printf("; Mod %d->%d %s\n",prev_modTrans_state, newState, stateStr);
+        */
     }
 }
 

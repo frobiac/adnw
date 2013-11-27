@@ -81,4 +81,6 @@ uint8_t fillMacroReport(USB_KeyboardReport_Data_t *report_data);
 void printCurrentKeys(void);
 void clearRowData(void);
 
+void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data);
+
 #endif // __KEYBOARD_CLASS_H__
