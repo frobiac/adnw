@@ -158,14 +158,13 @@ void    printLayout(uint8_t l);
   #define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
 
 /*  Row/col matrix: (0-based)
- *  unused: 11,21,51,61
- *  innermost thumb buttons: 31,41,71,81 
- *  mapped to match BlueCube without 31 & 75 using the keycode from the outer lower pinky
+ *  unused in layout: 00,10,20, 45,55,65
+ *  but used in matrix]  20/65 for innermost keys on row 3
  *  
- *     01 02 03 04 05 --  -- 41 42 43 44 45
- *    11 12 13 14 15 --    -- 51 52 53 54 55
- *   21 22 23 24 25 20      60 61 62 63 64 65
- *    31 32 33 34 35 30    70 71 72 73 74 75
+ *       01 02 03 04 05     40 41 42 43 44
+ *      11 12 13 14 15       50 51 52 53 54
+ *     21 22 23 24 25 20    65 60 61 62 63 64
+ *     31 32 33 34 35 30    75 70 71 72 73 74 
  */
 
 //_X, SHFT L_ALT LCTRL, SPACE, GUI, _MACRO,  MOD_3, MOD_2,  L_SHIFT, MOD_1,  AltGr, _A, _B
@@ -175,17 +174,17 @@ void    printLayout(uint8_t l);
   no10,k11,k12,k13,k14,k15,        k50,k51,k52,k53,k54,no55, \
   no20,k21,k22,k23,k24,k25,        k60,k61,k62,k63,k64,no65, \
 /*                              M3 M2  SHF  M1  AGr A  B  */ \
-   t30,t31,t32,t33,t34,t35,t20,t65,t70,t71,t72,t73,t74,t75   \
+   t30,t31,ALT,CTL,SPC,GUI,MAC,  M3,M2,SHF,M1,AGR,t74,t75   \
 ) { \
   {  no, k01,k02,k03,k04,k05 }, \
   {  no, k11,k12,k13,k14,k15 }, \
-  { no20, k21,k22,k23,k24,k25 }, \
-  { t35 /*t30*/,t31,t32,t33,t34,t20 }, \
+  { MAC, k21,k22,k23,k24,k25 }, \
+  { ALT ,t30,t31,CTL,SPC,GUI }, \
 \
   {  no, k40, k41,k42,k43,k44 }, \
   {  no, k50, k51,k52,k53,k54 }, \
-  { no65/*no00 ESC*/, k60, k61,k62,k63,k64 }, \
-  { t65, t70, t71, t72,t73,t74,/*t75*/ } \
+  { t75, k60, k61,k62,k63,k64 }, \
+  {  M3,  M2, SHF, M1,AGR,t74 } \
 }
 #endif
 
@@ -231,7 +230,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
          _MOD_3, _k, _u, _q,     _PERIOD, _j,      _v, _g, _c, _l, _f, _BSPACE ,
          _TAB,   _h, _i, _e,     _a,      _o,      _d, _t, _r, _n, _s, _ENTER  ,
          _DQUOTE,_x, _y, _MINUS, _COMMA,  _SLASH,  _b, _p, _w, _m, _z, _MOD_MOUSEKEY,
-         _X, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,  _B
+         _no, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no,  _no
   ),
     
   // MOD1 layer (special char)
@@ -282,7 +281,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _ESC,   _k, _u, _q,     _PERIOD,_j  ,   _p,  _c, _l, _m, _f, _BSPACE ,
     _TAB,   _h, _i, _e,     _a,     _o  ,   _d,  _t, _r, _n, _s, _ENTER  ,
     _DQUOTE,_x, _y, _MINUS,_COMMA,_SLASH,   _b,  _g, _w, _v, _z, _MOD_MOUSEKEY,
-    _no,_L_SHIFT,_L_ALT,_L_CTRL,_SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A,  _B  
+    _no,_L_SHIFT,_L_ALT,_L_CTRL,_SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no,  _no
     //_X, _Y, _Z ,  _L_CTRL, _SPACE, _L_GUI, _M,   _MOD_3, _MOD_2, _L_SHIFT, _MOD_1,  _R_ALT, _A,  _B
   )
 
