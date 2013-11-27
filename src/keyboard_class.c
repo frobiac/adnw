@@ -139,7 +139,7 @@ void initKeyboard()
     tmp = eeprom_read_byte(&ee_alternateLayer);
     if(tmp==1) g_alternateLayer = 1;
 
-    printf("\nEEPROM pinky/layer: %d/%d", g_pinkydrop, g_alternateLayer);
+    printf("\nEE p/l: %d/%d", g_pinkydrop, g_alternateLayer);
 }
 
 void clearRowData() {
@@ -477,7 +477,7 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
                 fill_secondUse_Prev_activeKeys();
                 break; // end switch
             }
-            printf("SecondUse: unhandled event in SECOND_USE_ACTIVE");
+            printf("2U: unh. ACT");
             break;
         }
 
@@ -521,11 +521,11 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
                 fill_secondUse_Prev_activeKeys();
                 break; // end switch
             }
-            printf("SecondUse: unhandled event in SECOND_USE_PASSIVE");
+            printf("2U: unh. PASS");
             break; // end switch
         }
         default:
-            printf("SecondUse: illegal state");
+            printf("2U: ill sta");
             break;
     }
 }

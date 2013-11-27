@@ -18,7 +18,7 @@
 
 // see drivers/input/mouse/trackpoint.h in linux source for config registers
 
-// or 
+// or
 // wwwcssrv.almaden.ibm.com/trackpoint/files/YKT3Eext.pdf
 
 #include <util/delay.h>
@@ -42,7 +42,7 @@ void tp_ram_toggle(uint8_t addr, uint8_t val)
     tp_send_read_ack(0x2c);
     uint8_t tmp=read_packet();
     if( (tmp & val) != 0x00) {
-        printf("\nAlready set");
+        //printf("\nAlready set");
     }
 
     tp_send_read_ack(0xe2);
@@ -127,22 +127,22 @@ void tp_init(void)
      * 41,42,43 pts btn mask
      * 5C PtS thres
      * 4A sensitivity
-     * 60 speed 
+     * 60 speed
      */
 
     // setup PressToSroll by enabling PTS, setting button masks and increasing threshold
-    printf("\nPTS btn masks: %02x %02x %02x ", tp_ram_read(0x41), tp_ram_read(0x42), tp_ram_read(0x43) );
+    //printf("\nPTS btn masks: %02x %02x %02x ", tp_ram_read(0x41), tp_ram_read(0x42), tp_ram_read(0x43) );
     tp_ram_write(0x41, 0xff);
     tp_ram_write(0x42, 0xff);
-    printf("\nPTS btn masks: %02x %02x %02x ", tp_ram_read(0x41), tp_ram_read(0x42), tp_ram_read(0x43) );
+    //printf("\nPTS btn masks: %02x %02x %02x ", tp_ram_read(0x41), tp_ram_read(0x42), tp_ram_read(0x43) );
     tp_ram_write(0x5c, 0x0A); // 08 is default, 10 too hard
-    printf("\nPTS thres: %02x", tp_ram_read(0x5c));
-    
+    //printf("\nPTS thres: %02x", tp_ram_read(0x5c));
+
     //printf("\nSens/Speed (orig): %02x %02x ", tp_ram_read(0x4A), tp_ram_read(0x60) );
 #ifdef REDTILT
     tp_ram_write(0x4A, 0x60);
     tp_ram_write(0x60, 0x53);
 #endif
-    printf("\nSens  (orig=80): %02x ", tp_ram_read(0x4A) );
-    printf("\nSpeed (orig=61): %02x ", tp_ram_read(0x60) );
+    //printf("\nSens  (orig=80): %02x ", tp_ram_read(0x4A) );
+    //printf("\nSpeed (orig=61): %02x ", tp_ram_read(0x60) );
 }
