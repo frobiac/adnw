@@ -94,7 +94,10 @@ uint8_t tp_read_config() {
 void tp_id(void) {
     // read secondary ID
     if( tp_send_read_ack(0xe1) ) {
-        printf("\n2nd ID=%02x%02x\nExt.ID=", read_packet(),read_packet() );
+        uint8_t id[2];
+        id[0]=read_packet();
+        id[1]=read_packet();
+        printf("\n2nd ID=%02x%02x\nExt.ID=", id[0],id[1]);
     }
     // read extended ID, which ends in ')'
     if( tp_send_read_ack(0xd0) ) {
