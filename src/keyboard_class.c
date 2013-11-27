@@ -108,6 +108,7 @@ ISR(TIMER0_OVF_vect)
         idle_count=0;
 }
 
+
 /**
  * Some startup initialization is performed here.
  */
@@ -577,6 +578,7 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 {
     if(activeKeys.keycnt==0) {
+        lastKeyCode=0;
         // empty report
         memset(&report_data->KeyCode[0], 0, 6 );
         report_data->Modifier=0;
@@ -619,6 +621,19 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 
     report_data->Modifier=getActiveModifiers()|getActiveKeyCodeModifier();
 
+    if(macroRecording()){
+        // Print first time key is send, will be used to hook up macro recording
+        /// @todo Does not get a char pressed twice in a row
+        if(lastKeyCode!=report_data->KeyCode[0]) {
+            if(report_data->KeyCode[0] != 0){
+                // printf("\nFR %d:%d => %c ", report_data->Modifier,report_data->KeyCode[0],
+                //                            hid2asciicode( report_data->KeyCode[0], report_data->Modifier) );
+                // now save modifier and key into macro string...
+                macro_key(report_data->Modifier,report_data->KeyCode[0]);
+            }
+            lastKeyCode=report_data->KeyCode[0];
+        }
+    }
     return sizeof(USB_KeyboardReport_Data_t);
 }
 

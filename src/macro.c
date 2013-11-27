@@ -35,7 +35,29 @@ inline void setMacroRecording( bool on ) { g_macrorecord=on; recidx=0; };
 inline bool macroMode(void)         { return(macromode != 0); };
 inline void setMacroMode( bool on ) { macromode=on; };
 
-// last pressed key
+/**
+ * Only ASCII, no umlauts or other specials, and additional modifier need to be checked!
+ *
+ * hid,modifier,ascii
+ * with valid modifiers = shift and altgr.
+ *
+ */
+char hid2asciicode(uint8_t hid, uint8_t mod){
+    uint8_t i;
+    for(i=0; i<128; ++i){
+        if( ascii2hid[i][0] == hid){
+            // either no modifier is needed and neither shift or altgr are pressed
+            // or the required modifier is pressed
+            if((ascii2hid[i][1]==0 && !(mod && (SHIFT|ALTGR))) || (ascii2hid[i][1] & mod)){
+                //printf("MATCH=%c; ",ascii2hid[i][2] );
+                return(ascii2hid[i][2]);
+            }
+        }
+    }
+    return '0';
+}
+
+
 void macro_key(uint8_t mod, uint8_t hid)
 {
   printf("\nMC(%d) : %d:%d %s=",recidx,mod,hid,macrosC[5]);

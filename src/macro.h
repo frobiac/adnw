@@ -67,4 +67,6 @@ bool macroRecording(void);
 void setMacroRecording( bool on );
 void macro_key(uint8_t mod, uint8_t hid);
 
+char hid2asciicode(uint8_t hid, uint8_t mod);
+
 #endif
