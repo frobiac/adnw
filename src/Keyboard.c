@@ -319,11 +319,12 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
         USB_KeyboardReport_Data_t* KeyboardReport = (USB_KeyboardReport_Data_t*)ReportData;
         *ReportSize = getKeyboardReport(KeyboardReport);
     }
-
+#ifdef DEBUG_OUTPUT
     else if (HIDInterfaceInfo == &DBG_HID_Interface) {
         USB_DBGReport_Data_t* DBGReport = (USB_DBGReport_Data_t*)ReportData;
         *ReportSize = DBG__get_report(DBGReport);
     }
+#endif
 
     else if (HIDInterfaceInfo == &Mouse_HID_Interface) {
         USB_MouseReport_Data_t* MouseReport = (USB_MouseReport_Data_t*)ReportData;

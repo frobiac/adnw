@@ -31,7 +31,6 @@ KB_HW		 = REDTILT
 SRC =   $(LUFA_SRC_USB)          \
 	$(LUFA_SRC_USBCLASS)         \
 	$(SRCDIR)/Keyboard.c         \
-	$(SRCDIR)/dbg.c              \
 	$(SRCDIR)/Descriptors.c      \
 	$(SRCDIR)/keyboard_class.c   \
 	$(SRCDIR)/keymap.c           \
@@ -70,7 +69,8 @@ CC_FLAGS    += -DTP_ROTATE
 endif
 
 ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
-	SRC += $(SRCDIR)/hhstdio.c
+	SRC += $(SRCDIR)/hhstdio.c \
+		   $(SRCDIR)/dbg.c
 endif
 
 ifneq (,$(findstring PS2MOUSE,$(CC_FLAGS)))
