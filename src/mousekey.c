@@ -196,10 +196,11 @@ uint8_t getMouseKeyReport(USB_MouseReport_Data_t *MouseReport)
     MouseReport->H= mouse_report.h;
 #endif
 
-    // same speed diagonally
+    // lower speed on diagonal movement:
+    // 3/4 close enough to sqrt(2) for 45deg angles, and others are fine with this, too.
     if (mouse_report.x && mouse_report.y) {
-        MouseReport->X *= 0.7;
-        MouseReport->Y *= 0.7;
+        MouseReport->X = (MouseReport->X*3) >> 2;
+        MouseReport->Y = (MouseReport->Y*3) >> 2;
     }
 
     return sizeof(USB_MouseReport_Data_t);
