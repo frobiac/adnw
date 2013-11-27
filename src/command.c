@@ -32,8 +32,6 @@ enum {
     SUB_TP,
     SUB_READ,
     SUB_LAYOUT,
-    SUB_GEOAREA,
-    SUB_PC_MAC,
     SUB_MACRO
 };
 
@@ -94,11 +92,6 @@ void handleCommand(void) {
             printf("\nAdNW %s", FW_VERSION);
             setCommandMode(false);
             break;
-        case HID_G:
-            // G:GeoArea umschalten
-            printf("\nG:GeoArea::");
-            subcmd=SUB_GEOAREA;
-            break;
         case HID_Q:
         case HID_ESC:
             printf("\nLeaving command mode::");
@@ -126,16 +119,6 @@ void handleCommand(void) {
             g_alternateLayer=(++g_alternateLayer%2);
             eeprom_write_byte(&ee_alternateLayer,g_alternateLayer);
             printf("\nAlternate layer %s", g_alternateLayer ? "selected." : "off.");
-            setCommandMode(false);
-            break;
-        case HID_A:
-            for(uint8_t i=32; i<255; ++i) {
-                if(i%16==0)
-                    printf("\n %03d", i);
-                printf("%c ", (char)(i));
-                if(i==127)
-                    i+=33;
-            }
             setCommandMode(false);
             break;
 #ifdef PS2MOUSE
