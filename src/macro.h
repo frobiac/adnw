@@ -63,5 +63,8 @@ bool getMacroChar(keycode *kc);
 bool getMacroCharacter(char *c);
 bool getMacroReport(USB_KeyboardReport_Data_t *report);
 
+bool macroRecording(void);
+void setMacroRecording( bool on );
+void macro_key(uint8_t mod, uint8_t hid);
 
 #endif

@@ -138,6 +138,11 @@ void handleCommand(void) {
             subcmd=SUB_MACRO;
             printf("Macro mode true\n");
             break;
+        case HID_R:
+            printf("Macro recording\n");
+            setMacroRecording(true);
+            setCommandMode(false);
+            break;
         default:
             printf("\nUnknown command.");
             break;

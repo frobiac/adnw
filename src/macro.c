@@ -20,16 +20,52 @@
 
 uint8_t curMacro  = MACROCOUNT;
 uint8_t sendEmpty = 0;    // empty report needed to send the same character twice in a row
-uint8_t idx=0;
+uint8_t idx=0, recidx=0;
 
 
 bool macromode=false;
+bool g_macrorecord=false;
 
 char macrosC[MACROCOUNT][MACROLEN]; ///< in-programm storage of macros read from eeprom
 
 
+inline bool macroRecording(void)         { return(g_macrorecord != false); };
+inline void setMacroRecording( bool on ) { g_macrorecord=on; recidx=0; };
+
 inline bool macroMode(void)         { return(macromode != 0); };
 inline void setMacroMode( bool on ) { macromode=on; };
+
+// last pressed key
+void macro_key(uint8_t mod, uint8_t hid)
+{
+  printf("\nMC(%d) : %d:%d %s=",recidx,mod,hid,macrosC[5]);
+  int i; for(i=0; i<MACROLEN; ++i) printf("%c", macrosC[5][i]);
+  if(!macroRecording())
+      return;
+
+  if(mod == (CTRL | SHIFT | GUI | ALTGR) || recidx==MACROLEN-1){
+    setMacroRecording(false);
+    macrosC[5][recidx]='\0';
+    recidx=0;
+    printf("\nMacro[5] recorded: %s", macrosC[5]);
+    return;
+  }
+
+  if(recidx<MACROLEN-1){
+    if(mod != 0){
+        ++recidx;
+        printf("\n%d->%d", macrosC[5][recidx],hid);
+        macrosC[5][recidx]=(mod+0x80);
+    }
+  }
+  if(recidx<MACROLEN-1){
+    if(hid != 0){
+        ++recidx;
+        printf("\n%d->%d", macrosC[5][recidx],hid);
+        macrosC[5][recidx]=hid;
+    }
+  }
+}
 
 /**
  *  Reads all macros from EEPROM into macrosC for further usage
