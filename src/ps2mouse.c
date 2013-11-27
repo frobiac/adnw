@@ -313,7 +313,6 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 
     int16_t dx=0, dy=0;
     uint8_t ps2_buttons=0;
-    float factor;
 
 #ifdef PS2MOUSE
     ps2_read_mouse(&dx, &dy, &ps2_buttons);
@@ -337,8 +336,8 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
     }
 
     if(g_mouse_keys_enabled || ps2_buttons) {
-        factor= 1 + accel * (ACC_MAX-1) / ACC_RAMPTIME;
-
+        // factor = 1 + [0..400]*1.5/400 = 1..2.5
+        //factor= 1 + accel * (ACC_MAX-1) / ACC_RAMPTIME;
 #ifdef MOUSE_HAS_SCROLL_WHEELS
         MouseReport->V=0;
         MouseReport->H=0;
@@ -369,12 +368,13 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
                 MouseReport->X=0;
                 MouseReport->Y=0;
                 // only move by 1 ?!
+                // factor here had been mapped to 0..0.5 -> use 0.25
             #ifdef TP_ROTATE
-                MouseReport->V =  sx*(factor-1)/3;
-                MouseReport->H = -sy*(factor-1)/3;
+                MouseReport->V =  sx>>2;
+                MouseReport->H = -sy>>2;
             #else
-                MouseReport->H = -sx*(factor-1)/3;
-                MouseReport->V = -sy*(factor-1)/3;
+                MouseReport->H = -sx>>2;
+                MouseReport->V = -sy>>2;
             #endif
             }
         } else
@@ -382,11 +382,11 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
         {
 
             #ifdef TP_ROTATE
-            MouseReport->X = -dy * factor;
-            MouseReport->Y = -dx * factor;
+            MouseReport->X = -dy;
+            MouseReport->Y = -dx;
             #else
-            MouseReport->Y = dy * factor;
-            MouseReport->X = -dx * factor;
+            MouseReport->Y = dy;
+            MouseReport->X = -dx;
             #endif
             // do not emit the scroll button
             MouseReport->Button = g_mouse_keys & ~(0x08);
