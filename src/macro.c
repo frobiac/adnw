@@ -21,7 +21,7 @@
 uint8_t curMacro  = MACROCOUNT;
 uint8_t sendEmpty = 0;    // empty report needed to send the same character twice in a row
 
-uint8_t idx=0, recidx=0;
+uint8_t idx=0; // position in current macro, both read & write
 
 
 bool macromode=false;
@@ -30,7 +30,7 @@ uint8_t g_macrorecord=0;
 uint8_t hidmacro[MACROLEN];
 
 inline bool macroRecording(void)         { return(g_macrorecord != 0); };
-inline void setMacroRecording( uint8_t id ) { g_macrorecord=id; recidx=0; };
+inline void setMacroRecording( uint8_t id ) { g_macrorecord=id; idx=0; };
 
 inline bool macroMode(void)         { return(macromode != 0); };
 inline void setMacroMode( bool on ) { macromode=on; };
@@ -69,17 +69,17 @@ char hid2asciicode(uint8_t hid, uint8_t mod){
  */
 void macro_key(uint8_t mod, uint8_t hid)
 {
-  // printf("\nMC(%d) : %d:%d =%c   ",recidx, mod, hid, hid2asciicode(hid,mod) );
+  // printf("\nMC(%d) : %d:%d =%c   ",idx, mod, hid, hid2asciicode(hid,mod) );
   // int i; for(i=0; i<MACROLEN; ++i) printf("%d ", hidmacro[i]);
   if(!macroRecording())
       return;
 
   // Ctrl+Enter ends macro recording
-  if((hid == HID_ENTER && mod == CTRL) || recidx==MACROLEN-1){
-    hidmacro[recidx]=0;
+  if((hid == HID_ENTER && mod == CTRL) || idx==MACROLEN-1){
+    hidmacro[idx]=0;
     uint8_t written=updateEEMacroHID(hidmacro, g_macrorecord-1);
-    printf("\nWrote %d/%d", written,recidx);
-    recidx=0;
+    printf("\nWrote %d/%d", written,idx);
+    idx=0;
 
 /*
 #ifdef DEBUG_OUTPUT
@@ -113,18 +113,18 @@ void macro_key(uint8_t mod, uint8_t hid)
     return;
   }
 
-  if(recidx<MACROLEN){
+  if(idx<MACROLEN){
     if(mod != 0){
-        //printf("\n%02x->%02x", hidmacro[recidx],mod+0x80);
-        hidmacro[recidx]=(mod+0x80);
-        ++recidx;
+        //printf("\n%02x->%02x", hidmacro[idx],mod+0x80);
+        hidmacro[idx]=(mod+0x80);
+        ++idx;
     }
   }
-  if(recidx<MACROLEN){
+  if(idx<MACROLEN){
     if(hid != 0){
-        //printf("\n%02x->%02x", hidmacro[recidx],hid);
-        hidmacro[recidx]=hid;
-        ++recidx;
+        //printf("\n%02x->%02x", hidmacro[idx],hid);
+        hidmacro[idx]=hid;
+        ++idx;
     }
   }
 }
@@ -202,7 +202,7 @@ bool getMacroReport(USB_KeyboardReport_Data_t *report)
                 c=hidmacro[idx];
             }
             if( mod==ALT && c==HID_ENTER) {
-                _delay_ms(500);
+                _delay_ms(400);
                 c=0;mod=0;
             }
             
