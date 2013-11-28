@@ -264,17 +264,8 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
             // swap lower two buttons on "blue cube"
             *BTNS = (LMB<<0) | (MMB<<1) | (RMB << 2);
 
-            #ifdef TP_ROTATE
             *dx= read_packet();
             *dy= read_packet();
-            #else
-            *dx= read_packet();
-            *dy= read_packet();
-            #endif
-            // raw *dx is of 0xXX
-            int x = *dx;
-            //int y = *dy;
-            int xtest = *dx;
 
             if(mouseinf&0x10)
                 *dx=-(256-*dx);
@@ -283,24 +274,6 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
                 *dy=-(256-*dy);
 
             return;
-
-            if(mouseinf&0x10) {
-                xtest=-(256-*dx);
-                *dx-=0x100; // Add sign bit to dx
-
-            }
-            if(mouseinf&0x20)
-                *dy-=0x100; // Add sign bit to dy
-
-            if( x!=0 ) {
-                //printf("\n%4x %4x | %4x %4x", x,*dx,y,*dy);
-                printf("\ninf=0x%04x x:%2d dx:0x%04x xtest: %d dxrevert: ", mouseinf, x,*dx, xtest);
-                if(*dx&0xFF00)
-                    printf("-%2d" , 256-(*dx+0x100));
-                else
-                    printf("+%2d" , *dx);
-            }
-
         }
     }
 }
@@ -360,7 +333,10 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
                     sy=dy;
             }
 
-            scrollcnt = scrollcnt+abs(sy)+abs(sx);
+            // scrollcnt = scrollcnt+abs(sy)+abs(sx);
+            // abs(v) = v*((v<0)*(-1)+(v>0));
+            scrollcnt += sy*((sy<0)*(-1)+(sy>0)) + sx*((sx<0)*(-1)+(sx>0));
+
 
             // limit 10 and emiting as is way to fast in windows.
             if(scrollcnt>10) {

@@ -144,6 +144,11 @@ bool tp_init(void)
     tp_ram_write(0x4A, 0x60);
     tp_ram_write(0x60, 0x53);
 #endif
+
+     // flip axis
+     // tp_ram_write(0x2c, 1<<TP_FLIPX);
+     // tp_ram_write(0x2c, 1<<TP_FLIPY);
+
     //printf("\nSens  (orig=80): %02x ", tp_ram_read(0x4A) );
     //printf("\nSpeed (orig=61): %02x ", tp_ram_read(0x60) );
     return true;
