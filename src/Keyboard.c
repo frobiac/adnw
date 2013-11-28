@@ -137,7 +137,7 @@ USB_ClassInfo_HID_Device_t DBG_HID_Interface = {
 };
 
 
-uint8_t g_num_lock, g_caps_lock, g_scrl_lock;
+//uint8_t g_num_lock, g_caps_lock, g_scrl_lock;
 
 void led(uint8_t n)
 {
@@ -202,7 +202,7 @@ void SetupHardware()
     /* Task init */
     initKeyboard();
 
-    g_num_lock = g_caps_lock = g_scrl_lock = 0;
+    // g_num_lock = g_caps_lock = g_scrl_lock = 0;
 
     // set up timer
     TCCR0A = 0x00;
