@@ -141,6 +141,16 @@ void initKeyboard()
     if(tmp==1) g_alternateLayer = 1;
 
     printf("\nEE p/l: %d/%d", g_pinkydrop, g_alternateLayer);
+
+    // bootloader if CMD_MODE combo is pressed during startup
+    clearActiveKeys();
+    _delay_ms(1000);
+    for(tmp=0; tmp<8; ++tmp){
+        scan_matrix();
+        _delay_ms(150);
+    }
+    if(CMD_MODE())
+        jump_bootloader();
 }
 
 void clearRowData() {
