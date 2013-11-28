@@ -66,6 +66,7 @@ bool    isModifierKey(uint8_t row, uint8_t col);
 bool    isLayerKey   (uint8_t row, uint8_t col);
 bool    isNormalKey  (uint8_t row, uint8_t col);
 uint8_t getMouseKey  (uint8_t row, uint8_t col);
+void    getSecondaryUsage(uint8_t r, uint8_t c, uint8_t *hid);
 
 uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer);
 

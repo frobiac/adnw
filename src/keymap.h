@@ -214,13 +214,14 @@ static const uint8_t MouseUsage[ROWS][COLS] PROGMEM =
  * The mouse button locations are put here as there is no overlap whith other keys,
  * but strictly not the right place here.
  */
-static const uint8_t SecondaryUsage[ROWS][COLS] =
+static const uint8_t SecondaryUsage[ROWS][COLS] PROGMEM =
   KEYMAP( 0, /* not used code */
  HID_ESC, 0, 0, 0, 0, 0,                                  0, 0, 0, 0, 0, 0 ,
        0, 0, 0, 0, 0, 0,                                  0, 0, 0, 0, 0, 0 ,
        0, 0, 0, 0, 0, 0,                                  0, 0, 0, 0, 0, 0 ,
  0, 0, HID_ESC, HID_TAB,0, 0 /*is real SPACE*/,0, /* | */ 0, HID_ESC, HID_BACKSPACE, HID_ENTER, 0, 0, 0
 );
+
 
 
 static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM = 

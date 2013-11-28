@@ -375,7 +375,7 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
             if( activeKeys.keycnt==1 ) { // only one => previously determined key to repeat still pressed
                 memset(&report_data->KeyCode[0], 0, 6);
                 report_data->Modifier=0;
-                report_data->KeyCode[0] = SecondaryUsage[activeKeys.keys[0].row][activeKeys.keys[0].col];
+                getSecondaryUsage(activeKeys.keys[0].row,activeKeys.keys[0].col, &(report_data->KeyCode[0]));
                 changeSecondUseState(SECOND_USE_REPEAT, SECOND_USE_REPEAT);
                 break;
             } else {  // repeated key was released
@@ -385,8 +385,11 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
         }
         case SECOND_USE_OFF:
         {
+            uint8_t i;
+            getSecondaryUsage(activeKeys.keys[0].row, activeKeys.keys[0].col, &i);
+
             if( activeKeys.keycnt==1 && ! activeKeys.keys[0].normalKey &&
-                    0 != SecondaryUsage[activeKeys.keys[0].row][activeKeys.keys[0].col] &&
+                    i!=0 && /*0 != SecondaryUsage[activeKeys.keys[0].row][activeKeys.keys[0].col] &&*/
                     activeKeys.keys[0].row == secondUse_Prev_activeKeys.keys[0].row &&
                     activeKeys.keys[0].col == secondUse_Prev_activeKeys.keys[0].col &&
                     idle_count-repeatGesture_timer < 10 )
@@ -450,8 +453,7 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
                 // report without the released key
                 fillReport(report_data);
                 // and add keycode as only keycode
-                // report_data->KeyCode[0] = USAGE_ID(secondaryModifierUsageMatrix[currentLayoutNr][secondUse_key.row][secondUse_key.col]);;
-                report_data->KeyCode[0] = SecondaryUsage[secondUse_key.row][secondUse_key.col];;
+                getSecondaryUsage(secondUse_key.row,secondUse_key.col, &(report_data->KeyCode[0])  );
                 changeSecondUseState(SECOND_USE_ACTIVE, SECOND_USE_PASSIVE);
                 // send remaining modifiers and stop delaying
                 handleModifierTransmission(report_data, MOD_TRANS_ON);
@@ -807,6 +809,11 @@ bool isNormalKey(uint8_t row, uint8_t col)
 {
     TRACE("iNK ");
     return !(isLayerKey(row,col) || isModifierKey(row,col));
+}
+
+void getSecondaryUsage(uint8_t r, uint8_t c, uint8_t *hid)
+{
+    memcpy_P(hid, &SecondaryUsage[r][c], sizeof(uint8_t));
 }
 
 /**
