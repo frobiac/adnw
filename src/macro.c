@@ -65,6 +65,7 @@ char hid2asciicode(uint8_t hid, uint8_t mod){
  *    @todo: Dynamic length, macro idx
  *
  *    Ctrl+Enter terminates macro entry
+ *    Ctrl+Esc   aborts
  *    Alt+Enter  inserts pause
  */
 void macro_key(uint8_t mod, uint8_t hid)
@@ -74,6 +75,11 @@ void macro_key(uint8_t mod, uint8_t hid)
   if(!macroRecording())
       return;
 
+  if(hid == HID_ESC && mod == CTRL){
+    setMacroRecording(0);
+    printf("\nabort");
+    return;
+  }
   // Ctrl+Enter ends macro recording
   if((hid == HID_ENTER && mod == CTRL) || idx==MACROLEN-1){
     hidmacro[idx]=0;
