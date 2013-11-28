@@ -22,7 +22,7 @@
 
 bool    tp_send_read_ack( uint8_t val );
 void    tp_reset( void );
-void    tp_init( void );
+bool    tp_init( void );
 void    tp_id( void );
 uint8_t tp_read_config(void);
 

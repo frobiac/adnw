@@ -46,6 +46,7 @@
 #elif defined HYPERNANO || defined REDTILT
 #define DAPORT  B
 #define DBIT    1
+// d4 to break
 #define CLKPORT B
 #define CBIT    2
 #define RSTPORT B
