@@ -193,8 +193,8 @@ void    printLayout(uint8_t l);
  * Mouse buttons can be mapped to good locations this way.
  * This is not to be confused with the mousekey implementation, which is activated by switching to its layer.
  *
- */
-static const uint8_t MouseUsage[ROWS][COLS] =
+*/
+static const uint8_t MouseUsage[ROWS][COLS] PROGMEM =
   KEYMAP( 0, /* not used code */
        HID_ESC,  0, 0, 0, 0, 0,                                               0, 0, 0, 0, 0, 0 ,
        0, HID_MOUSEBTN_1, HID_MOUSEBTN_3, HID_MOUSEBTN_2, HID_MOUSEBTN_4, 0,  0, 0, 0, 0, 0, 0 ,

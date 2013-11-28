@@ -814,9 +814,10 @@ bool isNormalKey(uint8_t row, uint8_t col)
  *
  * This enables overiding normal keys when in mouse mode.
  */
-uint8_t getMouseKey(uint8_t row, uint8_t col)
+uint8_t getMouseKey(uint8_t r, uint8_t c)
 {
-    uint16_t hid = MouseUsage[row][col];
+    uint8_t hid;
+    memcpy_P(&hid, &MouseUsage[r][c], sizeof(uint8_t));
     if ( hid >= HID_MOUSEBTN_1 && hid <= HID_MOUSEBTN_4 )
         return (hid);
     return 0;
