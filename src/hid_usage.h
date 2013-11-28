@@ -512,6 +512,7 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 
 #endif // QWERTY or QWERTZ
 
+#ifdef DEBUG_OUTPUT
 /// @todo .data usage: this adds 3*128 bytes and is needed only for macro and printf
 // needed for debug printf and macro replay
 static const uint8_t ascii2hid[128][3] = {
@@ -644,6 +645,7 @@ static const uint8_t ascii2hid[128][3] = {
     _TILDE ,    // ~      126
     _DEL        // ( del) 127
 } ;
+#endif DEBUG_OUTPUT
 
 #endif // _HID_USAGE_H
 

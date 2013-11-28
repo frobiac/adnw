@@ -35,6 +35,7 @@ inline void setMacroRecording( uint8_t id ) { g_macrorecord=id; recidx=0; };
 inline bool macroMode(void)         { return(macromode != 0); };
 inline void setMacroMode( bool on ) { macromode=on; };
 
+#ifdef DEBUG_OUTPUT
 /**
  * Only ASCII, no umlauts or other specials, and additional modifier need to be checked!
  *
@@ -56,6 +57,7 @@ char hid2asciicode(uint8_t hid, uint8_t mod){
     }
     return '0';
 }
+#endif
 
 
 /** Record key into macro:
@@ -80,6 +82,7 @@ void macro_key(uint8_t mod, uint8_t hid)
     recidx=0;
 
 /*
+#ifdef DEBUG_OUTPUT
     printf("\n");
     uint8_t i; 
     for(i=0; i<MACROLEN; ++i) {
@@ -104,6 +107,7 @@ void macro_key(uint8_t mod, uint8_t hid)
             printf("%d=%c ", c, hid2asciicode(c,m));
         }
     }
+#endif
 */
     setMacroRecording(0);
     return;
