@@ -57,7 +57,6 @@
 
 /////////////////////////////
 ///General purpose macros////
-#define CONCAT(a,b)     a ## b
 #define CCPORT(name)    CONCAT(PORT,name)
 #define CCPIN(name)     CONCAT(PIN,name)
 #define CCDDR(name)     CONCAT(DDR,name)

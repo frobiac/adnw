@@ -32,7 +32,8 @@ enum {
     SUB_TP,
     SUB_READ,
     SUB_LAYOUT,
-    SUB_MACRO
+    SUB_MACRO,
+    SUB_MACRO_REC
 };
 
 static uint8_t subcmd;           ///< currently active subcommand
@@ -140,8 +141,7 @@ void handleCommand(void) {
             break;
         case HID_R:
             printf("Macro recording\n");
-            setMacroRecording(true);
-            setCommandMode(false);
+            subcmd=SUB_MACRO_REC;
             break;
         default:
             printf("\nUnknown command.");
@@ -171,6 +171,10 @@ void handleSubCmd(struct Key k) {
         case SUB_MACRO:
             setMacroMode(true);
             activateMacro(k.row*ROWS+k.col);
+            setCommandMode(false);
+            break;
+        case SUB_MACRO_REC:
+            setMacroRecording(1+k.row*ROWS+k.col);
             setCommandMode(false);
             break;
         default:

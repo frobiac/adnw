@@ -20,17 +20,17 @@
 
 uint8_t curMacro  = MACROCOUNT;
 uint8_t sendEmpty = 0;    // empty report needed to send the same character twice in a row
+
 uint8_t idx=0, recidx=0;
 
 
 bool macromode=false;
-bool g_macrorecord=false;
+uint8_t g_macrorecord=0;
 
-char macrosC[MACROCOUNT][MACROLEN]; ///< in-programm storage of macros read from eeprom
+uint8_t hidmacro[MACROLEN];
 
-
-inline bool macroRecording(void)         { return(g_macrorecord != false); };
-inline void setMacroRecording( bool on ) { g_macrorecord=on; recidx=0; };
+inline bool macroRecording(void)         { return(g_macrorecord != 0); };
+inline void setMacroRecording( uint8_t id ) { g_macrorecord=id; recidx=0; };
 
 inline bool macroMode(void)         { return(macromode != 0); };
 inline void setMacroMode( bool on ) { macromode=on; };
@@ -58,82 +58,73 @@ char hid2asciicode(uint8_t hid, uint8_t mod){
 }
 
 
+/** Record key into macro:
+ *    Up to MACROLEN keys may be stored, but any combination of modifiers takes one additional slot.
+ *    @todo: Dynamic length, macro idx
+ *
+ *    Ctrl+Enter terminates macro entry
+ *    Alt+Enter  inserts pause
+ */
 void macro_key(uint8_t mod, uint8_t hid)
 {
-  printf("\nMC(%d) : %d:%d %s=",recidx,mod,hid,macrosC[5]);
-  int i; for(i=0; i<MACROLEN; ++i) printf("%c", macrosC[5][i]);
+  // printf("\nMC(%d) : %d:%d =%c   ",recidx, mod, hid, hid2asciicode(hid,mod) );
+  // int i; for(i=0; i<MACROLEN; ++i) printf("%d ", hidmacro[i]);
   if(!macroRecording())
       return;
 
-  if(mod == (CTRL | SHIFT | GUI | ALTGR) || recidx==MACROLEN-1){
-    setMacroRecording(false);
-    macrosC[5][recidx]='\0';
+  // Ctrl+Enter ends macro recording
+  if((hid == HID_ENTER && mod == CTRL) || recidx==MACROLEN-1){
+    hidmacro[recidx]=0;
+    uint8_t written=updateEEMacroHID(hidmacro, g_macrorecord-1);
+    printf("\nWrote %d/%d", written,recidx);
     recidx=0;
-    printf("\nMacro[5] recorded: %s", macrosC[5]);
+
+/*
+    printf("\n");
+    uint8_t i; 
+    for(i=0; i<MACROLEN; ++i) {
+        uint8_t c=hidmacro[i];
+        uint8_t m=0;
+        if(c==0){
+            i=MACROLEN;
+            break;
+        }
+        if(c&0x80){
+            m=(c&0x7f);
+            if(c& SHIFT) printf("S");
+            if(c& CTRL) printf("C");
+            if(c& ALT) printf("A");
+            if(c& ALTGR) printf("ag");
+            if(c& GUI) printf("G");
+            if(++i<MACROLEN){
+                c=hidmacro[i];
+                printf("(%d=%c) ", c, hid2asciicode(c,m));
+            }
+        } else {
+            printf("%d=%c ", c, hid2asciicode(c,m));
+        }
+    }
+*/
+    setMacroRecording(0);
     return;
   }
 
-  if(recidx<MACROLEN-1){
+  if(recidx<MACROLEN){
     if(mod != 0){
+        //printf("\n%02x->%02x", hidmacro[recidx],mod+0x80);
+        hidmacro[recidx]=(mod+0x80);
         ++recidx;
-        printf("\n%d->%d", macrosC[5][recidx],hid);
-        macrosC[5][recidx]=(mod+0x80);
     }
   }
-  if(recidx<MACROLEN-1){
+  if(recidx<MACROLEN){
     if(hid != 0){
+        //printf("\n%02x->%02x", hidmacro[recidx],hid);
+        hidmacro[recidx]=hid;
         ++recidx;
-        printf("\n%d->%d", macrosC[5][recidx],hid);
-        macrosC[5][recidx]=hid;
     }
   }
 }
 
-/**
- *  Reads all macros from EEPROM into macrosC for further usage
- */
-bool initMacros()
-{
-    // clear array
-    for(int i=0; i<MACROCOUNT; ++i)
-        for(int j=0; j<MACROLEN; ++j)
-            macrosC[i][j]='0';
-
-    // This should eventually be done in command mode or through external flashing
-    // of appropriate eep file.
-    for(int i=0; i<MACROCOUNT; ++i) {
-        updateEEMacro(EEmacrosC[i],i);
-    }
-
-    uint8_t str[MACROLEN];
-    for(int i=0; i<MACROCOUNT; ++i) {
-        readEEMacro(str,i);
-        uint8_t len = strlen((char*)str);
-        // printf("\n  %d = len(%s)", len,  str);
-        for(int j=0; j<len; ++j) {
-            macrosC[i][j]=str[j];
-        }
-        //strncpy(&macrosC[i][0], str, strlen(str));
-        macrosC[i][len]='\0';
-    }
-
-    return true;
-}
-
-/**
- * Prints all macros currently stored in EEPROM
- */
-void printMacros(void)
-{
-    printf("\nEEPROM macros:");
-    uint8_t str[MACROLEN];
-    for(int i=0; i<MACROCOUNT; ++i) {
-        _delay_ms(50);
-        uint8_t len = readEEMacro(str,i);
-        //printf("\nEE %d %03d %c %s", i, EE_ADDR_MACRO(i), len, str );
-        printf("\n%02d %s", len, str );
-    }
-}
 
 /**
  * Ends current macro
@@ -156,6 +147,7 @@ bool activateMacro(uint8_t id)
     if(id==curMacro)
         return true;
     if(id<MACROCOUNT) {
+        readEEMacroHID(hidmacro,id);
         idx=0;
         curMacro=id;
         return true;
@@ -173,7 +165,7 @@ bool activateMacro(uint8_t id)
  */
 bool getMacroReport(USB_KeyboardReport_Data_t *report)
 {
-    char c;
+    uint8_t c;
     if(!macromode)
         return false;
     if(curMacro>=MACROCOUNT)
@@ -181,23 +173,20 @@ bool getMacroReport(USB_KeyboardReport_Data_t *report)
 
     sendEmpty = sendEmpty ? 0 : 1;
     if( sendEmpty) {
-        c='\0';
+        c=0;
         memset(&report->KeyCode[0], 0, 6);
-        //sendEmpty = 0;
         return true;
     }
 
-    if( idx < sizeof(macrosC[curMacro])/sizeof(char) ) {
+    if( idx < MACROLEN ) {
         uint8_t mod = 0;
 
-        c=macrosC[curMacro][idx];
-        if( c == '\0' ) {
+        c=hidmacro[idx];
+        if( c == 0 ) {
             memset(&report->KeyCode[0], 0, 6);
             endMacro();
             return false;
         }
-        if(c == MACRO_PAUSE)
-            _delay_ms(200);
 
         // if > 127, it is a modifier
         if(c & 0x80 ) {
@@ -205,14 +194,18 @@ bool getMacroReport(USB_KeyboardReport_Data_t *report)
             c=0;
             sendEmpty = sendEmpty ? 0 : 1;
             idx++;
-            if( idx < sizeof(macrosC[curMacro])/sizeof(char) ) {
-                c=macrosC[curMacro][idx];
+            if( idx < MACROLEN ) {
+                c=hidmacro[idx];
             }
+            if( mod==ALT && c==HID_ENTER) {
+                _delay_ms(500);
+                c=0;mod=0;
+            }
+            
         }
-        // now map characters from macro to HID codes.
-        report->KeyCode[0] = ascii2hid[(uint8_t)c][0];
-        report->Modifier = ascii2hid[(uint8_t)c][1];
-        report->Modifier |= mod;
+        
+        report->KeyCode[0] = c;
+        report->Modifier = mod;
         memset(&report->KeyCode[1], 0, 5);
 
         idx++;
@@ -224,11 +217,13 @@ bool getMacroReport(USB_KeyboardReport_Data_t *report)
     return false;
 }
 
+
+
 /**
  * Reads the macro at given index from eeprom into macro and returns its length.
  * Caller needs to make sure there in enough space allocated!
  */
-uint8_t readEEMacro(uint8_t * macro, uint8_t idx)
+uint8_t readEEMacroHID(uint8_t * macro, uint8_t idx)
 {
     eeprom_busy_wait();
     uint8_t len=eeprom_read_byte (( const void *) EE_ADDR_MACRO(idx) );
@@ -239,8 +234,9 @@ uint8_t readEEMacro(uint8_t * macro, uint8_t idx)
     eeprom_busy_wait();
     eeprom_read_block (( void *) macro , ( const void *) (EE_ADDR_MACRO(idx)+1) , len);
 
-    macro[len]='\0';
-    //printf("\nEE readEEMacro #%d @%d len=%d \"%s\"", idx, EE_ADDR_MACRO(idx), len, macro );
+    macro[len]=0;;
+    // printf("\nEE read #%d @%d len=%d: ", idx, EE_ADDR_MACRO(idx), len);
+    // uint8_t i; for(i=0;i<len;++i) printf(" %02x", macro[i]);
 
     return len;
 }
@@ -250,11 +246,14 @@ uint8_t readEEMacro(uint8_t * macro, uint8_t idx)
  * Writes the macro to eeprom at given index and returns length of written string.
  * As eeprom update functions are used, no unnecessary writes are performed.
  */
-uint8_t updateEEMacro(const char * macro, uint8_t idx)
+uint8_t updateEEMacroHID(const uint8_t * macro, uint8_t idx)
 {
-    uint8_t len=strlen(macro);
-    if(len>MACROLEN)
-        len=MACROLEN;
+    uint8_t len=0;
+    while(macro[len] != 0 && len < MACROLEN) { 
+        len++ ;
+    }
+    //printf("\nEE write #%d @%d len=%d: ", idx, EE_ADDR_MACRO(idx), len);
+    //uint8_t i; for(i=0;i<len;++i) printf(" %02x", macro[i]);
 
     eeprom_busy_wait();
     eeprom_update_byte ((void *) EE_ADDR_MACRO(idx) , len );
@@ -263,3 +262,4 @@ uint8_t updateEEMacro(const char * macro, uint8_t idx)
 
     return len;
 }
+

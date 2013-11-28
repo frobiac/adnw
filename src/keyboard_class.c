@@ -132,7 +132,7 @@ void initKeyboard()
 #endif
     init_cols();
 
-    initMacros();
+    //initMacros();
 
     uint8_t tmp = eeprom_read_byte(&ee_pinkyDrop);
     if(tmp==1) g_pinkydrop = 1;
@@ -537,6 +537,21 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
     }
 }
 
+void recordMacroChar(USB_KeyboardReport_Data_t *report_data)
+{
+    // Print first time key is send, will be used to hook up macro recording
+    /// @todo Does not get a char pressed twice in a row
+    //printf("\nACTUAL %d:%d ", report_data->Modifier,report_data->KeyCode[0]);
+    if(lastKeyCode!=report_data->KeyCode[0]) {
+        if(report_data->KeyCode[0] != 0){
+            // printf("\nFR %d:%d => %c ", report_data->Modifier,report_data->KeyCode[0],
+            //                        hid2asciicode( report_data->KeyCode[0], report_data->Modifier) );
+            // now save modifier and key into macro string...
+            macro_key(report_data->Modifier,report_data->KeyCode[0]);
+        }
+        lastKeyCode=report_data->KeyCode[0];
+    }
+}
 
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
@@ -562,6 +577,8 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
     handleSecondaryKeyUsage(report_data);
     if( secondUse_state == SECOND_USE_ACTIVE || secondUse_state == SECOND_USE_PASSIVE || secondUse_state == SECOND_USE_REPEAT) {
         // buffer already filled by 2nd-use
+        if(macroRecording())
+            recordMacroChar(report_data);
         return sizeof(USB_KeyboardReport_Data_t);
     }
 
@@ -621,19 +638,9 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 
     report_data->Modifier=getActiveModifiers()|getActiveKeyCodeModifier();
 
-    if(macroRecording()){
-        // Print first time key is send, will be used to hook up macro recording
-        /// @todo Does not get a char pressed twice in a row
-        if(lastKeyCode!=report_data->KeyCode[0]) {
-            if(report_data->KeyCode[0] != 0){
-                // printf("\nFR %d:%d => %c ", report_data->Modifier,report_data->KeyCode[0],
-                //                            hid2asciicode( report_data->KeyCode[0], report_data->Modifier) );
-                // now save modifier and key into macro string...
-                macro_key(report_data->Modifier,report_data->KeyCode[0]);
-            }
-            lastKeyCode=report_data->KeyCode[0];
-        }
-    }
+    if(macroRecording())
+        recordMacroChar(report_data);
+    
     return sizeof(USB_KeyboardReport_Data_t);
 }
 

@@ -119,7 +119,7 @@ void    printLayout(uint8_t l);
 //
 
 //    _no,_L_SHIFT, _L_ALT, _L_CTRL,_SPACE, _L_GUI, _MACRO, _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1, _R_ALT, _A,  _B  
-//   no30, no31,    t32,    t33,    t34,    t35,    t36,    t70,    t71,     t72,      t73,    t74,    no75,no76   \
+//   no30, no31,    t32,    t33,    t34,    t35,    t36,    t70,    t71,     t72,      t73,    t74,    no75,no76   
 //    _X,  _Y,      _Z ,    _L_CTRL, _SPACE, _G, _M,   _MOD_3, _MOD_2,  _S, _1,  _R_ALT, _A,  _B
 
 #define KEYMAP( no, \

@@ -32,9 +32,6 @@
 
 #include "_private_macros.h"
 
-
-#define MACRO_PAUSE 0x80
-
 /**
  *  Macros are stored in eeprom.
  *  Content has to be put into a separate file to keep sensitive data
@@ -47,8 +44,8 @@
 #define EE_ADDR_MACROS      (EE_ADDR_START+100)
 #define EE_ADDR_MACRO(idx)  (EE_ADDR_MACROS + (idx*MACROLEN))
 
-uint8_t updateEEMacro(const char    macro[MACROLEN], uint8_t idx);
-uint8_t readEEMacro (uint8_t macro[MACROLEN], uint8_t idx);
+uint8_t updateEEMacroHID(const uint8_t macro[MACROLEN], uint8_t idx);
+uint8_t readEEMacroHID  (uint8_t macro[MACROLEN], uint8_t idx);
 
 bool initMacros(void);
 void printMacros(void);
@@ -59,12 +56,10 @@ bool macroMode(void);
 void setMacroMode(bool on);
 
 bool activateMacro(uint8_t id);
-bool getMacroChar(keycode *kc);
-bool getMacroCharacter(char *c);
 bool getMacroReport(USB_KeyboardReport_Data_t *report);
 
 bool macroRecording(void);
-void setMacroRecording( bool on );
+void setMacroRecording( uint8_t id );
 void macro_key(uint8_t mod, uint8_t hid);
 
 char hid2asciicode(uint8_t hid, uint8_t mod);
