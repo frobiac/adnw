@@ -89,7 +89,7 @@ endif
 CC_FLAGS    += -DFW_VERSION=\"$(FW_VERSION)\"
 
 # Default target
-all: lufacheck macrocheck
+all: lufacheck # macrocheck
 
 
 # test macro existance

@@ -18,11 +18,6 @@
 #ifndef MACRO_H
 #define MACRO_H 1
 
-/** Macro mode
- *  Set g_macro_mode to 1 and activate wanted macro.
- *  Then getMacroChars while possible and assemble a report.
- */
-
 #include <stdint.h>
 #include <stdbool.h>
 #include <avr/eeprom.h>
@@ -30,19 +25,21 @@
 #include <LUFA/Drivers/USB/Class/Device/HIDClassDevice.h>
 #include "keymap.h"
 
-#include "_private_macros.h"
 
 /**
- *  Macros are stored in eeprom.
- *  Content has to be put into a separate file to keep sensitive data
- *  out of normal sources :)
- *  Addresses are therefore fixed here.
+ *  Macros are stored in eeprom. To avoid excessive rewrites, a fixed maximum length is set.
+ *  Addresses are fixed.
+ *  .
+ *  @todo Enable pre-loading under certain conditions via *.eep like with _private_macros.c previously?
 */
+#define MACROCOUNT   6
+#define MACROLEN    40
+
 #define EEPROM_DEF 0xFF
 
 #define EE_ADDR_START       100
 #define EE_ADDR_MACROS      (EE_ADDR_START+100)
-#define EE_ADDR_MACRO(idx)  (EE_ADDR_MACROS + (idx*MACROLEN))
+#define EE_ADDR_MACRO(idx)  (EE_ADDR_MACROS + (idx*(MACROLEN+1)))
 
 uint8_t updateEEMacroHID(const uint8_t macro[MACROLEN], uint8_t idx);
 uint8_t readEEMacroHID  (uint8_t macro[MACROLEN], uint8_t idx);

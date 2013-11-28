@@ -225,7 +225,7 @@ bool getMacroReport(USB_KeyboardReport_Data_t *report)
 
 /**
  * Reads the macro at given index from eeprom into macro and returns its length.
- * Caller needs to make sure there in enough space allocated!
+ * Caller needs to make sure there is enough space allocated!
  */
 uint8_t readEEMacroHID(uint8_t * macro, uint8_t idx)
 {
