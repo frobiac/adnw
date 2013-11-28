@@ -32,15 +32,6 @@ void      init_active_keys(void);
 
 uint8_t   getKeyboardReport(USB_KeyboardReport_Data_t *report);
 
-
-typedef struct {
-    uint8_t  report_id;
-    uint16_t usage;
-} __attribute__ ((packed)) USB_ExtraReport_Data_t;
-
-uint8_t   getExtraReport(USB_ExtraReport_Data_t *report_data);
-
-
 void analogDataAcquire(void);
 
 struct sfrActiveKeys activeKeys;
@@ -60,7 +51,6 @@ struct sfrActiveKeys {
 };
 
 void clearActiveKeys(void);
-//void send_extra(void);
 
 bool    isModifierKey(uint8_t row, uint8_t col);
 bool    isLayerKey   (uint8_t row, uint8_t col);

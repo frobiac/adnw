@@ -136,25 +136,6 @@ USB_ClassInfo_HID_Device_t DBG_HID_Interface = {
     },
 };
 
-uint8_t PrevExtraHIDReportBuffer[sizeof(USB_ExtraReport_Data_t)];
-
-USB_ClassInfo_HID_Device_t Extra_HID_Interface = {
-    .Config =
-    {
-        .InterfaceNumber              = 1,
-
-        .ReportINEndpoint             =
-        {
-            .Address              = EXTRA_IN_EPADDR,
-            .Size                 = EXTRA_EPSIZE,
-            .Banks                = 1,
-        },
-
-        .PrevReportINBuffer           = PrevExtraHIDReportBuffer,
-        .PrevReportINBufferSize       = sizeof(PrevExtraHIDReportBuffer),
-    },
-};
-
 
 uint8_t g_num_lock, g_caps_lock, g_scrl_lock;
 
@@ -181,9 +162,6 @@ int main(void)
         if (USB_DeviceState != DEVICE_STATE_Suspended) {
             HID_Device_USBTask(&Keyboard_HID_Interface);
             HID_Device_USBTask(&DBG_HID_Interface);
-            /// @todo KW: erzeugt zu viel Last auf dem Bus: verzögerte Tastendrücke ??
-            // disabled as getExtraReport() depends on new hid_usage structures not yet integrated
-            // HID_Device_USBTask(&Extra_HID_Interface);
 #ifdef PS2MOUSE
             if( g_mouse_enabled )
                 HID_Device_USBTask(&Mouse_HID_Interface);
@@ -192,7 +170,6 @@ int main(void)
             USB_CLK_Unfreeze();
             USB_Device_SendRemoteWakeup();
         }
-        //send_extra();
         USB_USBTask();
     }
 }
@@ -277,9 +254,6 @@ void EVENT_USB_Device_ConfigurationChanged(void)
     if (!(HID_Device_ConfigureEndpoints(&Mouse_HID_Interface)))
         LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
 
-    if (!(HID_Device_ConfigureEndpoints(&Extra_HID_Interface)))
-        LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
-
     USB_Device_EnableSOFEvents();
 }
 
@@ -289,7 +263,6 @@ void EVENT_USB_Device_UnhandledControlRequest(void)
     HID_Device_ProcessControlRequest(&Keyboard_HID_Interface);
     HID_Device_ProcessControlRequest(&DBG_HID_Interface);
     HID_Device_ProcessControlRequest(&Mouse_HID_Interface);
-    HID_Device_ProcessControlRequest(&Extra_HID_Interface);
 }
 
 /** Event handler for the USB device Start Of Frame event. */
@@ -298,7 +271,6 @@ void EVENT_USB_Device_StartOfFrame(void)
     HID_Device_MillisecondElapsed(&Keyboard_HID_Interface);
     HID_Device_MillisecondElapsed(&DBG_HID_Interface);
     HID_Device_MillisecondElapsed(&Mouse_HID_Interface);
-    HID_Device_MillisecondElapsed(&Extra_HID_Interface);
 }
 
 
@@ -353,10 +325,6 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
         // force sending so mouse stops when empty
         return true;
 
-    }
-    else if (HIDInterfaceInfo == &Extra_HID_Interface) {
-        USB_ExtraReport_Data_t* ExtraReport = (USB_ExtraReport_Data_t*)ReportData;
-        *ReportSize = getExtraReport(ExtraReport);
     }
 
     return false;

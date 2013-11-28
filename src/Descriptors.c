@@ -231,36 +231,6 @@ const USB_Descriptor_HIDReport_Datatype_t DBGReport[] PROGMEM = {
 };
 
 
-const USB_Descriptor_HIDReport_Datatype_t PROGMEM ExtrakeyReport[] =
-{
-    HID_RI_USAGE_PAGE(8, 0x01), /* Generic Desktop */
-    HID_RI_USAGE(8, 0x80), /* System Control */
-    HID_RI_COLLECTION(8, 0x01), /* Application */
-    HID_RI_REPORT_ID(8, REPORT_ID_SYSTEM),
-    HID_RI_LOGICAL_MINIMUM(16, 0x0001),
-    HID_RI_LOGICAL_MAXIMUM(16, 0x00B7),
-    HID_RI_USAGE_MINIMUM(16, 0x0001), /* System Power Down */
-    HID_RI_USAGE_MAXIMUM(16, 0x00B7), /* System Display LCD Autoscale */
-    HID_RI_REPORT_SIZE(8, 16),
-    HID_RI_REPORT_COUNT(8, 1),
-    HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_ARRAY | HID_IOF_ABSOLUTE),
-    HID_RI_END_COLLECTION(0),
-
-    HID_RI_USAGE_PAGE(8, 0x0C), /* Consumer */
-    HID_RI_USAGE(8, 0x01), /* Consumer Control */
-    HID_RI_COLLECTION(8, 0x01), /* Application */
-    HID_RI_REPORT_ID(8, REPORT_ID_CONSUMER),
-    HID_RI_LOGICAL_MINIMUM(16, 0x0001),
-    HID_RI_LOGICAL_MAXIMUM(16, 0x029C),
-    HID_RI_USAGE_MINIMUM(16, 0x0001), /* +10 */
-    HID_RI_USAGE_MAXIMUM(16, 0x029C), /* AC Distribute Vertically */
-    HID_RI_REPORT_SIZE(8, 16),
-    HID_RI_REPORT_COUNT(8, 1),
-    HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_ARRAY | HID_IOF_ABSOLUTE),
-    HID_RI_END_COLLECTION(0),
-};
-
-
 /** Device descriptor structure. This descriptor, located in FLASH memory, describes the overall
  *  device characteristics, including the supported USB version, control endpoint size and the
  *  number of device configurations. The descriptor is read out by the USB host when the enumeration
@@ -298,7 +268,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .Header                 = {.Size = sizeof(USB_Descriptor_Configuration_Header_t), .Type = DTYPE_Configuration},
 
         .TotalConfigurationSize = sizeof(USB_Descriptor_Configuration_t),
-        .TotalInterfaces        = 4,  // keyboard, debug, extra and mouse
+        .TotalInterfaces        = 3,  // keyboard, debug, mouse
 
         .ConfigurationNumber    = 1,
         .ConfigurationStrIndex  = NO_DESCRIPTOR,
@@ -390,7 +360,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
     {
         .Header                 = {.Size = sizeof(USB_Descriptor_Interface_t), .Type = DTYPE_Interface},
 
-        .InterfaceNumber        = 0x03,
+        .InterfaceNumber        = 0x02,
         .AlternateSetting       = 0x00,
 
         .TotalEndpoints         = 1,
@@ -420,45 +390,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
         .EndpointSize           = HID_EPSIZE,
         .PollingIntervalMS      = 0x05
-    },
-    // Extra
-    .Extrakey_Interface =
-    {
-        .Header                 = {.Size = sizeof(USB_Descriptor_Interface_t), .Type = DTYPE_Interface},
-
-        .InterfaceNumber        = 2,
-        .AlternateSetting       = 0x00,
-
-        .TotalEndpoints         = 1,
-
-        .Class                  = HID_CSCP_HIDClass,
-        .SubClass               = HID_CSCP_NonBootSubclass,
-        .Protocol               = HID_CSCP_NonBootProtocol,
-
-        .InterfaceStrIndex      = NO_DESCRIPTOR
-    },
-
-    .Extrakey_HID =
-    {
-        .Header                 = {.Size = sizeof(USB_HID_Descriptor_HID_t), .Type = HID_DTYPE_HID},
-
-        .HIDSpec                = VERSION_BCD(01.11),
-        .CountryCode            = 0x00,
-        .TotalReportDescriptors = 1,
-        .HIDReportType          = HID_DTYPE_Report,
-        .HIDReportLength        = sizeof(ExtrakeyReport)
-    },
-
-    .Extrakey_INEndpoint =
-    {
-        .Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
-
-        .EndpointAddress        = (ENDPOINT_DIR_IN | EXTRA_IN_EPADDR),
-        .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
-        .EndpointSize           = EXTRA_EPSIZE,
-        .PollingIntervalMS      = 0x01
-    },
-
+    }
 };
 
 /** Language descriptor structure. This descriptor, located in FLASH memory, is returned when the host requests
@@ -540,10 +472,6 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint8_t wIndex,
                     Size    = sizeof(USB_HID_Descriptor_HID_t);
                     break;
                 case 2:
-                    Address = (void*)&ConfigurationDescriptor.Extrakey_HID;
-                    Size    = sizeof(USB_HID_Descriptor_HID_t);
-                    break;
-                case 3:
                     Address = (void*)&ConfigurationDescriptor.HID_MouseHID;
                     Size    = sizeof(USB_HID_Descriptor_HID_t);
                     break;
@@ -560,10 +488,6 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint8_t wIndex,
                     Size    = sizeof(DBGReport);
                     break;
                 case 2:
-                    Address = (void*)&ExtrakeyReport;
-                    Size    = sizeof(ExtrakeyReport);
-                    break;
-                case 3:
                     Address = (void*)&MouseReport;
                     Size    = sizeof(MouseReport);
                     break;

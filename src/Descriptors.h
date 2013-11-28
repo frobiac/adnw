@@ -60,11 +60,6 @@ typedef struct {
     USB_HID_Descriptor_HID_t              HIDDBG_HID;
     USB_Descriptor_Endpoint_t             HIDDBG_ReportINEndpoint;
 
-    // Extrakey HID Interface
-    USB_Descriptor_Interface_t            Extrakey_Interface;
-    USB_HID_Descriptor_HID_t              Extrakey_HID;
-    USB_Descriptor_Endpoint_t             Extrakey_INEndpoint;
-
     // Mouse HID Interface
     USB_Descriptor_Interface_t            HID_MouseInterface;
     USB_HID_Descriptor_HID_t              HID_MouseHID;
@@ -86,20 +81,10 @@ typedef struct {
  *  endpoints. */
 #define DBG_EPSIZE                   32
 
-/** Endpoint number of the EXTRA HID report IN endpoint. */
-#define EXTRA_IN_EPADDR                (ENDPOINT_DIR_IN  | 3)
-
-/** Size in bytes of the EXTRA HID report IN and OUT
- *  endpoints. */
-#define EXTRA_EPSIZE                   8
-
 /** Endpoint number of the Mouse HID reporting IN endpoint. */
-#define MOUSE_IN_EPADDR                (ENDPOINT_DIR_IN  | 4)
+#define MOUSE_IN_EPADDR                (ENDPOINT_DIR_IN  | 3)
 #define HID_EPSIZE                    8
 
-
-#define REPORT_ID_SYSTEM    2
-#define REPORT_ID_CONSUMER  3
 
 
 /* Function Prototypes: */
