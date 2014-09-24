@@ -4,8 +4,14 @@
 BUGS
 ----
 * Compiled with TP support, firmware hangs on init if TP error / not connected
-*
-* RESOLVED (on same key on German keyboard): Investigate mod3 <> strangeness when rolling them
+* Find leaner printf replacement
+
+ISSUES
+------
+* Modifier mismatch: Press (and hold) "/" and additional character will be capitalized: 
+    may be explained as "/" implies shift on german layout
+* REDTILT: Left thumb rests on center key (space), while right one on second from middle (Shift)
+        Win/Ctrl/Spc not like other boards...
 
 LUFA
 ----
@@ -25,6 +31,7 @@ Trackpoint
 * document most important registers ( see trackpoint.[ch] from kernel)
 * configuration editable at runtime + eeprom store
 * startup even if TP is disabled
+* TP_ROTATE in hw via register
 
 HW
 --
@@ -40,7 +47,6 @@ Layout
 ------
 * Alt on redtilt, Ctrl-Alt usage
 * BU-TECK better?
-* implement QWERTY for adopters
 * usage page for system keys
 * copy/paste
 
@@ -53,8 +59,7 @@ Git
 
 Macro
 -----
-* configurable (saving to eeprom) while running or separate configtool only flashing eeprom content
-
+* dedicated macro key instead ob subcommands?
 
 Commandmode
 -----------
@@ -64,7 +69,9 @@ Commandmode
 
 BUGS
 ----
-
+Test sizes:
+* avr-nm --size-sort --print-size -td *.elf
+* avr-size --mcu=atmega32u4 --format=avr *.elf
 
 Coding style
 ------------
@@ -98,6 +105,3 @@ Unsorted
 Testcases/mode
 Pinkydrop again ?!
 
-maltron 
--------
-* credit K.W. in future merge
