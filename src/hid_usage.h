@@ -475,6 +475,7 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _COLON      { HID_PERIOD,       SHIFT  /*, ':' */ }
 #define _DQUOTE     { HID_2,            SHIFT  /*, '"' */ }
 #define _EQUAL      { HID_0,            SHIFT  /*, '=' */ }
+#define _EURO       { HID_E,            ALTGR  /*, '€' */ }
 #define _GREATER    { HID_NON_US_2,     SHIFT  /*, '>' */ }
 #define _HASH       { HID_BSLASH,       0 /*,      '#' */ }
 #define _L_BRACE    { HID_7,            ALTGR  /*, '{' */ }

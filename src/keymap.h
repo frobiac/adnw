@@ -220,7 +220,7 @@ static const uint8_t SecondaryUsage[ROWS][COLS] PROGMEM =
  HID_ESC, 0, 0, 0, 0, 0,                                  0, 0, 0, 0, 0, 0 ,
        0, 0, 0, 0, 0, 0,                                  0, 0, 0, 0, 0, 0 ,
        0, 0, 0, 0, 0, 0,                                  0, 0, 0, 0, 0, 0 ,
- 0, 0, HID_ESC, HID_TAB,0, 0 /*is real SPACE*/,0, /* | */ 0, HID_ESC, HID_BACKSPACE, HID_ENTER, 0, 0, 0
+       0, 0, 0,HID_TAB,0, 0 /*is real SPACE*/,0, /*|*/ 0, HID_ESC, HID_BACKSPACE, HID_ENTER, 0, 0, 0
 );
 
 
@@ -238,7 +238,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
   // MOD1 layer (special char)
   KEYMAP( _no, 
     _no, _AT,      _DEGREE,   _L_BRACKET, _R_BRACKET, _HASH   , _EXCLAM,  _LESS,      _GREATER,   _EQUAL,     _AMPERSAND, _no ,
-    _no, _BSLASH,  _SLASH,    _L_BRACE,   _R_BRACE,   _ASTERIX, _QUESTION,_L_PAREN,   _R_PAREN,   _PLUS,      _MINUS,     _no ,
+    _no, _BSLASH,  _EURO  ,   _L_BRACE,   _R_BRACE,   _ASTERIX, _QUESTION,_L_PAREN,   _R_PAREN,   _PLUS,      _no,        _no ,
     _no, _no,      _DOLLAR,   _PIPE,      _TILDE,     _GRAVE ,  _CARET,   _PERCENT,   _DQUOTE,    _SQUOTE,    _no,        _no ,
     _no, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no, _no
   ),
@@ -247,7 +247,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
   KEYMAP( _no,
     _no, _PGUP,   _BSPACE,    _UP,        _DEL ,      _PGDN, _SSHARP,_7,         _8,         _9,     _a_UML, _A_UML ,
     _no, _HOME,   _LEFT,      _DOWN,      _RIGHT,     _END , _PERIOD,_4,         _5,         _6,     _o_UML, _O_UML ,
-    _no, _ESC,    _TAB,       _INS,       _ENTER,     _no ,  _0,     _1,         _2,         _3,     _u_UML, _U_UML ,
+    _no, _no  ,   _no  ,      _INS,       _no   ,     _no ,  _0,     _1,         _2,         _3,     _u_UML, _U_UML ,
   _no, _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,    _R_ALT, _no, _no
     ),
   
