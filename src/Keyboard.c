@@ -152,7 +152,7 @@ void led(uint8_t n)
 /** Main program entry point. This routine contains the overall program flow, including initial
  *  setup of all components and the main program loop.
  */
-int main(void)
+static void __attribute__ ((noreturn)) main_loop(void)
 {
     SetupHardware();
 
@@ -173,6 +173,13 @@ int main(void)
         USB_USBTask();
     }
 }
+
+int main(void)
+{
+    main_loop();
+    return 0;
+}
+
 
 /** Configures the board hardware and chip peripherals for the demo's functionality. */
 void SetupHardware()
