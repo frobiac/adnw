@@ -62,6 +62,10 @@ ifneq (,$(findstring REDTILT,$(CC_FLAGS)))
 CC_FLAGS    += -DTP_ROTATE
 endif
 
+ifneq (,$(findstring HYPERNANO,$(CC_FLAGS)))
+CC_FLAGS    += -DPINKYDROP
+endif
+
 ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
 	SRC += $(SRCDIR)/hhstdio.c \
 		   $(SRCDIR)/dbg.c

@@ -78,12 +78,14 @@ void handleCommand(void) {
     // Char without Meaning:
     //  O:MouseMode, R:PrintKeyHID
     switch(hid) {
+#ifdef PINKYDROP
         case HID_D:
             g_pinkydrop = g_pinkydrop ? 0 : 1;
             printf("\nPinkydrop %d", g_pinkydrop);
             eeprom_write_byte(&ee_pinkyDrop, g_pinkydrop);
             setCommandMode(false);
             break;
+#endif
         case HID_V:
             printf("\nAdNW %s", FW_VERSION);
             setCommandMode(false);

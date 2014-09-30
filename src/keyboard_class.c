@@ -117,10 +117,9 @@ void initKeyboard()
     idle_count=0;
     // not strictly necessary
     clearRowData();
-    
+
     g_mouse_keys_enabled = 0;
     g_mouse_keys = 0;
-    g_pinkydrop = 0;
     secondUse_timer=idle_count + SECOND_USE_TIMEOUT;
 
 #ifdef DEBUG_OUTPUT
@@ -130,13 +129,18 @@ void initKeyboard()
 
     //initMacros();
 
-    uint8_t tmp = eeprom_read_byte(&ee_pinkyDrop);
-    if(tmp==1) g_pinkydrop = 1;
 
-    tmp = eeprom_read_byte(&ee_alternateLayer);
+    uint8_t tmp = eeprom_read_byte(&ee_alternateLayer);
     if(tmp==1) g_alternateLayer = 1;
+    printf("\nEE l: %d", g_alternateLayer);
 
-    printf("\nEE p/l: %d/%d", g_pinkydrop, g_alternateLayer);
+#ifdef PINKYDROP
+    g_pinkydrop = 0;
+    tmp = eeprom_read_byte(&ee_pinkyDrop);
+    if(tmp==1) g_pinkydrop = 1;
+    printf("\nEE p: %d", g_pinkydrop);
+#endif
+
 
     // bootloader if CMD_MODE combo is pressed during startup
     clearActiveKeys();
@@ -745,7 +749,7 @@ void init_active_keys()
         for (uint8_t col = 0; col < COLS; ++col) {
             if (rowData[row] & (1UL << col)) {
                 uint8_t offset=0;
-#ifdef HYPERNANO
+#ifdef PINKYDROP
                 if(g_pinkydrop) {
                     if(col == 1 && row < 4)
                         offset = (row == 0 ? 3 : -1); //+(4+row-1)%4;
