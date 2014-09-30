@@ -646,7 +646,7 @@ static const uint8_t ascii2hid[128][3] = {
     _TILDE ,    // ~      126
     _DEL        // ( del) 127
 } ;
-#endif DEBUG_OUTPUT
+#endif // DEBUG_OUTPUT
 
 #endif // _HID_USAGE_H
 
