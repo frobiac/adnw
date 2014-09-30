@@ -116,12 +116,8 @@ void initKeyboard()
 {
     idle_count=0;
     // not strictly necessary
-    for (uint8_t row = 0; row < ROWS; ++row) {
-        rowData[row]=0;
-        ct0[row]=0xFF;
-        ct1[row]=0xFF;
-    }
-
+    clearRowData();
+    
     g_mouse_keys_enabled = 0;
     g_mouse_keys = 0;
     g_pinkydrop = 0;
