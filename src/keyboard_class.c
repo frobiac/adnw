@@ -114,12 +114,13 @@ ISR(TIMER0_OVF_vect)
  */
 void initKeyboard()
 {
-    idle_count=0;
+    //idle_count=0;
     // not strictly necessary
     clearRowData();
 
-    g_mouse_keys_enabled = 0;
-    g_mouse_keys = 0;
+    // all global variables should be initialized on avr 
+    //g_mouse_keys_enabled = 0;
+    //g_mouse_keys = 0;
     secondUse_timer=idle_count + SECOND_USE_TIMEOUT;
 
 #ifdef DEBUG_OUTPUT
