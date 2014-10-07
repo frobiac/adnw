@@ -44,16 +44,6 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 #define ALT_ALPHA_LAYER 5
 
 #define _MACRO _no
-#ifdef MALTRON_KW
-  // Menu and Fn pressed simultaneouslye
-  #define CMD_MODE() ((rowData[6] & (1<<4)) && (rowData[6] & (1<<3)) ) 
-
-  #define LAYERS   3
-  #define LAYOUTS  4
-  #define ROWS     8  // F,Nr,3xChars,Subs,Thumb, Middle
-  #define COLS    12  ///< cols of both keyboard halves are "stacked" in layout and physically connected
-#endif
-
 
 #ifdef BLUECUBE 
   #define CMD_MODE() ((rowData[2] & (1<<0)) && (rowData[6] & (1<<5)) ) 
