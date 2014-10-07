@@ -196,14 +196,14 @@ static const uint8_t SecondaryUsage[ROWS][COLS] PROGMEM =
 
 static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM = 
 {
-  // normal layer
- KEYMAP( _no,
-         _MOD_3, _k, _u, _q,     _PERIOD, _j,      _v, _g, _c, _l, _f, _BSPACE ,
-         _TAB,   _h, _i, _e,     _a,      _o,      _d, _t, _r, _n, _s, _ENTER  ,
-         _DQUOTE,_x, _y, _MINUS, _COMMA,  _SLASH,  _b, _p, _w, _m, _z, _MOD_MOUSEKEY,
-         _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no
+  // modified BU-TECK is default
+  KEYMAP( _no,
+    _ESC,    _k, _u, _q,     _PERIOD,_j  ,   _p,  _c, _l, _m, _f, _BSPACE ,
+    _TAB,    _h, _i, _e,     _a,     _o  ,   _d,  _t, _r, _n, _s, _ENTER  ,
+    _DQUOTE, _x, _y, _MINUS,_COMMA,_SLASH,   _b,  _g, _w, _v, _z, _MOD_MOUSEKEY,
+    _L_SHIFT,_L_ALT,_L_CTRL,_SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no
   ),
-    
+
   // MOD1 layer (special char)
   KEYMAP( _no, 
     _no, _AT,      _DEGREE,   _L_BRACKET, _R_BRACKET, _HASH   , _EXCLAM,  _LESS,      _GREATER,   _EQUAL,     _AMPERSAND, _no ,
@@ -235,25 +235,13 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _no, _no, _MS_W_L, _no,   _MS_W_R, _no,  _no,    _MS_ACC0, _MS_ACC1, _MS_ACC2, _no, _no,
     _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no
     ),
-/*
-  // MOD5 BU-TECK
-  // needs to be layout # ALT_ALPHA_LAYER
-  KEYMAP( _no,
-    _ESC,   _b, _u, _q,     _PERIOD,_x  ,   _p,  _c, _l, _m, _f, _BSPACE ,
-    _TAB,   _h, _i, _e,     _a,     _o  ,   _d,  _t, _r, _n, _s, _ENTER  ,
-    _DQUOTE,_k, _y, _MINUS,_COMMA,_SLASH,   _j,  _g, _w, _v, _z, _no  ,
-    _L_SHIFT,_L_ALT,_L_CTRL,_SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _A
-  )
-*/
 
-  // MOD5 BU-TECK
-  // needs to be layout # ALT_ALPHA_LAYER
+  // AdNW, ALT_ALPHA_LAYER
   KEYMAP( _no,
-    _ESC,   _k, _u, _q,     _PERIOD,_j  ,   _p,  _c, _l, _m, _f, _BSPACE ,
-    _TAB,   _h, _i, _e,     _a,     _o  ,   _d,  _t, _r, _n, _s, _ENTER  ,
-    _DQUOTE,_x, _y, _MINUS,_COMMA,_SLASH,   _b,  _g, _w, _v, _z, _MOD_MOUSEKEY,
-    _L_SHIFT,_L_ALT,_L_CTRL,_SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no
-    //_X, _Y, _Z ,  _L_CTRL, _SPACE, _L_GUI, _M,   _MOD_3, _MOD_2, _L_SHIFT, _MOD_1,  _R_ALT, _A,  _B
+    _ESC,   _k, _u, _q,     _PERIOD, _j,      _v, _g, _c, _l, _f, _BSPACE ,
+    _TAB,   _h, _i, _e,     _a,      _o,      _d, _t, _r, _n, _s, _ENTER  ,
+    _DQUOTE,_x, _y, _MINUS, _COMMA,  _SLASH,  _b, _p, _w, _m, _z, _MOD_MOUSEKEY,
+    _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no
   )
 
 }; // end of matrix[][][]
