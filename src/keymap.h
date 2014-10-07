@@ -44,13 +44,12 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 #define ALT_ALPHA_LAYER 5
 
 #define _MACRO _no
+#define LAYERS 6
+#define ROWS   8
+#define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
 
 #ifdef BLUECUBE 
   #define CMD_MODE() ((rowData[2] & (1<<0)) && (rowData[6] & (1<<5)) ) 
-
-  #define LAYERS 6
-  #define ROWS   8
-  #define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
 
 /*
             ┌───┐                             ┌───┐
@@ -86,10 +85,6 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 
 #ifdef REDTILT
   #define CMD_MODE() ((rowData[2] & (1<<0)) && (rowData[6] & (1<<5)) )
-
-  #define LAYERS 6
-  #define ROWS   8
-  #define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
 
 /*
 
@@ -127,10 +122,6 @@ RedTilt: outermost "thumb" keys are in topmost row, and ring finger one is missi
 
 #ifdef HYPERNANO
   #define CMD_MODE() ( (rowData[3] & (1<<1)) && (rowData[7] & (1<<5)) ) 
- 
-  #define LAYERS 6
-  #define ROWS   8
-  #define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
 
 /*  Row/col matrix: (0-based)
  *  unused in layout: 00,10,20, 45,55,65
