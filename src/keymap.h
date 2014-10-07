@@ -85,33 +85,28 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 #endif
 
 
-#ifdef REDTILT 
-  #define CMD_MODE() ((rowData[2] & (1<<0)) && (rowData[6] & (1<<5)) ) 
+#ifdef REDTILT
+  #define CMD_MODE() ((rowData[2] & (1<<0)) && (rowData[6] & (1<<5)) )
 
   #define LAYERS 6
   #define ROWS   8
   #define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
 
 /*
- * 00 01 02 03 04 05    40 41 42 43 44 45
- * 10 11 12 13 14 15    50 51 52 53 54 55
- * 20 21 22 23 24 25    60 61 62 63 64 65
-                  30    75 
-      32 33 34 35 31    74 70 71 72 73
-   30 31    33 34 35    70 71 72    74 75
 
- *
- *
- */
+RedTilt: outermost "thumb" keys are in topmost row, and ring finger one is missing
 
-// on RedTilt, outermost "thumb" keys are in topmost row, and ring finger one is missing
-// 0 1                    4 5
-//       3 4 5 |  0 1 2
-//
+    ┌───┬───┐   ┌───┬───┬───┐    ┌───┬───┬───┐   ┌───┬───┐
+    │30!│31!├───┤03 │04 │05 │    │40 │41 │42 ├───┤74!│75!│
+    ├───┼───┤02 ├───┼───┼───┤    ├───┼───┼───┤43 ├───┼───┤
+    │00 │01 ├───┤13 │14 │15 │    │50 │51 │52 ├───┤44 │45 │
+    ├───┼───┤12 ├───┼───┼───┤    ├───┼───┼───┤53 ├───┼───┤
+    │10 │11 ├───┤23 │24 │25 │    │60 │61 │62 ├───┤54 │55 │
+    ├───┼───┤22 ├───┼───┼───┤    ├───┼───┼───┤63 ├───┼───┤
+    │20 │21 ├───┤33 │34 │35 │    │70 │71 │72 ├───┤64 │65 │
+    └───┴───┘   └───┴───┴───┘    └───┴───┴───┘   └───┴───┘
 
-//    _no,_L_SHIFT, _L_ALT, _L_CTRL,_SPACE, _L_GUI, _MACRO, _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1, _R_ALT, _A,  _B  
-//   no30, no31,    t32,    t33,    t34,    t35,    t36,    t70,    t71,     t72,      t73,    t74,    no75,no76   
-//    _X,  _Y,      _Z ,    _L_CTRL, _SPACE, _G, _M,   _MOD_3, _MOD_2,  _S, _1,  _R_ALT, _A,  _B
+*/
 
 #define KEYMAP( no, \
    k00,k01,k02,k03,k04,k05,        k40,k41,k42,k43,k44,k45, \
@@ -151,11 +146,17 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 /*  Row/col matrix: (0-based)
  *  unused in layout: 00,10,20, 45,55,65
  *  but used in matrix]  20/65 for innermost keys on row 3
- *  
- *       01 02 03 04 05     40 41 42 43 44
- *      11 12 13 14 15       50 51 52 53 54
- *     21 22 23 24 25 20    65 60 61 62 63 64
- *     31 32 33 34 35 30    75 70 71 72 73 74 
+ *
+    ┌─────┬───┬───┬───┬───┐        ┌───┬───┬───┬───┬─────┐
+    │  01 │02 │03 │04 │05 │        │40 │41 │42 │43 │44   │
+    ├────┬┴──┬┴──┬┴──┬┴──┬┘        └┬──┴┬──┴┬──┴┬──┴┬────┤
+    │ 11 │12 │13 │14 │15 │    ()    │50 │51 │52 │53 │54  │
+    ├───┬┴──┬┴──┬┴──┬┴──┬┴──┐    ┌──┴┬──┴┬──┴┬──┴┬──┴┬───┤
+    │21 │22 │23 │24 │25 │20!│    │65!│60 │61 │62 │63 │64 │
+    ├───┴┬──┴┬──┴┬──┴┬──┴┬──┴┐  ┌┴──┬┴──┬┴──┬┴──┬┴──┬┴───┤
+    │ 31 │32 │33 │34 │35 │30!│  │75!│70 │71 │72 │73 │74  │
+    └────┴───┴───┴───┴───┴───┘  └───┴───┴───┴───┴───┴────┘
+
  */
 
 //_X, SHFT L_ALT LCTRL, SPACE, GUI, _MACRO,  MOD_3, MOD_2,  L_SHIFT, MOD_1,  AltGr, _A, _B
