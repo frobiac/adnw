@@ -87,8 +87,8 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
   #define CMD_MODE() ((rowData[2] & (1<<0)) && (rowData[6] & (1<<5)) )
 
 /*
-
-RedTilt: outermost "thumb" keys are in topmost row, and ring finger one is missing
+    RedTilt: outermost "thumb" keys are in topmost row
+    Ring finger thumbkeys (32/73) missing in matrix!
 
     ┌───┬───┐   ┌───┬───┬───┐    ┌───┬───┬───┐   ┌───┬───┐
     │30!│31!├───┤03 │04 │05 │    │40 │41 │42 ├───┤74!│75!│
@@ -101,44 +101,23 @@ RedTilt: outermost "thumb" keys are in topmost row, and ring finger one is missi
     └───┴───┘   └───┴───┴───┘    └───┴───┴───┘   └───┴───┘
 
 */
-/*  _ESC,    _k, _u, _q,     _PERIOD,_j  ,   _p,  _c, _l, _m, _f, _BSPACE ,
-    _TAB,    _h, _i, _e,     _a,     _o  ,   _d,  _t, _r, _n, _s, _ENTER  ,
-    _DQUOTE, _x, _y, _MINUS,_COMMA,_SLASH,   _b,  _g, _w, _v, _z, _MOD_MOUSEKEY,
-    _L_SHIFT,_L_ALT,_L_CTRL,_SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no */
 
 #define KEYMAP( no, \
-   Uesc,  k ,  u ,  q , dot,  j ,           p ,  c ,  l ,  m ,  f , Ubsp, \
-   Utab,  h ,  i ,  e ,  a ,  o ,           d ,  t ,  r ,  n ,  s , Uret, \
-   Ucap,  x ,  y , das, com, sla,           b ,  g ,  w ,  v ,  z , Umous, \
-   Usft, ALT, CTL, SPC, GUI, MAC,          M3 , M2 , SHF, M1 , AGR, Unone   \
+   Uesc,   k,   u,   q, dot,   j,       p,   c,   l,   m,   f, Ubsp,  \
+   Utab,   h,   i,   e,   a,   o,       d,   t,   r,   n,   s, Uret,  \
+   Ucap,   x,   y, das, com, sla,       b,   g,   w,   v,   z, Umou,  \
+   Usft, ALT, CTL, SPC, GUI, MAC,      M3,  M2, SHF,  M1, AGR, Unone  \
 ) { \
-  {  no, k,  u,  q,dot,  j }, \
-  {  no, h,  i,  e,  a,  o }, \
-  {  no, x,  y,das,com,sla }, \
-  { MAC, ALT ,no, GUI,CTL,SPC }, \
-\
-  {  p,c,l,m,f,no }, \
-  {  d,t,r,n,s,no }, \
-  {  b,g,w,v,z,no }, \
-  {  M2, SHF, M1, no, M3, AGR } \
+/*           0    1    2    3    4    5 */ \
+/* 0 */  {  no,   k,   u,   q, dot,   j  }, \
+/* 1 */  {  no,   h,   i,   e,   a,   o  }, \
+/* 2 */  {  no,   x,   y, das, com, sla  }, \
+/* 3 */  { MAC, ALT,  no, GUI, CTL, SPC  }, \
+/* 4 */  {   p,   c,   l,   m,   f,  no  }, \
+/* 5 */  {   d,   t,   r,   n,   s,  no  }, \
+/* 6 */  {   b,   g,   w,   v,   z,  no  }, \
+/* 7 */  {  M2,  SHF,  M1,  no,  M3, AGR }  \
 }
-/*e
-#define KEYMAP( no, \
-   k00,k01,k02,k03,k04,k05,        k40,k41,k42,k43,k44,k45, \
-   k10,k11,k12,k13,k14,k15,        k50,k51,k52,k53,k54,k55, \
-   k20,k21,k22,k23,k24,k25,        k60,k61,k62,k63,k64,k65, \
-   no31,ALT,CTL,SPC,GUI,MAC,  M3,M2,SHF,M1,AGR,no75   \
-) { \
-  { k00,k01,k02,k03,k04,k05 }, \
-  { k10,k11,k12,k13,k14,k15 }, \
-  { k20,k21,k22,k23,k24,k25 }, \
-  { MAC,ALT,no  ,GUI,CTL,SPC }, \
-  { k40,k41,k42,k43,k44,k45 }, \
-  { k50,k51,k52,k53,k54,k55 }, \
-  { k60,k61,k62,k63,k64,k65 }, \
-  { M2,SHF,M1,no  ,M3,AGR } \
-}
-*/
 #endif
 
 
