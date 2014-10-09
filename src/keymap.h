@@ -140,23 +140,21 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
     └────┴───┴───┴───┴───┴───┘─└───┴───┴───┴───┴───┴────┘
  */
 
-//_X, SHFT L_ALT LCTRL, SPACE, GUI, _MACRO,  MOD_3, MOD_2,  L_SHIFT, MOD_1,  AltGr, _A, _B
-
 #define KEYMAP( no, \
-  no00,k01,k02,k03,k04,k05,        k40,k41,k42,k43,k44,no45, \
-  no10,k11,k12,k13,k14,k15,        k50,k51,k52,k53,k54,no55, \
-  no20,k21,k22,k23,k24,k25,        k60,k61,k62,k63,k64,no65, \
-   t31,ALT,CTL,SPC,GUI,MAC,  M3,M2,SHF,M1,AGR,t74   \
+   Uesc,   k,   u,   q, dot,   j,       p,   c,   l,   m,   f, Ubsp,  \
+   Utab,   h,   i,   e,   a,   o,       d,   t,   r,   n,   s, Uret,  \
+   Ucap,   x,   y, das, com, sla,       b,   g,   w,   v,   z, Umou,  \
+   Usft, ALT, CTL, SPC, GUI, MAC,      M3,  M2, SHF,  M1, AGR, Unone  \
 ) { \
-  {  no, k01,k02,k03,k04,k05 }, \
-  {  no, k11,k12,k13,k14,k15 }, \
-  { MAC, k21,k22,k23,k24,k25 }, \
-  { ALT ,no ,t31,CTL,SPC,GUI }, \
-\
-  {  no, k40, k41,k42,k43,k44 }, \
-  {  no, k50, k51,k52,k53,k54 }, \
-  {  no, k60, k61,k62,k63,k64 }, \
-  {  M3,  M2, SHF, M1,AGR,t74 } \
+/*           0    1    2    3    4    5 */ \
+/* 0 */  {  no,   k,   u,   q, dot,   j  }, \
+/* 1 */  {  no,   h,   i,   e,   a,   o  }, \
+/* 2 */  { MAC,   x,   y, das, com, sla  }, \
+/* 3 */  { ALT,  no,Usft, CTL, SPC, GUI  }, \
+/* 4 */  {  no,   p,   c,   l,   m,   f  }, \
+/* 5 */  {  no,   d,   t,   r,   n,   s  }, \
+/* 6 */  {  no,   b,   g,   w,   v,   z  }, \
+/* 7 */  {  M3,  M2, SHF,  M1, AGR, Unone}  \
 }
 #endif
 
