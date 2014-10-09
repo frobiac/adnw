@@ -48,8 +48,8 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 #define ROWS   8
 #define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
 
-#ifdef BLUECUBE 
-  #define CMD_MODE() ((rowData[2] & (1<<0)) && (rowData[6] & (1<<5)) ) 
+#ifdef BLUECUBE
+  #define CMD_MODE() ((rowData[2] & (1<<0)) && (rowData[6] & (1<<5)) )
 
 /*
             ┌───┐                             ┌───┐
@@ -66,19 +66,20 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 */
 
 #define KEYMAP( no, \
-   k00,k01,k02,k03,k04,k05,        k40,k41,k42,k43,k44,k45, \
-   k10,k11,k12,k13,k14,k15,        k50,k51,k52,k53,k54,k55, \
-   k20,k21,k22,k23,k24,k25,        k60,k61,k62,k63,k64,k65, \
-   t31,t32,t33,t34,t35,t36,t70,t71,t72,t73,t74,t75   \
+   Uesc,   k,   u,   q, dot,   j,       p,   c,   l,   m,   f, Ubsp,  \
+   Utab,   h,   i,   e,   a,   o,       d,   t,   r,   n,   s, Uret,  \
+   Ucap,   x,   y, das, com, sla,       b,   g,   w,   v,   z, Umou,  \
+   Usft, ALT, CTL, SPC, GUI, MAC,      M3,  M2, SHF,  M1, AGR, Unone  \
 ) { \
-  { k00,k01,k02,k03,k04,k05 }, \
-  { k10,k11,k12,k13,k14,k15 }, \
-  { k20,k21,k22,k23,k24,k25 }, \
-  { t36,t35,t31,t32,t33,t34 }, \
-  { k40,k41,k42,k43,k44,k45 }, \
-  { k50,k51,k52,k53,k54,k55 }, \
-  { k60,k61,k62,k63,k64,k65 }, \
-  { t72,t73,t74,t75,t71,t70 } \
+/*           0    1    2    3    4    5 */ \
+/* 0 */  {  no,   k,   u,   q, dot,   j  }, \
+/* 1 */  {  no,   h,   i,   e,   a,   o  }, \
+/* 2 */  {  no,   x,   y, das, com, sla  }, \
+/* 3 */  { MAC, GUI,Usft, ALT, CTL, SPC  }, \
+/* 4 */  {   p,   c,   l,   m,   f,  no  }, \
+/* 5 */  {   d,   t,   r,   n,   s,  no  }, \
+/* 6 */  {   b,   g,   w,   v,   z,  no  }, \
+/* 7 */  { SHF,  M1, AGR, Uno,  M2,  M3  }  \
 }
 #endif
 
