@@ -20,7 +20,9 @@
 #include "keyboard_class.h"
 #include "keymap.h"
 #include "jump_bootloader.h"
+#ifdef PS2MOUSE
 #include "trackpoint.h"
+#endif
 #include "macro.h"
 
 bool command=false;

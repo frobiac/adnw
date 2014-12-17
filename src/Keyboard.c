@@ -58,7 +58,9 @@
 
 #include "hid_usage.h"
 
+#ifdef PS2MOUSE
 #include "trackpoint.h"
+#endif
 
 #include "mousekey.h"
 #ifdef ANALOGSTICK

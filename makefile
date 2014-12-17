@@ -52,18 +52,14 @@ LD_FLAGS     =
 #
 ##################################################################
 
-ifneq (,$(findstring BLUECUBE,$(CC_FLAGS)))
-CC_FLAGS    += #-DPS2MOUSE -DMOUSE_HAS_SCROLL_WHEELS
-else
-CC_FLAGS    += -DPS2MOUSE -DMOUSE_HAS_SCROLL_WHEELS
-endif
-
 ifneq (,$(findstring REDTILT,$(CC_FLAGS)))
 CC_FLAGS    += -DTP_ROTATE
+CC_FLAGS    += -DPS2MOUSE -DMOUSE_HAS_SCROLL_WHEELS
 endif
 
 ifneq (,$(findstring HYPERNANO,$(CC_FLAGS)))
 CC_FLAGS    += -DPINKYDROP
+CC_FLAGS    += -DPS2MOUSE -DMOUSE_HAS_SCROLL_WHEELS
 endif
 
 ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
