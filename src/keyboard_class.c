@@ -41,8 +41,8 @@
 #include "jump_bootloader.h"
 
 uint8_t lastKeyCode;
-uint8_t rowData[ROWS];
-uint8_t prevRowData[ROWS];
+column_size_t rowData[ROWS];
+column_size_t prevRowData[ROWS];
 
 /**
  * SecondUseToggle is a simple state machine that enables keys to:
@@ -81,12 +81,12 @@ uint32_t    repeatGesture_timer;
 
 
 /// debounce variables
-volatile uint8_t kb_state[ROWS];    // debounced and inverted key state: bit = 1: key pressed
-volatile uint8_t kb_press[ROWS];    // key press detect
-volatile uint8_t kb_release[ROWS];  // key release detect
-volatile uint8_t kb_rpt[ROWS];      // key long press and repeat
+volatile column_size_t kb_state[ROWS];    // debounced and inverted key state: bit = 1: key pressed
+volatile column_size_t kb_press[ROWS];    // key press detect
+volatile column_size_t kb_release[ROWS];  // key release detect
+volatile column_size_t kb_rpt[ROWS];      // key long press and repeat
 
-static uint8_t ct0[ROWS], ct1[ROWS];
+static column_size_t ct0[ROWS], ct1[ROWS];
 static int32_t rpt[ROWS];
 
 #define ALL_COLS_MASK ((1<<COLS)-1)  // 0x63 or all lower 6 bits
@@ -493,7 +493,7 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 
 
 
-uint8_t get_kb_release( uint8_t key_mask, uint8_t col)
+column_size_t get_kb_release( column_size_t key_mask, uint8_t col)
 {
     ATOMIC_BLOCK(ATOMIC_FORCEON) {
         key_mask &= kb_release[col];                      // read key(s)
@@ -502,7 +502,7 @@ uint8_t get_kb_release( uint8_t key_mask, uint8_t col)
     return key_mask;
 }
 
-uint8_t get_kb_press( uint8_t key_mask, uint8_t col )
+column_size_t get_kb_press( column_size_t key_mask, uint8_t col )
 {
     ATOMIC_BLOCK(ATOMIC_FORCEON) {
         key_mask &= kb_press[col];                      // read key(s)
@@ -510,7 +510,7 @@ uint8_t get_kb_press( uint8_t key_mask, uint8_t col )
     }
     return key_mask;
 }
-uint8_t get_kb_rpt( uint8_t key_mask, uint8_t col )
+column_size_t get_kb_rpt( column_size_t key_mask, uint8_t col )
 {
     ATOMIC_BLOCK(ATOMIC_FORCEON) {
         key_mask &= kb_rpt[col];                        // read key(s)
@@ -527,7 +527,7 @@ uint8_t get_kb_rpt( uint8_t key_mask, uint8_t col )
  */
 void scan_matrix(void)
 {
-    uint8_t i, data;
+    column_size_t i, data;
 
     for (uint8_t row = 0; row < ROWS; ++row) {
         activate(row);
@@ -536,7 +536,7 @@ void scan_matrix(void)
         _delay_us(20);
 
         // Place data on all column pins for active row
-        // into a single 32 bit value.
+        // into a single 8/16/32 bit value.
         data = read_col();
         /// @see top comment for source of debounce magic
         // Needs to be adjusted for more than 8 columns
@@ -558,7 +558,7 @@ void scan_matrix(void)
         }
 
         // Now evaluate results
-        uint8_t p,r,h;
+        column_size_t p,r,h;
         p=get_kb_press  (ALL_COLS_MASK, row);
         h=get_kb_rpt    (ALL_COLS_MASK, row);
         r=get_kb_release(ALL_COLS_MASK, row);

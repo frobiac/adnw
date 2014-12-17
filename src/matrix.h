@@ -19,6 +19,16 @@
 #ifndef MATRIX_H
 #define  MATRIX_H
 
+#if   (COLS <= 8)
+    typedef uint8_t  column_size_t;
+#elif (COLS <= 16)
+    typedef uint16_t column_size_t;
+#elif (COLS <= 32)
+    typedef uint32_t column_size_t;
+#else
+    #error "More than 32 columns are not supported"
+#endif
+
 /** @file matrix.h
  *
  *  This is a description of the hardware setup used in the BlueCube.
@@ -29,7 +39,7 @@
 #include "config.h"
 
 // this must be called once before matrix_scan.
-static inline uint8_t read_col(void)
+static inline column_size_t read_col(void)
 {
     uint8_t res = PINF;
 
