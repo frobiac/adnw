@@ -46,6 +46,8 @@
 #   define STR_PRODUCT      L"AdNW RedTilt"
 #elif defined HYPERNANO
 #   define STR_PRODUCT      L"AdNW HyperNano"
+#elif defined HYPERMICRO
+#   define STR_PRODUCT      L"AdNW HyperMicro"
 #else
 #   define STR_PRODUCT      L"AdNW Keyboard"
 #endif

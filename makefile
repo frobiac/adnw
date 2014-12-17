@@ -21,10 +21,12 @@ SRCDIR       = ./src
 
 # -----------------------------------------------------------
 # Keyboard selection below: HYPERNANO, BLUECUBE or REDTILT
+# HYPERMICRO by 7bit
 # -----------------------------------------------------------
 #KB_HW		 = BLUECUBE
 #KB_HW		 = HYPERNANO
-KB_HW		 = REDTILT
+#KB_HW		 = REDTILT
+KB_HW		 = HYPERMICRO
 
 # List C source files here. (C dependencies are automatically generated.)
 SRC =   $(LUFA_SRC_USB)          \

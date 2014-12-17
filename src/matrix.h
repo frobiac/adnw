@@ -63,6 +63,31 @@ static inline column_size_t read_col(void)
            );
 #endif
 
+#ifdef HYPERMICRO
+    // Columns 0..11:
+    // D6 D4 D7 B4 B5 B6 D5 B3 B2 F4 F1 F0
+    uint8_t resD = PIND;
+    uint8_t resB = PINB;
+
+    return (
+               (( resD & (1<<6)) >> 6) |
+               (( resD & (1<<4)) >> 3) |
+               (( resD & (1<<7)) >> 5) |
+               (( resB & (1<<4)) >> 1) |
+               (( resB & (1<<5)) >> 1) |
+               (( resB & (1<<6)) >> 1) |
+               (( resD & (1<<5)) << 1) |
+               (( resB & (1<<3)) << 4)
+               /// @todo B2 F410 missing due to 8bit limit.
+               /* |
+               (( resB & (1<<2)) << 6) |
+               (( resF & (1<<4)) << 5) |
+               (( resF & (1<<1)) << 9) |
+               (( resF & (1<<0)) << 11)
+               */
+           );
+#endif
+
 }
 
 static inline void unselect_rows(void)
@@ -79,12 +104,18 @@ static inline void unselect_rows(void)
     PORTD &= 0b01110000;
     DDRB  &= 0b10001111;
     PORTB &= 0b10001111;
-    
 #endif
 
 #ifdef HYPERNANO
     DDRD  &= 0b00000000;
     PORTD &= 0b00000000;
+#endif
+
+#ifdef HYPERMICRO
+    DDRB  &= 0b01111100;
+    PORTB &= 0b01111100;
+    DDRF  &= 0b01111111;
+    PORTF &= 0b01111111;
 #endif
 }
 
@@ -121,7 +152,7 @@ static inline void activate(uint8_t row)
         case 2: DDRD |= (1<<1); break;
         case 1: DDRD |= (1<<2); break;
         case 0: DDRD |= (1<<3); break;
-  
+
     }
 #endif
 
@@ -129,15 +160,37 @@ static inline void activate(uint8_t row)
     // Row 7 on pin 0
     DDRD |= (1<<(7-row));
 #endif
+
+#ifdef HYPERMICRO
+    // Rows 0..3 = B0 B1 B7 F7
+    switch(row) {
+        case 3: DDRB  |= (1<<0); break;
+        case 2: DDRB  |= (1<<1); break;
+        case 1: DDRB  |= (1<<7); break;
+        case 0: DDRF  |= (1<<7); break;
+    }
+#endif
 }
 
 static inline void init_cols(void)
 {
+#ifdef HYPERMICRO
+    // Columns 0..11:
+    // D6 D4 D7 B4 B5 B6 D5 B3 B2 F4 F1 F0 =
+    // = D7654  B65432  F410
+    DDRD  &= (0b00001111);
+    PORTD |= (0b11110000);
+    DDRB  &= (0b10000011);
+    PORTB |= (0b01111100);
+    DDRF  &= (0b11101100);
+    PORTF |= (0b00010011);
+#else
     // teensy 2.0: 2&3 unused, F 01  4567
     /* Columns are inputs */
     DDRF  &= ((1<<2) | (1<<3)); // 192 or upper 2 bits
     /* Enable pull-up resistors on inputs */
     PORTF |= (0b11110011);
+#endif
 }
 
 #endif

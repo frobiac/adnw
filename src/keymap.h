@@ -158,6 +158,45 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 }
 #endif
 
+#ifdef HYPERMICRO
+#undef ROWS
+#undef COLS
+#define ROWS   4
+#define COLS   12
+#define CMD_MODE() ( (rowData[3] & (1<<0)) && (rowData[0] & (1<<0)) )
+
+/*  Row/col matrix: (0-based)
+ *  unused in layout: 29
+ *
+
+    ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
+    │30 │31 │32 │33 │34 │35 │36 │37 │38 │39 │310│311│
+    ├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┤
+    │20   │21 │22 │23 │24 │25 │26 │27 │28 │210│  211│
+    ├───┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬───┤
+    │10 │11 │12 │13 │14 │15 │16 │17 │18 │19 │110│111│
+    ├───┼───┴┬──┴───┼───┴┬──┴──┬┴───┼───┴──┬┴───┼───┤
+    │00 │ 01 │  02  │ 03 │ 05  │ 08 │  09  │010 │011│
+    └───┴────┴──────┴────┴─────┴────┴──────┴────┴───┘
+                      ┌───┬───┬───┐
+                      └───┴───┴───┘
+                       04  06  07
+
+ */
+#define KEYMAP( no, \
+   Uesc,   k,   u,   q, dot,   j,       p,   c,   l,   m,   f, Ubsp,  \
+   Utab,   h,   i,   e,   a,   o,       d,   t,   r,   n,   s, Uret,  \
+   Ucap,   x,   y, das, com, sla,       b,   g,   w,   v,   z, Umou,  \
+   Usft, ALT, CTL, SPC, GUI, MAC,      M3,  M2, SHF,  M1, AGR, Unone  \
+) { \
+/*           0    1    2    3    4    5       6    7    8    9   10   11   */ \
+/* 3 */  {Uesc,   k,   u,   q, dot,   j,      p,   c,   l,   m,   f,  Ubsp }, \
+/* 2 */  {   h,   i,   e,   a,   o,Utab,      d,   t,   r,   no,  n,  s   }, \
+/* 1 */  {   x,   y, das, com, sla, MAC,     M3,   b,   g,   w,   v,  z   }, \
+/* 0 */  { ALT, GUI, SPC, CTL,Ucap,  AGR,  Usft,Umou,  M2, SHF,  M1, Uret }  \
+}
+#endif
+
 /**
  * Mouse keycodes that temporarily override normal keycodes during trackpoint usage.
  * Mouse buttons can be mapped to good locations this way.
@@ -196,6 +235,15 @@ static const uint8_t SecondaryUsage[ROWS][COLS] PROGMEM =
 
 static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM = 
 {
+/**
+  /// only debug to test matrix
+  KEYMAP( _no,
+    _Z,    _k, _u, _q,     _PERIOD,_j  ,   _p,  _c, _l, _m, _f, _E,
+    _Y,    _h, _i, _e,     _a,     _o  ,   _d,  _t, _r, _n, _s, _D,
+    _X,    _x, _y, _MINUS,_COMMA,_SLASH,   _b,  _g, _w, _v, _z, _C,
+    _0,    _1, _2, _3,    _4,    _5,       _6,  _7, _8, _9, _A, _B
+  ),
+*/
   // modified BU-TECK is default
   KEYMAP( _no,
     _ESC,    _k, _u, _q,     _PERIOD,_j  ,   _p,  _c, _l, _m, _f, _BSPACE ,
