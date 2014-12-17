@@ -69,23 +69,21 @@ static inline column_size_t read_col(void)
     uint8_t resD = PIND;
     uint8_t resB = PINB;
 
-    return (
-               (( resD & (1<<6)) >> 6) |
+    uint16_t res = (
+               (( resD & (1<<6)) >> 5) |
                (( resD & (1<<4)) >> 3) |
                (( resD & (1<<7)) >> 5) |
                (( resB & (1<<4)) >> 1) |
                (( resB & (1<<5)) >> 1) |
                (( resB & (1<<6)) >> 1) |
                (( resD & (1<<5)) << 1) |
-               (( resB & (1<<3)) << 4)
-               /// @todo B2 F410 missing due to 8bit limit.
-               /* |
+               (( resB & (1<<3)) << 4) |
                (( resB & (1<<2)) << 6) |
                (( resF & (1<<4)) << 5) |
                (( resF & (1<<1)) << 9) |
-               (( resF & (1<<0)) << 11)
-               */
-           );
+               (( resF & (1<<0)) << 12)
+            );
+    return res;
 #endif
 
 }
