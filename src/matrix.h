@@ -41,25 +41,25 @@
 // this must be called once before matrix_scan.
 static inline column_size_t read_col(void)
 {
-    uint8_t res = PINF;
+    uint8_t resF = PINF;
 
     // flipped teensy 2.0: F 01  4567 for columns
 #ifdef BLUECUBE
-    return (( res & 0b11) | ((res & 0b11110000)>>2 ));
+    return (( resF & 0b11) | ((resF & 0b11110000)>>2 ));
 #endif
 
 #ifdef REDTILT
-    return (( res & 0b11) | ((res & 0b11110000)>>2 ));
+    return (( resF & 0b11) | ((resF & 0b11110000)>>2 ));
 #endif
 
 #ifdef HYPERNANO
     return (
-               ((res & 0b00000001) << 5) |
-               ((res & 0b00000010) << 3) |
-               ((res & 0b00010000) >> 1) |
-               ((res & 0b00100000) >> 3) |
-               ((res & 0b01000000) >> 5) |
-               ((res & 0b10000000) >> 7)
+               ((resF & 0b00000001) << 5) |
+               ((resF & 0b00000010) << 3) |
+               ((resF & 0b00010000) >> 1) |
+               ((resF & 0b00100000) >> 3) |
+               ((resF & 0b01000000) >> 5) |
+               ((resF & 0b10000000) >> 7)
            );
 #endif
 
