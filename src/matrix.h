@@ -68,9 +68,10 @@ static inline column_size_t read_col(void)
     // D6 D4 D7 B4 B5 B6 D5 B3 B2 F4 F1 F0
     uint8_t resD = PIND;
     uint8_t resB = PINB;
+    uint8_t resE = PINE;
 
     uint16_t res = (
-               (( resD & (1<<6)) >> 5) |
+               (( resE & (1<<6)) >> 6) |
                (( resD & (1<<4)) >> 3) |
                (( resD & (1<<7)) >> 5) |
                (( resB & (1<<4)) >> 1) |
@@ -81,7 +82,7 @@ static inline column_size_t read_col(void)
                (( resB & (1<<2)) << 6) |
                (( resF & (1<<4)) << 5) |
                (( resF & (1<<1)) << 9) |
-               (( resF & (1<<0)) << 12)
+               (( resF & (1<<0)) << 11)
             );
     return res;
 #endif
@@ -174,10 +175,13 @@ static inline void init_cols(void)
 {
 #ifdef HYPERMICRO
     // Columns 0..11:
-    // D6 D4 D7 B4 B5 B6 D5 B3 B2 F4 F1 F0 =
-    // = D7654  B65432  F410
-    DDRD  &= (0b00001111);
-    PORTD |= (0b11110000);
+    // D6 D4 D7 B4 B5 B6 D5 B3 B2 F4 F1 F0
+    // but had to change D6 -> E6 due to diode polarity used (cathode on round pad)
+    
+    DDRE  &= (0b10111111);
+    PORTE |= (0b01000000);
+    DDRD  &= (0b01001111);
+    PORTD |= (0b10110000);
     DDRB  &= (0b10000011);
     PORTB |= (0b01111100);
     DDRF  &= (0b11101100);
