@@ -22,6 +22,7 @@ Features
 - IBM trackpoint configuration
 - Supports multiple layouts in switchable layers
 - Native support for different host keyboard language settings, qwertz and qwerty implemented
+- HMAC-SHA1 based string generatiom for safer passwords
 
 Credits
 -------
@@ -34,6 +35,10 @@ Klaus Weber contributed greatly to an enhanced secondary use state machine and p
 PS/2 support is credited in large part to Akshay Srinivasan <akshaysrinivasan@nitk.ac.in>
 
 A dedicated USB ID was generously supplied by Openmoko, Inc.
+
+Password hash generation is implemented after the algorithm from the Android apps [Twik][twik_android] ([python implementation here][twik_python]) and [HashIt!][hashit_android], which in turn are based on the chrome extension Password Hasher Plus.
+
+It uses hmac-sha1 and sha1 implementations from [avr-crypto-lib][avr_crypto_lib], licensed under GPL3.
 
 License
 -------
@@ -103,3 +108,8 @@ Current default layout as implemented in [keymap.h](/src/keymap.h) :
 [ergodox]:   http://github.com/benblazak/ergodox-firmware
 [hhkb]:      http://github.com/humblehacker/keyboard
 [RT_AdNW]:   http://www.keyboard-layout-editor.com/#/layouts/aff6811ce65a019e45942ed73f99ddd6
+[twik_python]: http://github.com/coxande/Twik
+[twik_android]: https://github.com/gustavomondron/twik/blob/master/app/src/main/java/com/reddyetwo/hashmypass/app/hash
+[hashit_android]: https://github.com/ginkel/hashit/blob/master/src/main/java/com/ginkel/hashit
+[avr_crypto_lib]: https://github.com/cantora/avr-crypto-lib
+
