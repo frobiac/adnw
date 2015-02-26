@@ -20,10 +20,12 @@
 
 
 #include <stdbool.h>
-
+#include <stdint.h>
 
 void setCommandMode(bool);
 bool commandMode(void);
-void handleCommand(void);
+
+/// return true if handled here and no echo is needed
+bool handleCommand(uint8_t hid, uint8_t mod);
 
 #endif // _COMMAND_H

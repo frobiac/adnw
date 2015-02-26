@@ -348,7 +348,7 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _NON_US_2   { HID_NON_US_2, 0      /*, ' ' */ }  //  non-US-1
 #define _ENTER      { HID_ENTER,    0      /*, 182 */ }  //  Enter
 
-#define _COMMA      { HID_COMMA,    0     ,/*',' */ }
+#define _COMMA      { HID_COMMA,    0      /*, ',' */ }
 #define _PERIOD     { HID_PERIOD,   0      /*, '.' */ }
 #define _SPACE      { HID_SPACE,    0      /*, ' ' */ }
 
@@ -547,7 +547,7 @@ static const uint8_t ascii2hid[128][2] = {
     _no , // ( gs)   29
     _no , // ( rs)   30
     _no , // ( us)   31
-    _no , // ( sp)   32
+    _SPACE , // ( sp)   32
     _EXCLAM ,   // !       33
     _DQUOTE ,   // "       34
     _HASH ,     // #       35
