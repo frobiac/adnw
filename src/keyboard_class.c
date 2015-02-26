@@ -40,7 +40,6 @@
 #include "command.h"
 #include "jump_bootloader.h"
 
-uint8_t lastKeyCode;
 column_size_t rowData[ROWS];
 column_size_t prevRowData[ROWS];
 
@@ -76,7 +75,7 @@ ModifierTransmission_State prev_modTrans_state = DELAY_MOD_TRANS;
 uint8_t modTrans_prev_Mods = 0;
 struct Key  secondUse_key;
 
-#define REPEAT_GESTURE_TIMEOUT 30 // = x/61 [s]: a modekey will remain modifier key if pressed this long; if released earlier the second use normal key is signaled
+#define REPEAT_GESTURE_TIMEOUT 10 // = x/61 [s]: a modekey will remain modifier key if pressed this long; if released earlier the second use normal key is signaled
 uint32_t    repeatGesture_timer;
 
 
@@ -231,6 +230,16 @@ void handleModifierTransmission(USB_KeyboardReport_Data_t* report_data, Modifier
     }
 }
 
+/**
+ * State machine to handle secondary usage keys.
+ *
+ * Secondary keys are modifier keys (layer or control) which
+ * when pressed and released by themselves emit a normal keycode.
+ *
+ * This code is quite complex since timeouts, repeats and multiple
+ * key combinations all have to work.
+ *
+ */
 void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data)
 {
 
@@ -247,14 +256,14 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data)
             }
         }
         case SECOND_USE_OFF: {
-            uint8_t i;
-            getSecondaryUsage(activeKeys.keys[0].row, activeKeys.keys[0].col, &i);
+            uint8_t hid;
+            getSecondaryUsage(activeKeys.keys[0].row, activeKeys.keys[0].col, &hid);
 
             if( activeKeys.keycnt==1 && ! activeKeys.keys[0].normalKey &&
-                i!=0 && /*0 != SecondaryUsage[activeKeys.keys[0].row][activeKeys.keys[0].col] &&*/
+                hid!=0 &&
                 activeKeys.keys[0].row == secondUse_Prev_activeKeys.keys[0].row &&
                 activeKeys.keys[0].col == secondUse_Prev_activeKeys.keys[0].col &&
-                idle_count-repeatGesture_timer < 10 ) {
+                idle_count-repeatGesture_timer < REPEAT_GESTURE_TIMEOUT ) {
                 changeSecondUseState(SECOND_USE_OFF, SECOND_USE_REPEAT);
                 break;
             }
@@ -395,22 +404,21 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data)
     }
 }
 
-void recordMacroChar(USB_KeyboardReport_Data_t *report_data)
-{
-    // Print first time key is send, will be used to hook up macro recording
-    /// @todo Does not get a char pressed twice in a row
-    //printf("\nACTUAL %d:%d ", report_data->Modifier,report_data->KeyCode[0]);
-    if(lastKeyCode!=report_data->KeyCode[0]) {
-        if(report_data->KeyCode[0] != 0) {
-            // printf("\nFR %d:%d => %c ", report_data->Modifier,report_data->KeyCode[0],
-            //                        hid2asciicode( report_data->KeyCode[0], report_data->Modifier) );
-            // now save modifier and key into macro string...
-            macro_key(report_data->KeyCode[0], report_data->Modifier);
-        }
-        lastKeyCode=report_data->KeyCode[0];
-    }
-}
 
+
+/**
+ * This function is periodically called from host.
+ *
+ * Last chance to modify the data being send is here!
+ *
+ * Logical flow:
+ *   - scan matrix
+ *   - init active keys from detected row/col pairs
+ *   - determine whether secondary usage has a result to send
+ *   - send
+ *
+ *
+ */
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
 
@@ -424,37 +432,32 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
     analogDataAcquire();
 #endif
 
-    // send empty report in command mode
-    if(commandMode()) {
-        handleCommand();
-        report_data->Modifier=0;
-        memset(&report_data->KeyCode[0], 0, 6);
-        return sizeof(USB_KeyboardReport_Data_t);
-    }
+    /// @todo return early!
 
     handleSecondaryKeyUsage(report_data);
-    if( secondUse_state == SECOND_USE_ACTIVE || secondUse_state == SECOND_USE_PASSIVE || secondUse_state == SECOND_USE_REPEAT) {
+    if( secondUse_state != SECOND_USE_OFF ) {
         // buffer already filled by 2nd-use
-        if(macroRecording())
-            recordMacroChar(report_data);
         return sizeof(USB_KeyboardReport_Data_t);
     }
 
-    // while macro mode is on, acquire data from it
-    if(macroMode()) {
-        if(getMacroReport(report_data)) {
-            return sizeof(USB_KeyboardReport_Data_t);
-        }
+    // send pending data to output like a macro or passhash
+    if(printOutstr(report_data)) {
+        return sizeof(USB_KeyboardReport_Data_t);
     }
+
+    // no other function inhibts sending, so fill report with pending data.
     return fillReport(report_data);
 }
 
 
+/**
+ * @brief fillReport
+ * @param report_data
+ * @return Currently fixed, could be used to signal something to layers above.
+ */
 uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 {
     if(activeKeys.keycnt==0) {
-        lastKeyCode=0;
-        // empty report
         zeroReport(report_data);
         return sizeof(USB_KeyboardReport_Data_t);
     }
@@ -483,6 +486,7 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
             report_data->KeyCode[idx]=getKeyCode(k.row, k.col, getActiveLayer());
             idx++;
         }
+
         if(idx>6) {
             printf("\nError: more than 6 keys! ");
             for( uint8_t k=0; k<6; ++k)
@@ -493,12 +497,8 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 
     report_data->Modifier=getActiveModifiers()|getActiveKeyCodeModifier();
 
-    if(macroRecording())
-        recordMacroChar(report_data);
-
     return sizeof(USB_KeyboardReport_Data_t);
 }
-
 
 
 column_size_t get_kb_release( column_size_t key_mask, uint8_t col)

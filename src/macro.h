@@ -24,7 +24,7 @@
 
 #include <LUFA/Drivers/USB/Class/Device/HIDClassDevice.h>
 #include "keymap.h"
-
+#include "command.h"
 
 /**
  *  Macros are stored in eeprom. To avoid excessive rewrites, a fixed maximum length is set.
@@ -33,32 +33,33 @@
  *  @todo Enable pre-loading under certain conditions via *.eep like with _private_macros.c previously?
 */
 #define MACROCOUNT   6
-#define MACROLEN    40
+#define OUTSTR_MAX_LEN    40
 
 #define EEPROM_DEF 0xFF
 
 #define EE_ADDR_START       100
 #define EE_ADDR_MACROS      (EE_ADDR_START+100)
-#define EE_ADDR_MACRO(idx)  (EE_ADDR_MACROS + (idx*(MACROLEN+1)))
+#define EE_ADDR_MACRO(idx)  (EE_ADDR_MACROS + (idx*(OUTSTR_MAX_LEN+1)))
 
-uint8_t updateEEMacroHID(const uint8_t macro[MACROLEN], uint8_t idx);
-uint8_t readEEMacroHID  (uint8_t macro[MACROLEN], uint8_t idx);
+uint8_t updateEEMacroHID(const uint8_t macro[OUTSTR_MAX_LEN], uint8_t idx);
+uint8_t readEEMacroHID  (uint8_t macro[OUTSTR_MAX_LEN], uint8_t idx);
+/// shortcut to put macro directly in print buffer
+uint8_t printMacro(uint8_t idx);
 
 bool initMacros(void);
 void printMacros(void);
 
-void endMacro(void);
-
-bool macroMode(void);
 void setMacroMode(bool on);
-
-bool activateMacro(uint8_t id);
-bool getMacroReport(USB_KeyboardReport_Data_t *report);
 
 bool macroRecording(void);
 bool setMacroRecording( uint8_t id );
 void macro_key(uint8_t hid, uint8_t mod);
 
 char hid2asciicode(uint8_t hid, uint8_t mod);
+
+uint8_t setOutputString(char * str);
+uint8_t setOutputHIDCodes(uint8_t * hidcodes);
+uint8_t printOutstr(USB_KeyboardReport_Data_t * report);
+
 
 #endif

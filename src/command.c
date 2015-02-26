@@ -28,7 +28,6 @@
 #include "macro.h"
 
 bool command=false;
-// static uint8_t layer=0;
 
 /// possible subcommands
 enum {
@@ -47,12 +46,12 @@ void setCommandMode(bool on)
     if(on!=command)
         printf("CMD %s\n", on ? "on" : "off" );
     command=on;
-    clearActiveKeys();
     subcmd = SUB_NONE;
 }
 
 bool commandMode(void) { return command; }
-void handleSubCmd(struct Key k);
+void handleSubCmd(char c);
+
 
 /** Called when command mode is active.
  *
@@ -60,61 +59,66 @@ void handleSubCmd(struct Key k);
  *
  *  @todo: leave automatically on unknown command or timeout, or signal mode through leds.
  *
+ *  @return: bool whether we handled the command, e.g. false means print character normally
+ *
  */
-void handleCommand(void)
+bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 {
-    if(!commandMode())
-        return;
+    if( !commandMode() )
+        return false;
 
-    if(activeKeys.keycnt==0)
-        return;
+    // generally return "true" below as we are in command mode which should not echo.
 
-    struct Key k=activeKeys.keys[0];
+    static uint8_t hid_prev, mod_prev, act_prev;
+    uint8_t act_now = activeKeys.keycnt;
 
-    uint8_t hid = getKeyCode(k.row, k.col, 0);
+    if((hid_now==hid_prev) && (mod_now==mod_prev) && (act_now==act_prev))
+        return true;
+
+    // ok, something changed:
+    uint8_t hid = hid_prev;
+    uint8_t mod = mod_prev; // these may be used later
+    hid_prev=hid_now; mod_prev=mod_now; act_prev = act_now;
+
+    if( !(hid_now==0 && hid != 0) ) {
+        // no release detected
+        return true;
+    }
+
+    if(macroRecording()) {
+        macro_key(hid,mod);
+        return false; // macro should be echoed!
+    }
+
+    char curChar = hid2asciicode(hid, mod);
 
     if(subcmd) {
-        handleSubCmd(k);
-        return;
+        handleSubCmd(curChar);
+        return true;
     }
-    clearActiveKeys();
-    clearRowData();
 
-    // Char with Meaning:
-    //  A:ASCIIPrint, B:BootL, C:PrintConfig, G:GeoArea, H:HardwarePC/Mac, L: SwitchLayout, M:Macro, P:PrintLayout, Q:QuitCommand,  T: Trackpoint
-    // Char without Meaning:
-    //  O:MouseMode, R:PrintKeyHID
-    switch(hid) {
+    switch(curChar) {
 #ifdef PINKYDROP
-        case HID_D:
+        case 'd':
             g_pinkydrop = g_pinkydrop ? 0 : 1;
             printf("Pinkydrop %d\n", g_pinkydrop);
             eeprom_write_byte(&ee_pinkyDrop, g_pinkydrop);
             setCommandMode(false);
             break;
 #endif
-        case HID_V:
+        case 'v':
             printf("AdNW %s\n", FW_VERSION);
             setCommandMode(false);
             break;
-        case HID_Q:
-        case HID_ESC:
+        case 'q':
             setCommandMode(false);
             break;
-        case HID_B:
+        case 'b':
             jump_bootloader();
             break;
-            /*
-                    case HID_P:
-                        // Print Layout: one layer per press on key 'p'
-                        printLayout(layer);
-                        layer=(layer+1)%LAYERS;
-                        if(layer==0)
-                            setCommandMode(false);
-                        break;
-            */
+
 #ifdef MOUSE_HAS_SCROLL_WHEELS
-        case HID_T:
+        case 't':
             printf("TP:\n");
             tp_id();
             setCommandMode(false);
@@ -122,7 +126,7 @@ void handleCommand(void)
 #endif
 
 #ifdef ALTERNATE_LAYER
-        case HID_L:
+        case 'l':
             g_alternateLayer = g_alternateLayer ? 0 : 1;
             eeprom_write_byte(&ee_alternateLayer,g_alternateLayer);
             printf("AltL %s\n", g_alternateLayer ? "on" : "off");
@@ -131,30 +135,32 @@ void handleCommand(void)
 #endif
 
 #ifdef PS2MOUSE
-        case HID_M:
+        case 'm':
             g_mouse_enabled = g_mouse_enabled > 0 ? 0 : 1;
             printf("Mouse %sabled\n", g_mouse_enabled ? "en" : "dis");
             setCommandMode(false);
             break;
 #endif
-        case HID_X:
+        case 'x':
             subcmd=SUB_MACRO;
             break;
-        case HID_R:
+        case 'r':
             printf("Rec macro\n");
             subcmd=SUB_MACRO_REC;
             break;
-        case HID_H:
+        case 'h':
             subcmd=SUB_PASSHASH;
             break;
         default:
-            printf("?\n");
+            printf("%c",curChar);
             break;
     }
+
+    return true;
 }
 
 
-void handleSubCmd(struct Key k)
+void handleSubCmd(char c)
 {
     uint8_t type=PH_TYPE_ALNUMSYM;
     uint8_t len=12;
@@ -163,13 +169,13 @@ void handleSubCmd(struct Key k)
 
     switch( subcmd ) {
         case SUB_MACRO:
-            setMacroMode(true);
-            activateMacro(k.row*ROWS+k.col);
+            printMacro( (((uint8_t)c)%MACROCOUNT) );
             setCommandMode(false);
             break;
         case SUB_MACRO_REC:
-            setMacroRecording(k.row*ROWS+k.col);
-            setCommandMode(false);
+            // stay in command mode until macro is read.
+            if(!setMacroRecording(((uint8_t)c)%MACROCOUNT))
+                setCommandMode(false);
             break;
         case SUB_PASSHASH:
             ret = passHash(password, len, type, "secret", "key", "tag");
@@ -181,8 +187,6 @@ void handleSubCmd(struct Key k)
             setCommandMode(false);
             break;
     }
-    clearActiveKeys();
-    clearRowData();
 }
 
 
