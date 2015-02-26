@@ -20,6 +20,8 @@
 #include "keyboard_class.h"
 #include "keymap.h"
 #include "jump_bootloader.h"
+#include "passhash/passhash.h"
+
 #ifdef PS2MOUSE
 #include "trackpoint.h"
 #endif
@@ -34,7 +36,8 @@ enum {
     SUB_TP,
     SUB_LAYOUT,
     SUB_MACRO,
-    SUB_MACRO_REC
+    SUB_MACRO_REC,
+    SUB_PASSHASH
 };
 
 static uint8_t subcmd;           ///< currently active subcommand
@@ -138,13 +141,22 @@ void handleCommand(void) {
             printf("Macro recording\n");
             subcmd=SUB_MACRO_REC;
             break;
+        case HID_H:
+            subcmd=SUB_PASSHASH;
+            break;
         default:
             printf("\nUnknown command.");
             break;
     }
 }
 
+
 void handleSubCmd(struct Key k) {
+    uint8_t type=PH_TYPE_ALNUMSYM;
+    uint8_t len=12;
+    char password[PH_MAX_LEN+1];
+    uint8_t ret;
+
     switch( subcmd )
     {
         case SUB_MACRO:
@@ -156,6 +168,12 @@ void handleSubCmd(struct Key k) {
             setMacroRecording(1+k.row*ROWS+k.col);
             setCommandMode(false);
             break;
+        case SUB_PASSHASH:
+            ret = passHash(password, len, type, "secret", "key", "tag");
+            printf("\nPH len=%d type=%d = %s", len, type, password);
+            setCommandMode(false);
+            break;
+
         default:
             setCommandMode(false);
             break;

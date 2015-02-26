@@ -39,11 +39,14 @@ SRC =   $(LUFA_SRC_USB)          \
 	$(SRCDIR)/command.c          \
 	$(SRCDIR)/mousekey.c         \
 	$(SRCDIR)/jump_bootloader.c  \
+	$(SRCDIR)/passhash/sha1.c    \
+	$(SRCDIR)/passhash/hmac-sha1.c  \
+	$(SRCDIR)/passhash/passhash.c  \
 
 
 LUFA_PATH    = LUFA/LUFA
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/
-#CC_FLAGS    += -DDEBUG_OUTPUT
+CC_FLAGS    += -DDEBUG_OUTPUT
 CC_FLAGS    += -fdata-sections 
 CC_FLAGS	+= -DKB_HW=$(KB_HW) -D$(KB_HW)
 LD_FLAGS     =
