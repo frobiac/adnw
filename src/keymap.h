@@ -40,8 +40,10 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 
 // void    printLayout(uint8_t l);
 
-/// position of an alternate layout in matrix below
-#define ALT_ALPHA_LAYER 5
+#ifdef ALTERNATE_LAYER
+    /// position of an alternate layout in matrix below
+    #define ALT_ALPHA_LAYER 5
+#endif
 
 #define _MACRO _no
 #define LAYERS 6
@@ -284,8 +286,10 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _no, _no, _MS_L,   _MS_D, _MS_R,   _no,  _no,    _MS_BTN1, _MS_BTN3, _MS_BTN2, _no, _no,
     _no, _no, _MS_W_L, _no,   _MS_W_R, _no,  _no,    _MS_ACC0, _MS_ACC1, _MS_ACC2, _no, _no,
     _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no
-    ),
+    )
 
+#ifdef ALTERNATE_LAYER
+,
   // AdNW, ALT_ALPHA_LAYER
   KEYMAP( _no,
     _ESC,   _k, _u, _q,     _PERIOD, _j,      _v, _g, _c, _l, _f, _BSPACE ,
@@ -293,6 +297,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _DQUOTE,_x, _y, _MINUS, _COMMA,  _SLASH,  _b, _p, _w, _m, _z, _MOD_MOUSEKEY,
     _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no
   )
+#endif
 
 }; // end of matrix[][][]
 

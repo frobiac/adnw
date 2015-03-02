@@ -121,12 +121,14 @@ void handleCommand(void)
             break;
 #endif
 
+#ifdef ALTERNATE_LAYER
         case HID_L:
             g_alternateLayer = g_alternateLayer ? 0 : 1;
             eeprom_write_byte(&ee_alternateLayer,g_alternateLayer);
             printf("AltL %s\n", g_alternateLayer ? "on" : "off");
             setCommandMode(false);
             break;
+#endif
 
 #ifdef PS2MOUSE
         case HID_M:
