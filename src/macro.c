@@ -25,41 +25,61 @@ uint8_t idx=0; // position in current macro, both read & write
 
 
 bool macromode=false;
-uint8_t g_macrorecord=0;
+
+/// 255 means no recording is going on.
+#define INVALID_MACRO_ID 255
+/// Holds index of macro while recording, 0<=idx<MACROCOUNT.
+uint8_t g_macrorecord=INVALID_MACRO_ID;
 
 uint8_t hidmacro[MACROLEN];
 
-inline bool macroRecording(void)         { return(g_macrorecord != 0); };
-inline void setMacroRecording( uint8_t id ) { g_macrorecord=id; idx=0; };
+inline bool macroRecording(void)         { return(g_macrorecord != INVALID_MACRO_ID); };
+inline void disableMacroRecording(void) { g_macrorecord=INVALID_MACRO_ID; };
 
 inline bool macroMode(void)         { return(macromode != 0); };
 inline void setMacroMode( bool on ) { macromode=on; };
 
-#ifdef DEBUG_OUTPUT
 /**
- * Only ASCII, no umlauts or other specials, and additional modifier need to be checked!
+ * Return ascii char of given hid code and modifier combination.
  *
- * hid,modifier,ascii
- * with valid modifiers = shift and altgr.
+ * Only ASCII printable characters - no umlauts or other specials like € or °.
  *
+ * @arg hid HID code to map to ascii
+ * @arg mod modifier necessary [SHIFT|ALTGR]
+ *
+ * @ret printable ascii char if found, or '\0' on unprintable characters
+ *
+ * @todo backslash does it work?
+ * @todo handle ESC, BS and the like?
  */
 char hid2asciicode(uint8_t hid, uint8_t mod)
 {
+    if(hid==0)
+        return('\0');
+
     uint8_t i;
-    for(i=0; i<128; ++i) {
+    for(i=127; i>0; --i) {
         if( ascii2hid[i][0] == hid) {
             // either no modifier is needed and neither shift or altgr are pressed
             // or the required modifier is pressed
             if((ascii2hid[i][1]==0 && !(mod && (SHIFT|ALTGR))) || (ascii2hid[i][1] & mod)) {
-                //printf("MATCH=%c; ",ascii2hid[i][2] );
-                return(ascii2hid[i][2]);
+                return((char)(i));
             }
         }
     }
-    return '0';
+    return ('\0');
 }
-#endif
 
+bool setMacroRecording( uint8_t id )
+{
+    if(id<MACROCOUNT) {
+        g_macrorecord=id;
+        idx=0;
+        return true;
+    }
+    g_macrorecord = INVALID_MACRO_ID;
+    return false;
+};
 
 /** Record key into macro:
  *    Up to MACROLEN keys may be stored, but any combination of modifiers takes one additional slot.
@@ -77,18 +97,18 @@ void macro_key(uint8_t hid, uint8_t mod)
         return;
 
     if(hid == HID_ESC && mod == CTRL) {
-        setMacroRecording(0);
+        disableMacroRecording();
         printf("\nabort");
         return;
     }
     // Ctrl+Enter ends macro recording
     if((hid == HID_ENTER && mod == CTRL) || idx==MACROLEN-1) {
         hidmacro[idx]=0;
-        uint8_t written=updateEEMacroHID(hidmacro, g_macrorecord-1);
+        uint8_t written=updateEEMacroHID(hidmacro, g_macrorecord);
         printf("\nWrote %d/%d", written,idx);
         idx=0;
 
-        setMacroRecording(0);
+        disableMacroRecording();
         return;
     }
 
