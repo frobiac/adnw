@@ -130,10 +130,13 @@ void initKeyboard()
 
     //initMacros();
 
-
-    uint8_t tmp = eeprom_read_byte(&ee_alternateLayer);
+    g_alternateLayer = 0;
+    uint8_t tmp;
+#ifdef ALTERNATE_LAYER
+    tmp = eeprom_read_byte(&ee_alternateLayer);
     if(tmp==1) g_alternateLayer = 1;
     printf("\nEE l: %d", g_alternateLayer);
+#endif
 
 #ifdef PINKYDROP
     g_pinkydrop = 0;
