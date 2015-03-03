@@ -168,7 +168,7 @@ void handleSubCmd(struct Key k)
             setCommandMode(false);
             break;
         case SUB_MACRO_REC:
-            setMacroRecording(1+k.row*ROWS+k.col);
+            setMacroRecording(k.row*ROWS+k.col);
             setCommandMode(false);
             break;
         case SUB_PASSHASH:
