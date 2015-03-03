@@ -41,8 +41,8 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 // void    printLayout(uint8_t l);
 
 #ifdef ALTERNATE_LAYER
-  /// position of an alternate layout in matrix below
-  #define ALT_ALPHA_LAYER 5
+    /// position of an alternate layout in matrix below
+    #define ALT_ALPHA_LAYER 5
 #endif
 
 #define _MACRO _no

@@ -88,34 +88,6 @@ void macro_key(uint8_t mod, uint8_t hid)
         printf("\nWrote %d/%d", written,idx);
         idx=0;
 
-        /*
-        #ifdef DEBUG_OUTPUT
-            printf("\n");
-            uint8_t i;
-            for(i=0; i<MACROLEN; ++i) {
-                uint8_t c=hidmacro[i];
-                uint8_t m=0;
-                if(c==0){
-                    i=MACROLEN;
-                    break;
-                }
-                if(c&0x80){
-                    m=(c&0x7f);
-                    if(c& SHIFT) printf("S");
-                    if(c& CTRL) printf("C");
-                    if(c& ALT) printf("A");
-                    if(c& ALTGR) printf("ag");
-                    if(c& GUI) printf("G");
-                    if(++i<MACROLEN){
-                        c=hidmacro[i];
-                        printf("(%d=%c) ", c, hid2asciicode(c,m));
-                    }
-                } else {
-                    printf("%d=%c ", c, hid2asciicode(c,m));
-                }
-            }
-        #endif
-        */
         setMacroRecording(0);
         return;
     }
@@ -245,7 +217,7 @@ uint8_t readEEMacroHID(uint8_t * macro, uint8_t idx)
     eeprom_busy_wait();
     eeprom_read_block (( void *) macro , ( const void *) (EE_ADDR_MACRO(idx)+1) , len);
 
-    macro[len]=0;;
+    macro[len]=0;
     // printf("\nEE read #%d @%d len=%d: ", idx, EE_ADDR_MACRO(idx), len);
     // uint8_t i; for(i=0;i<len;++i) printf(" %02x", macro[i]);
 
@@ -256,6 +228,9 @@ uint8_t readEEMacroHID(uint8_t * macro, uint8_t idx)
 /**
  * Writes the macro to eeprom at given index and returns length of written string.
  * As eeprom update functions are used, no unnecessary writes are performed.
+ *
+ * @param macro array of hid/modifier codes to store, '0' signals end of macro
+ * @param idx   index of macro to store
  */
 uint8_t updateEEMacroHID(const uint8_t * macro, uint8_t idx)
 {

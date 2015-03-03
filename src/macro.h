@@ -56,7 +56,7 @@ bool activateMacro(uint8_t id);
 bool getMacroReport(USB_KeyboardReport_Data_t *report);
 
 bool macroRecording(void);
-void setMacroRecording( uint8_t id );
+bool setMacroRecording( uint8_t id );
 void macro_key(uint8_t mod, uint8_t hid);
 
 char hid2asciicode(uint8_t hid, uint8_t mod);
