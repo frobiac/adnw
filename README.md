@@ -1,16 +1,27 @@
-**WARNING**
-=================
-The code is by no means in a state I would normally want to present it, but merely a snapshot of my current work in progress.
-
-Due to the numerous requests I nonetheless chose to open it to the public, in the hopes that someone may find valuable information or hints even though it is documented poorly and hackish at best - maybe this encourages me enough to clean it up a little, too. 
-
-
 About
 -----
-This is a firmware for avr controllers like the teensy to simulate a keyboard and a mouse. It was created for a custom split keyboard design with 4x6 keys on each side in a matrix layout but could be adapted easily for other hardware. A presentation of my current keyboard prototype can be found [here][DT_hw].
+This is a firmware for AVR microcontrollers with USB device support like the Teensy to simulate a keyboard and a mouse. It was created for a custom split keyboard design with 4x6 keys on each side in a matrix layout but could be adapted easily for other hardware.
 
-It enables a different, more ergonomic layout without any further drivers on any host operating system. In its current state, the well evolved [AdNW layout][adnw] is implemented with layers 3&4 (special characters, navigational keys and numpad) from the [neo layout][neo]. In addition, an integrated IBM trackpoint is also supported, but any PS/2 compatible device can also be hooked-up to the controller.
+By default, it implements a different, more ergonomic layout without any further drivers on any host operating system. In its current state, the well evolved [AdNW layout][adnw] is implemented with modified layers 3&4 (special characters, navigational keys and numpad) from the [neo layout][neo]. In addition, an integrated IBM trackpoint is also supported, but any PS/2 compatible device can also be hooked-up to the controller.
 
+![BlueCube](http://frobiac.github.com/adnw/img/bluecube/BlueCube-4-tilted.jpg)
+![HyperNano](http://frobiac.github.com/adnw/img/hypernano/2-Final_top.JPG)
+
+This is my daily driver since about 2 years now:
+![RedTilt](http://frobiac.github.com/adnw/img/RT_both.jpg)
+
+
+A presentation of my current keyboard prototype can be found [here][DT_hw], where you'll also find more detailed information on the hardware and the layout used as well as discussions related to these project.
+
+Features
+--------
+- Full macro support with all configuration done on the keyboard itself, no external tools needed.
+- 2nd-Use modifier keys acting as normal keys when toggled by themselves.
+- PS/2 protocol for pointing devices
+- Mouse device with 3 buttons and 2 scrollwheels
+- IBM trackpoint configuration
+- Supports multiple layouts in switchable layers
+- Native support for different host keyboard language settings, qwertz and qwerty implemented
 
 Credits
 -------
@@ -21,7 +32,14 @@ Implementation of mousekey layer, KEYMAP macro and other neat ideas borrowed fro
 Klaus Weber contributed greatly to an enhanced secondary use state machine and provided several other modifications, including alternate layouts as well as PC/Mac and host language differentiations.
 
 PS/2 support is credited in large part to Akshay Srinivasan <akshaysrinivasan@nitk.ac.in>
- 
+
+A dedicated USB ID was generously supplied by Openmoko, Inc.
+
+License
+-------
+Unless otherwise mentioned all code is licensed under GPL3. 
+
+**If you create a firmware from this code you _must_ change the vendor and product id!**
 
 Install
 -------
@@ -36,15 +54,19 @@ From this root directory, execute
 To build, please adjust controller type and build switches in makefile.
 The hardware wiring needs to be specified in matrix.h .
 Further configuration can be achieved by editing src/config.h .
-If you change the code, you are at least required to change the vendor and product id! Valid ids can be retrieved from AVR demoes, or the keyboard examples of the LUFA lib.
+
+Valid ids can be retrieved from AVR demoes, or the keyboard examples of the LUFA lib.
 
 Then simply call
+
     $ make
 
 Current Layout
 ==============
 Current default layout as implemented in [keymap.h](/src/keymap.h) : 
-( discussion at [deskthority][DT_layout] )
+( discussion at [deskthority][DT_layout] and as a [graphical layout][RT_AdNW] )
+
+![RedTiltAdNW](http://frobiac.github.com/adnw/img/AdNW-RedTilt-clean-8ca683a4aac4f76e226c78d2b9f55bf8.png)
 
 ##### Thumb keys & modifiers 
                             Macro    TP
@@ -55,12 +77,12 @@ Current default layout as implemented in [keymap.h](/src/keymap.h) :
                             -        -
 
 ##### Layer 0 & Mod1 ( letters shifted)
-    K  U  Q  .: J     V  G  C  L  F
+    K  U  Q  .: J     P  C  L  M  F
     H  I  E  A  O     D  T  R  N  S
-    X  Y  -  ,; /\    B  P  W  M  Z
+    X  Y  -_ ,; /     B  G  W  V  Z
 
 ##### M2 / special
-    @  _  [  ]  #     !  <  >  =  &
+    @  °  [  ]  #     !  <  >  =  &
     \  /  {  }  *     ?  (  )  +  :
        $  |  ~  `     ^  %  "  '
 
@@ -80,3 +102,4 @@ Current default layout as implemented in [keymap.h](/src/keymap.h) :
 [tmk]:       http://github.com/tmk/tmk_keyboard
 [ergodox]:   http://github.com/benblazak/ergodox-firmware
 [hhkb]:      http://github.com/humblehacker/keyboard
+[RT_AdNW]:   http://www.keyboard-layout-editor.com/#/layouts/aff6811ce65a019e45942ed73f99ddd6
