@@ -29,6 +29,9 @@
 
 bool command=false;
 
+#define TAGLEN 8
+char tag[TAGLEN+1];
+
 /// possible subcommands
 enum {
     SUB_NONE=0,
@@ -149,6 +152,7 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             subcmd=SUB_MACRO_REC;
             break;
         case 'h':
+            memset(tag,0,TAGLEN);
             subcmd=SUB_PASSHASH;
             break;
         default:
@@ -162,11 +166,6 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 
 void handleSubCmd(char c)
 {
-    uint8_t type=PH_TYPE_ALNUMSYM;
-    uint8_t len=12;
-    char password[PH_MAX_LEN+1];
-    uint8_t ret;
-
     switch( subcmd ) {
         case SUB_MACRO:
             printMacro( (((uint8_t)c)%MACROCOUNT) );
@@ -178,9 +177,32 @@ void handleSubCmd(char c)
                 setCommandMode(false);
             break;
         case SUB_PASSHASH:
-            ret = passHash(password, len, type, "secret", "key", "tag");
-            printf("\nPH len=%d type=%d = %s", len, type, password);
-            setCommandMode(false);
+            // read until return=10 is pressed or maximum length reached
+            if( (uint8_t)(c) != 10 && strlen(tag) < TAGLEN) {
+                tag[strlen(tag)]= c;
+                // printf("%2d - len=%d tag=|%s|\n", (uint8_t)(c), strlen(tag), tag);
+            } else {
+                setCommandMode(false);
+
+                uint16_t type=PH_TYPE_ALNUMSYM;
+                uint16_t len=12;
+                char password[PH_MAX_LEN+1];
+                char splitTag[TAGLEN+1];
+
+                // parse input into "tag len type"
+                sscanf(tag,"%s %u %u", splitTag, &len, &type);
+                if(len<PH_MIN_LEN||len>PH_MAX_LEN)
+                    len=12;
+                if(type<PH_TYPE_ALNUMSYM||type>PH_TYPE_NUM)
+                    type=PH_TYPE_ALNUMSYM;
+                /// @todo secret and key from compileflag or EEPROM.
+                uint8_t ret = passHash(password, (uint8_t)len, (uint8_t)type, "secret", "key", splitTag);
+                if(ret==0) {
+                    //printf("PH len=%d tag=%s type=%d = %s\n", len, splitTag, type, password);
+                    setOutputString(password);
+                }
+                memset(tag,0,TAGLEN);
+            }
             break;
 
         default:
