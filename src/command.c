@@ -45,7 +45,7 @@ static uint8_t subcmd;           ///< currently active subcommand
 void setCommandMode(bool on)
 {
     if(on!=command)
-        printf("\nCMD %s ", on ? "active [qtp] " : "off" );
+        printf("CMD %s\n", on ? "on" : "off" );
     command=on;
     clearActiveKeys();
     subcmd = SUB_NONE;
@@ -88,22 +88,20 @@ void handleCommand(void)
 #ifdef PINKYDROP
         case HID_D:
             g_pinkydrop = g_pinkydrop ? 0 : 1;
-            printf("\nPinkydrop %d", g_pinkydrop);
+            printf("Pinkydrop %d\n", g_pinkydrop);
             eeprom_write_byte(&ee_pinkyDrop, g_pinkydrop);
             setCommandMode(false);
             break;
 #endif
         case HID_V:
-            printf("\nAdNW %s", FW_VERSION);
+            printf("AdNW %s\n", FW_VERSION);
             setCommandMode(false);
             break;
         case HID_Q:
         case HID_ESC:
-            printf("\nLeaving command mode::");
             setCommandMode(false);
             break;
         case HID_B:
-            printf("\nBootloader::");
             jump_bootloader();
             break;
             /*
@@ -117,37 +115,38 @@ void handleCommand(void)
             */
 #ifdef MOUSE_HAS_SCROLL_WHEELS
         case HID_T:
-            printf("\nTrackpoint:");
+            printf("TP:\n");
             tp_id();
             setCommandMode(false);
             break;
 #endif
+
         case HID_L:
             g_alternateLayer = g_alternateLayer ? 0 : 1;
             eeprom_write_byte(&ee_alternateLayer,g_alternateLayer);
-            printf("\nAlternate layer %s", g_alternateLayer ? "selected." : "off.");
+            printf("AltL %s\n", g_alternateLayer ? "on" : "off");
             setCommandMode(false);
             break;
+
 #ifdef PS2MOUSE
         case HID_M:
             g_mouse_enabled = g_mouse_enabled > 0 ? 0 : 1;
-            printf("\nMouse %sabled", g_mouse_enabled ? "en" : "dis");
+            printf("Mouse %sabled\n", g_mouse_enabled ? "en" : "dis");
             setCommandMode(false);
             break;
 #endif
         case HID_X:
             subcmd=SUB_MACRO;
-            printf("Macro mode true\n");
             break;
         case HID_R:
-            printf("Macro recording\n");
+            printf("Rec macro\n");
             subcmd=SUB_MACRO_REC;
             break;
         case HID_H:
             subcmd=SUB_PASSHASH;
             break;
         default:
-            printf("\nUnknown command.");
+            printf("?\n");
             break;
     }
 }
