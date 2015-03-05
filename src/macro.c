@@ -69,7 +69,7 @@ char hid2asciicode(uint8_t hid, uint8_t mod)
  *    Ctrl+Esc   aborts
  *    Alt+Enter  inserts pause
  */
-void macro_key(uint8_t mod, uint8_t hid)
+void macro_key(uint8_t hid, uint8_t mod)
 {
     // printf("\nMC(%d) : %d:%d =%c   ",idx, mod, hid, hid2asciicode(hid,mod) );
     // int i; for(i=0; i<MACROLEN; ++i) printf("%d ", hidmacro[i]);

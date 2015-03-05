@@ -397,7 +397,7 @@ void recordMacroChar(USB_KeyboardReport_Data_t *report_data)
             // printf("\nFR %d:%d => %c ", report_data->Modifier,report_data->KeyCode[0],
             //                        hid2asciicode( report_data->KeyCode[0], report_data->Modifier) );
             // now save modifier and key into macro string...
-            macro_key(report_data->Modifier,report_data->KeyCode[0]);
+            macro_key(report_data->KeyCode[0], report_data->Modifier);
         }
         lastKeyCode=report_data->KeyCode[0];
     }
