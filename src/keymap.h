@@ -48,6 +48,8 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 #define ROWS   8
 #define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
 
+// *INDENT-OFF*
+
 #ifdef BLUECUBE
   #define CMD_MODE() ((rowData[2] & (1<<0)) && (rowData[6] & (1<<5)) )
 
@@ -293,6 +295,8 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
   )
 
 }; // end of matrix[][][]
-    
+
+// *INDENT-OFF*
+
 #endif
 
