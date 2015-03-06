@@ -59,12 +59,12 @@
 #include "hid_usage.h"
 
 #ifdef PS2MOUSE
-#include "trackpoint.h"
+    #include "trackpoint.h"
 #endif
 
 #include "mousekey.h"
 #ifdef ANALOGSTICK
-#include "analog.h"
+    #include "analog.h"
 #endif
 
 #include "macro.h"
@@ -225,7 +225,7 @@ void SetupHardware()
         printf("\nTP init FAILED!");
 #endif
 
-    printf("\nAdNW : %s", FW_VERSION); 
+    printf("\nAdNW : %s", FW_VERSION);
 
 #if defined(BOOTLOADER_TEST)
     uint8_t bootloader = eeprom_read_byte(&ee_bootloader);
@@ -311,23 +311,23 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
         USB_MouseReport_Data_t* MouseReport = (USB_MouseReport_Data_t*)ReportData;
 
         /// @todo : is this needed?
-        // mouse through key emulation only if PS/2 mouse report is "empty" 
+        // mouse through key emulation only if PS/2 mouse report is "empty"
 #ifdef PS2MOUSE
         *ReportSize = getMouseReport(MouseReport);
         if( *ReportSize == 0 || ( MouseReport->X == 0 && MouseReport->Y == 0 &&
-           #ifdef MOUSE_HAS_SCROLL_WHEELS
-                MouseReport->V == 0 && MouseReport->H == 0 &&
-            #endif
-           MouseReport->Button == 0 ) ) {
+#ifdef MOUSE_HAS_SCROLL_WHEELS
+                                  MouseReport->V == 0 && MouseReport->H == 0 &&
 #endif
-           *ReportSize = getMouseKeyReport(MouseReport);
-           if( *ReportSize == 0 ){ 
-               MouseReport->X = 0; MouseReport->Y = 0;
-            #ifdef MOUSE_HAS_SCROLL_WHEELS
-               MouseReport->V = 0; MouseReport->H = 0;
-            #endif
-               MouseReport->Button = 0;
-           }
+                                  MouseReport->Button == 0 ) ) {
+#endif
+            *ReportSize = getMouseKeyReport(MouseReport);
+            if( *ReportSize == 0 ) {
+                MouseReport->X = 0; MouseReport->Y = 0;
+#ifdef MOUSE_HAS_SCROLL_WHEELS
+                MouseReport->V = 0; MouseReport->H = 0;
+#endif
+                MouseReport->Button = 0;
+            }
 #ifdef PS2MOUSE
         }
 #endif

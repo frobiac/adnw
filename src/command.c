@@ -23,7 +23,7 @@
 #include "passhash/passhash.h"
 
 #ifdef PS2MOUSE
-#include "trackpoint.h"
+    #include "trackpoint.h"
 #endif
 #include "macro.h"
 
@@ -42,7 +42,8 @@ enum {
 
 static uint8_t subcmd;           ///< currently active subcommand
 
-void setCommandMode(bool on) {
+void setCommandMode(bool on)
+{
     if(on!=command)
         printf("\nCMD %s ", on ? "active [qtp] " : "off" );
     command=on;
@@ -55,12 +56,13 @@ void handleSubCmd(struct Key k);
 
 /** Called when command mode is active.
  *
- *  First pressed key is mapped to first layer defined and evaluated. Use only a-z and 0-9 for commands, others exit this mode. 
+ *  First pressed key is mapped to first layer defined and evaluated. Use only a-z and 0-9 for commands, others exit this mode.
  *
  *  @todo: leave automatically on unknown command or timeout, or signal mode through leds.
  *
  */
-void handleCommand(void) {
+void handleCommand(void)
+{
     if(!commandMode())
         return;
 
@@ -68,7 +70,7 @@ void handleCommand(void) {
         return;
 
     struct Key k=activeKeys.keys[0];
-    
+
     uint8_t hid = getKeyCode(k.row, k.col, 0);
 
     if(subcmd) {
@@ -104,15 +106,15 @@ void handleCommand(void) {
             printf("\nBootloader::");
             jump_bootloader();
             break;
-/*
-        case HID_P:
-            // Print Layout: one layer per press on key 'p'
-            printLayout(layer);
-            layer=(layer+1)%LAYERS;
-            if(layer==0)
-                setCommandMode(false);
-            break;
-*/
+            /*
+                    case HID_P:
+                        // Print Layout: one layer per press on key 'p'
+                        printLayout(layer);
+                        layer=(layer+1)%LAYERS;
+                        if(layer==0)
+                            setCommandMode(false);
+                        break;
+            */
 #ifdef MOUSE_HAS_SCROLL_WHEELS
         case HID_T:
             printf("\nTrackpoint:");
@@ -151,14 +153,14 @@ void handleCommand(void) {
 }
 
 
-void handleSubCmd(struct Key k) {
+void handleSubCmd(struct Key k)
+{
     uint8_t type=PH_TYPE_ALNUMSYM;
     uint8_t len=12;
     char password[PH_MAX_LEN+1];
     uint8_t ret;
 
-    switch( subcmd )
-    {
+    switch( subcmd ) {
         case SUB_MACRO:
             setMacroMode(true);
             activateMacro(k.row*ROWS+k.col);

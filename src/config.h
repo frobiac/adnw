@@ -35,21 +35,21 @@
     #define TRACE(...)
 #else
     #define TRACE(...)
-    #define printf(...) 
+    #define printf(...)
 #endif
 
 // Unicode strings describing this keyboard
 #define STR_MANUFACTURER L"frobiac"
 #if defined BLUECUBE
-#   define STR_PRODUCT      L"AdNW BlueCube"
+    #define STR_PRODUCT      L"AdNW BlueCube"
 #elif defined REDTILT
-#   define STR_PRODUCT      L"AdNW RedTilt"
+    #define STR_PRODUCT      L"AdNW RedTilt"
 #elif defined HYPERNANO
-#   define STR_PRODUCT      L"AdNW HyperNano"
+    #define STR_PRODUCT      L"AdNW HyperNano"
 #elif defined HYPERMICRO
-#   define STR_PRODUCT      L"AdNW HyperMicro"
+    #define STR_PRODUCT      L"AdNW HyperMicro"
 #else
-#   define STR_PRODUCT      L"AdNW Keyboard"
+    #define STR_PRODUCT      L"AdNW Keyboard"
 #endif
 
 

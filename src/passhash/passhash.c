@@ -33,8 +33,8 @@ void b64enc(const unsigned char* data, size_t len, char* result, size_t resultSi
         encodeblock( (unsigned char *)(&data[x*3]), (unsigned char *)(&result[x*4]), (len-x*3));
 }
 
-void injectChar( char * mhash, uint8_t offset, uint8_t reserved, 
-            uint32_t seed, uint8_t length, char cstart, uint8_t cnum)
+void injectChar( char * mhash, uint8_t offset, uint8_t reserved,
+                 uint32_t seed, uint8_t length, char cstart, uint8_t cnum)
 {
     uint8_t pos0 = seed % length;
     uint8_t pos = (pos0+offset)%length;
@@ -43,10 +43,10 @@ void injectChar( char * mhash, uint8_t offset, uint8_t reserved,
     uint8_t cstartI = (uint8_t)(cstart);
 
     // check if desired character is already present (in special range)
-    for(i=0; i<length-reserved; ++i){
+    for(i=0; i<length-reserved; ++i) {
         tmp= (pos0+reserved+i)%length;
         uint8_t ci = (int)(mhash[tmp]);
-        if( ci >= cstartI && ci < cstartI + cnum){
+        if( ci >= cstartI && ci < cstartI + cnum) {
             return;
         }
     }
@@ -61,8 +61,8 @@ void remPunct( char * mhash, uint16_t seed, uint8_t length)
     uint8_t pivot=0;
     uint8_t i;
 
-    for(i=0;i<strlen(mhash);++i){
-        if( ! isalnum(mhash[i]) ){
+    for(i=0; i<strlen(mhash); ++i) {
+        if( ! isalnum(mhash[i]) ) {
             mhash[i] = (char)( (seed+pivot)%26 + 65 /*'A'*/);
             pivot=i+1;
         }
@@ -74,8 +74,8 @@ void conv2digits( char * mhash, uint16_t seed, uint8_t length)
     uint8_t pivot=0;
     uint8_t i;
 
-    for(i=0;i<length;++i){
-        if( ! isdigit(mhash[i]) ){
+    for(i=0; i<length; ++i) {
+        if( ! isdigit(mhash[i]) ) {
             mhash[i] = (char)( (seed+(int)(mhash[pivot]))%10 + 48 /*'0'*/);
             pivot=i+1;
         }
@@ -87,7 +87,7 @@ uint16_t letterSum(const char * str)
 {
     uint8_t i;
     uint16_t sum=0;
-    for(i=0;i<strlen(str);i++){
+    for(i=0; i<strlen(str); i++) {
         sum+=(int)(str[i]);
     }
     return sum;
@@ -123,7 +123,7 @@ void genHash(char * result, char * key, char * tag, uint8_t len, uint8_t type)
     }
 
     uint8_t i;
-    for(i=0;i<len;++i)
+    for(i=0; i<len; ++i)
         result[i]=b64result[i];
     result[len] = '\0';
 }
@@ -132,7 +132,7 @@ void genHash(char * result, char * key, char * tag, uint8_t len, uint8_t type)
  */
 uint8_t passHash(char * password, uint8_t len, uint8_t type, char * secret, char * key, char * tag)
 {
-    if(len<4 || len>26){
+    if(len<4 || len>26) {
         return(3);
     }
 

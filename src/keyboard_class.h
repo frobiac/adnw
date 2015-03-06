@@ -21,7 +21,7 @@
 #include <LUFA/Drivers/USB/Class/Device/HIDClassDevice.h>
 
 #ifdef ANALOGSTICK
-#include "analog.h"
+    #include "analog.h"
 #endif
 
 #include "config.h"

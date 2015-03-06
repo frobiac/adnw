@@ -71,19 +71,19 @@ static inline column_size_t read_col(void)
     uint8_t resE = PINE;
 
     uint16_t res = (
-               (( resE & (1<<6)) >> 6) |
-               (( resD & (1<<4)) >> 3) |
-               (( resD & (1<<7)) >> 5) |
-               (( resB & (1<<4)) >> 1) |
-               (( resB & (1<<5)) >> 1) |
-               (( resB & (1<<6)) >> 1) |
-               (( resD & (1<<5)) << 1) |
-               (( resB & (1<<3)) << 4) |
-               (( resB & (1<<2)) << 6) |
-               (( resF & (1<<4)) << 5) |
-               (( resF & (1<<1)) << 9) |
-               (( resF & (1<<0)) << 11)
-            );
+                       (( resE & (1<<6)) >> 6) |
+                       (( resD & (1<<4)) >> 3) |
+                       (( resD & (1<<7)) >> 5) |
+                       (( resB & (1<<4)) >> 1) |
+                       (( resB & (1<<5)) >> 1) |
+                       (( resB & (1<<6)) >> 1) |
+                       (( resD & (1<<5)) << 1) |
+                       (( resB & (1<<3)) << 4) |
+                       (( resB & (1<<2)) << 6) |
+                       (( resF & (1<<4)) << 5) |
+                       (( resF & (1<<1)) << 9) |
+                       (( resF & (1<<0)) << 11)
+                   );
     return res;
 #endif
 
@@ -177,7 +177,7 @@ static inline void init_cols(void)
     // Columns 0..11:
     // D6 D4 D7 B4 B5 B6 D5 B3 B2 F4 F1 F0
     // but had to change D6 -> E6 due to diode polarity used (cathode on round pad)
-    
+
     DDRE  &= (0b10111111);
     PORTE |= (0b01000000);
     DDRD  &= (0b01001111);

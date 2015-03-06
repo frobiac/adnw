@@ -36,24 +36,24 @@
 
 
 #ifdef BLUECUBE
-#define DAPORT  B
-#define DBIT    7
-#define CLKPORT E
-#define CBIT    6
-#define RSTPORT B
-#define RBIT    3
+    #define DAPORT  B
+    #define DBIT    7
+    #define CLKPORT E
+    #define CBIT    6
+    #define RSTPORT B
+    #define RBIT    3
 
 #elif defined HYPERNANO || defined REDTILT
-#define DAPORT  B
-#define DBIT    1
-// d4 to break
-#define CLKPORT B
-#define CBIT    2
-#define RSTPORT B
-#define RBIT    0
+    #define DAPORT  B
+    #define DBIT    1
+    // d4 to break
+    #define CLKPORT B
+    #define CBIT    2
+    #define RSTPORT B
+    #define RBIT    0
 
 #else
-#error "Trackpoint defined only for BLUECUBE and HYPER"
+    #error "Trackpoint defined only for BLUECUBE and HYPER"
 #endif
 
 /////////////////////////////

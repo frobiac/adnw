@@ -79,7 +79,8 @@ enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FT
 /**
  * Print out trackpoint config register
  */
-uint8_t tp_read_config() {
+uint8_t tp_read_config()
+{
     printf("\nTP Config= ");
     tp_send_read_ack(0xe2);
     tp_send_read_ack(0x2c);
@@ -91,7 +92,8 @@ uint8_t tp_read_config() {
 /** Read id from trackpoint.
  *  smaller TP: 2nd ID=010e  Ext.ID= M 19990623($IBM3780)
  */
-void tp_id(void) {
+void tp_id(void)
+{
     // read secondary ID
     if( tp_send_read_ack(0xe1) ) {
         uint8_t id[2];
@@ -145,9 +147,9 @@ bool tp_init(void)
     tp_ram_write(0x60, 0x53);
 #endif
 
-     // flip axis
-     // tp_ram_write(0x2c, 1<<TP_FLIPX);
-     // tp_ram_write(0x2c, 1<<TP_FLIPY);
+    // flip axis
+    // tp_ram_write(0x2c, 1<<TP_FLIPX);
+    // tp_ram_write(0x2c, 1<<TP_FLIPY);
 
     //printf("\nSens  (orig=80): %02x ", tp_ram_read(0x4A) );
     //printf("\nSpeed (orig=61): %02x ", tp_ram_read(0x60) );
