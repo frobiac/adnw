@@ -94,6 +94,15 @@ static int32_t rpt[ROWS];
 #define REPEAT_START   31            // 61 = 1000ms
 #define REPEAT_NEXT    15
 
+
+inline void zeroReport(USB_KeyboardReport_Data_t *report_data)
+{
+    // todo: is this neccessary?
+    clearActiveKeys();
+    memset(&report_data->KeyCode[0], 0, 6 );
+    report_data->Modifier=0;
+}
+
 /**
   * ISR that should get called 61 times a second.
   * Allows exact timers
@@ -228,8 +237,7 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data)
     switch( secondUse_state ) {
         case SECOND_USE_REPEAT: {
             if( activeKeys.keycnt==1 ) { // only one => previously determined key to repeat still pressed
-                memset(&report_data->KeyCode[0], 0, 6);
-                report_data->Modifier=0;
+                zeroReport(report_data);
                 getSecondaryUsage(activeKeys.keys[0].row,activeKeys.keys[0].col, &(report_data->KeyCode[0]));
                 changeSecondUseState(SECOND_USE_REPEAT, SECOND_USE_REPEAT);
                 break;
@@ -447,8 +455,7 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
     if(activeKeys.keycnt==0) {
         lastKeyCode=0;
         // empty report
-        memset(&report_data->KeyCode[0], 0, 6 );
-        report_data->Modifier=0;
+        zeroReport(report_data);
         return sizeof(USB_KeyboardReport_Data_t);
     }
 
@@ -461,10 +468,8 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
         }
         mousekey_activate(mk_mask);
 
-        // empty report
         // @todo: There could technically be keys on mouse layer, but why?
-        memset(&report_data->KeyCode[0], 0, 6 );
-        report_data->Modifier=0;
+        zeroReport(report_data);
         return sizeof(USB_KeyboardReport_Data_t);
     } else {
         mousekey_activate(0);
