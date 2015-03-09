@@ -259,6 +259,17 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
     }
 }
 
+/**
+ * Rotate 90° by exchanging x and y and changing sign of new x
+ */
+void rotateXY(int8_t *x, int8_t *y)
+{
+#ifdef TP_ROTATE
+    int8_t tmp = *y;
+    *y = *x;
+    *x = -tmp;
+#endif
+}
 
 uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 {
@@ -299,25 +310,11 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 
         // keyboard mouse buttons only in mousemode
         if( (ps2_buttons & 0x05)==0x05 || (g_mouse_keys & 0x08)) {
-            int8_t sx=0, sy=0;
+            int8_t sx = (dx&0xFF00) ? -(256-(dx+0x100)) : dx;
+            int8_t sy = (dy&0xFF00) ? -(256-(dy+0x100)) : dy;
 
-            if( dx!=0 ) {
-                if(dx&0xFF00)
-                    sx= -(256-(dx+0x100));
-                else
-                    sx=dx;
-            }
-            if( dy!=0 ) {
-                if(dy&0xFF00)
-                    sy= -(256-(dy+0x100));
-                else
-                    sy=dy;
-            }
-
-            // scrollcnt = scrollcnt+abs(sy)+abs(sx);
-            // abs(v) = v*((v<0)*(-1)+(v>0));
+            // scrollcnt = scrollcnt+abs(sy)+abs(sx); abs(v) = v*((v<0)*(-1)+(v>0));
             scrollcnt += sy*((sy<0)*(-1)+(sy>0)) + sx*((sx<0)*(-1)+(sx>0));
-
 
             // limit 10 and emiting as is way to fast in windows.
             if(scrollcnt>10) {
@@ -326,25 +323,17 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
                 MouseReport->Y=0;
                 // only move by 1 ?!
                 // factor here had been mapped to 0..0.5 -> use 0.25
-#ifdef TP_ROTATE
-                MouseReport->V =  sx>>2;
-                MouseReport->H = -sy>>2;
-#else
                 MouseReport->H = -sx>>2;
                 MouseReport->V = -sy>>2;
-#endif
+                rotateXY(&MouseReport->V, &MouseReport->H);
             }
         } else
 #endif
         {
-
-#ifdef TP_ROTATE
-            MouseReport->X = -dy;
-            MouseReport->Y = -dx;
-#else
-            MouseReport->Y = dy;
             MouseReport->X = -dx;
-#endif
+            MouseReport->Y = dy;
+            rotateXY(&(MouseReport->X), &(MouseReport->Y));
+
             // do not emit the scroll button
             MouseReport->Button = g_mouse_keys & ~(0x08);
             MouseReport->Button |= ps2_buttons;    // PS/2 buttons if set
