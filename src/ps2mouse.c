@@ -303,10 +303,6 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
     if(g_mouse_keys_enabled || ps2_buttons) {
         // factor = 1 + [0..400]*1.5/400 = 1..2.5
         //factor= 1 + accel * (ACC_MAX-1) / ACC_RAMPTIME;
-#ifdef MOUSE_HAS_SCROLL_WHEELS
-        MouseReport->V=0;
-        MouseReport->H=0;
-        MouseReport->Button=0;
 
         // keyboard mouse buttons only in mousemode
         if( (ps2_buttons & 0x05)==0x05 || (g_mouse_keys & 0x08)) {
@@ -319,6 +315,7 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
             // limit 10 and emiting as is way to fast in windows.
             if(scrollcnt>10) {
                 scrollcnt=0;
+#ifdef MOUSE_HAS_SCROLL_WHEELS
                 MouseReport->X=0;
                 MouseReport->Y=0;
                 // only move by 1 ?!
@@ -326,10 +323,10 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
                 MouseReport->H = -sx>>2;
                 MouseReport->V = -sy>>2;
                 rotateXY(&MouseReport->V, &MouseReport->H);
-            }
-        } else
 #endif
-        {
+            }
+        } else {
+            // no scroll-wheel support or not active
             MouseReport->X = -dx;
             MouseReport->Y = dy;
             rotateXY(&(MouseReport->X), &(MouseReport->Y));
