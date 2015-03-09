@@ -232,7 +232,6 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
 {
 
     uint8_t ack;
-    uint8_t LMB,MMB,RMB;
     *BTNS=0;
     int mouseinf;
     {
@@ -240,29 +239,11 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
         ack=read_packet(); //Ack
         if(ack==0xfa) {
             mouseinf=read_packet();
-            LMB=0;
-            MMB=0;
-            RMB=0;
-
-            if(mouseinf & 0x01)  //0x09
-                LMB=1;         // Get leftbutton status
-            if(mouseinf & 0x02)
-                RMB=1;        // Get rightbutton status
-            if(mouseinf & 0x04)
-                MMB=1;       // Get middlebutton status
-
-
-            /*          // emulate 3 buttons
-                        if( RMB & LMB ) {
-                            MMB=1;
-                            RMB=LMB=0;
-                        }
-            */
-            // *BTNS = (LMB<<2) | (MMB<<1) | (RMB << 0);
-            // buttons (left to right) are  1 2 3
-            // hexcode as expected is       1 4 2
-            // swap lower two buttons on "blue cube"
-            *BTNS = (LMB<<0) | (MMB<<1) | (RMB << 2);
+            /// Bits 2 1 0 correspond to  M R L button so swap M&R for RML
+            /// @todo Make mouse button order mapping configurable
+            *BTNS = ((mouseinf & 0x01) /*LMB*/ << 0) |
+                    ((mouseinf & 0x04) /*MMB*/ << 1) |
+                    ((mouseinf & 0x02) /*RMB*/ << 2);
 
             *dx= read_packet();
             *dy= read_packet();
