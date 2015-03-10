@@ -120,7 +120,8 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             jump_bootloader();
             break;
 
-#ifdef MOUSE_HAS_SCROLL_WHEELS
+/// @todo Trackpoint availability
+#ifdef PS2MOUSE
         case 't':
             tp_read_config();
             tp_id();

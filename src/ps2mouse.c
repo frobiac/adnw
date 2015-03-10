@@ -315,7 +315,6 @@ uint8_t getMouseReport(USB_WheelMouseReport_Data_t *MouseReport)
             // limit 10 and emiting as is way to fast in windows.
             if(scrollcnt>10) {
                 scrollcnt=0;
-#ifdef MOUSE_HAS_SCROLL_WHEELS
                 MouseReport->X=0;
                 MouseReport->Y=0;
                 // only move by 1 ?!
@@ -323,7 +322,6 @@ uint8_t getMouseReport(USB_WheelMouseReport_Data_t *MouseReport)
                 MouseReport->H = -sx>>2;
                 MouseReport->V = -sy>>2;
                 rotateXY(&MouseReport->V, &MouseReport->H);
-#endif
             }
         } else {
             // no scroll-wheel support or not active
@@ -337,8 +335,6 @@ uint8_t getMouseReport(USB_WheelMouseReport_Data_t *MouseReport)
         }
         g_mouse_keys=0;
         ps2_buttons=0;
-
-
 
         return sizeof(USB_WheelMouseReport_Data_t);
 

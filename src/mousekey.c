@@ -191,10 +191,8 @@ uint8_t getMouseKeyReport(USB_WheelMouseReport_Data_t *MouseReport)
     MouseReport->X= mouse_report.x;
     MouseReport->Y= mouse_report.y;
     MouseReport->Button = mouse_report.buttons;
-#ifdef MOUSE_HAS_SCROLL_WHEELS
     MouseReport->V= mouse_report.v;
     MouseReport->H= mouse_report.h;
-#endif
 
     // lower speed on diagonal movement:
     // 3/4 close enough to sqrt(2) for 45deg angles, and others are fine with this, too.

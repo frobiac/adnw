@@ -323,17 +323,13 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
 #ifdef PS2MOUSE
         *ReportSize = getMouseReport(MouseReport);
         if( *ReportSize == 0 || ( MouseReport->X == 0 && MouseReport->Y == 0 &&
-#ifdef MOUSE_HAS_SCROLL_WHEELS
                                   MouseReport->V == 0 && MouseReport->H == 0 &&
-#endif
                                   MouseReport->Button == 0 ) ) {
 #endif
             *ReportSize = getMouseKeyReport(MouseReport);
             if( *ReportSize == 0 ) {
                 MouseReport->X = 0; MouseReport->Y = 0;
-#ifdef MOUSE_HAS_SCROLL_WHEELS
                 MouseReport->V = 0; MouseReport->H = 0;
-#endif
                 MouseReport->Button = 0;
             }
 #ifdef PS2MOUSE

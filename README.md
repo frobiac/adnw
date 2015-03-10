@@ -26,6 +26,8 @@ Features
 
 Credits
 -------
+USB device support depends on the [LUFA][lufa] framework by Dean Camera.
+
 The driver was originally based on humblehackers [hhkb firmware][hhkb], but I found some things (while pretty neat and cleanly implemented) a little too difficult to adjust, so I revamped everything but the most basic USB code.
 
 Implementation of mousekey layer, KEYMAP macro and other neat ideas borrowed from the very advanced [tmk_firmware][tmk].
@@ -48,9 +50,7 @@ Unless otherwise mentioned all code is licensed under GPL3.
 
 Install
 -------
-You will need a recent version of the LUFA usb stack to compile this software.
-If you want scrollwheel support for the mouse, the included [patch](/LUFA-scrollwheel.patch) needs to be applied.
-From this root directory, execute
+You will need a recent version of the [LUFA][lufa] usb stack to compile this software.
 
     $ git submodule init
     $ git submodule update
@@ -112,4 +112,5 @@ Current default layout as implemented in [keymap.h](/src/keymap.h) :
 [twik_android]: https://github.com/gustavomondron/twik/blob/master/app/src/main/java/com/reddyetwo/hashmypass/app/hash
 [hashit_android]: https://github.com/ginkel/hashit/blob/master/src/main/java/com/ginkel/hashit
 [avr_crypto_lib]: https://github.com/cantora/avr-crypto-lib
+[lufa]:           http://www.lufa-lib.org
 
