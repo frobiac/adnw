@@ -73,5 +73,6 @@ void printCurrentKeys(void);
 void clearRowData(void);
 
 void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data);
+void hostLEDChange(uint8_t leds);
 
 #endif // __KEYBOARD_CLASS_H__
