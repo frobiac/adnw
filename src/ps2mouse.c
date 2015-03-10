@@ -271,6 +271,11 @@ void rotateXY(int8_t *x, int8_t *y)
 #endif
 }
 
+/**
+ * @brief getMouseReport
+ * @param MouseReport
+ * @return 0 unless mouse report data was changed
+ */
 uint8_t getMouseReport(USB_WheelMouseReport_Data_t *MouseReport)
 {
     if(!g_mouse_enabled)

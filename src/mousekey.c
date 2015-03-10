@@ -161,20 +161,19 @@ void mousekey_off(uint8_t code)
     }
 }
 
+/**
+ * @brief getMouseKeyReport
+ * @param MouseReport
+ * @return 0 unless MouseReport was changed
+ */
 uint8_t getMouseKeyReport(USB_WheelMouseReport_Data_t *MouseReport)
 {
-// @note: If sending of reports is not forced in calling function,
-// return an empty report every second time - else it stalls when max accel is reached.
-    if (mouse_report.Button == 0) {
-        if (mouse_report.X == 0 && mouse_report.Y == 0 && mouse_report.V == 0 && mouse_report.H == 0)
-            return sizeof(USB_WheelMouseReport_Data_t);
-
-        if (mouse_report.V == 0 && mouse_report.H == 0 &&
-            (idle_count-last_sent)*1000/61 < MS_PER_REPORT )
-            return sizeof(USB_WheelMouseReport_Data_t);
-        if (mouse_report.X == 0 && mouse_report.Y == 0 &&
-            (idle_count-last_sent)*1000/61 < 100)
-            return sizeof(USB_WheelMouseReport_Data_t);
+    if(mouse_report.Button == 0) {
+        if(mouse_report.X == 0 && mouse_report.Y == 0 && mouse_report.V == 0 && mouse_report.H == 0) {
+            return 0;
+        } else if ((idle_count-last_sent)*1000/61 < MS_PER_REPORT ) {
+            return 0;
+        }
     }
 
     last_sent=idle_count;
@@ -182,6 +181,7 @@ uint8_t getMouseKeyReport(USB_WheelMouseReport_Data_t *MouseReport)
     MouseReport->X= mouse_report.X;
     MouseReport->Y= mouse_report.Y;
     MouseReport->Button = mouse_report.Button;
+    // Scroll reports slower ( was 100/30 (MS_PER_REPORT)
     MouseReport->V= mouse_report.V;
     MouseReport->H= mouse_report.H;
 

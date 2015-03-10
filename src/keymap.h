@@ -120,7 +120,7 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 /* 3 */  { MAC, ALT,  no, GUI, CTL, SPC  }, \
 /* 4 */  {   p,   c,   l,   m,   f,  no  }, \
 /* 5 */  {   d,   t,   r,   n,   s,  no  }, \
-/* 6 */  {   b,   g,   w,   v,   z,  no  }, \
+/* 6 */  {   b,   g,   w,   v,   z,  Umou}, \
 /* 7 */  {  M2,  SHF,  M1,  no,  M3, AGR }  \
 }
 #endif

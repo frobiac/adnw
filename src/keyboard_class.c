@@ -242,7 +242,6 @@ void handleModifierTransmission(USB_KeyboardReport_Data_t* report_data, Modifier
  */
 void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data)
 {
-
     switch( secondUse_state ) {
         case SECOND_USE_REPEAT: {
             if( activeKeys.keycnt==1 ) { // only one => previously determined key to repeat still pressed
