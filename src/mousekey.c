@@ -24,16 +24,7 @@
 #include "Keyboard.h" // idle_count, should go into timer
 #include "mousekey.h"
 
-
-typedef struct {
-    uint8_t buttons;
-    int8_t x;
-    int8_t y;
-    int8_t v;
-    int8_t h;
-} __attribute__ ((packed)) report_mouse_t;
-
-report_mouse_t mouse_report = {0};
+USB_WheelMouseReport_Data_t mouse_report = {0};
 
 static uint8_t mousekey_accel = 0;
 
@@ -125,19 +116,19 @@ void mousekey_on(uint8_t code)
         return;
 //mousekey_debug();
     switch(code) {
-        case MS_U:    mouse_report.y = move_unit() * -1; break;
-        case MS_D:    mouse_report.y = move_unit(); break;
-        case MS_L:    mouse_report.x = move_unit() * -1; break;
-        case MS_R:    mouse_report.x = move_unit(); break;
-        case MS_W_U:  mouse_report.v = wheel_unit(); break;
-        case MS_W_D:  mouse_report.v = wheel_unit() * -1; break;
-        case MS_W_L:  mouse_report.h = wheel_unit() * -1; break;
-        case MS_W_R:  mouse_report.h = wheel_unit(); break;
-        case MS_BTN1: mouse_report.buttons |= HID_MOUSEBTN_1; break;
-        case MS_BTN2: mouse_report.buttons |= HID_MOUSEBTN_2; break;
-        case MS_BTN3: mouse_report.buttons |= HID_MOUSEBTN_3; break;
-        case MS_BTN4: mouse_report.buttons |= HID_MOUSEBTN_4; break;
-        case MS_BTN5: mouse_report.buttons |= HID_MOUSEBTN_5; break;
+        case MS_U:    mouse_report.Y = move_unit() * -1; break;
+        case MS_D:    mouse_report.Y = move_unit(); break;
+        case MS_L:    mouse_report.X = move_unit() * -1; break;
+        case MS_R:    mouse_report.X = move_unit(); break;
+        case MS_W_U:  mouse_report.V = wheel_unit(); break;
+        case MS_W_D:  mouse_report.V = wheel_unit() * -1; break;
+        case MS_W_L:  mouse_report.H = wheel_unit() * -1; break;
+        case MS_W_R:  mouse_report.H = wheel_unit(); break;
+        case MS_BTN1: mouse_report.Button |= HID_MOUSEBTN_1; break;
+        case MS_BTN2: mouse_report.Button |= HID_MOUSEBTN_2; break;
+        case MS_BTN3: mouse_report.Button |= HID_MOUSEBTN_3; break;
+        case MS_BTN4: mouse_report.Button |= HID_MOUSEBTN_4; break;
+        case MS_BTN5: mouse_report.Button |= HID_MOUSEBTN_5; break;
         case MS_ACC0:
         case MS_ACC1:
         case MS_ACC2: mousekey_accel |= (1<<(code-MS_ACC0)); break;
@@ -150,19 +141,19 @@ void mousekey_off(uint8_t code)
     if(code < MS_U || code > MS_ACC2)
         return;
     switch(code) {
-        case MS_U   : if(mouse_report.y < 0) mouse_report.y = 0; break;
-        case MS_D   : if(mouse_report.y > 0) mouse_report.y = 0; break;
-        case MS_L   : if(mouse_report.x < 0) mouse_report.x = 0; break;
-        case MS_R   : if(mouse_report.x > 0) mouse_report.x = 0; break;
-        case MS_W_U : if(mouse_report.v > 0) mouse_report.v = 0; break;
-        case MS_W_D : if(mouse_report.v < 0) mouse_report.v = 0; break;
-        case MS_W_L : if(mouse_report.h < 0) mouse_report.h = 0; break;
-        case MS_W_R : if(mouse_report.h > 0) mouse_report.h = 0; break;
-        case MS_BTN1: mouse_report.buttons &= ~HID_MOUSEBTN_1; break;
-        case MS_BTN2: mouse_report.buttons &= ~HID_MOUSEBTN_2; break;
-        case MS_BTN3: mouse_report.buttons &= ~HID_MOUSEBTN_3; break;
-        case MS_BTN4: mouse_report.buttons &= ~HID_MOUSEBTN_4; break;
-        case MS_BTN5: mouse_report.buttons &= ~HID_MOUSEBTN_5; break;
+        case MS_U   : if(mouse_report.Y < 0) mouse_report.Y = 0; break;
+        case MS_D   : if(mouse_report.Y > 0) mouse_report.Y = 0; break;
+        case MS_L   : if(mouse_report.X < 0) mouse_report.X = 0; break;
+        case MS_R   : if(mouse_report.X > 0) mouse_report.X = 0; break;
+        case MS_W_U : if(mouse_report.V > 0) mouse_report.V = 0; break;
+        case MS_W_D : if(mouse_report.V < 0) mouse_report.V = 0; break;
+        case MS_W_L : if(mouse_report.H < 0) mouse_report.H = 0; break;
+        case MS_W_R : if(mouse_report.H > 0) mouse_report.H = 0; break;
+        case MS_BTN1: mouse_report.Button &= ~HID_MOUSEBTN_1; break;
+        case MS_BTN2: mouse_report.Button &= ~HID_MOUSEBTN_2; break;
+        case MS_BTN3: mouse_report.Button &= ~HID_MOUSEBTN_3; break;
+        case MS_BTN4: mouse_report.Button &= ~HID_MOUSEBTN_4; break;
+        case MS_BTN5: mouse_report.Button &= ~HID_MOUSEBTN_5; break;
         case MS_ACC0: mousekey_accel &= ~(1<<0); break;
         case MS_ACC1: mousekey_accel &= ~(1<<1); break;
         case MS_ACC2: mousekey_accel &= ~(1<<2); break;
@@ -174,29 +165,29 @@ uint8_t getMouseKeyReport(USB_WheelMouseReport_Data_t *MouseReport)
 {
 // @note: If sending of reports is not forced in calling function,
 // return an empty report every second time - else it stalls when max accel is reached.
-    if (mouse_report.buttons == 0) {
-        if (mouse_report.x == 0 && mouse_report.y == 0 && mouse_report.v == 0 && mouse_report.h == 0)
+    if (mouse_report.Button == 0) {
+        if (mouse_report.X == 0 && mouse_report.Y == 0 && mouse_report.V == 0 && mouse_report.H == 0)
             return sizeof(USB_WheelMouseReport_Data_t);
 
-        if (mouse_report.v == 0 && mouse_report.h == 0 &&
+        if (mouse_report.V == 0 && mouse_report.H == 0 &&
             (idle_count-last_sent)*1000/61 < MS_PER_REPORT )
             return sizeof(USB_WheelMouseReport_Data_t);
-        if (mouse_report.x == 0 && mouse_report.y == 0 &&
+        if (mouse_report.X == 0 && mouse_report.Y == 0 &&
             (idle_count-last_sent)*1000/61 < 100)
             return sizeof(USB_WheelMouseReport_Data_t);
     }
 
     last_sent=idle_count;
 
-    MouseReport->X= mouse_report.x;
-    MouseReport->Y= mouse_report.y;
-    MouseReport->Button = mouse_report.buttons;
-    MouseReport->V= mouse_report.v;
-    MouseReport->H= mouse_report.h;
+    MouseReport->X= mouse_report.X;
+    MouseReport->Y= mouse_report.Y;
+    MouseReport->Button = mouse_report.Button;
+    MouseReport->V= mouse_report.V;
+    MouseReport->H= mouse_report.H;
 
     // lower speed on diagonal movement:
     // 3/4 close enough to sqrt(2) for 45deg angles, and others are fine with this, too.
-    if (mouse_report.x && mouse_report.y) {
+    if (mouse_report.X && mouse_report.Y) {
         MouseReport->X = (MouseReport->X*3) >> 2;
         MouseReport->Y = (MouseReport->Y*3) >> 2;
     }
@@ -208,13 +199,13 @@ void mousekey_clear(void)
 {
     for(uint8_t c=0; c<16; ++c)
         mousekey_off(MS_BEGIN+1+c);
-    mouse_report = (report_mouse_t) {};
+    mouse_report = (USB_WheelMouseReport_Data_t) {};
     mousekey_accel = 0;
     first_press_timer=0;
 }
 
 static void mousekey_debug(void)
 {
-    printf("\n%02x |%d,%d %d,%d (acc %d)] ", mouse_report.buttons, mouse_report.x, mouse_report.y, mouse_report.v, mouse_report.h, mousekey_accel);
+    printf("\n%02x |%d,%d %d,%d (acc %d)] ", mouse_report.Button, mouse_report.X, mouse_report.Y, mouse_report.V, mouse_report.H, mousekey_accel);
     printf("%lu", (idle_count-first_press_timer));
 }
