@@ -283,7 +283,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
     {
         .Header                 = {.Size = sizeof(USB_Descriptor_Interface_t), .Type = DTYPE_Interface},
 
-        .InterfaceNumber        = 0x00,
+        .InterfaceNumber        = INTERFACE_ID_Keyboard,
         .AlternateSetting       = 0x00,
 
         .TotalEndpoints         = 1,
@@ -321,7 +321,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
     {
         .Header                 = {.Size = sizeof(USB_Descriptor_Interface_t), .Type = DTYPE_Interface},
 
-        .InterfaceNumber        = 0x01,
+        .InterfaceNumber        = INTERFACE_ID_Debug,
         .AlternateSetting       = 0x00,
 
         .TotalEndpoints         = 1,
@@ -360,7 +360,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
     {
         .Header                 = {.Size = sizeof(USB_Descriptor_Interface_t), .Type = DTYPE_Interface},
 
-        .InterfaceNumber        = 0x02,
+        .InterfaceNumber        = INTERFACE_ID_Mouse,
         .AlternateSetting       = 0x00,
 
         .TotalEndpoints         = 1,
@@ -463,15 +463,15 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint8_t wIndex,
             break;
         case HID_DTYPE_HID:
             switch (wIndex) {
-                case 0:
+                case INTERFACE_ID_Keyboard:
                     Address = (void*)&ConfigurationDescriptor.HID_KeyboardHID;
                     Size    = sizeof(USB_HID_Descriptor_HID_t);
                     break;
-                case 1:
+                case INTERFACE_ID_Debug:
                     Address = (void*)&ConfigurationDescriptor.HIDDBG_HID;
                     Size    = sizeof(USB_HID_Descriptor_HID_t);
                     break;
-                case 2:
+                case INTERFACE_ID_Mouse:
                     Address = (void*)&ConfigurationDescriptor.HID_MouseHID;
                     Size    = sizeof(USB_HID_Descriptor_HID_t);
                     break;
@@ -479,15 +479,15 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint8_t wIndex,
             break;
         case HID_DTYPE_Report:
             switch (wIndex) {
-                case 0:
+                case INTERFACE_ID_Keyboard:
                     Address = (void*)&KeyboardReport;
                     Size    = sizeof(KeyboardReport);
                     break;
-                case 1:
+                case INTERFACE_ID_Debug:
                     Address = (void*)&DBGReport;
                     Size    = sizeof(DBGReport);
                     break;
-                case 2:
+                case INTERFACE_ID_Mouse:
                     Address = (void*)&MouseReport;
                     Size    = sizeof(MouseReport);
                     break;

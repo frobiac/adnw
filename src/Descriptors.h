@@ -67,6 +67,12 @@ typedef struct {
 
 } USB_Descriptor_Configuration_t;
 
+enum InterfaceDescriptors_t {
+    INTERFACE_ID_Keyboard = 0,
+    INTERFACE_ID_Debug    = 1,
+    INTERFACE_ID_Mouse    = 2,
+};
+
 /* Macros: */
 /** Endpoint number of the Keyboard HID report IN endpoint. */
 #define KEYBOARD_IN_EPADDR           (ENDPOINT_DIR_IN  | 1)
