@@ -118,44 +118,7 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM MouseReport[] = {
  *  more details on HID report descriptors.
  */
 const USB_Descriptor_HIDReport_Datatype_t PROGMEM KeyboardReport[] = {
-    0x05, 0x01,          /* Usage Page (Generic Desktop)                    */
-    0x09, 0x06,          /* Usage (Keyboard)                                */
-    0xa1, 0x01,          /* Collection (Application)                        */
-
-    0x75, 0x01,          /*   Report Size (1)                               */
-    0x95, 0x08,          /*   Report Count (8)                              */
-    0x05, 0x07,          /*   Usage Page (Keyboard)                         */
-    0x19, 0xe0,          /*   Usage Minimum (Keyboard LeftControl)          */
-    0x29, 0xe7,          /*   Usage Maximum (Keyboard Right GUI)            */
-    0x15, 0x00,          /*   Logical Minimum (0)                           */
-    0x25, 0x01,          /*   Logical Maximum (1)                           */
-    0x81, 0x02,          /*   Input (Data, Variable, Absolute)              */
-
-    0x95, 0x01,          /*   Report Count (1)                              */
-    0x75, 0x08,          /*   Report Size (8)                               */
-    0x81, 0x03,          /*   Input (Const, Variable, Absolute)             */
-
-    0x95, 0x05,          /*   Report Count (5)                              */
-    0x75, 0x01,          /*   Report Size (1)                               */
-    0x05, 0x08,          /*   Usage Page (LEDs)                             */
-    0x19, 0x01,          /*   Usage Minimum (Num Lock)                      */
-    0x29, 0x05,          /*   Usage Maximum (Kana)                          */
-    0x91, 0x02,          /*   Output (Data, Variable, Absolute)             */
-
-    0x95, 0x01,          /*   Report Count (1)                              */
-    0x75, 0x03,          /*   Report Size (3)                               */
-    0x91, 0x03,          /*   Output (Const, Variable, Absolute)            */
-
-    0x95, 0x06,          /*   Report Count (6)                              */
-    0x75, 0x08,          /*   Report Size (8)                               */
-    0x15, 0x00,          /*   Logical Minimum (0)                           */
-    0x25, 0x65,          /*   Logical Maximum (101)                         */
-    0x05, 0x07,          /*   Usage Page (Keyboard)                         */
-    0x19, 0x00,          /*   Usage Minimum (Reserved (no event indicated)) */
-    0x29, 0x65,          /*   Usage Maximum (Keyboard Application)          */
-    0x81, 0x00,          /*   Input (Data, Array, Absolute)                 */
-
-    0xc0                 /* End Collection                                  */
+    HID_DESCRIPTOR_KEYBOARD(6)
 };
 
 
