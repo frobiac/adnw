@@ -52,7 +52,6 @@
  *  This descriptor describes the mouse HID interface's report structure.
  */
 
-//
 // Wheel Mouse - simplified version - 5 button, vertical and horizontal wheel
 //
 // Input report - 5 bytes
@@ -65,43 +64,17 @@
 //      3   |                       Vertical Wheel
 //      4   |                    Horizontal (Tilt) Wheel
 //
-// Feature report - 1 byte
-//
-//     Byte | D7      D6      D5      D4   |  D3      D2  |   D1      D0
-//    ------+------------------------------+--------------+----------------
-//      0   |  0       0       0       0   |  Horizontal  |    Vertical
-//                                             (Resolution multiplier)
-//
 // Reference
 //    Wheel.docx in "Enhanced Wheel Support in Windows Vista" on MS WHDC
 //    http://www.microsoft.com/whdc/device/input/wheel.mspx
-//
 
-#ifdef FROBIAC_SCROLL_PATCH_DOC
-also patch HIDClassCommon.h to include scrollwheel data:
---- a/trunk/LUFA/Drivers/USB/Class/Common/HIDClassCommon.h
-+++ b/trunk/LUFA/Drivers/USB/Class/Common/HIDClassCommon.h
-@@ -626,6 +626,10 @@
-uint8_t Button; /**< Button mask for currently pressed buttons in the mouse. */
-int8_t  X; /**< Current delta X movement of the mouse. */
-int8_t  Y; /**< Current delta Y movement on the mouse. */
-+   // also adjust descriptors
-    +   int8_t  V; /**< Vertical wheel */
-+   int8_t  H; /**< Horizontal wheel */
-+
-    } ATTR_PACKED USB_MouseReport_Data_t;
-#endif
-
-/// @todo : use HID_DESCRIPTOR_MOUSE(-1, 1, -1, 1, 3, false) with scrollwheel patch ?
 const USB_Descriptor_HIDReport_Datatype_t PROGMEM MouseReport[] = {
     HID_RI_USAGE_PAGE(8, 0x01),       // (Generic Desktop)
     HID_RI_USAGE(8, 0x02),            // (Mouse)
     HID_RI_COLLECTION(8, 0x01),       // (Application)
-    HID_RI_USAGE(8, 0x02),            //   (Mouse)
-    HID_RI_COLLECTION(8, 0x02),       //   (Logical)
-    HID_RI_USAGE(8, 0x01),            //     (Pointer)
-    HID_RI_COLLECTION(8, 0x00),       //     (Physical)
-// ------------------------------  Buttons
+    HID_RI_USAGE(8, 0x01),            //    (Pointer)
+    HID_RI_COLLECTION(8, 0x00),       //    (Physical)
+    // ------------------------------  Buttons
     HID_RI_USAGE_PAGE(8, 0x09),       //       USAGE_PAGE (Button)
     HID_RI_USAGE_MINIMUM(8, 0x01),    //       USAGE_MINIMUM (Button 1)
     HID_RI_USAGE_MAXIMUM(8, 0x05),    //       USAGE_MAXIMUM (Button 5)
@@ -110,11 +83,10 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM MouseReport[] = {
     HID_RI_REPORT_SIZE(8, 0x01),      //       REPORT_SIZE (1)
     HID_RI_REPORT_COUNT(8, 0x05),     //       REPORT_COUNT (5 Buttons)
     HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_VARIABLE | HID_IOF_ABSOLUTE /*0x02*/),        //       INPUT (Data,Var,Abs)
-// ------------------------------  Padding
-    HID_RI_REPORT_SIZE(8, 0x03),      //       REPORT_SIZE (8-5buttons 3)
-    HID_RI_REPORT_COUNT(8, 0x01),     //       REPORT_COUNT (1)
+    HID_RI_REPORT_SIZE(8, 0x03),      //       PADDING REPORT_SIZE (8-5buttons 3)
+    HID_RI_REPORT_COUNT(8, 0x01),     //       PADDING REPORT_COUNT (1)
     HID_RI_INPUT(8, HID_IOF_CONSTANT | HID_IOF_VARIABLE | HID_IOF_ABSOLUTE /*0x03*/),        //       INPUT (Cnst,Var,Abs)
-// ------------------------------  X,Y position
+    // ------------------------------  X,Y position
     HID_RI_USAGE_PAGE(8, 0x01),       //       USAGE_PAGE (Generic Desktop)
     HID_RI_USAGE(8, 0x30),            //       USAGE (X)
     HID_RI_USAGE(8, 0x31),            //       USAGE (Y)
@@ -123,45 +95,21 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM MouseReport[] = {
     HID_RI_REPORT_SIZE(8, 0x08),      //       REPORT_SIZE (8)
     HID_RI_REPORT_COUNT(8, 0x02),     //       REPORT_COUNT (2)
     HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_VARIABLE | HID_IOF_RELATIVE /*0x06*/), //       INPUT (Data,Var,Rel)
-    HID_RI_COLLECTION(8, 0x02),       //       COLLECTION (Logical)
-// ------------------------------  Vertical wheel res multiplier
-    HID_RI_USAGE(8, 0x48),            //         USAGE (Resolution Multiplier)
-    HID_RI_LOGICAL_MINIMUM(8, 0x00),  //         LOGICAL_MINIMUM (0)
-    HID_RI_LOGICAL_MAXIMUM(8, 0x01),  //         LOGICAL_MAXIMUM (1)
-    0x35, 0x01,                       //         PHYSICAL_MINIMUM (1)
-    0x45, 0x04,                       //         PHYSICAL_MAXIMUM (4)
-    HID_RI_REPORT_SIZE(8, 0x02),      //         REPORT_SIZE (2)
-    HID_RI_REPORT_COUNT(8, 0x01),     //         REPORT_COUNT (1)
-    0xa4,                             //         PUSH
-    0xb1, 0x02,                       //         FEATURE (Data,Var,Abs)
-// ------------------------------  Vertical wheel
-    HID_RI_USAGE(8, 0x38),            //         USAGE (Wheel)
-    HID_RI_LOGICAL_MINIMUM(8, -127),  //         LOGICAL_MINIMUM (-127)
-    HID_RI_LOGICAL_MAXIMUM(8,  127),  //         LOGICAL_MAXIMUM (127)
-    0x35, 0x00,                       //         PHYSICAL_MINIMUM (0)        - reset physical
-    0x45, 0x00,                       //         PHYSICAL_MAXIMUM (0)
-    HID_RI_REPORT_SIZE(8, 0x08),      //         REPORT_SIZE (8)
+    // ------------------------------  Vertical wheel
+    HID_RI_USAGE(8, 0x38),            //       USAGE (Wheel)
+    HID_RI_LOGICAL_MINIMUM(8, -127),  //       LOGICAL_MINIMUM (-127)
+    HID_RI_LOGICAL_MAXIMUM(8,  127),  //       LOGICAL_MAXIMUM (127)
+    HID_RI_REPORT_SIZE(8, 0x08),      //       REPORT_SIZE (8)
+    HID_RI_REPORT_COUNT(8, 0x01),     //       REPORT_COUNT (1)
     HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_VARIABLE | HID_IOF_RELATIVE /*0x06*/), //       INPUT (Data,Var,Rel)
-    HID_RI_END_COLLECTION(0),         //       END_COLLECTION
-    HID_RI_COLLECTION(8, 0x02),       //       COLLECTION (Logical)
-// ------------------------------  Horizontal wheel res multiplier
-    HID_RI_USAGE(8, 0x48),            //         USAGE (Resolution Multiplier)
-    0xb4,                             //         POP
-    0xb1, 0x02,                       //         FEATURE (Data,Var,Abs)
-// ------------------------------  Padding for Feature report
-    0x35, 0x00,                       //         PHYSICAL_MINIMUM (0)        - reset physical
-    0x45, 0x00,                       //         PHYSICAL_MAXIMUM (0)
-    HID_RI_REPORT_SIZE(8, 0x04),      //         REPORT_SIZE (4)
-    0xb1, 0x03,                       //         FEATURE (Cnst,Var,Abs)
-// ------------------------------  Horizontal wheel
-    HID_RI_USAGE_PAGE(8, 0x0c),       //         USAGE_PAGE (Consumer Devices)
-    HID_RI_USAGE(16, 0x0238),         //         USAGE (AC Pan)
-    HID_RI_LOGICAL_MINIMUM(8, 0x81),  //         LOGICAL_MINIMUM (-127)
-    HID_RI_LOGICAL_MAXIMUM(8, 0x7f),  //         LOGICAL_MAXIMUM (127)
-    HID_RI_REPORT_SIZE(8, 0x08),      //         REPORT_SIZE (8)
+    // ------------------------------  Horizontal wheel
+    HID_RI_USAGE_PAGE(8, 0x0c),       //       USAGE_PAGE (Consumer Devices)
+    HID_RI_USAGE(16, 0x0238),         //       USAGE (AC Pan)
+    HID_RI_LOGICAL_MINIMUM(8, -127),  //       LOGICAL_MINIMUM (-127)
+    HID_RI_LOGICAL_MAXIMUM(8,  127),  //       LOGICAL_MAXIMUM (127)
+    HID_RI_REPORT_SIZE(8, 0x08),      //       REPORT_SIZE (8)
+    HID_RI_REPORT_COUNT(8, 0x01),     //       REPORT_COUNT (1)
     HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_VARIABLE | HID_IOF_RELATIVE /*0x06*/), //       INPUT (Data,Var,Rel)
-    HID_RI_END_COLLECTION(0),         //       END_COLLECTION
-    HID_RI_END_COLLECTION(0),         //     END_COLLECTION
     HID_RI_END_COLLECTION(0),         //   END_COLLECTION
     HID_RI_END_COLLECTION(0),         // END_COLLECTION
 };
