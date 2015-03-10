@@ -27,10 +27,6 @@
   arising out of or in connection with the use or performance of
   this software.
 */
-/*------------------------------------------------------------------
-  Mouse desciptor patched for scrollwheel by frobiac, 2010
-  --------------------------------------------------------------------
-*/
 
 /** \file
  *

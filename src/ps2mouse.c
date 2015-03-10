@@ -271,7 +271,7 @@ void rotateXY(int8_t *x, int8_t *y)
 #endif
 }
 
-uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
+uint8_t getMouseReport(USB_WheelMouseReport_Data_t *MouseReport)
 {
     if(!g_mouse_enabled)
         return 0;
@@ -340,7 +340,7 @@ uint8_t getMouseReport(USB_MouseReport_Data_t *MouseReport)
 
 
 
-        return sizeof(USB_MouseReport_Data_t);
+        return sizeof(USB_WheelMouseReport_Data_t);
 
     }
     return 0;

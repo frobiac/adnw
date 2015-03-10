@@ -97,5 +97,13 @@ uint8_t     g_pinkydrop;        ///< is pinky dropped one row below homerow?
 
 volatile uint32_t idle_count;   ///< interupt-incremented timer used for timeouts of MKT and mousekeys
 
+typedef struct {
+    uint8_t Button;
+    int8_t X;
+    int8_t Y;
+    int8_t V; /// vertical wheel
+    int8_t H; /// horizontal wheel
+} ATTR_PACKED USB_WheelMouseReport_Data_t;
+
 #endif // _KEYBOARD_H_
 

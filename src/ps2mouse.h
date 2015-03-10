@@ -92,7 +92,7 @@ bool     send_packet(uint8_t byte);
 uint8_t  read_packet(void);
 bool ps2_send_expect(uint8_t send, uint8_t expect);
 
-uint8_t getMouseReport(USB_MouseReport_Data_t *report_data);
+uint8_t getMouseReport(USB_WheelMouseReport_Data_t *report_data);
 
 
 #endif // PS2MOUSE_H

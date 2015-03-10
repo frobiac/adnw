@@ -71,7 +71,7 @@
 #include "command.h"
 
 /** Buffer to hold the previously generated Mouse HID report, for comparison purposes inside the HID class driver. */
-uint8_t PrevMouseHIDReportBuffer[sizeof(USB_MouseReport_Data_t)];
+uint8_t PrevMouseHIDReportBuffer[sizeof(USB_WheelMouseReport_Data_t)];
 
 /** LUFA HID Class driver interface configuration and state information. This structure is
  *  passed to all HID Class driver functions, so that multiple instances of the same class
@@ -316,7 +316,7 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
 #endif
 
     else if (HIDInterfaceInfo == &Mouse_HID_Interface) {
-        USB_MouseReport_Data_t* MouseReport = (USB_MouseReport_Data_t*)ReportData;
+        USB_WheelMouseReport_Data_t* MouseReport = (USB_WheelMouseReport_Data_t*)ReportData;
 
         /// @todo : is this needed?
         // mouse through key emulation only if PS/2 mouse report is "empty"

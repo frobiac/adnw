@@ -32,6 +32,6 @@ void mousekey_send(void);
 
 void mousekey_activate(uint16_t mask);
 
-uint8_t getMouseKeyReport(USB_MouseReport_Data_t *MouseReport);
+uint8_t getMouseKeyReport(USB_WheelMouseReport_Data_t *MouseReport);
 
 #endif
