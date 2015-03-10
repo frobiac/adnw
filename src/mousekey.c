@@ -41,11 +41,11 @@ static void mousekey_debug(void);
 
 #define MK_XY_DELAY     200 ///< delay [ms] until start of acceleration
 #define MK_XY_TTM      1200 ///< time  [ms] until maximum acceleration is reached
-#define MK_XY_MAX        27 ///< maximum move increment per event
+#define MK_XY_MAX        35 ///< maximum move increment per event
 #define MK_XY_MIN         3 ///< minimal move incerment per event
-#define MK_VH_DELAY     700
+#define MK_VH_DELAY     500
 #define MK_VH_TTM      2000
-#define MK_VH_MAX         5
+#define MK_VH_MAX         9
 #define MK_VH_MIN         1
 
 #define MS_PER_REPORT    30 ///< time [ms] until next report is filled with data
