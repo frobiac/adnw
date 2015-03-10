@@ -81,11 +81,10 @@ enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FT
  */
 uint8_t tp_read_config()
 {
-    printf("\nTP Config= ");
     tp_send_read_ack(0xe2);
     tp_send_read_ack(0x2c);
     uint8_t config = read_packet();
-    printf("%02x ", config);
+    printf("TP cfg=0x%02x\n", config);
     return config;
 }
 
@@ -99,7 +98,7 @@ void tp_id(void)
         uint8_t id[2];
         id[0]=read_packet();
         id[1]=read_packet();
-        printf("\n2nd ID=%02x%02x\nExt.ID=", id[0],id[1]);
+        printf("2nd ID=%02x%02x\nExt.ID=", id[0],id[1]);
     }
     // read extended ID, which ends in ')'
     if( tp_send_read_ack(0xd0) ) {
@@ -108,7 +107,7 @@ void tp_id(void)
             tmp=read_packet();
             printf("%c",tmp);
         }
-        printf(")");
+        printf(")\n");
     }
 }
 

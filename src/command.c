@@ -122,7 +122,7 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 
 #ifdef MOUSE_HAS_SCROLL_WHEELS
         case 't':
-            printf("TP:\n");
+            tp_read_config();
             tp_id();
             setCommandMode(false);
             break;
