@@ -55,5 +55,5 @@
 #define DELY (dapack[2]-(((dapack[0] & (1 << 5)) >> 5) << 8))
 */
 
-void send_packet(uint8_t);
+bool send_packet(uint8_t);
 uint8_t read_packet(void);

@@ -94,36 +94,42 @@ uint8_t oparity(uint8_t byte)
     return par;
 }
 
-void send_packet(uint8_t byte)
-{
-    uint8_t parity;
-    parity = oparity(byte);
-    clk(0);
-    _delay_us(PS2_DELAY);
-    data(0); //Start
-    clk(1);
-    CDDR &= ~(1 << CBIT); // Release clock
-    CPORT |= (1 << CBIT); //Set the pull up on Clock
-    /////////////
-    serout((byte & (1 << 0)) >> 0);
-    serout((byte & (1 << 1)) >> 1);
-    serout((byte & (1 << 2)) >> 2);
-    serout((byte & (1 << 3)) >> 3);
-    serout((byte & (1 << 4)) >> 4);
-    serout((byte & (1 << 5)) >> 5);
-    serout((byte & (1 << 6)) >> 6);
-    serout((byte & (1 << 7)) >> 7);
-    /////////////
-    serout(parity);
-    /////////////
-    serout(1); //Stop
-    DDDR &= ~(1 << DBIT); //Release the Data line
-    DPORT |= (1 << DBIT); //Set the pull up on Data
-    /////////////
-    if(serin() != 0 /*ACK*/)
-        send_packet(byte); // Try again if ACK has not been received
 
-    return;
+
+bool send_packet(uint8_t byte)
+{
+    /// @todo Error checking in PS/2 code
+    uint8_t sent_retries=0;
+    uint8_t parity = oparity(byte);
+
+    do {
+        clk(0);
+        _delay_us(PS2_DELAY);
+        data(0); //Start
+        clk(1);
+        CDDR &= ~(1 << CBIT); // Release clock
+        CPORT |= (1 << CBIT); //Set the pull up on Clock
+
+        /////////////
+        serout((byte & (1 << 0)) >> 0);
+        serout((byte & (1 << 1)) >> 1);
+        serout((byte & (1 << 2)) >> 2);
+        serout((byte & (1 << 3)) >> 3);
+        serout((byte & (1 << 4)) >> 4);
+        serout((byte & (1 << 5)) >> 5);
+        serout((byte & (1 << 6)) >> 6);
+        serout((byte & (1 << 7)) >> 7);
+        serout(parity);
+
+        serout(1); //Stop
+
+        DDDR &= ~(1 << DBIT); //Release the Data line
+        DPORT |= (1 << DBIT); //Set the pull up on Data
+
+        sent_retries++;
+    } while (serin() != 0 && sent_retries < 5 );
+
+    return (sent_retries<5);
 }
 
 uint8_t read_packet(void)
