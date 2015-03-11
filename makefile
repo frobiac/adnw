@@ -89,6 +89,7 @@ ifneq (,$(findstring ANALOGSTICK,$(CC_FLAGS)))
 endif
 
 ifneq (,$(findstring PS2MOUSE,$(CC_FLAGS)))
+	SRC += $(SRCDIR)/pstwo.c
 	SRC += $(SRCDIR)/ps2mouse.c
 	SRC += $(SRCDIR)/trackpoint.c
 endif

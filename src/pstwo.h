@@ -22,6 +22,7 @@
 **********************************************************************************/
 
 #include "config.h" // data, clock and reset ports/pins
+#include <LUFA/LUFA/Common/Common.h>
 
 #define PS2_DELAY 150
 

@@ -1,172 +1,28 @@
-/*********************************************************************************
- * Title: PS/2 Library
- * Author: Akshay Srinivasan<akshaysrinivasan@nitk.ac.in>
- * Date: 22 June 2009
- * Software: AVR-GCC 4.3.2
+/*
+    Copyright 2010-2013 Stefan Fröbe, <frobiac /at/ gmail [d0t] com>
 
- *-------------------------------------------------------------------------------------
- * "THE BEER-WARE LICENSE" (Revision 42):
- * <akshaysrinivasan@gmail.com> wrote this file.  As long as you retain this notice you
- * can do whatever you want with this stuff. If we meet some day, and you think
- * this stuff is worth it, you can buy me a beer in return.        Akshay Srinivasan
- *-------------------------------------------------------------------------------------
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
- DESCRIPTION
-    This library provides an abstraction layer for the PS/2 protocol. This library
-    provides functions for receiving and sending bytes via PS/2. This library can
-    be used to read and write data in PS/2 devices, although interpreting the data
-    is left for you to do.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-    For more information goto,
-    http://computer-engineering.org/ps2protocol/
-**********************************************************************************/
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include <util/delay.h>
 
 #include "ps2mouse.h"
 #include "trackpoint.h"
 
-
-// >42590 to register connected TP correctly
-// <50000 to not hang if no TP connected
-#define NOP_MAX_CNT 48000
-volatile uint32_t cnt = 0;
-
 volatile uint8_t     scrollcnt;
 volatile uint32_t    mouse_timer; /// toggle mouse mode for a specified time
 volatile uint16_t    accel; /// toggle mouse mode for a specified time
-
-// only used here
-void    serout(uint8_t bit);
-uint8_t serin (void);
-
-
-void data(uint8_t x)
-{
-    DDDR |= (1 << DBIT);
-    if(x==0)
-        DPORT &= ~(1 << DBIT);
-    else if(x==1)
-        DPORT |= (1 << DBIT);
-    return;
-}
-
-void clk(uint8_t x)
-{
-    CDDR |= (1 << CBIT);
-    if(x==0)
-        CPORT &= ~(1 << CBIT);
-    else if(x==1)
-        CPORT |= (1 << CBIT);
-    return;
-}
-
-
-
-void serout(uint8_t bit)
-{
-    cnt=0;
-    while(CLK && ++cnt < NOP_MAX_CNT) {
-        __asm__("nop");
-    }
-    data(bit);
-    cnt = 0;
-    while(!CLK && ++cnt < NOP_MAX_CNT) {
-        __asm__("nop");
-    }
-}
-
-uint8_t serin()
-{
-    uint8_t state;
-    cnt=0;
-    while(CLK && ++cnt < NOP_MAX_CNT) {
-        __asm__("nop");
-    }
-    state = DATA;
-    cnt = 0;
-    while(!CLK && ++cnt < NOP_MAX_CNT) {
-        __asm__("nop");
-    }
-    return state;
-}
-
-uint8_t oparity(uint8_t byte)
-{
-    uint8_t par=1;
-    par ^= ((byte & (1 << 0)) >> 0);
-    par ^= ((byte & (1 << 1)) >> 1);
-    par ^= ((byte & (1 << 2)) >> 2);
-    par ^= ((byte & (1 << 3)) >> 3);
-    par ^= ((byte & (1 << 4)) >> 4);
-    par ^= ((byte & (1 << 5)) >> 5);
-    par ^= ((byte & (1 << 6)) >> 6);
-    par ^= ((byte & (1 << 7)) >> 7);
-    return par;
-}
-
-
-
-bool send_packet(uint8_t byte)
-{
-    /// @todo Error checking in PS/2 code
-    uint8_t sent_retries=0;
-
-    do {
-        uint8_t parity = oparity(byte);
-        clk(0);
-        _delay_us(DELAY);
-        data(0); //Start
-        clk(1);
-        CDDR &= ~(1 << CBIT); // Release clock
-        CPORT |= (1 << CBIT); //Set the pull up on Clock
-
-        /////////////
-        serout((byte & (1 << 0)) >> 0);
-        serout((byte & (1 << 1)) >> 1);
-        serout((byte & (1 << 2)) >> 2);
-        serout((byte & (1 << 3)) >> 3);
-        serout((byte & (1 << 4)) >> 4);
-        serout((byte & (1 << 5)) >> 5);
-        serout((byte & (1 << 6)) >> 6);
-        serout((byte & (1 << 7)) >> 7);
-        serout(parity);
-
-        serout(1); //Stop
-
-        DDDR &= ~(1 << DBIT); //Release the Data line
-        DPORT |= (1 << DBIT); //Set the pull up on Data
-
-        //if(serin() != PS2_ACK )
-        //    send_packet(byte); // Try again if PS2_ACK has not been received
-        sent_retries++;
-    } while (serin() != 0 && sent_retries < 5 );
-
-    if(sent_retries >= 5)
-        return false;
-    return true;
-}
-
-uint8_t read_packet(void)
-{
-    uint8_t byte=0,par;
-    serin(); //Start
-    byte |= (serin() << 0);
-    byte |= (serin() << 1);
-    byte |= (serin() << 2);
-    byte |= (serin() << 3);
-    byte |= (serin() << 4);
-    byte |= (serin() << 5);
-    byte |= (serin() << 6);
-    byte |= (serin() << 7);
-    par = serin(); //Parity
-    serin(); //Stop
-
-    if(par != oparity(byte))
-        send_packet(0xfe); //Resend
-
-    return byte;
-}
 
 bool ps2_send_expect(uint8_t send, uint8_t expect)
 {

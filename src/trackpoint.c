@@ -29,7 +29,7 @@ void tp_reset()
 {
     RDDR |= (1 << RBIT);
     RPORT |= (1 << RBIT);
-    _delay_us(DELAY);
+    _delay_us(PS2_DELAY);
     RPORT &= ~(1 << RBIT);
     return;
 }
