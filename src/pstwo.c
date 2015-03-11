@@ -25,6 +25,10 @@
 #include "pstwo.h"
 #include<util/delay.h>
 
+// >42590 to register connected TP correctly
+// <50000 to not hang if no TP connected
+#define NOP_MAX_CNT 48000
+volatile uint32_t cnt = 0;
 
 void data(uint8_t x)
 {
@@ -46,26 +50,32 @@ void clk(uint8_t x)
     return;
 }
 
+
+
 void serout(uint8_t bit)
 {
-    while(CLK) {
-        asm("nop");
+    cnt=0;
+    while(CLK && ++cnt < NOP_MAX_CNT) {
+        __asm__("nop");
     }
     data(bit);
-    while(!CLK) {
-        asm("nop");
+    cnt = 0;
+    while(!CLK && ++cnt < NOP_MAX_CNT) {
+        __asm__("nop");
     }
 }
 
 uint8_t serin()
 {
     uint8_t state;
-    while(CLK) {
-        asm("nop");
+    cnt=0;
+    while(CLK && ++cnt < NOP_MAX_CNT) {
+        __asm__("nop");
     }
     state = DATA;
-    while(!CLK) {
-        asm("nop");
+    cnt = 0;
+    while(!CLK && ++cnt < NOP_MAX_CNT) {
+        __asm__("nop");
     }
     return state;
 }
