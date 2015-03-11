@@ -25,8 +25,6 @@
 #include "pstwo.h"
 #include<util/delay.h>
 
-#define ACK 0
-#define DELAY 150
 
 void data(uint8_t x)
 {
@@ -91,7 +89,7 @@ void send_packet(uint8_t byte)
     uint8_t parity;
     parity = oparity(byte);
     clk(0);
-    _delay_us(DELAY);
+    _delay_us(PS2_DELAY);
     data(0); //Start
     clk(1);
     CDDR &= ~(1 << CBIT); // Release clock
@@ -112,7 +110,7 @@ void send_packet(uint8_t byte)
     DDDR &= ~(1 << DBIT); //Release the Data line
     DPORT |= (1 << DBIT); //Set the pull up on Data
     /////////////
-    if(serin() != ACK)
+    if(serin() != 0 /*ACK*/)
         send_packet(byte); // Try again if ACK has not been received
 
     return;

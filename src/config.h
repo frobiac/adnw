@@ -62,6 +62,29 @@
 #define PRODUCT_ID            0x6033
 #define RELEASE_NUMBER        0x0001
 
+#ifdef BLUECUBE
+    #define DAPORT  B
+    #define DBIT    7
+    #define CLKPORT E
+    #define CBIT    6
+    #define RSTPORT B
+    #define RBIT    3
+
+#elif defined HYPERNANO || defined REDTILT
+    #define DAPORT  B
+    #define DBIT    1
+    #define CLKPORT B
+    #define CBIT    2
+    #define RSTPORT B
+    #define RBIT    0
+
+/// @TODO Hypermicro defines for trackpoint
+
+#else 
+    #ifdef PS2MOUSE
+        #error PS2MOUSE selected, but no pins defined
+    #endif
+#endif
 
 #endif // CONFIG_H
 

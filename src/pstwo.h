@@ -21,22 +21,12 @@
     http://computer-engineering.org/ps2protocol/
 **********************************************************************************/
 
+#include "config.h" // data, clock and reset ports/pins
 
-#ifndef F_CPU
-    #define F_CPU 16000000UL
-#endif
-
-//Data
-#define DAPORT D
-#define DBIT  3
-
-//Clock
-#define CLKPORT D
-#define CBIT  2
+#define PS2_DELAY 150
 
 /////////////////////////////
 ///General purpose macros////
-#define CONCAT(a,b)     a ## b
 #define CCPORT(name)    CONCAT(PORT,name)
 #define CCPIN(name)     CONCAT(PIN,name)
 #define CCDDR(name)     CONCAT(DDR,name)
@@ -49,11 +39,17 @@
 #define CPORT   CCPORT(CLKPORT)
 #define CPIN    CCPIN(CLKPORT)
 #define CDDR    CCDDR(CLKPORT)
+
+#define RPORT   CCPORT(RSTPORT)
+#define RPIN    CCPIN(RSTPORT)
+#define RDDR    CCDDR(RSTPORT)
 //////////////////////////////
 
 #define DATA ((DPIN & (1 << DBIT)) >> DBIT)
 #define CLK  ((CPIN & (1 << CBIT)) >> CBIT)
+#define RESET ((RPIN & (1 << RBIT)) >> RBIT)))
 ///////////////////////////////
+
 /*
 #define DELX (dapack[1]-(((dapack[0] & (1 << 4)) >> 4) << 8))
 #define DELY (dapack[2]-(((dapack[0] & (1 << 5)) >> 5) << 8))
