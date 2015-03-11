@@ -1,56 +1,38 @@
 /*
-                   The HumbleHacker Keyboard Project
-                 Copyright © 2008-2010, David Whetstone
-              david DOT whetstone AT humblehacker DOT com
-
-  This file is a part of the HumbleHacker Keyboard Firmware project.
-
-  The HumbleHacker Keyboard Project is free software: you can
-  redistribute it and/or modify it under the terms of the GNU General
-  Public License as published by the Free Software Foundation, either
-  version 3 of the License, or (at your option) any later version.
-
-  The HumbleHacker Keyboard Project is distributed in the
-  hope that it will be useful, but WITHOUT ANY WARRANTY; without even
-  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-  PURPOSE.  See the GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with The HumbleHacker Keyboard Firmware project.  If not, see
-  <http://www.gnu.org/licenses/>.
-
-  --------------------------------------------------------------------
-
-  This code is based on the keyboard demonstration application by
-  Denver Gingerich.
-
-  Copyright 2008  Denver Gingerich (denver [at] ossguy [dot] com)
-
-  --------------------------------------------------------------------
-
-  Gingerich's keyboard demonstration application is based on the MyUSB
-  Mouse demonstration application, written by Dean Camera.
-
              LUFA Library
-     Copyright (C) Dean Camera, 2010.
+     Copyright (C) Dean Camera, 2014.
 
   dean [at] fourwalledcubicle [dot] com
-      www.fourwalledcubicle.com
-  --------------------------------------------------------------------
+           www.lufa-lib.org
+*/
 
-  Mouse handling added by frobiac, 2010
+/*
+  Copyright 2014  Dean Camera (dean [at] fourwalledcubicle [dot] com)
 
-  --------------------------------------------------------------------
+  Permission to use, copy, modify, distribute, and sell this
+  software and its documentation for any purpose is hereby granted
+  without fee, provided that the above copyright notice appear in
+  all copies and that both that the copyright notice and this
+  permission notice and warranty disclaimer appear in supporting
+  documentation, and that the name of the author not be used in
+  advertising or publicity pertaining to distribution of the
+  software without specific, written prior permission.
 
+  The author disclaims all warranties with regard to this
+  software, including all implied warranties of merchantability
+  and fitness.  In no event shall the author be liable for any
+  special, indirect or consequential damages or any damages
+  whatsoever resulting from loss of use, data or profits, whether
+  in an action of contract, negligence or other tortious action,
+  arising out of or in connection with the use or performance of
+  this software.
 */
 
 /** \file
  *
- *  Main source file for the Keyboard demo. This file contains the main tasks of the demo and
- *  is responsible for the initial application hardware configuration.
+ *  Based on the LUFA KeyboardMouse demo. This file contains the main tasks of
+ *  the demo and is responsible for the initial application hardware configuration.
  */
-
-#include <assert.h>
 
 #include "Keyboard.h"
 #include "keyboard_class.h"
@@ -69,19 +51,19 @@
 
 #include "macro.h"
 #include "command.h"
-
-/** Buffer to hold the previously generated Mouse HID report, for comparison purposes inside the HID class driver. */
-uint8_t PrevMouseHIDReportBuffer[sizeof(USB_WheelMouseReport_Data_t)];
+/** Buffer to hold the previously generated HID reports, for comparison purposes inside the HID class drivers. */
+static uint8_t PrevKeyboardHIDReportBuffer[sizeof(USB_KeyboardReport_Data_t)];
+static uint8_t PrevMouseHIDReportBuffer[sizeof(USB_WheelMouseReport_Data_t)];
+static uint8_t PrevDBGHIDReportBuffer[sizeof(USB_DBGReport_Data_t)];
 
 /** LUFA HID Class driver interface configuration and state information. This structure is
  *  passed to all HID Class driver functions, so that multiple instances of the same class
- *  within a device can be differentiated from one another. This is for the mouse HID
- *  interface within the device.
+ *  within a device can be differentiated from one another.
  */
 USB_ClassInfo_HID_Device_t Mouse_HID_Interface = {
     .Config =
     {
-        .InterfaceNumber              = 2,
+        .InterfaceNumber              = INTERFACE_ID_Mouse,
 
         .ReportINEndpoint             =
         {
@@ -96,17 +78,10 @@ USB_ClassInfo_HID_Device_t Mouse_HID_Interface = {
 };
 
 
-/** Buffer to hold the previously generated Keyboard HID report, for comparison purposes inside the HID class driver. */
-uint8_t PrevKeyboardHIDReportBuffer[sizeof(USB_KeyboardReport_Data_t)];
-
-/** LUFA HID Class driver interface configuration and state information. This structure is
- *  passed to all HID Class driver functions, so that multiple instances of the same class
- *  within a device can be differentiated from one another.
- */
 USB_ClassInfo_HID_Device_t Keyboard_HID_Interface = {
     .Config =
     {
-        .InterfaceNumber              = 0,
+        .InterfaceNumber              = INTERFACE_ID_Keyboard,
 
         .ReportINEndpoint             =
         {
@@ -120,12 +95,11 @@ USB_ClassInfo_HID_Device_t Keyboard_HID_Interface = {
     },
 };
 
-uint8_t PrevDBGHIDReportBuffer[sizeof(USB_DBGReport_Data_t)];
 
 USB_ClassInfo_HID_Device_t DBG_HID_Interface = {
     .Config =
     {
-        .InterfaceNumber              = 1,
+        .InterfaceNumber              = INTERFACE_ID_Debug,
 
         .ReportINEndpoint             =
         {
@@ -140,7 +114,6 @@ USB_ClassInfo_HID_Device_t DBG_HID_Interface = {
 };
 
 
-//uint8_t g_num_lock, g_caps_lock, g_scrl_lock;
 
 void led(uint8_t n)
 {
@@ -158,8 +131,7 @@ void led(uint8_t n)
 static void __attribute__ ((noreturn)) main_loop(void)
 {
     SetupHardware();
-
-    sei();
+    GlobalInterruptEnable();
 
     for (;;) {
         if (USB_DeviceState != DEVICE_STATE_Suspended) {
@@ -184,30 +156,27 @@ int main(void)
 }
 
 
-/** Configures the board hardware and chip peripherals for the demo's functionality. */
+/** Configures the board hardware and chip peripherals for keyboard and mouse functionality. */
 void SetupHardware()
 {
-    /* Disable clock division */
-    //clock_prescale_set(clock_div_2);
-    // set for 16 MHz clock
-#define CPU_PRESCALE(n) (CLKPR = 0x80, CLKPR = (n))
-#define CPU_16MHz       0x00
-    CPU_PRESCALE(CPU_16MHz);
-
+#if (ARCH == ARCH_AVR8)
     /* Disable watchdog if enabled by bootloader/fuses */
     MCUSR &= ~(1 << WDRF);
     wdt_disable();
 
-    /* Hardware Initialization */
+    /* Disable clock division */
+    clock_prescale_set(clock_div_1);
+#endif
 
+    /* Hardware Initialization */
 #ifdef ANALOGSTICK
     Analog_Init();
 #endif
 
     LEDs_Init();
     USB_Init();
-    USB_PLL_On();
-    while (!USB_PLL_IsReady());
+//    USB_PLL_On();
+//    while (!USB_PLL_IsReady());
 
     /* Task init */
     initKeyboard();
@@ -227,16 +196,8 @@ void SetupHardware()
 #endif
 
     printf("\nAdNW : %s", FW_VERSION);
-
-#if defined(BOOTLOADER_TEST)
-    uint8_t bootloader = eeprom_read_byte(&ee_bootloader);
-    if (bootloader == 0xff) { // eeprom has been reset
-        eeprom_write_byte(&ee_bootloader, FALSE);
-    } else if (bootloader == TRUE) {
-        __asm__("jmp 0xF000");
-    }
-#endif
 }
+
 
 /** Event handler for the library USB Connection event. */
 void EVENT_USB_Device_Connect(void)
@@ -253,18 +214,15 @@ void EVENT_USB_Device_Disconnect(void)
 /** Event handler for the library USB Configuration Changed event. */
 void EVENT_USB_Device_ConfigurationChanged(void)
 {
-    LEDs_SetAllLEDs(LEDMASK_USB_READY);
+    bool ConfigSuccess = true;
 
-    if (!(HID_Device_ConfigureEndpoints(&Keyboard_HID_Interface)))
-        LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
-
-    if (!(HID_Device_ConfigureEndpoints(&DBG_HID_Interface)))
-        LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
-
-    if (!(HID_Device_ConfigureEndpoints(&Mouse_HID_Interface)))
-        LEDs_SetAllLEDs(LEDMASK_USB_ERROR);
+    ConfigSuccess &= HID_Device_ConfigureEndpoints(&Keyboard_HID_Interface);
+    ConfigSuccess &= HID_Device_ConfigureEndpoints(&Mouse_HID_Interface);
+    ConfigSuccess &= HID_Device_ConfigureEndpoints(&DBG_HID_Interface);
 
     USB_Device_EnableSOFEvents();
+
+    LEDs_SetAllLEDs(ConfigSuccess ? LEDMASK_USB_READY : LEDMASK_USB_ERROR);
 }
 
 /** Event handler for the library USB Unhandled Control Request event. */
