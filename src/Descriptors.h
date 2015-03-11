@@ -1,13 +1,13 @@
 /*
              LUFA Library
-     Copyright (C) Dean Camera, 2012.
+     Copyright (C) Dean Camera, 2014.
 
   dean [at] fourwalledcubicle [dot] com
            www.lufa-lib.org
 */
 
 /*
-  Copyright 2012  Dean Camera (dean [at] fourwalledcubicle [dot] com)
+  Copyright 2014  Dean Camera (dean [at] fourwalledcubicle [dot] com)
 
   Permission to use, copy, modify, distribute, and sell this
   software and its documentation for any purpose is hereby granted
@@ -18,7 +18,7 @@
   advertising or publicity pertaining to distribution of the
   software without specific, written prior permission.
 
-  The author disclaim all warranties with regard to this
+  The author disclaims all warranties with regard to this
   software, including all implied warranties of merchantability
   and fitness.  In no event shall the author be liable for any
   special, indirect or consequential damages or any damages
@@ -27,11 +27,6 @@
   arising out of or in connection with the use or performance of
   this software.
 */
-
-/** \file
- *
- *  Header file for Descriptors.c.
- */
 
 #ifndef _DESCRIPTORS_H_
 #define _DESCRIPTORS_H_
@@ -67,29 +62,37 @@ typedef struct {
 
 } USB_Descriptor_Configuration_t;
 
+/** Enum for the device interface descriptor IDs within the device. Each interface descriptor
+ *  should have a unique ID index associated with it, which can be used to refer to the
+ *  interface from other descriptors.
+ */
 enum InterfaceDescriptors_t {
     INTERFACE_ID_Keyboard = 0,
     INTERFACE_ID_Debug    = 1,
     INTERFACE_ID_Mouse    = 2,
 };
 
-/* Macros: */
-/** Endpoint number of the Keyboard HID report IN endpoint. */
-#define KEYBOARD_IN_EPADDR           (ENDPOINT_DIR_IN  | 1)
 
-/** Size in bytes of the Keyboard HID report IN and OUT endpoints. */
+/** Enum for the device string descriptor IDs within the device. Each string descriptor should
+ *  have a unique ID index associated with it, which can be used to refer to the string from
+ *  other descriptors.
+ */
+enum StringDescriptors_t {
+    STRING_ID_Language     = 0, /**< Supported Languages string descriptor ID (must be zero) */
+    STRING_ID_Manufacturer = 1, /**< Manufacturer string ID */
+    STRING_ID_Product      = 2, /**< Product string ID */
+};
+
+/* Macros: */
+/// Endpoint numbers and sizes
+#define KEYBOARD_IN_EPADDR           (ENDPOINT_DIR_IN | 1)
 #define KEYBOARD_EPSIZE              8
 
-/** Endpoint number of the DBG HID report IN endpoint. */
-#define DBG_IN_EPADDR                (ENDPOINT_DIR_IN  | 2)
-
-/** Size in bytes of the DBG HID report IN and OUT
- *  endpoints. */
+#define DBG_IN_EPADDR                (ENDPOINT_DIR_IN | 2)
 #define DBG_EPSIZE                   32
 
-/** Endpoint number of the Mouse HID reporting IN endpoint. */
-#define MOUSE_IN_EPADDR                (ENDPOINT_DIR_IN  | 3)
-#define HID_EPSIZE                    8
+#define MOUSE_IN_EPADDR              (ENDPOINT_DIR_IN | 3)
+#define MOUSE_EPSIZE                 8
 
 
 
@@ -100,3 +103,4 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
 ATTR_WARN_UNUSED_RESULT ATTR_NON_NULL_PTR_ARG(3);
 
 #endif
+

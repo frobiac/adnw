@@ -1,13 +1,13 @@
 /*
              LUFA Library
-     Copyright (C) Dean Camera, 2012.
+     Copyright (C) Dean Camera, 2014.
 
   dean [at] fourwalledcubicle [dot] com
            www.lufa-lib.org
 */
 
 /*
-  Copyright 2012  Dean Camera (dean [at] fourwalledcubicle [dot] com)
+  Copyright 2014  Dean Camera (dean [at] fourwalledcubicle [dot] com)
 
   Permission to use, copy, modify, distribute, and sell this
   software and its documentation for any purpose is hereby granted
@@ -18,7 +18,7 @@
   advertising or publicity pertaining to distribution of the
   software without specific, written prior permission.
 
-  The author disclaim all warranties with regard to this
+  The author disclaims all warranties with regard to this
   software, including all implied warranties of merchantability
   and fitness.  In no event shall the author be liable for any
   special, indirect or consequential damages or any damages
@@ -155,8 +155,8 @@ const USB_Descriptor_Device_t PROGMEM DeviceDescriptor = {
     .ProductID              = PRODUCT_ID,
     .ReleaseNumber          = RELEASE_NUMBER,
 
-    .ManufacturerStrIndex   = 0x01,
-    .ProductStrIndex        = 0x02,
+    .ManufacturerStrIndex   = STRING_ID_Manufacturer,
+    .ProductStrIndex        = STRING_ID_Product,
     .SerialNumStrIndex      = NO_DESCRIPTOR,
 
     .NumberOfConfigurations = FIXED_NUM_CONFIGURATIONS
@@ -293,7 +293,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
         .EndpointAddress        = MOUSE_IN_EPADDR,
         .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
-        .EndpointSize           = HID_EPSIZE,
+        .EndpointSize           = MOUSE_EPSIZE,
         .PollingIntervalMS      = 0x05
     }
 };
@@ -302,29 +302,19 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
  *  the string descriptor with index 0 (the first index). It is actually an array of 16-bit integers, which indicate
  *  via the language ID table available at USB.org what languages the device supports for its string descriptors.
  */
-const USB_Descriptor_String_t PROGMEM LanguageString = {
-    .Header                 = {.Size = USB_STRING_LEN(1), .Type = DTYPE_String},
-
-    .UnicodeString          = {LANGUAGE_ID_ENG}
-};
+const USB_Descriptor_String_t PROGMEM LanguageString = USB_STRING_DESCRIPTOR_ARRAY(LANGUAGE_ID_ENG);
 
 /** Manufacturer descriptor string. This is a Unicode string containing the manufacturer's details in human readable
  *  form, and is read out upon request by the host when the appropriate string ID is requested, listed in the Device
  *  Descriptor.
  */
-const USB_Descriptor_String_t PROGMEM ManufacturerString = {
-    .Header                 = {.Size = USB_STRING_LEN(sizeof(STR_MANUFACTURER)), .Type = DTYPE_String},
-    .UnicodeString          = STR_MANUFACTURER
-};
+const USB_Descriptor_String_t PROGMEM ManufacturerString = USB_STRING_DESCRIPTOR(STR_MANUFACTURER);
 
 /** Product descriptor string. This is a Unicode string containing the product's details in human readable form,
  *  and is read out upon request by the host when the appropriate string ID is requested, listed in the Device
  *  Descriptor.
  */
-const USB_Descriptor_String_t PROGMEM ProductString = {
-    .Header                 = {.Size = USB_STRING_LEN(sizeof(STR_PRODUCT)), .Type = DTYPE_String},
-    .UnicodeString          = STR_PRODUCT
-};
+const USB_Descriptor_String_t PROGMEM ProductString = USB_STRING_DESCRIPTOR(STR_PRODUCT);
 
 /** This function is called by the library when in device mode, and must be overridden (see library "USB Descriptors"
  *  documentation) by the application code so that the address and size of a requested descriptor can be given
@@ -337,30 +327,30 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint8_t wIndex,
     const uint8_t  DescriptorType   = (wValue >> 8);
     const uint8_t  DescriptorNumber = (wValue & 0xFF);
 
-    void*    Address = NULL;
+    const void*    Address = NULL;
     uint16_t Size    = NO_DESCRIPTOR;
 
     switch (DescriptorType) {
         case DTYPE_Device:
-            Address = (void*)&DeviceDescriptor;
+            Address = &DeviceDescriptor;
             Size    = sizeof(USB_Descriptor_Device_t);
             break;
         case DTYPE_Configuration:
-            Address = (void*)&ConfigurationDescriptor;
+            Address = &ConfigurationDescriptor;
             Size    = sizeof(USB_Descriptor_Configuration_t);
             break;
         case DTYPE_String:
             switch (DescriptorNumber) {
-                case 0x00:
-                    Address = (void*)&LanguageString;
+                case STRING_ID_Language:
+                    Address = &LanguageString;
                     Size    = pgm_read_byte(&LanguageString.Header.Size);
                     break;
-                case 0x01:
-                    Address = (void*)&ManufacturerString;
+                case STRING_ID_Manufacturer:
+                    Address = &ManufacturerString;
                     Size    = pgm_read_byte(&ManufacturerString.Header.Size);
                     break;
-                case 0x02:
-                    Address = (void*)&ProductString;
+                case STRING_ID_Product:
+                    Address = &ProductString;
                     Size    = pgm_read_byte(&ProductString.Header.Size);
                     break;
             }
@@ -369,15 +359,15 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint8_t wIndex,
         case HID_DTYPE_HID:
             switch (wIndex) {
                 case INTERFACE_ID_Keyboard:
-                    Address = (void*)&ConfigurationDescriptor.HID_KeyboardHID;
+                    Address = &ConfigurationDescriptor.HID_KeyboardHID;
                     Size    = sizeof(USB_HID_Descriptor_HID_t);
                     break;
                 case INTERFACE_ID_Debug:
-                    Address = (void*)&ConfigurationDescriptor.HIDDBG_HID;
+                    Address = &ConfigurationDescriptor.HIDDBG_HID;
                     Size    = sizeof(USB_HID_Descriptor_HID_t);
                     break;
                 case INTERFACE_ID_Mouse:
-                    Address = (void*)&ConfigurationDescriptor.HID_MouseHID;
+                    Address = &ConfigurationDescriptor.HID_MouseHID;
                     Size    = sizeof(USB_HID_Descriptor_HID_t);
                     break;
             }
@@ -385,15 +375,15 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint8_t wIndex,
         case HID_DTYPE_Report:
             switch (wIndex) {
                 case INTERFACE_ID_Keyboard:
-                    Address = (void*)&KeyboardReport;
+                    Address = &KeyboardReport;
                     Size    = sizeof(KeyboardReport);
                     break;
                 case INTERFACE_ID_Debug:
-                    Address = (void*)&DBGReport;
+                    Address = &DBGReport;
                     Size    = sizeof(DBGReport);
                     break;
                 case INTERFACE_ID_Mouse:
-                    Address = (void*)&MouseReport;
+                    Address = &MouseReport;
                     Size    = sizeof(MouseReport);
                     break;
             }

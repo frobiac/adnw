@@ -86,7 +86,7 @@ USB_ClassInfo_HID_Device_t Mouse_HID_Interface = {
         .ReportINEndpoint             =
         {
             .Address              = MOUSE_IN_EPADDR,
-            .Size                 = HID_EPSIZE,
+            .Size                 = MOUSE_EPSIZE,
             .Banks                = 1,
         },
 
