@@ -283,7 +283,7 @@ uint8_t getMouseReport(USB_WheelMouseReport_Data_t *MouseReport)
     ps2_read_mouse(&dx, &dy, &ps2_buttons);
 #endif
 
-    if( (g_mouse_keys & 0x0F) || (ps2_buttons & 0x07) || (dx+dy) > 0 /* Test for spurious movements */ ) {
+    if( (g_mouse_keys & 0x0F) || (ps2_buttons & 0x07) || (dx!=0) || (dy!=0) ) {
         if(g_mouse_keys_enabled==0) {
             g_mouse_keys_enabled=1;
             accel=0;
@@ -294,10 +294,14 @@ uint8_t getMouseReport(USB_WheelMouseReport_Data_t *MouseReport)
             accel++;
 
         // reset mouse mode after inactivity: idle_count is incremented 61 times per second
-    } else if(idle_count-mouse_timer > 1/*seconds*/ *61 ) {
-        g_mouse_keys_enabled=0;
-        accel=0;
-        scrollcnt=0;
+        // After last detected trackpoint movement that much time remains to press a button.
+    } else {
+        if(idle_count-mouse_timer > 1/*seconds*/ *61 ) {
+            g_mouse_keys_enabled=0;
+            accel=0;
+            scrollcnt=0;
+        }
+        return 0; // no data to send
     }
 
     if(g_mouse_keys_enabled || ps2_buttons) {
@@ -323,21 +327,16 @@ uint8_t getMouseReport(USB_WheelMouseReport_Data_t *MouseReport)
                 MouseReport->V = -sy>>2;
                 rotateXY(&MouseReport->V, &MouseReport->H);
             }
-        } else {
-            // no scroll-wheel support or not active
+        } else { // no scroll-wheel support or not active
             MouseReport->X = -dx;
             MouseReport->Y = dy;
             rotateXY(&(MouseReport->X), &(MouseReport->Y));
-
-            // do not emit the scroll button
-            MouseReport->Button = g_mouse_keys & ~(0x08);
-            MouseReport->Button |= ps2_buttons;    // PS/2 buttons if set
+            MouseReport->Button = g_mouse_keys & ~(0x08); // do not emit the scroll button
+            MouseReport->Button |= ps2_buttons;           // PS/2 buttons if set
         }
         g_mouse_keys=0;
-        ps2_buttons=0;
 
         return sizeof(USB_WheelMouseReport_Data_t);
-
     }
     return 0;
 }
