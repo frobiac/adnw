@@ -1,5 +1,7 @@
 /*
-    Copyright 2013 Stefan Fröbe, <frobiac /at/ gmail [d0t] com>
+    This file is part of the AdNW keyboard firmware.
+
+    Copyright 2013-2015 Stefan Fröbe, <frobiac /at/ gmail [d0t] com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
