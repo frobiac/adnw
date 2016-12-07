@@ -75,13 +75,13 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
    Uesc,   k,   u,   q, dot,   j,       p,   c,   l,   m,   f, Ubsp,  \
    Utab,   h,   i,   e,   a,   o,       d,   t,   r,   n,   s, Uret,  \
    Ucap,   x,   y, das, com, sla,       b,   g,   w,   v,   z, Umou,  \
-   Usft, ALT, CTL, SPC, GUI, MAC,      M3,  M2, SHF,  M1, AGR, Unone  \
+   Usft, ALT, MAC, GUI, CTL, SPC,      M2, SHF,  M1, AGR,  M3, Unone  \
 ) { \
 /*           0    1    2    3    4    5 */ \
 /* 0 */  {  no,   k,   u,   q, dot,   j  }, \
 /* 1 */  {  no,   h,   i,   e,   a,   o  }, \
 /* 2 */  {  no,   x,   y, das, com, sla  }, \
-/* 3 */  { MAC, GUI,Usft, ALT, CTL, SPC  }, \
+/* 3 */  { SPC, CTL,Usft, ALT, MAC, GUI  }, \
 /* 4 */  {   p,   c,   l,   m,   f,  no  }, \
 /* 5 */  {   d,   t,   r,   n,   s,  no  }, \
 /* 6 */  {   b,   g,   w,   v,   z,  no  }, \
@@ -113,13 +113,13 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
    Uesc,   k,   u,   q, dot,   j,       p,   c,   l,   m,   f, Ubsp,  \
    Utab,   h,   i,   e,   a,   o,       d,   t,   r,   n,   s, Uret,  \
    Ucap,   x,   y, das, com, sla,       b,   g,   w,   v,   z, Umou,  \
-   Usft, ALT, CTL, SPC, GUI, MAC,      M3,  M2, SHF,  M1, AGR, Unone  \
+   Usft, ALT, MAC, GUI, CTL, SPC,      M2, SHF,  M1, AGR,  M3, Unone  \
 ) { \
 /*           0    1    2    3    4    5 */ \
 /* 0 */  {  no,   k,   u,   q, dot,   j  }, \
 /* 1 */  {  no,   h,   i,   e,   a,   o  }, \
 /* 2 */  {  no,   x,   y, das, com, sla  }, \
-/* 3 */  { MAC, ALT,  no, GUI, CTL, SPC  }, \
+/* 3 */  {  no, ALT, MAC,  GUI, CTL, SPC }, \
 /* 4 */  {   p,   c,   l,   m,   f,  no  }, \
 /* 5 */  {   d,   t,   r,   n,   s,  no  }, \
 /* 6 */  {   b,   g,   w,   v,   z,  Umou}, \
@@ -150,17 +150,17 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
    Uesc,   k,   u,   q, dot,   j,       p,   c,   l,   m,   f, Ubsp,  \
    Utab,   h,   i,   e,   a,   o,       d,   t,   r,   n,   s, Uret,  \
    Ucap,   x,   y, das, com, sla,       b,   g,   w,   v,   z, Umou,  \
-   Usft, ALT, CTL, SPC, GUI, MAC,      M3,  M2, SHF,  M1, AGR, Unone  \
+   Usft, ALT, MAC, GUI, CTL, SPC,      M2, SHF,  M1, AGR,  M3, Unone  \
 ) { \
 /*           0    1    2    3    4    5 */ \
 /* 0 */  {  no,   k,   u,   q, dot,   j  }, \
 /* 1 */  {  no,   h,   i,   e,   a,   o  }, \
-/* 2 */  { MAC,   x,   y, das, com, sla  }, \
-/* 3 */  { ALT,  no,Usft, CTL, SPC, GUI  }, \
+/* 2 */  { SPC,   x,   y, das, com, sla  }, \
+/* 3 */  { ALT,  no,Usft, MAC, GUI, CTL  }, \
 /* 4 */  {  no,   p,   c,   l,   m,   f  }, \
 /* 5 */  {  no,   d,   t,   r,   n,   s  }, \
 /* 6 */  {  no,   b,   g,   w,   v,   z  }, \
-/* 7 */  {  M3,  M2, SHF,  M1, AGR, Unone}  \
+/* 7 */  {  M2, SHF,  M1, AGR,  M3, Unone}  \
 }
 #endif
 
@@ -193,13 +193,13 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
    Uesc,   k,   u,   q, dot,   j,       p,   c,   l,   m,   f, Ubsp,  \
    Utab,   h,   i,   e,   a,   o,       d,   t,   r,   n,   s, Uret,  \
    Ucap,   x,   y, das, com, sla,       b,   g,   w,   v,   z, Umou,  \
-   Usft, ALT, CTL, SPC, GUI, MAC,      M3,  M2, SHF,  M1, AGR, Unone  \
+   Usft, ALT, MAC, GUI, CTL, SPC,      M2, SHF,  M1, AGR,  M3, Unone  \
 ) { \
 /*           0    1    2    3    4    5       6    7    8    9   10   11   */ \
 /* 3 */  {Uesc,   k,   u,   q, dot,   j,      p,   c,   l,   m,   f,  Ubsp }, \
 /* 2 */  {   h,   i,   e,   a,   o,Utab,      d,   t,   r,   no,  n,  s   }, \
-/* 1 */  {   x,   y, das, com, sla, MAC,     M3,   b,   g,   w,   v,  z   }, \
-/* 0 */  { ALT, GUI, SPC, CTL,Ucap,  AGR,  Usft,Umou,  M2, SHF,  M1, Uret }  \
+/* 1 */  {   x,   y, das, com, sla, SPC,     M3,   b,   g,   w,   v,  z   }, \
+/* 0 */  { ALT, CTL, GUI, MAC,Ucap,  AGR,  Usft,Umou,  M2, SHF,  M1, Uret }  \
 }
 #endif
 
@@ -237,7 +237,7 @@ static const uint8_t SecondaryUsage[ROWS][COLS] PROGMEM =
  HID_ESC, 0, 0, 0, 0, 0,                                  0, 0, 0, 0, 0, 0 ,
        0, 0, 0, 0, 0, 0,                                  0, 0, 0, 0, 0, 0 ,
        0, 0, 0, 0, 0, 0,                                  0, 0, 0, 0, 0, 0 ,
-       0, 0,HID_TAB,0, 0 /*is real SPACE*/,0, /*|*/ 0, HID_ESC, HID_BACKSPACE, HID_ENTER, 0, 0
+       0, 0, 0, 0, HID_TAB,0,  /*is real SPACE*/ /*|*/  HID_ESC, HID_BACKSPACE, HID_ENTER, 0, 0, 0
 );
 
 
@@ -258,7 +258,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _ESC,    _k, _u, _q,     _PERIOD,_j  ,   _p,  _c, _l, _m, _f, _BSPACE ,
     _TAB,    _h, _i, _e,     _a,     _o  ,   _d,  _t, _r, _n, _s, _ENTER  ,
     _DQUOTE, _x, _y, _MINUS,_COMMA,_SLASH,   _b,  _g, _w, _v, _z, _MOD_MOUSEKEY,
-    _L_SHIFT,_L_ALT,_L_CTRL,_SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no
+    _L_SHIFT, _L_ALT ,  _MACRO, _L_GUI, _L_CTRL, _SPACE,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
   ),
 
   // MOD1 layer (special char)
@@ -266,7 +266,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _no, _AT,      _DEGREE,   _L_BRACKET, _R_BRACKET, _HASH   , _EXCLAM,  _LESS,      _GREATER,   _EQUAL,     _AMPERSAND, _no ,
     _no, _BSLASH,  _EURO  ,   _L_BRACE,   _R_BRACE,   _ASTERIX, _QUESTION,_L_PAREN,   _R_PAREN,   _PLUS,      _no,        _no ,
     _no, _no,      _DOLLAR,   _PIPE,      _TILDE,     _GRAVE ,  _CARET,   _PERCENT,   _DQUOTE,    _SQUOTE,    _no,        _no ,
-    _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no
+    _L_SHIFT, _L_ALT ,  _MACRO, _L_GUI, _L_CTRL, _SPACE,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
   ),
 
   // MOD2 layer (movement controls and numbers)
@@ -274,7 +274,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _no, _PGUP,   _BSPACE,    _UP,        _DEL ,      _PGDN, _SSHARP,_7,         _8,         _9,     _a_UML, _A_UML ,
     _no, _HOME,   _LEFT,      _DOWN,      _RIGHT,     _END , _PERIOD,_4,         _5,         _6,     _o_UML, _O_UML ,
     _no, _no  ,   _no  ,      _INS,       _no   ,     _no ,  _0,     _1,         _2,         _3,     _u_UML, _U_UML ,
-  _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,    _R_ALT, _no
+    _L_SHIFT, _L_ALT ,  _MACRO, _L_GUI, _L_CTRL, _SPACE,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
     ),
 
   // MOD3 Fx layer
@@ -282,7 +282,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _no, _no, _no, _u_UML, _A_UML, _O_UML ,_F1,      _F2,        _F3,        _F4,        _F5,    _F6     ,
     _no, _no, _no, _U_UML, _a_UML, _o_UML, _F7,      _F8,        _F9,        _F10,       _F11,   _F12    ,
     _no, _no, _no, _no,    _no,    _no,    _no,      _no,        _no,        _no,        _no,    _no     ,
-    _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no
+    _L_SHIFT, _L_ALT ,  _MACRO, _L_GUI, _L_CTRL, _SPACE,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
     ),
 
   // MOD_MOUSE layer
@@ -290,7 +290,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _no, _no, _MS_W_U, _MS_U, _MS_W_D, _no,  _no,    _no,      _no,      _no,      _no, _no,
     _no, _no, _MS_L,   _MS_D, _MS_R,   _no,  _no,    _MS_BTN1, _MS_BTN3, _MS_BTN2, _no, _no,
     _no, _no, _MS_W_L, _no,   _MS_W_R, _no,  _no,    _MS_ACC0, _MS_ACC1, _MS_ACC2, _no, _no,
-    _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no
+    _L_SHIFT, _L_ALT ,  _MACRO, _L_GUI, _L_CTRL, _SPACE,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
     )
 
 #ifdef ALTERNATE_LAYER
@@ -300,7 +300,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _ESC,   _k, _u, _q,     _PERIOD, _j,      _v, _g, _c, _l, _f, _BSPACE ,
     _TAB,   _h, _i, _e,     _a,      _o,      _d, _t, _r, _n, _s, _ENTER  ,
     _DQUOTE,_x, _y, _MINUS, _COMMA,  _SLASH,  _b, _p, _w, _m, _z, _MOD_MOUSEKEY,
-    _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no
+    _L_SHIFT, _L_ALT ,  _MACRO, _L_GUI, _L_CTRL, _SPACE,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
   )
 #endif
 
