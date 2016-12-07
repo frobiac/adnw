@@ -216,9 +216,6 @@ void SetupHardware()
 //    USB_PLL_On();
 //    while (!USB_PLL_IsReady());
 
-    /* Task init */
-    initKeyboard();
-
     // g_num_lock = g_caps_lock = g_scrl_lock = 0;
 
     // set up timer
@@ -234,12 +231,8 @@ void SetupHardware()
 #endif
     TIMSK0 = (1<<TOIE0);
 
-#ifdef PS2MOUSE
-    if( ps2_init_mouse() )
-        printf("\nTP initialized");
-    else
-        printf("\nTP init FAILED!");
-#endif
+    /* Task init */
+    initKeyboard();
 
     printf("\nAdNW : %s", FW_VERSION);
 }

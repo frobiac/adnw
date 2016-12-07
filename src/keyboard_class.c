@@ -41,6 +41,10 @@
 #include "matrix.h"
 #include "command.h"
 #include "jump_bootloader.h"
+#ifdef PS2MOUSE
+    #include "trackpoint.h"
+#endif
+
 
 column_size_t rowData[ROWS];
 column_size_t prevRowData[ROWS];
@@ -165,8 +169,16 @@ void initKeyboard()
         scan_matrix();
         _delay_ms(150);
     }
+
     if(CMD_MODE())
         jump_bootloader();
+
+#ifdef PS2MOUSE
+    if( ps2_init_mouse() )
+        printf("\nTP initialized");
+    else
+        printf("\nTP init FAILED!");
+#endif
 }
 
 void clearRowData()
