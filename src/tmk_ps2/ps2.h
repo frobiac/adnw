@@ -39,9 +39,9 @@ POSSIBILITY OF SUCH DAMAGE.
 #define PS2_H
 
 #include <stdbool.h>
-#include "wait.h"
 #include "ps2_io.h"
-#include "print.h"
+
+#include "tmk_missing.h"
 
 /*
  * Primitive PS/2 Library for AVR

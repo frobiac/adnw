@@ -2,6 +2,8 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+#include "ps2_io.h"
+
 /* Check port settings for clock and data line */
 #if !(defined(PS2_CLOCK_PORT) && \
       defined(PS2_CLOCK_PIN) && \

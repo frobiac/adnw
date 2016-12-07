@@ -1,6 +1,7 @@
 #ifndef PS2_IO_H
 #define PS2_IO_H
 
+#include "../config.h"
 
 void clock_init(void);
 void clock_lo(void);

@@ -40,10 +40,10 @@ POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <stdbool.h>
-#include "wait.h"
+// #include "wait.h"
 #include "ps2.h"
 #include "ps2_io.h"
-#include "debug.h"
+// #include "../dbg.h"
 
 
 #define WAIT(stat, us, err) do { \
@@ -174,9 +174,11 @@ uint8_t ps2_host_recv(void)
     inhibit();
     return data;
 ERROR:
+    /* Don't print here ...
     if (ps2_error > PS2_ERR_STARTBIT3) {
         xprintf("x%02X\n", ps2_error);
     }
+    */
     inhibit();
     return 0;
 }
