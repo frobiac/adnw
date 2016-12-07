@@ -203,12 +203,12 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 }
 #endif
 
+
 /**
  * Mouse keycodes that temporarily override normal keycodes during trackpoint usage.
  * Mouse buttons can be mapped to good locations this way.
  * This is not to be confused with the mousekey implementation, which is activated by switching to its layer.
- *
-*/
+ */
 static const uint8_t MouseUsage[ROWS][COLS] PROGMEM =
   KEYMAP( 0, /* not used code */
        HID_ESC,  0, 0, 0, 0, 0,                                               0, 0, 0, 0, 0, 0 ,
@@ -216,10 +216,13 @@ static const uint8_t MouseUsage[ROWS][COLS] PROGMEM =
        0, 0, 0, 0, 0, 0 ,                                                     0, 0, 0, 0, 0, 0 ,
 #ifdef HYPERNANO
        0, 0, 0 ,0, HID_MOUSEBTN_1,HID_MOUSEBTN_3, /* | */ 0, HID_MOUSEBTN_2 , 0, 0, 0, 0
+#elif defined(REDTILT) || defined(BLACKFLAT) // one handed trackpoint operation with buttons on right thumbs
+       0, 0, 0 ,0, 0, 0,         HID_MOUSEBTN_1, HID_MOUSEBTN_4, HID_MOUSEBTN_2, 0, 0, 0
 #else
        0, 0, 0, 0, 0 ,            0,0,                                     0, 0, 0, 0, 0
 #endif
 );
+
 
 
 /**
