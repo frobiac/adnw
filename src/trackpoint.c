@@ -80,9 +80,14 @@ enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FT
 
 /**
  * Print out trackpoint config register
+ * read config byte at 2C: E2 2C or E2 80 2C
+ * bit  0   1   2    3    4    5    6    7
+ * Pts res 2clk invX invY invZ ExXY HardTrans
  */
 uint8_t tp_read_config()
 {
+    //@TODO: check return status in whole file and abort
+    //       KB must work without trackpoint connected even when activated!
     tp_send_read_ack(0xe2);
     tp_send_read_ack(0x2c);
     uint8_t config = read_packet();
@@ -116,14 +121,6 @@ void tp_id(void)
 
 bool tp_init(void)
 {
-    // read config byte at 2C: E2 2C or E2 80 2C
-    /* bit  0   1   2    3    4    5    6    7
-            Pts res 2clk invX invY invZ ExXY HardTrans  */
-    if(!tp_read_config())
-        return false;
-    tp_ram_toggle(0x2c, (1<<TP_PTS) );
-    tp_read_config();
-
     /* RAM locations:
      * - Read with E2 80 ADDR
      * - Read with E2 81 ADDR VAL
@@ -135,14 +132,11 @@ bool tp_init(void)
      */
 
     // setup PressToSroll by enabling PTS, setting button masks and increasing threshold
-    //printf("\nPTS btn masks: %02x %02x %02x ", tp_ram_read(0x41), tp_ram_read(0x42), tp_ram_read(0x43) );
+    tp_ram_toggle(0x2c, (1<<TP_PTS) );
     tp_ram_write(0x41, 0xff);
     tp_ram_write(0x42, 0xff);
-    //printf("\nPTS btn masks: %02x %02x %02x ", tp_ram_read(0x41), tp_ram_read(0x42), tp_ram_read(0x43) );
     tp_ram_write(0x5c, 0x0A); // 08 is default, 10 too hard
-    //printf("\nPTS thres: %02x", tp_ram_read(0x5c));
 
-    //printf("\nSens/Speed (orig): %02x %02x ", tp_ram_read(0x4A), tp_ram_read(0x60) );
 #ifdef REDTILT
     tp_ram_write(0x4A, 0x60);
     tp_ram_write(0x60, 0x53);
@@ -152,7 +146,5 @@ bool tp_init(void)
     // tp_ram_write(0x2c, 1<<TP_FLIPX);
     // tp_ram_write(0x2c, 1<<TP_FLIPY);
 
-    //printf("\nSens  (orig=80): %02x ", tp_ram_read(0x4A) );
-    //printf("\nSpeed (orig=61): %02x ", tp_ram_read(0x60) );
     return true;
 }
