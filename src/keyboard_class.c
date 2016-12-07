@@ -142,6 +142,8 @@ void initKeyboard()
 
     g_alternateLayer = 0;
     uint8_t tmp;
+    g_led = (led_t) { .brightness=5, .on=0, .off=60 };
+
 #ifdef ALTERNATE_LAYER
     tmp = eeprom_read_byte(&ee_alternateLayer);
     if(tmp==1) g_alternateLayer = 1;
@@ -422,6 +424,9 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data)
  */
 uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
+#ifdef HAS_LED
+    set_led();
+#endif
 
     clearActiveKeys();
     scan_matrix();
@@ -526,6 +531,24 @@ column_size_t get_kb_rpt( column_size_t key_mask, uint8_t col )
         kb_rpt[col] ^= key_mask;                        // clear key(s)
     }
     return key_mask;
+}
+
+/**
+ * Set led to current configured state in g_led.
+ */
+void set_led()
+{
+#ifdef HAS_LED
+    if(g_led.on==0)
+        return;
+
+#ifdef __AVR_ATmega32U4__
+    if(idle_count % (g_led.on+g_led.off) < g_led.on)
+        OCR4D = g_led.brightness;
+    else
+        OCR4D = 0;
+#endif
+#endif
 }
 
 /** The real hardware access take place here.

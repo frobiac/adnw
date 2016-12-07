@@ -83,6 +83,8 @@
     #define RBIT    0
 
 #elif defined BLACKFLAT
+    #define HAS_LED //@TODO LED port configurable 
+
     // Trackpoint from new batch of 3 with dedicated reset circuitry 
     // TP init: Bat:54 Id:aaTP 2nd ID=010e Ext.ID=M 19990623($IBM3780))
 

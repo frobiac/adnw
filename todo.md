@@ -36,7 +36,6 @@ Trackpoint
 HW
 --
 * PS/2 pull-ups needed
-* LED signalling
 
 Refactor
 --------

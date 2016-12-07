@@ -52,6 +52,15 @@ struct sfrActiveKeys {
     uint8_t keycnt;
 };
 
+typedef struct {
+    uint8_t brightness;
+    // in 100ms, roughly based on idle_count updates via ISR
+    uint8_t on;
+    uint8_t off;
+} led_t; // = { 5, 1, 60 };
+
+led_t g_led;
+
 void clearActiveKeys(void);
 
 bool    isModifierKey(uint8_t row, uint8_t col);
@@ -66,6 +75,7 @@ uint8_t getActiveModifiers(void);
 uint8_t getActiveLayer(void);
 uint8_t getActiveKeyCodeModifier(void);
 
+void set_led(void);
 void scan_matrix(void);
 
 uint8_t fillReport(USB_KeyboardReport_Data_t *report_data);

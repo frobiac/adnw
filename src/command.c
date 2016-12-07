@@ -34,6 +34,9 @@
 
 bool command=false;
 
+
+led_t led_save;
+
 /// possible subcommands
 enum {
     SUB_NONE=0,
@@ -48,8 +51,15 @@ static uint8_t subcmd;           ///< currently active subcommand
 
 void setCommandMode(bool on)
 {
-    if(on!=command)
-        printf("CMD %s\n", on ? "on" : "off" );
+    if(on!=command) {
+        if(on) {
+            led_save = g_led;
+            g_led = (led_t) { .brightness=5, .on=30,  .off=30 };
+        } else {
+            g_led = led_save;
+        }
+    }
+
     command=on;
     subcmd = SUB_NONE;
 }
@@ -159,8 +169,12 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             subcmd=SUB_PASSHASH;
             break;
 #endif
+
         default:
-            printf("%c",curChar);
+#ifdef HAS_LED
+            printf("\nLED: %d/%d@%d",led_save.on, led_save.off, led_save.brightness);
+#endif
+            setCommandMode(false);
             break;
     }
 

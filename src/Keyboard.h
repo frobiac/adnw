@@ -85,6 +85,7 @@ uint8_t     g_mouse_keys_enabled;       ///< temporarily active while mouse in i
 uint8_t     g_pinkydrop;        ///< is pinky dropped one row below homerow?
 
 void enable_mouse_keys(uint8_t on);
+void initPWM(void);
 
 volatile uint32_t idle_count;   ///< interupt-incremented timer used for timeouts of MKT and mousekeys
 

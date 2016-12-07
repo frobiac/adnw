@@ -164,8 +164,32 @@ int main(void)
     return 0;
 }
 
+/** PD7 is OC4D, can set OCR4D to 0-255
+ * http://extremeelectronics.co.in/avr-tutorials/pwm-signal-generation-by-using-avr-timers-part-ii/
+ * http://www.avrfreaks.net/forum/help-needed-pwm-atmega-2560
+ * http://forums.overclockers.com.au/showthread.php?t=942326
+ */
+void initPWM()
+{
+    // timer 4 not available on teensy++2.0 with at90usb1286
+#if defined(HAS_LED) && defined(__AVR_ATmega32U4__)
+    DDRD = (1<<7);
+    //@TODO what is really required to get PWM on PD7?
+    TCCR4A = 1 << COM4A1 | 1 << COM4B1 | 1 << PWM4A | 1 << PWM4B; // Enable outputs A and B in PWM mode
+    TCCR4B = 1 << CS43 | 1 << CS40; // Clock divided by 256 for 244kHz PWM
+    TCCR4C = 1 << COM4D1 | 1 << PWM4D; // Enable output D in PWM mode
+    // OC4C=0xFF; // Set top to FFFF
+#endif
+}
+
 void enable_mouse_keys(uint8_t on)
 {
+    if(on!=g_mouse_keys_enabled) {
+        // @TODO must use some way of activating different modes, keeping track of changes:
+        // e.g: Start command mode, change some values there, move mouse and while it
+        // is still enabled leave command mode...
+        //set_led_mode(LED_MOUSE, on); // -> OCR4D= (on ? 20 : 0);
+    }
     g_mouse_keys_enabled = on;
 }
 
@@ -200,6 +224,14 @@ void SetupHardware()
     // set up timer
     TCCR0A = 0x00;
     TCCR0B = 0x05;
+#ifdef HAS_LED
+    // @TODO tensy++2.0 at90usb1286 does not have 4th timer?
+    // https://forum.pjrc.com/threads/15822-Use-of-IRRemote-Lib-and-AltSerial-with-Teensy-2-0
+    //
+    PORTC &= ~(1<<7);
+    DDRC |= (1<<7);  // D7 is external LED on BF -> output
+    initPWM();
+#endif
     TIMSK0 = (1<<TOIE0);
 
 #ifdef PS2MOUSE
