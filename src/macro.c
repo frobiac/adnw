@@ -20,6 +20,7 @@
 #include "macro.h"
 #include "Keyboard.h"
 
+#include "global_config.h"
 
 #define INVALID_MACRO_ID 255     // 255 means no recording is going on.
 #define OUTSTR_INVALID   255     // can be used by anyone here 

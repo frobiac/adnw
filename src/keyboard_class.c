@@ -41,10 +41,11 @@
 #include "matrix.h"
 #include "command.h"
 #include "jump_bootloader.h"
+
+#include "global_config.h"
 #ifdef PS2MOUSE
     #include "trackpoint.h"
 #endif
-
 
 column_size_t rowData[ROWS];
 column_size_t prevRowData[ROWS];
@@ -143,10 +144,9 @@ void initKeyboard()
     init_cols();
 
     //initMacros();
-
+    init_config();
     g_alternateLayer = 0;
     g_pinkydrop = 0;
-    g_led = (led_t) { .brightness=5, .on=0, .off=60 };
 
 #ifdef ALTERNATE_LAYER
     g_alternateLayer = (1==eeprom_read_byte(&ee_alternateLayer) ? 1 : 0);

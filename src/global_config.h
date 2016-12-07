@@ -1,0 +1,63 @@
+/*
+    This file is part of the AdNW keyboard firmware.
+
+    Copyright 2013-2016 Stefan Fröbe, <frobiac /at/ gmail [d0t] com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#ifndef GLOBAL_CONFIG_H
+#define GLOBAL_CONFIG_H
+
+#include "macro.h"
+/**
+ * @file global_config.h
+ *
+ * Global variables / configuration options for persistent storage in eeprom.
+ */
+
+/// define DEBUG_OUTPUT in makefile to enable printf() for hid_listen.
+#ifdef DEBUG_OUTPUT
+    #include "hhstdio.h"
+    //#define TRACE printf
+    #define TRACE(...)
+#else
+    #define TRACE(...)
+    #define printf(...)
+#endif
+
+
+#define EE_ADDR_START       100
+#define EE_ADDR_MACROS      (EE_ADDR_START+100)
+#define EE_ADDR_MACRO(idx)  (EE_ADDR_MACROS + (idx*(OUTSTR_MAX_LEN+1)))
+
+
+void init_config(void);
+void save_config(void);
+void load_config(void);
+
+/**
+ * MODIFIABLE PERSISTENT CONFIG OPTIONS BELOW
+ */
+typedef struct {
+    uint8_t brightness;
+    // in 100ms, roughly based on idle_count updates via ISR
+    uint8_t on;
+    uint8_t off;
+} led_t;
+
+led_t g_led;
+
+#endif // GLOBAL_CONFIG_H
+

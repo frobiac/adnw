@@ -45,6 +45,7 @@ SRC =   $(LUFA_SRC_USB)          \
 	$(SRCDIR)/command.c          \
 	$(SRCDIR)/mousekey.c         \
 	$(SRCDIR)/jump_bootloader.c  \
+	$(SRCDIR)/global_config.c      \
 
 
 LUFA_PATH    = LUFA/LUFA

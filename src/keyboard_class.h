@@ -52,14 +52,6 @@ struct sfrActiveKeys {
     uint8_t keycnt;
 };
 
-typedef struct {
-    uint8_t brightness;
-    // in 100ms, roughly based on idle_count updates via ISR
-    uint8_t on;
-    uint8_t off;
-} led_t; // = { 5, 1, 60 };
-
-led_t g_led;
 
 void clearActiveKeys(void);
 
