@@ -46,7 +46,7 @@ bool ps2_init_mouse(void)
     g_mouse_enabled = 0;
     scrollcnt = 0;
 
-    uint8_t d[2];
+    uint8_t d[2] __attribute__((unused));
 
 #ifndef BLACKFLAT
     tp_reset();

@@ -102,7 +102,7 @@ void tp_id(void)
 {
     // read secondary ID
     if( tp_send_read_ack(0xe1) ) {
-        uint8_t id[2];
+        uint8_t id[2] __attribute__((unused));;
         id[0]=read_packet();
         id[1]=read_packet();
         printf("2nd ID=%02x%02x\nExt.ID=", id[0],id[1]);

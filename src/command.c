@@ -188,7 +188,6 @@ void handleSubCmd(char c)
     uint8_t type=PH_TYPE_ALNUMSYM;
     uint8_t len=12;
     char password[PH_MAX_LEN+1];
-    uint8_t ret;
 #endif
 
     switch( subcmd ) {
@@ -203,7 +202,7 @@ void handleSubCmd(char c)
             break;
 #ifdef PH_ENABLED
         case SUB_PASSHASH:
-            ret = passHash(password, len, type, "secret", "key", "tag");
+            passHash(password, len, type, "secret", "key", "tag");
             printf("\nPH len=%d type=%d = %s", len, type, password);
             setCommandMode(false);
             break;

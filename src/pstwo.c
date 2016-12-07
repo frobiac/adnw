@@ -30,6 +30,8 @@
 #define NOP_MAX_CNT 48000
 volatile uint32_t cnt = 0;
 
+uint8_t serin(void);
+
 void data(uint8_t x)
 {
     DDDR |= (1 << DBIT);

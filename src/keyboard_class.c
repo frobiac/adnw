@@ -145,24 +145,22 @@ void initKeyboard()
     //initMacros();
 
     g_alternateLayer = 0;
-    uint8_t tmp;
+    g_pinkydrop = 0;
     g_led = (led_t) { .brightness=5, .on=0, .off=60 };
 
 #ifdef ALTERNATE_LAYER
-    tmp = eeprom_read_byte(&ee_alternateLayer);
-    if(tmp==1) g_alternateLayer = 1;
+    g_alternateLayer = (1==eeprom_read_byte(&ee_alternateLayer) ? 1 : 0);
     printf("\nEE l: %d", g_alternateLayer);
 #endif
 
 #ifdef PINKYDROP
-    g_pinkydrop = 0;
-    tmp = eeprom_read_byte(&ee_pinkyDrop);
-    if(tmp==1) g_pinkydrop = 1;
+    g_pinkydrop = (1==eeprom_read_byte(&ee_pinkyDrop) ? 1 : 0);
     printf("\nEE p: %d", g_pinkydrop);
 #endif
 
 
     // bootloader if CMD_MODE combo is pressed during startup
+    uint8_t tmp;
     clearActiveKeys();
     _delay_ms(1000);
     for(tmp=0; tmp<8; ++tmp) {

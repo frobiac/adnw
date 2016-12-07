@@ -133,7 +133,8 @@ void macro_key(uint8_t hid, uint8_t mod)
     // Ctrl+Enter ends macro recording
     if(hid == HID_ENTER && mod == CTRL) {
         if( appendHidCode(0) ) {
-            uint8_t written=updateEEMacroHID(outHidCodes, g_macrorecord);
+            uint8_t written __attribute__((unused));
+            written=updateEEMacroHID(outHidCodes, g_macrorecord);
             printf("\nWrote %d/%d", written, outOffs);
         }
 

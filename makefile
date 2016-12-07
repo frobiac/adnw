@@ -50,6 +50,7 @@ SRC =   $(LUFA_SRC_USB)          \
 LUFA_PATH    = LUFA/LUFA
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/
 CC_FLAGS    += -fdata-sections
+CC_FLAGS    += -Werror
 LD_FLAGS     =
 
 CC_FLAGS += -D$(KB_HW)
