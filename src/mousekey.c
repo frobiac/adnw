@@ -137,11 +137,11 @@ void mousekey_on(uint8_t code)
         case MS_W_D:  mkr.V = wheel_unit() * -1; break;
         case MS_W_L:  mkr.H = wheel_unit() * -1; break;
         case MS_W_R:  mkr.H = wheel_unit(); break;
-        case MS_BTN1: mkr.Button |= HID_MOUSEBTN_1; break;
-        case MS_BTN2: mkr.Button |= HID_MOUSEBTN_2; break;
-        case MS_BTN3: mkr.Button |= HID_MOUSEBTN_3; break;
-        case MS_BTN4: mkr.Button |= HID_MOUSEBTN_4; break;
-        case MS_BTN5: mkr.Button |= HID_MOUSEBTN_5; break;
+        case MS_BTN1: mkr.Button |= HID_BTN_L; break;
+        case MS_BTN2: mkr.Button |= HID_BTN_R; break;
+        case MS_BTN3: mkr.Button |= HID_BTN_M; break;
+        case MS_BTN4: mkr.Button |= HID_BTN_S; break;
+        case MS_BTN5: mkr.Button |= HID_BTN_5; break;
         case MS_ACC0:
         case MS_ACC1:
         case MS_ACC2: mousekey_accel |= (1<<(code-MS_ACC0)); break;
@@ -163,11 +163,11 @@ void mousekey_off(uint8_t code)
         case MS_W_D : if(mkr.V < 0) mkr.V = 0; break;
         case MS_W_L : if(mkr.H < 0) mkr.H = 0; break;
         case MS_W_R : if(mkr.H > 0) mkr.H = 0; break;
-        case MS_BTN1: mkr.Button &= ~HID_MOUSEBTN_1; break;
-        case MS_BTN2: mkr.Button &= ~HID_MOUSEBTN_2; break;
-        case MS_BTN3: mkr.Button &= ~HID_MOUSEBTN_3; break;
-        case MS_BTN4: mkr.Button &= ~HID_MOUSEBTN_4; break;
-        case MS_BTN5: mkr.Button &= ~HID_MOUSEBTN_5; break;
+        case MS_BTN1: mkr.Button &= ~HID_BTN_L; break;
+        case MS_BTN2: mkr.Button &= ~HID_BTN_R; break;
+        case MS_BTN3: mkr.Button &= ~HID_BTN_M; break;
+        case MS_BTN4: mkr.Button &= ~HID_BTN_S; break;
+        case MS_BTN5: mkr.Button &= ~HID_BTN_5; break;
         case MS_ACC0: mousekey_accel &= ~(1<<0); break;
         case MS_ACC1: mousekey_accel &= ~(1<<1); break;
         case MS_ACC2: mousekey_accel &= ~(1<<2); break;

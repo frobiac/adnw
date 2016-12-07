@@ -703,7 +703,7 @@ uint8_t getMouseKey(uint8_t r, uint8_t c)
 {
     uint8_t hid;
     memcpy_P(&hid, &MouseUsage[r][c], sizeof(uint8_t));
-    if ( hid >= HID_MOUSEBTN_1 && hid <= HID_MOUSEBTN_4 )
+    if ( hid >= HID_BTN_L && hid <= HID_BTN_S )
         return (hid);
     return 0;
 }
