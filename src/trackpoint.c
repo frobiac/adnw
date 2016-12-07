@@ -43,7 +43,8 @@ void tp_ram_toggle(uint8_t addr, uint8_t val)
 {
     tp_send_read_ack(0xe2);
     tp_send_read_ack(0x2c);
-    uint8_t tmp=read_packet();
+    uint8_t tmp;
+    ps2_read(&tmp);
     if( (tmp & val) != 0x00) {
         //printf("\nAlready set");
     }
@@ -59,7 +60,9 @@ uint8_t tp_ram_read(uint8_t addr)
     tp_send_read_ack(0xe2);
     tp_send_read_ack(0x80);
     tp_send_read_ack(addr);
-    return( read_packet() );
+    uint8_t tmp;
+    ps2_read(&tmp);
+    return tmp;
 }
 
 void tp_ram_write(uint8_t addr, uint8_t val)
@@ -72,7 +75,7 @@ void tp_ram_write(uint8_t addr, uint8_t val)
 
 bool tp_send_read_ack(uint8_t val)
 {
-    return ps2_send_expect(val, 0xfa);
+    return ps2_send_expect(val, PS2_ACK);
 }
 
 
@@ -91,8 +94,9 @@ uint8_t tp_read_config()
     //       KB must work without trackpoint connected even when activated!
     tp_send_read_ack(0xe2);
     tp_send_read_ack(0x2c);
-    uint8_t config = read_packet();
-    printf("TP cfg=0x%02x\n", config);
+    uint8_t config;
+    ps2_read(&config);
+    printf("\nTP cfg=0x%02x", config);
     return config;
 }
 
@@ -104,15 +108,15 @@ void tp_id(void)
     // read secondary ID
     if( tp_send_read_ack(0xe1) ) {
         uint8_t id[2] __attribute__((unused));;
-        id[0]=read_packet();
-        id[1]=read_packet();
+        ps2_read(&id[0]);
+        ps2_read(&id[1]);
         printf("2nd ID=%02x%02x\nExt.ID=", id[0],id[1]);
     }
     // read extended ID, which ends in ')'
     if( tp_send_read_ack(0xd0) ) {
         uint8_t tmp='0';
         while(tmp != (uint8_t)')') {
-            tmp=read_packet();
+            ps2_read(&tmp);
             printf("%c",tmp);
         }
         printf(")\n");

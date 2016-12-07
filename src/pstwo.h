@@ -58,3 +58,5 @@
 
 bool send_packet(uint8_t);
 uint8_t read_packet(void);
+uint8_t serin(void);
+

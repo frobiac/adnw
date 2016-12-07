@@ -47,6 +47,9 @@ Refactor
 --------
 * english / german host layout
 * check licenses
+* Code refactor: http://www.avrfreaks.net/forum/tut-modularizing-c-code-managing-large-projects?name=PNphpBB2&file=viewtopic&t=48535
+    - global vars
+    - static functions
 
 Layout
 ------

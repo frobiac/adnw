@@ -26,21 +26,50 @@ volatile uint8_t     scrollcnt;
 volatile uint32_t    mouse_timer; /// toggle mouse mode for a specified time
 volatile uint16_t    accel; /// toggle mouse mode for a specified time
 
-bool ps2_send_expect(uint8_t send, uint8_t expect)
+
+bool ps2_send_recv(uint8_t send, uint8_t *recv)
 {
+    if(!g_ps2_connected)
+        return false;
+
     if( ! send_packet(send) ) {
-        printf("\nPS/2: send %x failed, expect %x", send, expect);
+        printf("\nPS/2: send %x failed.", send);
         return false;
     }
-    uint8_t read = read_packet();
-    if(read != expect) {
-        printf("\nPS/2: send %x, read %x != %x", send, read, expect);
+    *recv = read_packet();
+
+    return true;
+}
+
+
+bool ps2_send_expect(uint8_t send, uint8_t expect)
+{
+    if(!g_ps2_connected)
+        return false;
+
+    uint8_t recv;
+    ps2_send_recv(send, &recv);
+    if(recv != expect) {
+        printf("\nPS/2 %02x -> %02x, expected %02x.", send, recv, expect);
         return false;
     }
     return true;
 }
 
+// checking wrapper around read_packet()
+bool ps2_read(uint8_t * res)
+{
+    if(!g_ps2_connected)
+        return false;
 
+    *res=read_packet();
+    return true;
+}
+
+
+/**
+ * Setup PS/2 connection
+ */
 bool ps2_init_mouse(void)
 {
     g_mouse_enabled = 0;
@@ -52,23 +81,31 @@ bool ps2_init_mouse(void)
     tp_reset();
 #endif
 
-    if ( ! ps2_send_expect(0xff, PS2_ACK) )
+    // set temporarily for first try...
+    g_ps2_connected=1;
+    uint8_t retries=0;
+    while(retries<5 && !ps2_send_expect(0xff, PS2_ACK) ) {
+        ++retries;
+        printf(".");
+    }
+    if(retries>=5) {
+        // No PS/2 device attached? We should stop all further PS/2 accesses then...
+        printf("\nPS/2: No device detected.");
+        g_ps2_connected=0; // this stops all tries to send or read
         return false;
+    }
 
-    d[0]=read_packet(); //Bat
-    d[1]=read_packet(); //dev ID
+    ps2_read(&d[0]);  // Bat
+    ps2_read(&d[1]);  // dev ID
 
     //Enable Data reporting
     if ( ! ps2_send_expect(0xf4, PS2_ACK) )
         return false;
 
-    //send_packet(0xe8); //Set Resolution
-    //read_packet(); //Ack
-    //send_packet(0x01); //8counts/mm
-    //read_packet(); //Ack
-    ////
-    //send_packet(0xf3); //SetSample rate
-    //read_packet(); //Ack
+    //ps2_send_expect(0xe8, PS2_ACK); // set resolution
+    //ps2_send_expect(0x01, PS2_ACK); // 8 counts/mm
+    //ps2_send_expect(0xf3, PS2_ACK); // set sample rate
+    //ps2_send_expect(0x01, PS2_ACK);
     //send_packet(0x64); //200 smaples a second
 
     //Set remote mode
@@ -90,14 +127,13 @@ bool ps2_init_mouse(void)
  */
 void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
 {
+    if(!g_ps2_connected)
+        return;
 
-    uint8_t ack;
     *BTNS=0;
     int mouseinf;
     {
-        send_packet(0xeb);
-        ack=read_packet(); //Ack
-        if(ack==0xfa) {
+        if(ps2_send_expect(0xeb, PS2_ACK)) {
             mouseinf=read_packet();
             /// Bits 2 1 0 correspond to  M R L button so swap M&R for RML
             /// @todo Make mouse button order mapping configurable
