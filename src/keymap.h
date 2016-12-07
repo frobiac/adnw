@@ -211,15 +211,13 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
  */
 static const uint8_t MouseUsage[ROWS][COLS] PROGMEM =
   KEYMAP( 0, /* not used code */
-       HID_ESC,  0, 0, 0, 0, 0,                                               0, 0, 0, 0, 0, 0 ,
-       0, HID_BTN_L, HID_BTN_M, HID_BTN_R, HID_BTN_S, 0,  0, 0, 0, 0, 0, 0 ,
-       0, 0, 0, 0, 0, 0 ,                                                     0, 0, 0, 0, 0, 0 ,
+       HID_ESC,         0,         0,         0,         0,         0, /**/         0,         0,         0,         0,         0,         0,
+             0, HID_BTN_L, HID_BTN_M, HID_BTN_R, HID_BTN_S,         0, /**/         0, HID_BTN_L, HID_BTN_M, HID_BTN_R, HID_BTN_S,         0,
+             0,         0,         0,         0,         0,         0, /**/ HID_BTN_S,         0,         0,         0,         0,         0,
 #ifdef HYPERNANO
-       0, 0, 0 ,0, HID_BTN_L,HID_BTN_M, /* | */ 0, HID_BTN_R , 0, 0, 0, 0
-#elif defined(REDTILT) || defined(BLACKFLAT) // one handed trackpoint operation with buttons on right thumbs
-       0, 0, 0 ,0, 0, 0,         HID_BTN_L, HID_BTN_S, HID_BTN_R, 0, 0, 0
+             0,         0,         0,         0, HID_BTN_L, HID_BTN_M, /**/         0, HID_BTN_R,         0,         0,         0,         0
 #else
-       0, 0, 0, 0, 0 ,            0,0,                                     0, 0, 0, 0, 0
+             0,         0,         0,         0,         0,         0, /**/         0,         0,         0,         0,         0,         0
 #endif
 );
 
