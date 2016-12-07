@@ -158,25 +158,21 @@ void initKeyboard()
     printf("\nEE p: %d", g_pinkydrop);
 #endif
 
-
-    // bootloader if CMD_MODE combo is pressed during startup
-    uint8_t tmp;
-    clearActiveKeys();
-    _delay_ms(1000);
-    for(tmp=0; tmp<8; ++tmp) {
-        scan_matrix();
-        _delay_ms(150);
-    }
-
-    if(CMD_MODE())
-        jump_bootloader();
-
 #ifdef PS2MOUSE
     if( ps2_init_mouse() )
         printf("\nTP initialized");
     else
         printf("\nTP init FAILED!");
+#else
+    _delay_ms(1000);
 #endif
+
+    // bootloader if CMD_MODE combo is pressed during startup
+    clearActiveKeys();
+    scan_matrix();
+    if(CMD_MODE())
+        jump_bootloader();
+
 }
 
 void clearRowData()
