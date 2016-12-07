@@ -48,7 +48,9 @@ bool ps2_init_mouse(void)
 
     uint8_t d[2];
 
+#ifndef BLACKFLAT
     tp_reset();
+#endif
 
     if ( ! ps2_send_expect(0xff, PS2_ACK) )
         return false;

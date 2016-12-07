@@ -82,8 +82,22 @@
     #define RSTPORT B
     #define RBIT    0
 
-/// @TODO Hypermicro defines for trackpoint
+#elif defined BLACKFLAT
+    // Trackpoint from new batch of 3 with dedicated reset circuitry 
+    // TP init: Bat:54 Id:aaTP 2nd ID=010e Ext.ID=M 19990623($IBM3780))
 
+    // DATA green, CLK blue, RESET Yellow
+    // Working: E6/D4.  C6/C7 works but in use by rows. D6 ok but LED.
+    // Not ok: B7 is fried.
+    #define DAPORT  D
+    #define DBIT    4
+    #define CLKPORT B
+    #define CBIT    3
+    // no RESET pin, dedicated circuitry instead
+    #define RSTPORT B
+    #define RBIT    0
+
+/// @TODO Hypermicro defines for trackpoint
 #else 
     #ifdef PS2MOUSE
         #error PS2MOUSE selected, but no pins defined
