@@ -40,7 +40,7 @@
 
 #define EE_ADDR_START       100
 #define EE_ADDR_MACROS      (EE_ADDR_START+100)
-#define EE_ADDR_MACRO(idx)  (EE_ADDR_MACROS + (idx*(OUTSTR_MAX_LEN+1)))
+#define EE_ADDR_MACRO(idx)  (EE_ADDR_MACROS + (idx*(MACRO_MAX_LEN+1)))
 
 
 void init_config(void);

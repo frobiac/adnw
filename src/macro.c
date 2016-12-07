@@ -22,26 +22,26 @@
 
 #include "global_config.h"
 
-#define INVALID_MACRO_ID 255     // 255 means no recording is going on.
-#define OUTSTR_INVALID   255     // can be used by anyone here 
-#define OUTSTR_COMPLETE  254     // outstring has been written to completely and can be printed
+#define MACRO_ID_INVALID 255     // 255 means no recording is going on.
+#define MACRO_INVALID    255     // can be used by anyone here 
+#define MACRO_COMPLETE   254     // outstring has been written to completely and can be printed
 
 uint8_t curMacro  = MACROCOUNT;
 uint8_t sendEmpty = 0;    // empty report needed to send the same character twice in a row
 
 bool macromode=false;
 /// Holds index of macro while recording, 0<=idx<MACROCOUNT.
-uint8_t g_macrorecord=INVALID_MACRO_ID;
+uint8_t g_macrorecord=MACRO_ID_INVALID;
 
 /// cur offset in outHidCodes, both read & write for macro
-uint8_t outOffs = OUTSTR_INVALID;
+uint8_t outOffs = MACRO_INVALID;
 
 /// Buffer for EEPROM macros and strings to print out
-uint8_t outHidCodes[OUTSTR_MAX_LEN+1];
+uint8_t outHidCodes[MACRO_MAX_LEN+1];
 
 
-inline bool macroRecording(void)         { return(g_macrorecord != INVALID_MACRO_ID); };
-inline void disableMacroRecording(void) { g_macrorecord=INVALID_MACRO_ID; setCommandMode(false); outOffs=OUTSTR_INVALID; };
+inline bool macroRecording(void)         { return(g_macrorecord != MACRO_ID_INVALID); };
+inline void disableMacroRecording(void) { g_macrorecord=MACRO_ID_INVALID; setCommandMode(false); outOffs=MACRO_INVALID; };
 inline void setMacroMode( bool on ) { macromode=on; };
 
 bool appendHidCode(uint8_t hid);
@@ -85,7 +85,7 @@ bool setMacroRecording( uint8_t id )
         g_macrorecord=id;
         return true;
     }
-    g_macrorecord = INVALID_MACRO_ID;
+    g_macrorecord = MACRO_ID_INVALID;
     return false;
 };
 
@@ -96,7 +96,7 @@ bool setMacroRecording( uint8_t id )
  */
 bool appendHidCode(uint8_t hid)
 {
-    if(outOffs<OUTSTR_MAX_LEN) {
+    if(outOffs<MACRO_MAX_LEN) {
         outHidCodes[outOffs] = hid;
         ++outOffs;
         return true;
@@ -107,17 +107,17 @@ bool appendHidCode(uint8_t hid)
 
 bool clearHIDCodes()
 {
-    if(outOffs != OUTSTR_INVALID)
+    if(outOffs != MACRO_INVALID)
         return false;
 
-    memset(outHidCodes,0,OUTSTR_MAX_LEN+1);
+    memset(outHidCodes,0,MACRO_MAX_LEN+1);
     outOffs=0;
     return true;
 }
 
 
 /** Record key into macro:
- *    Up to OUTSTR_MAX_LEN keys may be stored, but any combination of modifiers takes one additional slot.
+ *    Up to MACRO_MAX_LEN keys may be stored, but any combination of modifiers takes one additional slot.
  *    @todo: Dynamic length, macro idx
  *
  *    Ctrl+Enter terminates macro entry
@@ -154,9 +154,9 @@ void macro_key(uint8_t hid, uint8_t mod)
 uint8_t printMacro(uint8_t idx)
 {
     uint8_t ret=0;
-    if(outOffs==OUTSTR_INVALID) {
+    if(outOffs==MACRO_INVALID) {
         ret=readEEMacroHID(outHidCodes, idx);
-        outOffs=OUTSTR_COMPLETE;
+        outOffs=MACRO_COMPLETE;
     }
     return ret;
 }
@@ -170,8 +170,8 @@ uint8_t readEEMacroHID(uint8_t * macro, uint8_t idx)
     eeprom_busy_wait();
     uint8_t len=eeprom_read_byte (( const void *) EE_ADDR_MACRO(idx) );
 
-    if(len>OUTSTR_MAX_LEN)
-        len=OUTSTR_MAX_LEN;
+    if(len>MACRO_MAX_LEN)
+        len=MACRO_MAX_LEN;
 
     eeprom_busy_wait();
     eeprom_read_block (( void *) macro, ( const void *) (EE_ADDR_MACRO(idx)+1), len);
@@ -194,7 +194,7 @@ uint8_t readEEMacroHID(uint8_t * macro, uint8_t idx)
 uint8_t updateEEMacroHID(const uint8_t * macro, uint8_t idx)
 {
     uint8_t len=0;
-    while(macro[len] != 0 && len < OUTSTR_MAX_LEN) {
+    while(macro[len] != 0 && len < MACRO_MAX_LEN) {
         len++ ;
     }
     //printf("\nEE write #%d @%d len=%d: ", idx, EE_ADDR_MACRO(idx), len);
@@ -212,7 +212,6 @@ uint8_t updateEEMacroHID(const uint8_t * macro, uint8_t idx)
 /**
  * Will copy given string to output buffer.
  * It is then delivered by the call to printOutStr() in keyboards main loop.
- * @arg str string to print.
  */
 uint8_t setOutputString(char * str)
 {
@@ -232,7 +231,7 @@ uint8_t setOutputString(char * str)
             appendHidCode(hid);
     }
 
-    outOffs = OUTSTR_COMPLETE;
+    outOffs = MACRO_COMPLETE;
     return 1;
 };
 
@@ -254,9 +253,9 @@ uint8_t setOutputHIDCodes(uint8_t * hidcodes)
     if (! clearHIDCodes() )
         return 0;
 
-    memcpy(outHidCodes, hidcodes, OUTSTR_MAX_LEN);
+    memcpy(outHidCodes, hidcodes, MACRO_MAX_LEN);
 
-    outOffs = OUTSTR_COMPLETE;
+    outOffs = MACRO_COMPLETE;
     return 1;
 }
 
@@ -271,7 +270,7 @@ uint8_t setOutputHIDCodes(uint8_t * hidcodes)
 uint8_t printOutstr(USB_KeyboardReport_Data_t * report)
 {
     // do _NOT_ mess with report unless we need to!
-    if(outOffs!=OUTSTR_COMPLETE)
+    if(outOffs!=MACRO_COMPLETE)
         return 0;
 
     static uint8_t readOffs = 0;
@@ -283,14 +282,14 @@ uint8_t printOutstr(USB_KeyboardReport_Data_t * report)
     }
 
     uint8_t mod=0;
-    if( readOffs<OUTSTR_MAX_LEN) {
+    if( readOffs<MACRO_MAX_LEN) {
         uint8_t c = outHidCodes[readOffs++];
         if(c == 0)
             goto all_printed;
 
         // can handle extra modifiers here like in getMacroReport()
         // if > 127, it is a modifier
-        if( (c&0x80) && readOffs<OUTSTR_MAX_LEN) {
+        if( (c&0x80) && readOffs<MACRO_MAX_LEN) {
             mod=(c&0x7F);
             c = outHidCodes[readOffs++];
             // assert c != mod here?
@@ -310,7 +309,7 @@ uint8_t printOutstr(USB_KeyboardReport_Data_t * report)
 
 all_printed:
     // getting here means we're done, so invalidate for next run
-    outOffs=OUTSTR_INVALID;
+    outOffs=MACRO_INVALID;
     readOffs=0;
     return 0;
 }
