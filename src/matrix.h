@@ -118,9 +118,12 @@ static inline void unselect_rows(void)
     // C_67
     DDRC  &= 0b00111111;
     PORTC &= 0b00111111;
-    // D_257
-    DDRD  &= 0b01011011;
-    PORTD &= 0b01011011;
+    // D_25
+    DDRD  &= 0b11011011;
+    PORTD &= 0b11011011;
+    // F_7
+    DDRF  &= 0b01111111;
+    PORTF &= 0b01111111;
     // B_456
     DDRB  &= 0b10001111;
     PORTB &= 0b10001111;
@@ -172,7 +175,7 @@ static inline void activate(uint8_t row)
         case 0: DDRB |= (1<<6); break;
         case 1: DDRB |= (1<<5); break;
         case 2: DDRB |= (1<<4); break;
-        case 3: DDRD |= (1<<7); break;
+        case 3: DDRF |= (1<<7); break;
         case 4: DDRD |= (1<<2); break;
         case 5: DDRC |= (1<<6); break;
         case 6: DDRC |= (1<<7); break;
