@@ -279,10 +279,10 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
 
   // MOD3 Fx layer
   KEYMAP( _no,
-    _no, _no, _no, _u_UML, _A_UML, _O_UML ,_F1,      _F2,        _F3,        _F4,        _F5,    _F6     ,
-    _no, _no, _no, _U_UML, _a_UML, _o_UML, _F7,      _F8,        _F9,        _F10,       _F11,   _F12    ,
-    _no, _no, _no, _no,    _no,    _no,    _no,      _no,        _no,        _no,        _no,    _no     ,
-    _L_SHIFT, _L_ALT ,  _MACRO, _L_GUI, _L_CTRL, _SPACE,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
+    _no,      _no,     _no,    _u_UML, _A_UML,  _O_UML,   _F12,   _F7,      _F8,    _F9,    _no,    _no ,
+    _no,      _no,     _no,    _U_UML, _a_UML,  _o_UML,   _F11,   _F4,      _F5,    _F6,    _no,    _no ,
+    _no,      _no,     _no,    _no,    _no,     _no,      _F10,   _F1,      _F2,    _F3,    _no,    _no ,
+    _L_SHIFT, _L_ALT , _MACRO, _L_GUI, _L_CTRL, _SPACE,   _MOD_2, _L_SHIFT, _MOD_1, _R_ALT, _MOD_3, _no
     ),
 
   // MOD_MOUSE layer
