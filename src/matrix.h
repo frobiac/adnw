@@ -54,6 +54,11 @@ static inline column_size_t read_col(void)
     return (( resF & 0b11) | ((resF & 0b11110000)>>2 ));
 #endif
 
+#ifdef BLACKFLAT
+    // Only 5 columns on F_01456
+    return (( resF & 0b11) | ((resF & 0b01110000)>>2 ));
+#endif
+
 #ifdef HYPERNANO
     return (
                ((resF & 0b00000001) << 5) |
@@ -91,6 +96,8 @@ static inline column_size_t read_col(void)
 
 }
 
+
+// '0' for used columns
 static inline void unselect_rows(void)
 {
 #ifdef BLUECUBE
@@ -103,6 +110,18 @@ static inline void unselect_rows(void)
 #ifdef REDTILT
     DDRD  &= 0b01110000;
     PORTD &= 0b01110000;
+    DDRB  &= 0b10001111;
+    PORTB &= 0b10001111;
+#endif
+
+#ifdef BLACKFLAT
+    // C_67
+    DDRC  &= 0b00111111;
+    PORTC &= 0b00111111;
+    // D_257
+    DDRD  &= 0b01011011;
+    PORTD &= 0b01011011;
+    // B_456
     DDRB  &= 0b10001111;
     PORTB &= 0b10001111;
 #endif
@@ -139,6 +158,24 @@ static inline void activate(uint8_t row)
         case 4: DDRD |= (1<<6); break;
         case 5: DDRD |= (1<<4); break;
         case 6: DDRD |= (1<<2); break;
+        case 7: DDRD |= (1<<5); break;
+    }
+#endif
+
+#ifdef BLACKFLAT
+    // swap upper and lower ports to have left half first in matrix
+//    (row<4) ? (row+=4) : (row-=4);
+
+    // B6 B5 B4 D7
+    // D6 D4 D2 D5
+    switch(row) {
+        case 0: DDRB |= (1<<6); break;
+        case 1: DDRB |= (1<<5); break;
+        case 2: DDRB |= (1<<4); break;
+        case 3: DDRD |= (1<<7); break;
+        case 4: DDRD |= (1<<2); break;
+        case 5: DDRC |= (1<<6); break;
+        case 6: DDRC |= (1<<7); break;
         case 7: DDRD |= (1<<5); break;
     }
 #endif
@@ -188,6 +225,12 @@ static inline void init_cols(void)
     PORTB |= (0b01111100);
     DDRF  &= (0b11101100);
     PORTF |= (0b00010011);
+#elif defined(BLACKFLAT) // only 5 columns -> F7 unused
+    // teensy 2.0: 2&3 unused, F 01  456
+    /* Columns are inputs */
+    DDRF  &= ((1<<2) | (1<<3) | (1<<7));
+    /* Enable pull-up resistors on inputs */
+    PORTF |= (0b01110011);
 #else
     // teensy 2.0: 2&3 unused, F 01  4567
     /* Columns are inputs */
