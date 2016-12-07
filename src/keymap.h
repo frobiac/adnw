@@ -127,6 +127,55 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 }
 #endif
 
+#ifdef BLACKFLAT
+#undef COLS
+#define COLS   5
+
+// additional pinky mini button left:
+// #define CMD_MODE() ((rowData[3] & (1<<1)))
+// top outer buttons
+#define CMD_MODE() ((rowData[3] & (1<<0)) && (rowData[7] & (1<<4)) )
+
+/*
+    BlackFlat: RedTilt without outer pinky columns, with 4th button on pinky bottom row
+    and hooked up to former bluecube teensy with limited working pins
+
+    ┌───┐   ┌───┬───┬───┐    ┌───┬───┬───┐RST┌───┐
+    │30 ├───┤02 │03 │04 │    │40 │41 │42 ├───┤74 │
+    ├───┤01 ├───┼───┼───┤    ├───┼───┼───┤43 ├───┤
+    │00 ├───┤12 │13 │14 │    │50 │51 │52 ├───┤44 │
+    ├───┤11 ├───┼───┼───┤    ├───┼───┼───┤53 ├───┤
+    │10 ├───┤22 │23 │24 │    │60 │61 │62 ├───┤54 │
+    ├───┤21 ├───┼───┼───┤    ├───┼───┼───┤63 ├───┤
+    │20 ├───┤32 │33 │34 │    │70 │71 │72 ├───┤64 │
+    └───┘31 └───┴───┴───┘    └───┴───┴───┘73 └───┘
+
+*/
+/* Thumb rows column assignment:
+        |0    | |    0|
+        |     | |     |
+        |     | |     |
+        | 4312| |1234 |
+*/
+#define KEYMAP( no, \
+   _u0,   k,   u,   q, dot,   j,       p,   c,   l,   m,   f, _u4,  \
+   _u1,   h,   i,   e,   a,   o,       d,   t,   r,   n,   s, _u5,  \
+   _u2,   x,   y, das, com, sla,       b,   g,   w,   v,   z, _u6,  \
+   _u3, ALT, MAC, GUI, CTL, SPC,      M2, SHF,  M1, AGR,  M3, _u7   \
+) { \
+/*           0    1    2    3    4   */ \
+/* 0 */  {   k,   u,   q,   dot, j   }, \
+/* 1 */  {   h,   i,   e,   a,   o   }, \
+/* 2 */  {   x,   y,   das, com, sla }, \
+/* 3 */  {  ALT, MAC,  GUI, CTL, SPC }, \
+/* 4 */  {   p,   c,   l,   m,   f   }, \
+/* 5 */  {   d,   t,   r,   n,   s   }, \
+/* 6 */  {   b,   g,   w,   v,   z   }, \
+/* 7 */  {  M2,  SHF,  M1,  AGR, M3 }  \
+}
+
+#endif // BLACKFLAT
+
 
 #ifdef HYPERNANO
   #define CMD_MODE() ( (rowData[3] & (1<<1)) && (rowData[7] & (1<<5)) ) 

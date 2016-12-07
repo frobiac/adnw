@@ -22,8 +22,8 @@ SRCDIR       = ./src
 # -----------------------------------------------------------
 # Keyboard selection below: Override from environment variable
 # -----------------------------------------------------------
-KB_HW_SUPPORTED = BLUECUBE HYPERNANO REDTILT HYPERMICRO
-KB_HW		 ?= HYPERMICRO
+KB_HW_SUPPORTED = BLUECUBE HYPERNANO REDTILT HYPERMICRO BLACKFLAT
+KB_HW		 ?= BLACKFLAT
 
 KB_PH  ?= 1
 KB_DBG ?= 1

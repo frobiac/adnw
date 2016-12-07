@@ -52,6 +52,8 @@
     #define STR_PRODUCT      L"AdNW HyperNano"
 #elif defined HYPERMICRO
     #define STR_PRODUCT      L"AdNW HyperMicro"
+#elif defined BLACKFLAT
+    #define STR_PRODUCT      L"AdNW BlackFlat"
 #else
     #define STR_PRODUCT      L"AdNW Keyboard"
 #endif
