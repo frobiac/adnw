@@ -215,6 +215,7 @@ void handleSubCmd(char c)
 #endif
 
             switch(c) {
+                case 'I': init_config(); break;
                 case 'S': save_config(&g_cfg); break;
                 case 'L': load_config(&g_cfg); break;
 #ifdef PS2MOUSE
@@ -225,10 +226,11 @@ void handleSubCmd(char c)
                 case ':': g_tp_sens_low = (g_tp_sens_low+1) % 256; break;
                 case 'A': g_tp_sens_low = (g_tp_sens_low-1) % 256; break;
 
-                case 'x': tp_ram_toggle(0x2C, (1<<TP_FLIPX));  tp_read_config(); break;
-                case 'y': tp_ram_toggle(0x2C, (1<<TP_FLIPY));  tp_read_config(); break;
-                case 'X': tp_ram_toggle(0x2C, (1<<TP_SWAPXY)); tp_read_config(); break;
-                case 'Y': tp_ram_toggle(0x2C, (1<<TP_PTS));    tp_read_config(); break;
+
+                case 'x': g_cfg.flipx  = !g_cfg.flipx;  tp_init(); break;
+                case 'y': g_cfg.flipy  = !g_cfg.flipy;  tp_init(); break;
+                case 'X': g_cfg.swapxy = !g_cfg.swapxy; tp_init(); break;
+                case 'Y': g_cfg.pts    = !g_cfg.pts;    tp_init(); break;
 #endif
 
 #ifdef HAS_LED

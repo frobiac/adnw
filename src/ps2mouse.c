@@ -162,13 +162,13 @@ uint8_t getMouseReport(USB_WheelMouseReport_Data_t *MouseReport)
     if(g_mouse_keys_enabled || ps2_buttons) {
         // factor = 1 + [0..400]*1.5/400 = 1..2.5
         //factor= 1 + accel * (ACC_MAX-1) / ACC_RAMPTIME;
-#ifdef TP_SWAP_XY
-        // swapxy does not work with trackpoint.
-        int8_t tmp;
-        tmp = dx;
-        dx = dy;
-        dy = tmp;
-#endif
+        if(g_cfg.swapxy) {
+            // swapxy does not work with trackpoint.
+            int8_t tmp;
+            tmp = dx;
+            dx = dy;
+            dy = tmp;
+        }
         // keyboard mouse buttons only in mousemode
         if( (ps2_buttons & 0x05)==0x05 || (g_mouse_keys & 0x08)) {
             MouseReport->X=0;

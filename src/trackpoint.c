@@ -142,28 +142,13 @@ bool tp_init(void)
     tp_ram_write(TP_THRESH, 0x09);
 #endif
 
-    uint8_t tp_config = tp_read_config();
-#ifdef TP_PTS_ENABLE
-    tp_config |= (1<<TP_PTS);
-#endif
-#ifdef TP_FLIP_X
-    tp_config |= (1<<TP_FLIPX);
-#endif
-#ifdef TP_FLIP_Y
-    tp_config |= (1<<TP_FLIPY);
-#endif
-#ifdef TP_SWAP_XY
-    tp_config |= (1<<TP_SWAPXY);
-#endif
 
-    // now write back config
-    tp_ram_write(TP_TOGGLE_PTSON, tp_config);
+    // axes and PtS config
+    tp_ram_write(TP_TOGGLE_PTSON, g_cfg.tp_axis);
 
     // setup PressToSroll by enabling PTS, setting button masks and increasing threshold
     tp_ram_write(0x41, 0xff);
     tp_ram_write(0x42, 0xff);
-
-    tp_config = tp_read_config();
 
     return true;
 }

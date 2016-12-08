@@ -94,23 +94,21 @@
  * TRACKPOINT SETUP
  *************************************************/
 /*
- * Trackpoint configuration can be performed per board with the following defines.
- *
- * TP_PTS_ENABLE : activate Press-To-Select
- * TP_FLIP_X     : flip x axis
- * TP_FLIP_Y     : flip y axis
- * TP_SWAP_XY    : swap axies (does not work in TrackPoint firmware, though.
+ * Trackpoint configuration can be performed via the integrated config subcommand in command mode.
+ * A default axis configuration should be provided based on a bitmask for the
+ * TrackPoint config register as described in page33 of YKT3Eext.pdf
+ * #define TP_AXES 0b01011001 // SWAPXY FLIPY FLIPX PTS
  */
-// TP config register: See p33 of YKT3Eext.pdf
 enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FTRANS };
 
 
-#define TP_PTS_ENABLE
 #define TP_SENS_DEF 0x60
 #define TP_SENS_LOW 0x60
 
 
 #ifdef BLUECUBE
+    #define TP_AXES (1<<TP_PTS | 1<<TP_FLIPY) // ???
+
     #define PS2_DATA_PORT_LETTER  B
     #define PS2_DATA_BIT    7
     #define PS2_CLOCK_PORT_LETTER E
@@ -123,6 +121,7 @@ enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FT
     #define TP_SWAP_XY
     #define TP_FLIP_X
     #define TP_FLIP_Y
+    #define TP_AXES (1<<TP_PTS | 1<<TP_FLIPX | 1<<TP_FLIPY | 1<<TP_SWAPXY)
 
     #define PS2_DATA_PORT_LETTER  B
     #define PS2_DATA_BIT    1
@@ -133,7 +132,7 @@ enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FT
 
 #elif defined BLACKFLAT
     #define HAS_LED //@TODO LED port configurable
-    // #undef TP_PTS_ENABLE // clearance issues
+
     #undef TP_SENS_DEF
     #undef TP_SENS_LOW
     // default sensitivity higher due to more flexible stem with flexible cross cross-section.
@@ -144,7 +143,7 @@ enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FT
     // Trackpoint from new batch of 3 with dedicated reset circuitry
     // TP init: Bat:54 Id:aaTP 2nd ID=010e Ext.ID=M 19990623($IBM3780))
     // normal mount, TrackPoint nub at top of PCB and long side vertically
-    #define TP_FLIP_Y
+    #define TP_AXES (1<<TP_PTS | 1<<TP_FLIPY)
 
     // DATA green, CLK blue, RESET Yellow
     // Working: E6/D4.  C6/C7 works but in use by rows. D6 ok but LED.
@@ -162,6 +161,7 @@ enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FT
         #error PS2MOUSE selected, but no pins defined
     #endif
 #endif
+
 
 // Create defines for TMK compatibility
 #define CONCAT_PORT(name)    CONCAT(PORT,name)
