@@ -167,6 +167,9 @@ uint8_t printMacro(uint8_t idx)
  */
 uint8_t readEEMacroHID(uint8_t * macro, uint8_t idx)
 {
+    if(idx>=MACROCOUNT)
+        return 0;
+
     eeprom_busy_wait();
     uint8_t len=eeprom_read_byte (( const void *) EE_ADDR_MACRO(idx) );
 
@@ -191,6 +194,9 @@ uint8_t readEEMacroHID(uint8_t * macro, uint8_t idx)
  */
 uint8_t updateEEMacroHID(const uint8_t * macro, uint8_t idx)
 {
+    if(idx>=MACROCOUNT)
+        return 0;
+
     uint8_t len=0;
     while(macro[len] != 0 && len < MACRO_MAX_LEN) {
         len++ ;
