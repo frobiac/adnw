@@ -33,7 +33,6 @@
 #define ACC_MAX      2.5 // maximum accelleration factor reachable
 
 uint8_t errcnt;
-uint8_t g_mouse_enabled; ///< >0 if mouse/trackpoint is active and reports shall be generated
 uint8_t g_ps2_connected; ///< >0 if a PS/2 device was detected.
 
 void ps2_read_mouse(int8_t *dx, int8_t *dy, int8_t *BTNS );

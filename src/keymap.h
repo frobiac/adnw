@@ -32,9 +32,6 @@ typedef struct {
     //char     ch;
 } keycode;
 
-EEMEM extern uint8_t ee_pinkyDrop;
-EEMEM extern uint8_t ee_alternateLayer;
-uint8_t g_alternateLayer; ///< toggle using an alternate layout for layer 1
 
 uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer);
 uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);

@@ -82,7 +82,6 @@ void CALLBACK_HID_Device_ProcessHIDReport(USB_ClassInfo_HID_Device_t* const HIDI
 
 uint8_t     g_mouse_keys;       ///< stores keys to be interpreted as mouse buttons
 uint8_t     g_mouse_keys_enabled;       ///< temporarily active while mouse in in use,
-uint8_t     g_pinkydrop;        ///< is pinky dropped one row below homerow?
 
 void enable_mouse_keys(uint8_t on);
 void initPWM(void);

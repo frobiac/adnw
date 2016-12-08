@@ -148,7 +148,7 @@ static void __attribute__ ((noreturn)) main_loop(void)
             HID_Device_USBTask(&Keyboard_HID_Interface);
             HID_Device_USBTask(&DBG_HID_Interface);
 #ifdef PS2MOUSE
-            if( g_mouse_enabled )
+            if( g_cfg.mouse_enabled )
                 HID_Device_USBTask(&Mouse_HID_Interface);
 #endif
         } else if (USB_Device_RemoteWakeupEnabled ) {

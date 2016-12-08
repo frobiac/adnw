@@ -145,18 +145,6 @@ void initKeyboard()
 
     //initMacros();
     init_config();
-    g_alternateLayer = 0;
-    g_pinkydrop = 0;
-
-#ifdef ALTERNATE_LAYER
-    g_alternateLayer = (1==eeprom_read_byte(&ee_alternateLayer) ? 1 : 0);
-    printf("\nEE l: %d", g_alternateLayer);
-#endif
-
-#ifdef PINKYDROP
-    g_pinkydrop = (1==eeprom_read_byte(&ee_pinkyDrop) ? 1 : 0);
-    printf("\nEE p: %d", g_pinkydrop);
-#endif
 
 #ifdef PS2MOUSE
     if( ps2_init_mouse() )
@@ -789,7 +777,7 @@ void init_active_keys()
             if (rowData[row] & (1UL << col)) {
                 uint8_t offset=0;
 #ifdef PINKYDROP
-                if(g_pinkydrop) {
+                if(g_cfg.pinkydrop) {
                     if(col == 1 && row < 4)
                         offset = (row == 0 ? 3 : -1); //+(4+row-1)%4;
                     else if( col==5 && row>3)

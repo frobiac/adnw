@@ -113,9 +113,8 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
     switch(curChar) {
 #ifdef PINKYDROP
         case 'd':
-            g_pinkydrop = g_pinkydrop ? 0 : 1;
-            printf("Pinkydrop %d\n", g_pinkydrop);
-            eeprom_write_byte(&ee_pinkyDrop, g_pinkydrop);
+            g_cfg.pinkydrop = ! g_cfg.pinkydrop;
+            printf("Pinkydrop %d\n", g_cfg.pinkydrop);
             setCommandMode(false);
             break;
 #endif
@@ -141,9 +140,8 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 
 #ifdef ALTERNATE_LAYER
         case 'l':
-            g_alternateLayer = g_alternateLayer ? 0 : 1;
-            eeprom_write_byte(&ee_alternateLayer,g_alternateLayer);
-            printf("AltL %s\n", g_alternateLayer ? "on" : "off");
+            g_cfg.alt_layer = !g_cfg.alt_layer;
+            printf("AltL %s\n", g_cfg.alt_layer ? "on" : "off");
             setCommandMode(false);
             break;
 #endif
@@ -151,8 +149,8 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 #ifdef PS2MOUSE
         case 'm':
             // @TODO  only activate if init worked!
-            g_mouse_enabled = g_mouse_enabled > 0 ? 0 : 1;
-            printf("Mouse %sabled\n", g_mouse_enabled ? "en" : "dis");
+            g_cfg.mouse_enabled = !g_cfg.mouse_enabled;
+            printf("Mouse %sabled\n", g_cfg.mouse_enabled ? "en" : "dis");
             setCommandMode(false);
             break;
 #endif

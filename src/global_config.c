@@ -72,9 +72,10 @@ void init_config()
 
 void print_config()
 {
-    printf("\nEE[%d] %04x: %02x LED:%02x %02x %02x", sizeof(g_cfg), g_cfg.magic, g_cfg.fw_config, g_cfg.led.brightness, g_cfg.led.on, g_cfg.led.off);
-    printf("\nTP:Axies=%02x Sens: %3d/%3d SP=%3d TH=%3d",g_cfg.tp_axis, g_cfg.sensL, g_cfg.sens, g_cfg.speed, g_cfg.thres);
-    printf("\nTP:PTS=%1x X=%1x Y=%1x S=%1x (%0x) ",g_cfg.pts, g_cfg.flipx, g_cfg.flipy, g_cfg.swapxy, g_cfg.tp_axis);
+    printf("\nEE[%d] %04x: %02x LED:%02x %02x %02x ", sizeof(g_cfg), g_cfg.magic, g_cfg.fw_config, g_cfg.led.brightness, g_cfg.led.on, g_cfg.led.off);
+    printf("Pinky=%d AltLayer=%d Mouse=%d", g_cfg.pinkydrop, g_cfg.alt_layer, g_cfg.mouse_enabled);
+    printf("\nTP:Axies=%02x Sens: %3d/%3d SP=%3d TH=%3d ",g_cfg.tp_axis, g_cfg.sensL, g_cfg.sens, g_cfg.speed, g_cfg.thres);
+    printf("PTS=%1x X=%1x Y=%1x S=%1x (%0x) ",g_cfg.pts, g_cfg.flipx, g_cfg.flipy, g_cfg.swapxy, g_cfg.tp_axis);
 }
 
 /**

@@ -47,14 +47,12 @@ uint8_t getKeyChar(uint8_t row, uint8_t col, uint8_t layer)
     return ch;
 }
 */
-EEMEM uint8_t  ee_alternateLayer = 0;
-EEMEM uint8_t  ee_pinkyDrop      = 0;
 
 keycode getKeyStruct(uint8_t row, uint8_t col, uint8_t layer)
 {
 #ifdef ALTERNATE_LAYER
     // use alternate layout: @todo: convert to altenateLayout ?!
-    if( g_alternateLayer && layer==0)
+    if( g_cfg.alt_layer && layer==0)
         layer=ALT_ALPHA_LAYER;
 #endif
 

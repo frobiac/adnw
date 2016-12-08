@@ -33,7 +33,7 @@ bool ps2_init_mouse(void)
     uint8_t rcv __attribute__((unused)); // only for debug output
 
     g_ps2_connected=1;
-    g_mouse_enabled = 0;
+    g_cfg.mouse_enabled = 0;
 
 #ifndef BLACKFLAT
     tp_reset();
@@ -73,7 +73,7 @@ bool ps2_init_mouse(void)
     };
 
     /// @todo Set only on successful init
-    g_mouse_enabled = 1;
+    g_cfg.mouse_enabled = 1;
 
     return true;
 }
@@ -128,7 +128,7 @@ void ps2_read_mouse(int8_t *dx, int8_t *dy, int8_t *BTNS )
  */
 uint8_t getMouseReport(USB_WheelMouseReport_Data_t *MouseReport)
 {
-    if(!g_mouse_enabled)
+    if(!g_cfg.mouse_enabled)
         return 0;
 
     int8_t dx=0, dy=0;
