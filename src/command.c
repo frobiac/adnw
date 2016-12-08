@@ -210,10 +210,6 @@ void handleSubCmd(char c)
 #ifdef HAS_LED
             printf("\nLED: %d/%d@%d",led_save.on, led_save.off, led_save.brightness);
 #endif
-#ifdef PS2MOUSE
-            printf("\nTP:%d/%d",g_tp_sens_low, g_tp_sens);
-#endif
-
             switch(c) {
                 case 'I': init_config(); break;
                 case 'S': save_config(&g_cfg); break;
@@ -221,11 +217,14 @@ void handleSubCmd(char c)
 #ifdef PS2MOUSE
                 // change sensitivity for initial and normal operation
                 ///@TODO generic interface, always allow '0' (no %256)
-                case '.': g_tp_sens = (g_tp_sens+5) % 256; break;
-                case 'a': g_tp_sens = (g_tp_sens-5) % 256; break;
-                case ':': g_tp_sens_low = (g_tp_sens_low+1) % 256; break;
-                case 'A': g_tp_sens_low = (g_tp_sens_low-1) % 256; break;
-
+                case 'p': g_cfg.speed -= 10; tp_init(); break;
+                case 'P': g_cfg.speed += 10; tp_init(); break;
+                case 'd': g_cfg.sens  -= 10; tp_init(); break;
+                case 'D': g_cfg.sens  += 10; tp_init(); break;
+                case 't': g_cfg.sensL -= 10; tp_init(); break;
+                case 'T': g_cfg.sensL += 10; tp_init(); break;
+                case 'c': g_cfg.thres -=  5; tp_init(); break;
+                case 'C': g_cfg.thres +=  5; tp_init(); break;
 
                 case 'x': g_cfg.flipx  = !g_cfg.flipx;  tp_init(); break;
                 case 'y': g_cfg.flipy  = !g_cfg.flipy;  tp_init(); break;

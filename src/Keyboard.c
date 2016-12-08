@@ -187,7 +187,7 @@ void enable_mouse_keys(uint8_t on)
 {
     if(on!=g_mouse_keys_enabled) {
 #if defined (PS2MOUSE)
-        tp_sensitivity(on? g_tp_sens : g_tp_sens_low);
+        tp_sensitivity(on? g_cfg.sens : g_cfg.sensL);
 #endif
         // @TODO must use some way of activating different modes, keeping track of changes:
         // e.g: Start command mode, change some values there, move mouse and while it

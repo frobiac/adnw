@@ -101,11 +101,6 @@
  */
 enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FTRANS };
 
-
-#define TP_SENS_DEF 0x60
-#define TP_SENS_LOW 0x60
-
-
 #ifdef BLUECUBE
     #define TP_AXES (1<<TP_PTS | 1<<TP_FLIPY) // ???
 
@@ -132,13 +127,6 @@ enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FT
 
 #elif defined BLACKFLAT
     #define HAS_LED //@TODO LED port configurable
-
-    #undef TP_SENS_DEF
-    #undef TP_SENS_LOW
-    // default sensitivity higher due to more flexible stem with flexible cross cross-section.
-    #define TP_SENS_DEF  180
-    // but still turn sensitivity down after use so initial trackpoint activation is harder.
-    #define TP_SENS_LOW   28
 
     // Trackpoint from new batch of 3 with dedicated reset circuitry
     // TP init: Bat:54 Id:aaTP 2nd ID=010e Ext.ID=M 19990623($IBM3780))

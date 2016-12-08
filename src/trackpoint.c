@@ -128,20 +128,10 @@ uint8_t tp_sensitivity(uint8_t sens)
 
 bool tp_init(void)
 {
-    g_tp_sens = TP_SENS_DEF;
-    g_tp_sens_low = TP_SENS_LOW;
-
     // sensitivity, speed
-    tp_ram_write(TP_SENS, g_tp_sens);
-#ifdef REDTILT
-    tp_ram_write(TP_SPEED, 0x53);
-    tp_ram_write(TP_THRESH, 0x0A); // 08 is default, 10 too hard
-#elif defined BLACKFLAT
-    // activate higher sensitivity via PtS
-    tp_ram_write(TP_SPEED, 0x53);
-    tp_ram_write(TP_THRESH, 0x09);
-#endif
-
+    tp_ram_write(TP_SENS, g_cfg.sens);
+    tp_ram_write(TP_SPEED, g_cfg.speed);
+    tp_ram_write(TP_THRESH, g_cfg.thres);
 
     // axes and PtS config
     tp_ram_write(TP_TOGGLE_PTSON, g_cfg.tp_axis);
