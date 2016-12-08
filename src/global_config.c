@@ -39,6 +39,7 @@ void init_config()
     g_cfg = (kb_cfg_t) {
         .magic=EE_CFG_MAGIC_NUM, .fw_config=0,
         .tp_axis=0, .tp_config=0,
+        .led = (led_t) { .brightness=5, .on=0, .off=60 }
     };
 
 #ifdef PS2MOUSE
@@ -67,14 +68,11 @@ void init_config()
     }
 
     print_config();
-
-    // led defaults
-    g_led = (led_t) { .brightness=5, .on=0, .off=60 };
 }
 
 void print_config()
 {
-    printf("\nEE[%d] %04x: %02x", sizeof(g_cfg), g_cfg.magic, g_cfg.fw_config);
+    printf("\nEE[%d] %04x: %02x LED:%02x %02x %02x", sizeof(g_cfg), g_cfg.magic, g_cfg.fw_config, g_cfg.led.brightness, g_cfg.led.on, g_cfg.led.off);
     printf("\nTP:Axies=%02x Sens: %3d/%3d SP=%3d TH=%3d",g_cfg.tp_axis, g_cfg.sensL, g_cfg.sens, g_cfg.speed, g_cfg.thres);
     printf("\nTP:PTS=%1x X=%1x Y=%1x S=%1x (%0x) ",g_cfg.pts, g_cfg.flipx, g_cfg.flipy, g_cfg.swapxy, g_cfg.tp_axis);
 }

@@ -540,17 +540,17 @@ column_size_t get_kb_rpt( column_size_t key_mask, uint8_t col )
 }
 
 /**
- * Set led to current configured state in g_led.
+ * Set led to current configured state in g_cfg.led.
  */
 void set_led()
 {
 #ifdef HAS_LED
-    if(g_led.on==0)
+    if(g_cfg.led.on==0)
         return;
 
 #ifdef __AVR_ATmega32U4__
-    if(idle_count % (g_led.on+g_led.off) < g_led.on)
-        OCR4D = g_led.brightness;
+    if(idle_count % (g_cfg.led.on+g_cfg.led.off) < g_cfg.led.on)
+        OCR4D = g_cfg.led.brightness;
     else
         OCR4D = 0;
 #endif

@@ -61,7 +61,7 @@
  * this is only required if the address layout changes.
  * simple additions will be fine as long as they are saved somehow and random values are ok initially.
  */
-#define EE_CFG_MAGIC_NUM    (uint16_t) 0x0001
+#define EE_CFG_MAGIC_NUM    (uint16_t) 0x0002
 
 #define EE_CFG_MAGIC        (uint16_t *) 0
 #define EE_CFG_END          (uint8_t  *) (sizeof(kb_cfg_t)) // end of config
@@ -81,8 +81,6 @@ typedef struct {
     uint8_t on;
     uint8_t off;
 } led_t;
-
-led_t g_led;
 
 typedef struct {
     /// eeprom magic to detect changes in memory layout
@@ -126,6 +124,9 @@ typedef struct {
         };
         uint32_t tp_config;
     };
+
+    ///< led config, used regularly to update LED
+    led_t led;
 
 } kb_cfg_t;
 

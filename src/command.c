@@ -46,10 +46,10 @@ void setCommandMode(bool on)
 {
     if(on!=g_cmd_mode_active) {
         if(on) {
-            led_save = g_led;
-            g_led = (led_t) { .brightness=5, .on=30,  .off=30 };
+            led_save = g_cfg.led;
+            g_cfg.led = (led_t) { .brightness=5, .on=30,  .off=30 };
         } else {
-            g_led = led_save;
+            g_cfg.led = led_save;
         }
 
         g_cmd_mode_active=on;
@@ -207,9 +207,6 @@ void handleSubCmd(char c)
 #endif
 
         case SUB_CONFIG:
-#ifdef HAS_LED
-            printf("\nLED: %d/%d@%d",led_save.on, led_save.off, led_save.brightness);
-#endif
             switch(c) {
                 case 'I': init_config(); break;
                 case 'S': save_config(&g_cfg); break;
@@ -233,6 +230,7 @@ void handleSubCmd(char c)
 #endif
 
 #ifdef HAS_LED
+                    printf("\nLED: %d/%d@%d",led_save.on, led_save.off, led_save.brightness);
                 // Operate on the saved config that will be restored when leaving command mode
                 case 'j': led_save.off = (led_save.off-5) % 256; break;
                 case 'J': led_save.off = (led_save.off+5) % 256; break;
