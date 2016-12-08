@@ -12,8 +12,6 @@ Test sizes:
 - mousekey accel not working: normal, slow, fast
 * mousemode not exited on other keys fast enough with thumb keys
     also maybe only activate after threshold? clearance of TP could be ignored more easily..
-* BF: Shift C issue?
-      TP clearance
 
 ISSUES
 ------
@@ -24,8 +22,6 @@ ISSUES
 
 CONFIG
 ----
-* general configuration interface: Storage in eeprom, control via command mode menu
-* dump config on request
 * usage help for command mode?
 
 LUFA
@@ -44,7 +40,6 @@ Trackpoint
 ----------
 * initialization not really thought out
 * document most important registers ( see trackpoint.[ch] from kernel)
-* configuration editable at runtime + eeprom store
 * startup even if TP is disabled
 * PS/2 -> 3.3V on Raspberry Pi:
     - http://www.deater.net/weave/vmwprod/hardware/pi-ps2/
@@ -108,9 +103,8 @@ Macro
 Commandmode
 -----------
 * cleanup layer switching between different layouts
-* read data like tp settings
-* hierarchical command structure
-
+* Provide help and feedback
+* General config variable handling: name, value, increment mapped to command lower/uppercase, eeprom, ..
 
 Coding style
 ------------
@@ -143,5 +137,4 @@ Thumbkey double usage
 Unsorted
 --------
 Testcases/mode
-Pinkydrop again ?!
 
