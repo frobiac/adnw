@@ -92,6 +92,12 @@ The following commands need further input:
     * Type in macro slowly
     * <Ctrl>+<Esc> aborts, <Ctrl>+<Return> saves, <Alt>+<Return> insert pause
 
+- c Config
+    * @see SUB_CONFIG in src/command.c for details
+    * Must "save" for persistent storage of changes in EEPROM
+    * Default LED mode
+    * Full TrackPoint configuration of axes orientations and speed/sensitivity/threshold can be performed.
+
 - h PassHash
     * Enter tag [length [mode]] for passhash creation
 
