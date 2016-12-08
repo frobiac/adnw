@@ -22,7 +22,6 @@
 #include "ps2mouse.h"
 #include "trackpoint.h"
 
-volatile uint8_t     scrollcnt;
 volatile uint32_t    mouse_timer; /// toggle mouse mode for a specified time
 volatile uint16_t    accel; /// toggle mouse mode for a specified time
 
@@ -35,7 +34,6 @@ bool ps2_init_mouse(void)
 
     g_ps2_connected=1;
     g_mouse_enabled = 0;
-    scrollcnt = 0;
 
 #ifndef BLACKFLAT
     tp_reset();
@@ -157,7 +155,6 @@ uint8_t getMouseReport(USB_WheelMouseReport_Data_t *MouseReport)
         if(idle_count-mouse_timer > 1/*seconds*/ *61 ) {
             enable_mouse_keys(0);
             accel=0;
-            scrollcnt=0;
         }
         return 0; // no data to send
     }
@@ -174,22 +171,11 @@ uint8_t getMouseReport(USB_WheelMouseReport_Data_t *MouseReport)
 #endif
         // keyboard mouse buttons only in mousemode
         if( (ps2_buttons & 0x05)==0x05 || (g_mouse_keys & 0x08)) {
-            int8_t sx = (dx&0xFF00) ? -(256-(dx+0x100)) : dx;
-            int8_t sy = (dy&0xFF00) ? -(256-(dy+0x100)) : dy;
-
-            // scrollcnt = scrollcnt+abs(sy)+abs(sx); abs(v) = v*((v<0)*(-1)+(v>0));
-            scrollcnt += sy*((sy<0)*(-1)+(sy>0)) + sx*((sx<0)*(-1)+(sx>0));
-
-            // limit 10 and emiting as is way to fast in windows.
-            if(scrollcnt>10) {
-                scrollcnt=0;
-                MouseReport->X=0;
-                MouseReport->Y=0;
-                // only move by 1 ?!
-                // factor here had been mapped to 0..0.5 -> use 0.25
-                MouseReport->H = -sx>>2;
-                MouseReport->V = -sy>>2;
-            }
+            MouseReport->X=0;
+            MouseReport->Y=0;
+            // Divide by 8 to slow down scrolling with higher sensitivities and speed
+            MouseReport->H = dx>>3;
+            MouseReport->V = -dy>>3;
         } else { // no scroll-wheel support or not active
             MouseReport->X = dx;
             MouseReport->Y = dy;
