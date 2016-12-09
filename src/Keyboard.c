@@ -64,7 +64,9 @@
 /** Buffer to hold the previously generated HID reports, for comparison purposes inside the HID class drivers. */
 static uint8_t PrevKeyboardHIDReportBuffer[sizeof(USB_KeyboardReport_Data_t)];
 static uint8_t PrevMouseHIDReportBuffer[sizeof(USB_WheelMouseReport_Data_t)];
-static uint8_t PrevDBGHIDReportBuffer[sizeof(USB_DBGReport_Data_t)];
+#ifdef DEBUG_OUTPUT
+    static uint8_t PrevDBGHIDReportBuffer[sizeof(USB_DBGReport_Data_t)];
+#endif
 
 /** LUFA HID Class driver interface configuration and state information. This structure is
  *  passed to all HID Class driver functions, so that multiple instances of the same class
@@ -105,7 +107,7 @@ USB_ClassInfo_HID_Device_t Keyboard_HID_Interface = {
     },
 };
 
-
+#ifdef DEBUG_OUTPUT
 USB_ClassInfo_HID_Device_t DBG_HID_Interface = {
     .Config =
     {
@@ -122,7 +124,7 @@ USB_ClassInfo_HID_Device_t DBG_HID_Interface = {
         .PrevReportINBufferSize       = sizeof(PrevDBGHIDReportBuffer),
     },
 };
-
+#endif
 
 
 void led(uint8_t n)
@@ -146,7 +148,9 @@ static void __attribute__ ((noreturn)) main_loop(void)
     for (;;) {
         if (USB_DeviceState != DEVICE_STATE_Suspended) {
             HID_Device_USBTask(&Keyboard_HID_Interface);
+#ifdef DEBUG_OUTPUT
             HID_Device_USBTask(&DBG_HID_Interface);
+#endif
 #ifdef PS2MOUSE
             if( g_cfg.fw.mouse_enabled )
                 HID_Device_USBTask(&Mouse_HID_Interface);
@@ -261,7 +265,9 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 
     ConfigSuccess &= HID_Device_ConfigureEndpoints(&Keyboard_HID_Interface);
     ConfigSuccess &= HID_Device_ConfigureEndpoints(&Mouse_HID_Interface);
+#ifdef DEBUG_OUTPUT
     ConfigSuccess &= HID_Device_ConfigureEndpoints(&DBG_HID_Interface);
+#endif
 
     USB_Device_EnableSOFEvents();
 
@@ -272,7 +278,9 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 void EVENT_USB_Device_ControlRequest(void)
 {
     HID_Device_ProcessControlRequest(&Keyboard_HID_Interface);
+#ifdef DEBUG_OUTPUT
     HID_Device_ProcessControlRequest(&DBG_HID_Interface);
+#endif
     HID_Device_ProcessControlRequest(&Mouse_HID_Interface);
 }
 
@@ -280,7 +288,9 @@ void EVENT_USB_Device_ControlRequest(void)
 void EVENT_USB_Device_StartOfFrame(void)
 {
     HID_Device_MillisecondElapsed(&Keyboard_HID_Interface);
+#ifdef DEBUG_OUTPUT
     HID_Device_MillisecondElapsed(&DBG_HID_Interface);
+#endif
     HID_Device_MillisecondElapsed(&Mouse_HID_Interface);
 }
 
