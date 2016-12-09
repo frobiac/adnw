@@ -55,7 +55,7 @@ bool ps2_init_mouse(void)
     rcv = ps2_host_send(0xF0); // xprintf("\nps2 REM: %02x %02x", rcv, ps2_error);
 
     // Enable Data reporting (not needed for remote mode)
-    // rcv = ps2_host_send(0xF4); //printf("\nps2 REP: %02x %02x", rcv, ps2_error);
+    // rcv = ps2_host_send(0xF4); //xprintf("\nps2 REP: %02x %02x", rcv, ps2_error);
     //
     // disable external PS/2 device: not required in remote mode
     // ps2_host_send(TP_COMMAND); ps2_host_send(TP_DISABLE_EXT);

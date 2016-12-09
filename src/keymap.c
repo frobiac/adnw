@@ -60,7 +60,7 @@ keycode getKeyStruct(uint8_t row, uint8_t col, uint8_t layer)
 
     memcpy_P(&kc, &KeyMatrix[layer][row][col], sizeof(kc));
 
-    //printf("\n%d %d %d=%c", kc.hid, kc.mods, kc.ch, kc.ch);
+    //xprintf("\n%d %d %d=%c", kc.hid, kc.mods, kc.ch, kc.ch);
     return kc;
 }
 

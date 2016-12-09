@@ -201,7 +201,7 @@ void handleSubCmd(char c)
 #ifdef PH_ENABLED
         case SUB_PASSHASH:
             passHash(password, len, type, "secret", "key", "tag");
-            printf("\nPH len=%d type=%d = %s", len, type, password);
+            xprintf("\nPH len=%d type=%d = %s", len, type, password);
             setCommandMode(false);
             break;
 #endif

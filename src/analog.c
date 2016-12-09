@@ -140,6 +140,6 @@ void analogDataAcquire(void)
         else if(dy<-1)
             analogData.layer = 2;
 
-        //printf("\nMouse: %d/%d %d %d",analogData.mods,analogData.layer , dx, dy);
+        //xprintf("\nMouse: %d/%d %d %d",analogData.mods,analogData.layer , dx, dy);
     }
 }
