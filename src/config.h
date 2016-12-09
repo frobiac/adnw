@@ -66,6 +66,21 @@
 #define PRODUCT_ID            0x6033
 #define RELEASE_NUMBER        0x0001
 
+
+/*************************************************
+ * TRACKPOINT SETUP
+ *************************************************/
+
+/*
+ * Trackpoint configuration can be performed per board with the following defines.
+ *
+ * TP_PTS_ENABLE : activate Press-To-Select
+ * TP_FLIP_X     : flip x axis
+ * TP_FLIP_Y     : flip y axis
+ * TP_SWAP_XY    : swap axies (does not work in TrackPoint firmware, though.
+ */
+#define TP_PTS_ENABLE
+
 #ifdef BLUECUBE
     #define DAPORT  B
     #define DBIT    7
@@ -82,11 +97,19 @@
     #define RSTPORT B
     #define RBIT    0
 
-#elif defined BLACKFLAT
-    #define HAS_LED //@TODO LED port configurable 
+    // trackpoint sideways, nub to the left
+    #define TP_SWAP_XY
+    #define TP_FLIP_X
+    #define TP_FLIP_Y
 
-    // Trackpoint from new batch of 3 with dedicated reset circuitry 
+#elif defined BLACKFLAT
+    #define HAS_LED //@TODO LED port configurable
+    // #undef TP_PTS_ENABLE // clearance issues
+
+    // Trackpoint from new batch of 3 with dedicated reset circuitry
     // TP init: Bat:54 Id:aaTP 2nd ID=010e Ext.ID=M 19990623($IBM3780))
+    // normal mount, TrackPoint nub at top of PCB and long side vertically
+    #define TP_FLIP_Y
 
     // DATA green, CLK blue, RESET Yellow
     // Working: E6/D4.  C6/C7 works but in use by rows. D6 ok but LED.
