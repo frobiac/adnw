@@ -38,6 +38,23 @@
 #endif
 
 
+/**
+ * Convenience macros for individual member access of EEPROM config.
+ * @see https://projectgus.com/2010/07/eeprom-access-with-arduino/
+ */
+#define ee_cfg_read_to(dst_p, eeprom_field, dst_size) { \
+        eeprom_busy_wait(); \
+        eeprom_read_block(dst_p, (void *)offsetof(kb_cfg_t, eeprom_field), MIN(dst_size, sizeof((kb_cfg_t*)0)->eeprom_field)); }
+
+#define ee_cfg_read(dst, eeprom_field) ee_cfg_read_to(&dst, eeprom_field, sizeof(dst))
+
+#define ee_cfg_update_from(src_p, eeprom_field, src_size) { \
+        eeprom_busy_wait(); \
+        eeprom_update_block(src_p, (void *)offsetof(kb_cfg_t, eeprom_field), MIN(src_size, sizeof((kb_cfg_t*)0)->eeprom_field)); }
+
+#define ee_cfg_update(src, eeprom_field) { typeof(src) x = src; eeprom_update_from(&x, eeprom_field, sizeof(x)); }
+
+
 ///@TODO major/minor increments to also purge macros or only update?
 /**
  * increment to force eeprom re-initialisation upon init
