@@ -93,14 +93,24 @@ enum StringDescriptors_t {
 };
 
 /* Macros: */
+#define KEYBOARD_IN_EPNUM 1
+#ifdef DEBUG_OUTPUT
+    #define DBG_IN_EPNUM (KEYBOARD_IN_EPNUM + 1)
+#else
+    #define DBG_IN_EPNUM KEYBOARD_IN_EPNUM
+#endif
+// @TODO may be allow disabling mouse completely? Mousekeys???
+#define MOUSE_IN_EPNUM (DBG_IN_EPNUM + 1)
+
+
 /// Endpoint numbers and sizes
-#define KEYBOARD_IN_EPADDR           (ENDPOINT_DIR_IN | 1)
+#define KEYBOARD_IN_EPADDR           (ENDPOINT_DIR_IN | KEYBOARD_IN_EPNUM)
 #define KEYBOARD_EPSIZE              8
 
-#define DBG_IN_EPADDR                (ENDPOINT_DIR_IN | 2)
+#define DBG_IN_EPADDR                (ENDPOINT_DIR_IN | DBG_IN_EPNUM)
 #define DBG_EPSIZE                   32
 
-#define MOUSE_IN_EPADDR              (ENDPOINT_DIR_IN | 3)
+#define MOUSE_IN_EPADDR              (ENDPOINT_DIR_IN | MOUSE_IN_EPNUM)
 #define MOUSE_EPSIZE                 8
 
 
