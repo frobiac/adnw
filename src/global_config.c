@@ -86,7 +86,7 @@ void print_config()
 #endif
 #ifdef PS2MOUSE
     printf("\nTP: Sens: %3d/%3d SP=%3d TH=%3d ", g_cfg.tp_config.sensL, g_cfg.tp_config.sens, g_cfg.tp_config.speed, g_cfg.tp_config.thres);
-    printf("PTS=%1x X=%1x Y=%1x S=%1x (%0x)",g_cfg.tp_axis.pts, g_cfg.tp_axis.flipx, g_cfg.tp_axis.flipy, g_cfg.tp_axis.swapxy, g_cfg.tp_axis.raw);
+    printf("PTS=%1x X=%1x Y=%1x (%0x)",g_cfg.tp_axis.pts, g_cfg.tp_axis.flipx, g_cfg.tp_axis.flipy, g_cfg.tp_axis.raw);
 #endif
 }
 

@@ -162,8 +162,7 @@ uint8_t getMouseReport(USB_WheelMouseReport_Data_t *MouseReport)
     if(g_mouse_keys_enabled || ps2_buttons) {
         // factor = 1 + [0..400]*1.5/400 = 1..2.5
         //factor= 1 + accel * (ACC_MAX-1) / ACC_RAMPTIME;
-        if(g_cfg.tp_axis.swapxy) {
-            // swapxy does not work with trackpoint.
+        if(g_cfg.fw.swap_xy) {
             int8_t tmp;
             tmp = dx;
             dx = dy;

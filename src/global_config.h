@@ -61,7 +61,7 @@
  * this is only required if the address layout changes.
  * simple additions will be fine as long as they are saved somehow and random values are ok initially.
  */
-#define EE_CFG_MAGIC_NUM    (uint16_t) 0x0002
+#define EE_CFG_MAGIC_NUM    (uint16_t) 0x0003
 
 #define EE_CFG_MAGIC        (uint16_t *) 0
 #define EE_CFG_END          (uint8_t  *) (sizeof(kb_cfg_t)) // end of config
@@ -93,21 +93,22 @@ typedef union {
         bool pinkydrop:1;
         bool alt_layer:1;
         bool mouse_enabled:1;
-        uint8_t fw_config_unused:5;
+        bool swap_xy:1;
+        uint8_t fw_config_unused:4;
     };
     uint8_t raw;
 } fw_config_t;
 
-/// TrackPoint firmware axis configuration, not needed during runtime
+/// TrackPoint firmware axis configuration at RAM 0x2C , not needed during runtime
 typedef union {
     struct {
         bool pts:1;
-        bool tp_axies_unused:1;
+        bool unused2:1;
         bool btn2:1;
         bool flipx:1;
         bool flipy:1;
         bool flipz:1;
-        bool swapxy:1; ///< This is used during normale operation as TrackPoint firmware flag does not work
+        bool unused6:1; ///< This is used during normale operation as TrackPoint firmware flag does not work
         bool ftrans:1;
     };
     uint8_t raw;

@@ -223,7 +223,8 @@ void handleSubCmd(char c)
 
                 case 'x': g_cfg.tp_axis.flipx  = !g_cfg.tp_axis.flipx;  tp_init(); break;
                 case 'y': g_cfg.tp_axis.flipy  = !g_cfg.tp_axis.flipy;  tp_init(); break;
-                case 'X': g_cfg.tp_axis.swapxy = !g_cfg.tp_axis.swapxy; tp_init(); break;
+                case 'z': g_cfg.tp_axis.flipz  = !g_cfg.tp_axis.flipz;  tp_init(); break;
+                case 'X': g_cfg.fw.swap_xy     = !g_cfg.fw.swap_xy;                break;
                 case 'Y': g_cfg.tp_axis.pts    = !g_cfg.tp_axis.pts;    tp_init(); break;
 #endif
 

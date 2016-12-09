@@ -96,10 +96,12 @@
 /*
  * Trackpoint configuration can be performed via the integrated config subcommand in command mode.
  * A default axis configuration should be provided based on a bitmask for the
- * TrackPoint config register as described in page33 of YKT3Eext.pdf
- * #define TP_AXES 0b01011001 // SWAPXY FLIPY FLIPX PTS
+ * TrackPoint config register as described in page33 of YKT3Eext.pdf.
+ * Note that contrary to that description swapxy is _not_ assigned in appendix and does not work as described.
+ *
+ * #define TP_AXES 0b00011001 // FLIPY FLIPX PTS
  */
-enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FTRANS };
+enum { TP_PTS=0, TP_HALFTAC, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_RES, TP_FTRANS };
 
 #ifdef BLUECUBE
     #define TP_AXES (1<<TP_PTS | 1<<TP_FLIPY) // ???
@@ -113,10 +115,7 @@ enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FT
 
 #elif defined HYPERNANO || defined REDTILT
     // trackpoint sideways, nub to the left
-    #define TP_SWAP_XY
-    #define TP_FLIP_X
-    #define TP_FLIP_Y
-    #define TP_AXES (1<<TP_PTS | 1<<TP_FLIPX | 1<<TP_FLIPY | 1<<TP_SWAPXY)
+    #define TP_AXES (1<<TP_PTS | 1<<TP_FLIPX | 1<<TP_FLIPY)
 
     #define PS2_DATA_PORT_LETTER  B
     #define PS2_DATA_BIT    1
