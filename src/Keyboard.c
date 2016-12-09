@@ -242,7 +242,7 @@ void SetupHardware()
     /* Task init */
     initKeyboard();
 
-    printf("\nAdNW : %s", FW_VERSION);
+    xprintf("\nAdNW : %s", FW_VERSION);
 }
 
 

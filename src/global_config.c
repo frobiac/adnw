@@ -61,10 +61,10 @@ void init_config()
     // @TODO implement major/minor versioning to keep macros and other settings
     uint16_t magic = eeprom_read_word(EE_CFG_MAGIC);
     if(magic != EE_CFG_MAGIC_NUM) {
-        printf("\nEE magic %04x != %04x", magic, EE_CFG_MAGIC_NUM);
+        xprintf("\nEE magic %04x != %04x", magic, EE_CFG_MAGIC_NUM);
         save_config(&g_cfg);
     } else {
-        printf("\nEE magic OK");
+        xprintf("\nEE magic OK");
         load_config(&g_cfg);
     }
 
@@ -73,20 +73,20 @@ void init_config()
 
 void print_config()
 {
-    printf("\nEE[%d] %04x: %02x ", sizeof(g_cfg), g_cfg.magic, g_cfg.fw.raw);
-    printf("Mouse=%d", g_cfg.fw.mouse_enabled);
+    xprintf("\nEE[%d] %04x: %02x ", sizeof(g_cfg), g_cfg.magic, g_cfg.fw.raw);
+    xprintf("Mouse=%d", g_cfg.fw.mouse_enabled);
 #ifdef HAS_LED
-    printf("LED:%02x %02x %02x ", g_cfg.led.brightness, g_cfg.led.on, g_cfg.led.off);
+    xprintf("LED:%02x %02x %02x ", g_cfg.led.brightness, g_cfg.led.on, g_cfg.led.off);
 #endif
 #ifdef PINKYDROP
-    printf("PD=%d", g_cfg.fw.pinkydrop);
+    xprintf("PD=%d", g_cfg.fw.pinkydrop);
 #endif
 #ifdef ALTERNATE_LAYER
-    printf("AL=%d", g_cfg.fw.alt_layer);
+    xprintf("AL=%d", g_cfg.fw.alt_layer);
 #endif
 #ifdef PS2MOUSE
-    printf("\nTP: Sens: %3d/%3d SP=%3d TH=%3d ", g_cfg.tp_config.sensL, g_cfg.tp_config.sens, g_cfg.tp_config.speed, g_cfg.tp_config.thres);
-    printf("PTS=%1x X=%1x Y=%1x (%0x)",g_cfg.tp_axis.pts, g_cfg.tp_axis.flipx, g_cfg.tp_axis.flipy, g_cfg.tp_axis.raw);
+    xprintf("\nTP: Sens: %3d/%3d SP=%3d TH=%3d ", g_cfg.tp_config.sensL, g_cfg.tp_config.sens, g_cfg.tp_config.speed, g_cfg.tp_config.thres);
+    xprintf("PTS=%1x X=%1x Y=%1x (%0x)",g_cfg.tp_axis.pts, g_cfg.tp_axis.flipx, g_cfg.tp_axis.flipy, g_cfg.tp_axis.raw);
 #endif
 }
 

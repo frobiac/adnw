@@ -128,7 +128,7 @@ void macro_key(uint8_t hid, uint8_t mod)
 {
     if(hid == HID_ESC && mod == CTRL) {
         disableMacroRecording();
-        printf("\nabort");
+        xprintf("\nabort");
         return;
     }
     // Ctrl+Enter ends macro recording
@@ -136,7 +136,7 @@ void macro_key(uint8_t hid, uint8_t mod)
         if( appendHidCode(0) ) {
             uint8_t written __attribute__((unused));
             written=updateEEMacroHID(outHidCodes, g_macrorecord);
-            printf("\nWrote %d/%d", written, outOffs);
+            xprintf("\nWrote %d/%d", written, outOffs);
         }
 
         disableMacroRecording();
@@ -177,8 +177,8 @@ uint8_t readEEMacroHID(uint8_t * macro, uint8_t idx)
     eeprom_read_block (( void *) macro, ( const void *) (EE_ADDR_MACRO(idx)+1), len);
 
     macro[len]=0;
-    // printf("\nEE read #%d @%d len=%d: ", idx, EE_ADDR_MACRO(idx), len);
-    // uint8_t i; for(i=0;i<len;++i) printf(" %02x", macro[i]);
+    // xprintf("\nEE read #%d @%d len=%d: ", idx, EE_ADDR_MACRO(idx), len);
+    // uint8_t i; for(i=0;i<len;++i) xprintf(" %02x", macro[i]);
 
     return len;
 }
@@ -198,7 +198,7 @@ uint8_t updateEEMacroHID(const uint8_t * macro, uint8_t idx)
         len++ ;
     }
     //printf("\nEE write #%d @%d len=%d: ", idx, EE_ADDR_MACRO(idx), len);
-    //uint8_t i; for(i=0;i<len;++i) printf(" %02x", macro[i]);
+    //uint8_t i; for(i=0;i<len;++i) xprintf(" %02x", macro[i]);
 
     eeprom_busy_wait();
     eeprom_update_byte ((void *) EE_ADDR_MACRO(idx), len );

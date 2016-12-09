@@ -219,6 +219,6 @@ void mousekey_clear(void)
 
 static void mousekey_debug(void)
 {
-    printf("\n%02x |%d,%d %d,%d (acc %d)] ", mkr.Button, mkr.X, mkr.Y, mkr.V, mkr.H, mousekey_accel);
-    printf("%lu", (idle_count-first_press_timer));
+    xprintf("\n%02x |%d,%d %d,%d (acc %d)] ", mkr.Button, mkr.X, mkr.Y, mkr.V, mkr.H, mousekey_accel);
+    xprintf("%lu", (idle_count-first_press_timer));
 }

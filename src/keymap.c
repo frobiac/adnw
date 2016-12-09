@@ -68,19 +68,19 @@ keycode getKeyStruct(uint8_t row, uint8_t col, uint8_t layer)
 void printLayout(uint8_t l)
 {
     uint8_t ch;
-    printf("\n---");
+    xprintf("\n---");
     for(uint8_t r=0; r<ROWS/2-1; ++r) {
-        printf("\n");
+        xprintf("\n");
         for(uint8_t c=0; c<COLS; ++c) {
             ch=getKeyChar(r,c,l);
             if(ch==92)
-                printf("\\\\");
+                xprintf("\\\\");
             else
-                printf("%c", ch );
+                xprintf("%c", ch );
         }
-        printf("  ");
+        xprintf("  ");
         for(uint8_t c=0; c<COLS; ++c)
-            printf("%c", getKeyChar(r+ROWS/2,c,l) );
+            xprintf("%c", getKeyChar(r+ROWS/2,c,l) );
     }
 }
 */

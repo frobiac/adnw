@@ -145,9 +145,9 @@ void initKeyboard()
 
 #ifdef PS2MOUSE
     if( ps2_init_mouse() )
-        printf("\nTP initialized");
+        xprintf("\nTP initialized");
     else
-        printf("\nTP init FAILED!");
+        xprintf("\nTP init FAILED!");
 #else
     _delay_ms(1000);
 #endif
@@ -191,7 +191,7 @@ void changeSecondUseState(SecondUse_State currentState, SecondUse_State newState
         if (secondUse_state == SECOND_USE_PASSIVE) stateStr = "Passive";
         if (secondUse_state == SECOND_USE_REPEAT) stateStr = "Repeat";
         if (secondUse_state == SECOND_USE_OFF) stateStr = "Off";
-        // printf("\n2nd: -> %s (%d->%d active)",stateStr, secondUse_Prev_activeKeys.keycnt, activeKeys.keycnt);
+        // xprintf("\n2nd: -> %s (%d->%d active)",stateStr, secondUse_Prev_activeKeys.keycnt, activeKeys.keycnt);
         */
     }
 }
@@ -346,7 +346,7 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data)
                 fill_secondUse_Prev_activeKeys();
                 break; // end switch
             }
-            printf("2U: unh. ACT");
+            xprintf("2U: unh. ACT");
             break;
         }
 
@@ -389,11 +389,11 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data)
                 fill_secondUse_Prev_activeKeys();
                 break; // end switch
             }
-            printf("2U: unh. PASS");
+            xprintf("2U: unh. PASS");
             break; // end switch
         }
         default:
-            printf("2U: ill sta");
+            xprintf("2U: ill sta");
             break;
     }
 }
@@ -485,9 +485,9 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
         }
 
         if(idx>6) {
-            printf("\nError: more than 6 keys! ");
+            xprintf("\nError: more than 6 keys! ");
             for( uint8_t k=0; k<6; ++k)
-                printf(" %d ", report_data->KeyCode[k]);
+                xprintf(" %d ", report_data->KeyCode[k]);
             break;
         }
     }
@@ -593,22 +593,22 @@ void scan_matrix(void)
 void printCurrentKeys(void)
 {
     for(uint8_t r=0; r<ROWS/2; ++r) {
-        printf("\n");
+        xprintf("\n");
         for(uint8_t c=0; c< COLS; ++c) {
             if( rowData[r] & (1<<c))
-                printf("X");
+                xprintf("X");
             else
-                printf(".");
+                xprintf(".");
         }
-        printf("|  |");
+        xprintf("|  |");
         for(uint8_t c=0; c< COLS; ++c) {
             if( rowData[r+ROWS/2] & (1<<c))
-                printf("X");
+                xprintf("X");
             else
-                printf(".");
+                xprintf(".");
         }
     }
-    printf("\n");
+    xprintf("\n");
 }
 
 
@@ -627,7 +627,7 @@ uint8_t getActiveLayer()
         struct Key k = activeKeys.keys[i];
         if( isLayerKey(k.row, k.col) ) {
             if(layer!=0) {
-                // printf("\nWARN: More than one layer key pressed!");
+                // xprintf("\nWARN: More than one layer key pressed!");
             }
             layer += getModifier(k.row, k.col,0)-MOD_LAYER_0;
         }
@@ -791,7 +791,7 @@ void init_active_keys()
 
 void hostLEDChange(uint8_t leds)
 {
-//    printf("\nLED 0x%02x, C%d N%d S%d", leds, (leds & HID_KEYBOARD_LED_CAPSLOCK)>0,
+//    xprintf("\nLED 0x%02x, C%d N%d S%d", leds, (leds & HID_KEYBOARD_LED_CAPSLOCK)>0,
 //                  (leds & HID_KEYBOARD_LED_NUMLOCK)>0, (leds & HID_KEYBOARD_LED_SCROLLLOCK)>0);
 }
 
