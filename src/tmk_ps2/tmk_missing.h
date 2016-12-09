@@ -35,11 +35,5 @@
 
 // #include "print.h"
 #include "../config.h"
-#include "../hhstdio.h"
-#define print(s)    printf(s)
-#define println(s)  printf(s "\n")
-#define xprintf     printf
-#define phex(s)     printf("%02x", s)
-
-
+#include "../dbg.h"
 #endif

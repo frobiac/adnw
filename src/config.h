@@ -33,15 +33,7 @@
  */
 #include "LUFA/Common/Common.h"  // CONCAT
 
-/// define DEBUG_OUTPUT in makefile to enable printf() for hid_listen.
-#ifdef DEBUG_OUTPUT
-    #include "hhstdio.h"
-    //#define TRACE printf
-    #define TRACE(...)
-#else
-    #define TRACE(...)
-    #define printf(...)
-#endif
+#include "dbg.h"
 
 // Unicode strings describing this keyboard
 #define STR_MANUFACTURER L"frobiac"

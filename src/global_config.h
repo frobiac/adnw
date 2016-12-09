@@ -21,21 +21,13 @@
 #define GLOBAL_CONFIG_H
 
 #include "macro.h"
+#include "dbg.h"
+
 /**
  * @file global_config.h
  *
  * Global variables / configuration options for persistent storage in eeprom.
  */
-
-/// define DEBUG_OUTPUT in makefile to enable printf() for hid_listen.
-#ifdef DEBUG_OUTPUT
-    #include "hhstdio.h"
-    //#define TRACE printf
-    #define TRACE(...)
-#else
-    #define TRACE(...)
-    #define printf(...)
-#endif
 
 
 /**
