@@ -129,12 +129,12 @@ uint8_t tp_sensitivity(uint8_t sens)
 bool tp_init(void)
 {
     // sensitivity, speed
-    tp_ram_write(TP_SENS, g_cfg.sens);
-    tp_ram_write(TP_SPEED, g_cfg.speed);
-    tp_ram_write(TP_THRESH, g_cfg.thres);
+    tp_ram_write(TP_SENS, g_cfg.tp_config.sens);
+    tp_ram_write(TP_SPEED, g_cfg.tp_config.speed);
+    tp_ram_write(TP_THRESH, g_cfg.tp_config.thres);
 
     // axes and PtS config
-    tp_ram_write(TP_TOGGLE_PTSON, g_cfg.tp_axis);
+    tp_ram_write(TP_TOGGLE_PTSON, g_cfg.tp_axis.raw);
 
     // setup PressToSroll by enabling PTS, setting button masks and increasing threshold
     tp_ram_write(0x41, 0xff);

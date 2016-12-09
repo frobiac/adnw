@@ -85,6 +85,47 @@
 /**
  * MODIFIABLE PERSISTENT CONFIG OPTIONS BELOW
  */
+
+/// persistent firmware specific flags.
+/// @TODO check whether compile time defines are needed anymore.
+typedef union {
+    struct {
+        bool pinkydrop:1;
+        bool alt_layer:1;
+        bool mouse_enabled:1;
+        uint8_t fw_config_unused:5;
+    };
+    uint8_t raw;
+} fw_config_t;
+
+/// TrackPoint firmware axis configuration, not needed during runtime
+typedef union {
+    struct {
+        bool pts:1;
+        bool tp_axies_unused:1;
+        bool btn2:1;
+        bool flipx:1;
+        bool flipy:1;
+        bool flipz:1;
+        bool swapxy:1; ///< This is used during normale operation as TrackPoint firmware flag does not work
+        bool ftrans:1;
+    };
+    uint8_t raw;
+} tp_axis_t;
+
+/// TrackPoint firmware usability configuration, not needed during runtime
+typedef union {
+    struct {
+        uint8_t speed;
+        uint8_t sens;
+        uint8_t sensL;
+        uint8_t thres;
+
+    };
+    uint32_t raw;
+} tp_config_t;
+
+/// led config, used regularly to update LED
 typedef struct {
     uint8_t brightness;
     // in 100ms, roughly based on idle_count updates via ISR
@@ -92,50 +133,16 @@ typedef struct {
     uint8_t off;
 } led_t;
 
+
+/// Global config
 typedef struct {
     /// eeprom magic to detect changes in memory layout
     uint16_t magic;
 
-    /// persistent firmware specific flags.
-    /// @TODO check whether compile time defines are needed anymore.
-    union {
-        struct {
-            bool pinkydrop:1;
-            bool alt_layer:1;
-            bool mouse_enabled:1;
-            uint8_t fw_config_unused:5;
-        };
-        uint8_t fw_config;
-    };
+    fw_config_t fw;
+    tp_axis_t   tp_axis;
+    tp_config_t tp_config;
 
-    /// TrackPoint firmware axis configuration, not needed during runtime
-    union {
-        struct {
-            bool pts:1;
-            bool tp_axies_unused:1;
-            bool btn2:1;
-            bool flipx:1;
-            bool flipy:1;
-            bool flipz:1;
-            bool swapxy:1; ///< This is used during normale operation as TrackPoint firmware flag does not work
-            bool ftrans:1;
-        };
-        uint8_t tp_axis;
-    };
-
-    /// TrackPoint firmware usability configuration, not needed during runtime
-    union {
-        struct {
-            uint8_t speed;
-            uint8_t sens;
-            uint8_t sensL;
-            uint8_t thres;
-
-        };
-        uint32_t tp_config;
-    };
-
-    ///< led config, used regularly to update LED
     led_t led;
 
 } kb_cfg_t;

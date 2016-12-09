@@ -38,22 +38,22 @@ void init_config()
 
     // init default values before trying to load eeprom
     g_cfg = (kb_cfg_t) {
-        .magic=EE_CFG_MAGIC_NUM, .fw_config=0,
-        .tp_axis=0, .tp_config=0,
+        .magic=EE_CFG_MAGIC_NUM, .fw.raw=0,
+        .tp_axis.raw=0, .tp_config.raw=0,
         .led = (led_t) { .brightness=5, .on=0, .off=60 }
     };
 
 #ifdef PS2MOUSE
     // load defined defaults
-    g_cfg.tp_axis = TP_AXES;
-#endif
+    g_cfg.tp_axis.raw = TP_AXES;
 
     // trackpoint defaults from firmware
     // Usable on RT: 28/128 207 13 (decimal)
-    g_cfg.sens  = TP_DEF_SENS;   // 0x80
-    g_cfg.sensL = 28;            // custom
-    g_cfg.speed = TP_DEF_SPEED;  // 0x61
-    g_cfg.thres = TP_DEF_THRESH; // 0x08
+    g_cfg.tp_config.sens  = TP_DEF_SENS;   // 0x80
+    g_cfg.tp_config.sensL = 28;            // custom
+    g_cfg.tp_config.speed = TP_DEF_SPEED;  // 0x61
+    g_cfg.tp_config.thres = TP_DEF_THRESH; // 0x08
+#endif
 
     print_config();
 
@@ -73,20 +73,20 @@ void init_config()
 
 void print_config()
 {
-    printf("\nEE[%d] %04x: %02x ", sizeof(g_cfg), g_cfg.magic, g_cfg.fw_config);
-    printf("Mouse=%d", g_cfg.mouse_enabled);
+    printf("\nEE[%d] %04x: %02x ", sizeof(g_cfg), g_cfg.magic, g_cfg.fw.raw);
+    printf("Mouse=%d", g_cfg.fw.mouse_enabled);
 #ifdef HAS_LED
     printf("LED:%02x %02x %02x ", g_cfg.led.brightness, g_cfg.led.on, g_cfg.led.off);
 #endif
 #ifdef PINKYDROP
-    printf("PD=%d", g_cfg.pinkydrop);
+    printf("PD=%d", g_cfg.fw.pinkydrop);
 #endif
 #ifdef ALTERNATE_LAYER
-    printf("AL=%d", g_cfg.alt_layer);
+    printf("AL=%d", g_cfg.fw.alt_layer);
 #endif
 #ifdef PS2MOUSE
-    printf("\nTP:Axies=%02x Sens: %3d/%3d SP=%3d TH=%3d ",g_cfg.tp_axis, g_cfg.sensL, g_cfg.sens, g_cfg.speed, g_cfg.thres);
-    printf("PTS=%1x X=%1x Y=%1x S=%1x (%0x) ",g_cfg.pts, g_cfg.flipx, g_cfg.flipy, g_cfg.swapxy, g_cfg.tp_axis);
+    printf("\nTP: Sens: %3d/%3d SP=%3d TH=%3d ", g_cfg.tp_config.sensL, g_cfg.tp_config.sens, g_cfg.tp_config.speed, g_cfg.tp_config.thres);
+    printf("PTS=%1x X=%1x Y=%1x S=%1x (%0x)",g_cfg.tp_axis.pts, g_cfg.tp_axis.flipx, g_cfg.tp_axis.flipy, g_cfg.tp_axis.swapxy, g_cfg.tp_axis.raw);
 #endif
 }
 

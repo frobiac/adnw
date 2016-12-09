@@ -148,7 +148,7 @@ static void __attribute__ ((noreturn)) main_loop(void)
             HID_Device_USBTask(&Keyboard_HID_Interface);
             HID_Device_USBTask(&DBG_HID_Interface);
 #ifdef PS2MOUSE
-            if( g_cfg.mouse_enabled )
+            if( g_cfg.fw.mouse_enabled )
                 HID_Device_USBTask(&Mouse_HID_Interface);
 #endif
         } else if (USB_Device_RemoteWakeupEnabled ) {
@@ -187,7 +187,7 @@ void enable_mouse_keys(uint8_t on)
 {
     if(on!=g_mouse_keys_enabled) {
 #if defined (PS2MOUSE)
-        tp_sensitivity(on? g_cfg.sens : g_cfg.sensL);
+        tp_sensitivity(on? g_cfg.tp_config.sens : g_cfg.tp_config.sensL);
 #endif
         // @TODO must use some way of activating different modes, keeping track of changes:
         // e.g: Start command mode, change some values there, move mouse and while it

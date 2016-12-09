@@ -18,7 +18,7 @@
 */
 #include <avr/pgmspace.h>
 #include "keymap.h"
-#include "config.h"
+#include "global_config.h"
 /**
  *  Mappings of row and columns of the switch matrix to the selected layout matrix.
  *  Currently, the two halves of the keyboard are stacked so that
@@ -52,7 +52,7 @@ keycode getKeyStruct(uint8_t row, uint8_t col, uint8_t layer)
 {
 #ifdef ALTERNATE_LAYER
     // use alternate layout: @todo: convert to altenateLayout ?!
-    if( g_cfg.alt_layer && layer==0)
+    if( g_cfg.fw.alt_layer && layer==0)
         layer=ALT_ALPHA_LAYER;
 #endif
 

@@ -113,8 +113,8 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
     switch(curChar) {
 #ifdef PINKYDROP
         case 'd':
-            g_cfg.pinkydrop = ! g_cfg.pinkydrop;
-            printf("Pinkydrop %d\n", g_cfg.pinkydrop);
+            g_cfg.fw.pinkydrop = ! g_cfg.fw.pinkydrop;
+            printf("Pinkydrop %d\n", g_cfg.fw.pinkydrop);
             setCommandMode(false);
             break;
 #endif
@@ -140,8 +140,8 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 
 #ifdef ALTERNATE_LAYER
         case 'l':
-            g_cfg.alt_layer = !g_cfg.alt_layer;
-            printf("AltL %s\n", g_cfg.alt_layer ? "on" : "off");
+            g_cfg.fw.alt_layer = !g_cfg.fw.alt_layer;
+            printf("AltL %s\n", g_cfg.fw.alt_layer ? "on" : "off");
             setCommandMode(false);
             break;
 #endif
@@ -149,8 +149,8 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 #ifdef PS2MOUSE
         case 'm':
             // @TODO  only activate if init worked!
-            g_cfg.mouse_enabled = !g_cfg.mouse_enabled;
-            printf("Mouse %sabled\n", g_cfg.mouse_enabled ? "en" : "dis");
+            g_cfg.fw.mouse_enabled = !g_cfg.fw.mouse_enabled;
+            printf("Mouse %sabled\n", g_cfg.fw.mouse_enabled ? "en" : "dis");
             setCommandMode(false);
             break;
 #endif
@@ -212,19 +212,19 @@ void handleSubCmd(char c)
 #ifdef PS2MOUSE
                 // change sensitivity for initial and normal operation
                 ///@TODO generic interface, always allow '0' (no %256)
-                case 'p': g_cfg.speed -= 10; tp_init(); break;
-                case 'P': g_cfg.speed += 10; tp_init(); break;
-                case 'd': g_cfg.sens  -= 10; tp_init(); break;
-                case 'D': g_cfg.sens  += 10; tp_init(); break;
-                case 't': g_cfg.sensL -= 10; tp_init(); break;
-                case 'T': g_cfg.sensL += 10; tp_init(); break;
-                case 'c': g_cfg.thres -=  5; tp_init(); break;
-                case 'C': g_cfg.thres +=  5; tp_init(); break;
+                case 'p': g_cfg.tp_config.speed -= 10; tp_init(); break;
+                case 'P': g_cfg.tp_config.speed += 10; tp_init(); break;
+                case 'd': g_cfg.tp_config.sens  -= 10; tp_init(); break;
+                case 'D': g_cfg.tp_config.sens  += 10; tp_init(); break;
+                case 't': g_cfg.tp_config.sensL -= 10; tp_init(); break;
+                case 'T': g_cfg.tp_config.sensL += 10; tp_init(); break;
+                case 'c': g_cfg.tp_config.thres -=  5; tp_init(); break;
+                case 'C': g_cfg.tp_config.thres +=  5; tp_init(); break;
 
-                case 'x': g_cfg.flipx  = !g_cfg.flipx;  tp_init(); break;
-                case 'y': g_cfg.flipy  = !g_cfg.flipy;  tp_init(); break;
-                case 'X': g_cfg.swapxy = !g_cfg.swapxy; tp_init(); break;
-                case 'Y': g_cfg.pts    = !g_cfg.pts;    tp_init(); break;
+                case 'x': g_cfg.tp_axis.flipx  = !g_cfg.tp_axis.flipx;  tp_init(); break;
+                case 'y': g_cfg.tp_axis.flipy  = !g_cfg.tp_axis.flipy;  tp_init(); break;
+                case 'X': g_cfg.tp_axis.swapxy = !g_cfg.tp_axis.swapxy; tp_init(); break;
+                case 'Y': g_cfg.tp_axis.pts    = !g_cfg.tp_axis.pts;    tp_init(); break;
 #endif
 
 #ifdef HAS_LED

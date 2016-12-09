@@ -777,7 +777,7 @@ void init_active_keys()
             if (rowData[row] & (1UL << col)) {
                 uint8_t offset=0;
 #ifdef PINKYDROP
-                if(g_cfg.pinkydrop) {
+                if(g_cfg.fw.pinkydrop) {
                     if(col == 1 && row < 4)
                         offset = (row == 0 ? 3 : -1); //+(4+row-1)%4;
                     else if( col==5 && row>3)
