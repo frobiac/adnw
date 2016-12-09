@@ -23,6 +23,7 @@
 
 #include "Descriptors.h"
 #include "hhstdio.h"
+#include "mem-check.h"
 
 typedef struct {
     char data[DBG_EPSIZE];
