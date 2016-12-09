@@ -130,7 +130,7 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM KeyboardReport[] = {
     HID_DESCRIPTOR_KEYBOARD(6)
 };
 
-
+#ifdef DEBUG_OUTPUT
 const USB_Descriptor_HIDReport_Datatype_t DBGReport[] PROGMEM = {
     0x06, 0x31, 0xFF,    // Usage Page 0xFF31 (vendor defined)
     0x09, 0x74,          // Usage 0x74
@@ -143,7 +143,7 @@ const USB_Descriptor_HIDReport_Datatype_t DBGReport[] PROGMEM = {
     0x81, 0x02,          // Input (array)
     0xC0                 // end collection
 };
-
+#endif
 
 /** Device descriptor structure. This descriptor, located in FLASH memory, describes the overall
  *  device characteristics, including the supported USB version, control endpoint size and the
@@ -229,7 +229,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .EndpointSize           = KEYBOARD_EPSIZE,
         .PollingIntervalMS      = 0x05
     },
-
+#ifdef DEBUG_OUTPUT
     // Debug-Interface
     .HIDDBG_Interface =
     {
@@ -267,7 +267,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .EndpointSize           = DBG_EPSIZE,
         .PollingIntervalMS      = 0x05
     },
-
+#endif
 
     // Mouse
     .HID_MouseInterface =
@@ -371,10 +371,12 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint16_t wIndex
                     Address = &ConfigurationDescriptor.HID_KeyboardHID;
                     Size    = sizeof(USB_HID_Descriptor_HID_t);
                     break;
+#ifdef DEBUG_OUTPUT
                 case INTERFACE_ID_Debug:
                     Address = &ConfigurationDescriptor.HIDDBG_HID;
                     Size    = sizeof(USB_HID_Descriptor_HID_t);
                     break;
+#endif
                 case INTERFACE_ID_Mouse:
                     Address = &ConfigurationDescriptor.HID_MouseHID;
                     Size    = sizeof(USB_HID_Descriptor_HID_t);
@@ -387,10 +389,12 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint16_t wIndex
                     Address = &KeyboardReport;
                     Size    = sizeof(KeyboardReport);
                     break;
+#ifdef DEBUG_OUTPUT
                 case INTERFACE_ID_Debug:
                     Address = &DBGReport;
                     Size    = sizeof(DBGReport);
                     break;
+#endif
                 case INTERFACE_ID_Mouse:
                     Address = &MouseReport;
                     Size    = sizeof(MouseReport);
