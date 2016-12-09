@@ -33,6 +33,7 @@
  */
 void init_config()
 {
+    ct_assert(sizeof(kb_cfg_t) < EE_ADDR_MACROS);
     print_config();
 
     // init default values before trying to load eeprom

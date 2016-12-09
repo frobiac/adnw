@@ -66,10 +66,20 @@
 #define EE_CFG_MAGIC        (uint16_t *) 0
 #define EE_CFG_END          (uint8_t  *) (sizeof(kb_cfg_t)) // end of config
 
-//@TODO Check for overlap with this hardcoded address, or use from end?
+// @TODO refactor to adjust after changes to macro count and max len
+//       or use from end of eeprom ...
 #define EE_ADDR_START       100
 #define EE_ADDR_MACROS      (EE_ADDR_START+100)
 #define EE_ADDR_MACRO(idx)  (EE_ADDR_MACROS + (idx*(MACRO_MAX_LEN+1)))
+
+// Compile time assert to test overlap of kb_cfg_t with macro storage
+// see linux kernel BUILD_BUG_ON
+#define ct_assert(e) ((void)sizeof(char[1-2*!(e)]))
+
+// Check that macros fit into given eeprom
+#if EE_ADDR_MACRO(MACROCOUNT) > E2END
+    #error EEPROM macro storage too large.
+#endif
 
 
 /**
