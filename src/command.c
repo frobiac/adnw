@@ -212,7 +212,7 @@ void handleSubCmd(char c)
                 case 'S': save_config(&g_cfg); break;
                 case 'L': load_config(&g_cfg); break;
                 case 'm':
-                    printf("\nMEM %d/%d", get_free_mem(), get_mem_unused()); break;
+                    printf("\nMEM %d/%d", get_mem_unused_simple(), get_mem_unused()); break;
 #ifdef PS2MOUSE
                 // change sensitivity for initial and normal operation
                 ///@TODO generic interface, always allow '0' (no %256)
