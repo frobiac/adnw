@@ -22,8 +22,8 @@
 // 0 1 0 0 is always the same for all MCP23018
 // A2 A1 A0 are set to 0 by bringin the ADDR pin to low (hard wired)
 // R = 1 / W = 0
-#define TWI_MCP23018_CONTROLBYTEREAD  0b01000001 // 0 1 0 0 A2 A1 A0 RW  from [1] section 1.4.2 Figure 1.6
-#define TWI_MCP23018_CONTROLBYTEWRITE 0b01000000 // 0 1 0 0 A2 A1 A0 RW  from [1] section 1.4.2 Figure 1.6
+// #define TWI_MCP23018_CONTROLBYTEREAD  0b01000001 // 0 1 0 0 A2 A1 A0 RW  from [1] section 1.4.2 Figure 1.6
+// #define TWI_MCP23018_CONTROLBYTEWRITE 0b01000000 // 0 1 0 0 A2 A1 A0 RW  from [1] section 1.4.2 Figure 1.6
 
 #define IODIRA 0x00 // From [1] Read Table 1-1 and 1.6.1 I/O DIRECTION REGISTER (page 18)
 #define IODIRB 0x01 // From [1] Read Table 1-1 and 1.6.1 I/O DIRECTION REGISTER (page 18)
@@ -59,7 +59,8 @@
     #error "F_SCL must be TWI100K or TWI400K"
 #endif
 
-static const uint8_t GPBROWS = _BV(0) | _BV(2) | _BV(3) | _BV(4) | _BV(5); // GPPU 1 means pullup enable and 0 means pullup disabled
+static const uint8_t GPBROWS = 0xFF; // _BV(0) | _BV(2) | _BV(3) | _BV(4) | _BV(5); // GPPU 1 means pullup enable and 0 means pullup disabled
+static const uint8_t GPAROWS = 0xFF; // _BV(0) | _BV(2) | _BV(3) | _BV(4) | _BV(5); // GPPU 1 means pullup enable and 0 means pullup disabled
 
 /* low level TWI */
 void twi_init(void);
@@ -73,6 +74,7 @@ void twi_print_error(const char *data);
 /* mcp23018 specific */
 bool mcp23018_write_register(uint8_t reg, uint8_t data);
 bool mcp23018_read_register(uint8_t reg, uint8_t *data);
+bool mcp23018_init_addr(uint8_t addr );
 bool mcp23018_init(void);
 bool mcp23018_all_cols_highz(void);
 bool mcp23018_col_low(uint8_t col);

@@ -1,9 +1,14 @@
 #include <util/twi.h>
 #include <stdbool.h>
-#include "print.h"
+#include <stddef.h> // size_t
+#include "../dbg.h"
 #include "mcp23018.h"
 #include <util/delay.h>
 #include <math.h>
+
+#undef TWI_DEBUG
+#define print(s) ((void)0)
+#define printf(s) ((void)0)
 
 /* [1] ATMega32u4 datasheet  http://www.atmel.com/images/7766s.pdf*/
 /* [2] Atmel page on ATMega32u4 http://www.atmel.com/devices/atmega32u4.aspx */
@@ -16,6 +21,9 @@ static bool mcp23018_sendbyte(uint8_t data);
 static bool mcp23018_readbyte_nack(uint8_t *data);
 
 static bool _twi_read(uint8_t *data);
+
+static uint8_t  TWI_MCP23018_CONTROLBYTEWRITE;
+static uint8_t  TWI_MCP23018_CONTROLBYTEREAD;
 
 void twi_init(void)
 {
@@ -78,9 +86,7 @@ bool twi_send(uint8_t data)
         case TW_MR_SLA_ACK:  //SLA+R transmitted, ACK received
             return true;
         default:
-            print("TWI/I2C: twi_send failed (");
-            phex(TW_STATUS);
-            print(")\n");
+            printf("TWI/I2C: twi_send failed (%x)\n", TW_STATUS);
             return false;
     }
     return false;
@@ -118,9 +124,7 @@ fail:
 
 void twi_print_error(const char *data)
 {
-    print_P(data);
-    print(" (");
-    char *errorCode;
+    char *errorCode __attribute__((unused)); // nothing in debug
     switch(TW_STATUS) {
         case TW_MR_DATA_NACK: errorCode = "TW_MR_DATA_NACK"; break;
         case TW_BUS_ERROR: errorCode = "TW_BUS_ERROR"; break;
@@ -128,9 +132,7 @@ void twi_print_error(const char *data)
         default:
             errorCode = "unknown";
     }
-    print_P(errorCode);
-    print(")");
-
+    printf("%s (%s)", data, errorCode);
 }
 
 #ifdef USE_TWI_STOP
@@ -206,11 +208,7 @@ bool mcp23018_write_register(uint8_t reg, uint8_t data)
 #endif
     return true;
 fail:
-    print("MCP23018: error trying to write register (");
-    phex(reg);
-    print(") with value(");
-    phex(data);
-    print(")\n");
+    printf("MCP23018: error trying to write register (%x) with (%x)\n", reg, value);
 #ifdef USE_TWI_STOP
     mcp23018_stopcond();
 #endif
@@ -233,17 +231,25 @@ bool mcp23018_read_register(uint8_t reg, uint8_t *data)
 #endif
     return true;
 fail:
-    print("MCP23018: error trying to read register (");
-    phex(reg);
-    print(")\n");
+    printf("MCP23018: error trying to read register (%x)\n", reg);
 #ifdef USE_TWI_STOP
     mcp23018_stopcond();
 #endif
     return false;
 }
 
+bool mcp23018_init_addr(uint8_t addr )
+{
+    // addr is 0x40 for MCP23018 + 3 hw address bits << 1 plus 0x01 for read
+    TWI_MCP23018_CONTROLBYTEWRITE = addr;
+    TWI_MCP23018_CONTROLBYTEREAD  = addr+1; // 0b1000001 | (addr<<1);
+    return mcp23018_init();
+}
+
 bool mcp23018_init()
 {
+
+
 #ifdef TWI_DEBUG
     print("mcp23018 init\n");
 #endif
@@ -322,7 +328,7 @@ bool mcp23018_col_low(uint8_t n)
 #ifdef TWI_DEBUG
     print("mcp23018_col_low\n");
 #endif
-    if (n > 6) goto fail;
+    if (n > 8) goto fail;
 
     //make sure that pullups are properly configured
     if (!mcp23018_write_register(GPPUA,0x00)) goto fail; // GPPU 0 = pullup disabled  1=enabled
@@ -347,16 +353,10 @@ bool mcp23018_check(void)
     print("mcp23018_check\n");
 #endif
     for(size_t reg = IODIRA; reg <= OLATB; ++reg) { // all registers 0x00-0x15
-        print("mcp23018_check: reg(");
-        phex(reg);
-        print(")\n");
+        print("mcp23018_check: reg(%x)\n", reg);
         uint8_t data = 0;
         if(!mcp23018_read_register(reg,&data)) goto fail;
-        print("mcp23018_check: reg(");
-        phex(reg);
-        print(") value(");
-        phex(data);
-        print(")\n");
+        print("mcp23018_check: reg(%x) val(%x)\n", reg, data);
     }
     return true;
 fail:
@@ -374,16 +374,13 @@ bool mcp23018_check_reg(uint8_t reg, const uint8_t expected)
     if (data == expected) return true;
 
     // expected != actual
-    print("assert failed reg(");
-    phex(reg);
-    print(") expected(");
-    phex(expected);
-    print(") actual(");
-    phex(data);
-    print(")\n");
-    return false;
+    printf("assert failed reg(%x) exp(%x) act(%x)\n", reg, expected, data);
 fail:
     print("mcp23018_check_reg failed\n");
     return false;
 }
 #endif
+
+
+
+
