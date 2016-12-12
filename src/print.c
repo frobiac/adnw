@@ -26,7 +26,7 @@
 #include "print.h"
 
 
-#ifndef NO_PRINT
+#ifdef DEBUG_OUTPUT
 
 #define sendchar(c)    xputc(c)
 

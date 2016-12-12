@@ -29,7 +29,7 @@
 #include <stdbool.h>
 // #include "util.h"
 
-#ifndef NO_PRINT
+#ifdef DEBUG_OUTPUT
 
     #include "xprintf.h"
     #define print(s)    xputs(PSTR(s))
@@ -71,7 +71,7 @@
     #define print_val_bin_reverse16(v)  xprintf(#v ": %016b\n", bitrev16(v))
     #define print_val_bin_reverse32(v)  xprintf(#v ": %032lb\n", bitrev32(v))
 
-#else   /* NO_PRINT */
+#else   /* NO DEBUG_OUTPUT */
 
     #define xprintf(s,...)              ((void)0)
     #define print(s)                    ((void)0)
