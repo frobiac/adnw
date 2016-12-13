@@ -44,6 +44,8 @@ It uses hmac-sha1 and sha1 implementations from [avr-crypto-lib][avr_crypto_lib]
 
 xprintf implementation from http://elm-chan.org/fsw/strf/xprintf.html
 
+I2C Master library by Peter Fleury http://homepage.hispeed.ch/peterfleury/i2cmaster.zip
+
 License
 -------
 Unless otherwise mentioned all code is licensed under GPL3.
