@@ -17,8 +17,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "print.h"
-
 #ifndef MATRIX_H
 #define  MATRIX_H
 
@@ -88,12 +86,13 @@ static inline void activate(uint8_t row)
 static inline bool init_cols(void)
 {
     twi_init();
+    _delay_ms(500);
 
     // detect both attached MCP23018 which should be on addresses +3 and +7
     if( mcp23018_init_addr(i2c_adr[0]) && mcp23018_init_addr(i2c_adr[1]) ) {
-        xprintf("\nI2C: both found.");
         return true;
     }
+    _delay_ms(500);
 
     i2c_adr[0] = 0xFF;
     i2c_adr[1] = 0xFF;

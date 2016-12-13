@@ -555,8 +555,9 @@ void scan_matrix(void)
         activate(row);
 
         // Insert NOPs for synchronization
+#ifndef HAS_I2C
         _delay_us(20);
-
+#endif
         // Place data on all column pins for active row
         // into a single 8/16/32 bit value.
         data = read_col();
