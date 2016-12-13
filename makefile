@@ -45,6 +45,7 @@ SRC =   $(LUFA_SRC_USB)          \
 	$(SRCDIR)/command.c          \
 	$(SRCDIR)/mousekey.c         \
 	$(SRCDIR)/jump_bootloader.c  \
+	$(SRCDIR)/external/mcp23018.c  \
 	$(SRCDIR)/global_config.c      \
 	$(SRCDIR)/mem-check.c 		   \
 

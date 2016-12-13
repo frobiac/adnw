@@ -1,14 +1,22 @@
 #include <util/twi.h>
 #include <stdbool.h>
 #include <stddef.h> // size_t
-#include "../dbg.h"
+// #include "../dbg.h"
 #include "mcp23018.h"
 #include <util/delay.h>
 #include <math.h>
 
 #undef TWI_DEBUG
-#define print(s) ((void)0)
-#define printf(s) ((void)0)
+
+#ifdef print
+    #undef print
+#endif
+#ifdef printf
+    #undef printf
+#endif
+
+#define print(...) ((void)0)
+#define printf(...) ((void)0)
 
 /* [1] ATMega32u4 datasheet  http://www.atmel.com/images/7766s.pdf*/
 /* [2] Atmel page on ATMega32u4 http://www.atmel.com/devices/atmega32u4.aspx */
@@ -208,7 +216,7 @@ bool mcp23018_write_register(uint8_t reg, uint8_t data)
 #endif
     return true;
 fail:
-    printf("MCP23018: error trying to write register (%x) with (%x)\n", reg, value);
+    printf("MCP23018: error trying to write register (%x) with (%x)\n", reg, data);
 #ifdef USE_TWI_STOP
     mcp23018_stopcond();
 #endif

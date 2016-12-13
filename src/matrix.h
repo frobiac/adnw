@@ -41,19 +41,81 @@
 #include "config.h"
 
 #ifdef BLACKBOWL
-static inline column_size_t read_col(void) { return 0; }
+#include "external/mcp23018.h"
+
+// these are the initially tested hardwired addresses that should work
+// 0x46 -> 3 on chip=left side, 0x4E -> 7 on chip (VCC) = right side
+static uint8_t i2c_adr[2] = {0x46, 0x4E};
+static bool i2c_left = 0;
+
+// this must be called once before matrix_scan.
+static inline column_size_t read_col(void)
+{
+    return mcp23018_read_rows();
+}
 
 
 // '0' for used columns
-static inline void unselect_rows(void) {}
+static inline void unselect_rows(void)
+{
+    mcp23018_all_cols_highz();
+}
 
 
-static inline void activate(uint8_t row) {}
+static inline void activate(uint8_t row)
+{
+    unselect_rows();
+
+    if(row<4) {
+        if(i2c_left) {
+            i2c_left=!i2c_left;
+            mcp23018_init_addr(i2c_adr[i2c_left]);
+        }
+        mcp23018_col_low(3-row);
+    } else {
+        if(!i2c_left) {
+            i2c_left=!i2c_left;
+            mcp23018_init_addr(i2c_adr[i2c_left]);
+        }
+        mcp23018_col_low(7-row);
+    }
+}
 
 /**
  * Only called once during keyboard initialization.
  */
-static inline bool init_cols(void) { return true; }
+static inline bool init_cols(void)
+{
+    twi_init();
+
+    // detect both attached MCP23018 which should be on addresses +3 and +7
+    if( mcp23018_init_addr(i2c_adr[0]) && mcp23018_init_addr(i2c_adr[1]) ) {
+        printf("\nI2C: both found.");
+        return true;
+    }
+
+    i2c_adr[0] = 0xFF;
+    i2c_adr[1] = 0xFF;
+    uint8_t retries = 5;
+    do {
+        uint8_t adr;
+        for (adr=0x40; adr<0x50; adr+=2) {
+            if(adr==i2c_adr[0])
+                continue; // first adress was already found.
+            if(mcp23018_init_addr(adr)) {
+                i2c_adr[i2c_left] = adr;
+                i2c_left = !i2c_left;
+            }
+            _delay_ms(50);
+        }
+        _delay_ms(250);
+    } while (i2c_adr[1] == 0xFF && --retries>0 );
+
+    if(i2c_adr[1] == 0xFF) // did not find second one
+        return false;
+
+    return true;
+}
 
 
 /*********************************************
