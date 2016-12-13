@@ -63,6 +63,9 @@ I2C
 * Pull-ups:
     - http://www.varesano.net/blog/fabio/how-disable-internal-arduino-atmega-pullups-sda-and-scl-i2c-bus
 
+* Optimize performance
+* Error checking if any part fails.
+
 SPI
 ---
 * http://maxembedded.com/2013/11/the-spi-of-the-avr/

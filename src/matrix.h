@@ -40,6 +40,30 @@
 
 #include "config.h"
 
+#ifdef BLACKBOWL
+static inline column_size_t read_col(void) { return 0; }
+
+
+// '0' for used columns
+static inline void unselect_rows(void) {}
+
+
+static inline void activate(uint8_t row) {}
+
+/**
+ * Only called once during keyboard initialization.
+ */
+static inline bool init_cols(void) { return true; }
+
+
+/*********************************************
+ * END OF BLACKBOWL I2C MATRIX SCANNING
+ *********************************************/
+#else
+/*********************************************
+ * NON I2C SCANNING
+ *********************************************/
+
 // this must be called once before matrix_scan.
 static inline column_size_t read_col(void)
 {
@@ -211,9 +235,13 @@ static inline void activate(uint8_t row)
         case 0: DDRF  |= (1<<7); break;
     }
 #endif
+
 }
 
-static inline void init_cols(void)
+/**
+ * Only called once during keyboard initialization.
+ */
+static inline bool init_cols(void)
 {
 #ifdef HYPERMICRO
     // Columns 0..11:
@@ -234,13 +262,17 @@ static inline void init_cols(void)
     DDRF  &= ((1<<2) | (1<<3) | (1<<7));
     /* Enable pull-up resistors on inputs */
     PORTF |= (0b01110011);
-#else
+
+#else // REDTILT, BLUECUBE, ???
     // teensy 2.0: 2&3 unused, F 01  4567
     /* Columns are inputs */
     DDRF  &= ((1<<2) | (1<<3)); // 192 or upper 2 bits
     /* Enable pull-up resistors on inputs */
     PORTF |= (0b11110011);
 #endif
-}
 
-#endif
+    return true;
+}
+#endif // non-I2C
+
+#endif // MATRIX_H

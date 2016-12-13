@@ -124,7 +124,7 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 }
 #endif
 
-#ifdef BLACKFLAT
+#if defined(BLACKFLAT) || defined(BLACKBOWL)
 #undef COLS
 #define COLS   5
 
@@ -136,6 +136,7 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 /*
     BlackFlat: RedTilt without outer pinky columns, with 4th button on pinky bottom row
     and hooked up to former bluecube teensy with limited working pins
+    BlackBowl: Identical layout-wise, but with I2C for both halves.
 
     ┌───┐   ┌───┬───┬───┐    ┌───┬───┬───┐RST┌───┐
     │30 ├───┤02 │03 │04 │    │40 │41 │42 ├───┤74 │

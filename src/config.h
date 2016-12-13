@@ -46,6 +46,8 @@
     #define STR_PRODUCT      L"AdNW HyperMicro"
 #elif defined BLACKFLAT
     #define STR_PRODUCT      L"AdNW BlackFlat"
+#elif defined BLACKBOWL
+    #define STR_PRODUCT      L"AdNW BlackBowl"
 #else
     #define STR_PRODUCT      L"AdNW Keyboard"
 #endif
@@ -130,6 +132,12 @@ enum { TP_PTS=0, TP_HALFTAC, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_RES, TP_F
     #define PS2_DATA_BIT    4
     #define PS2_CLOCK_PORT_LETTER B
     #define PS2_CLOCK_BIT    3
+
+#elif defined BLACKBOWL
+    #define HAS_I2C
+    #define TP_AXES (1<<TP_PTS | 1<<TP_FLIPY)
+    #define PS2_RESET_PORT_LETTER B
+    #define PS2_RESET_BIT    0
 
 /// @TODO Hypermicro defines for trackpoint
 #else 
