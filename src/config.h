@@ -136,6 +136,14 @@ enum { TP_PTS=0, TP_HALFTAC, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_RES, TP_F
 #elif defined BLACKBOWL
     #define HAS_I2C
     #define TP_AXES (1<<TP_PTS | 1<<TP_FLIPY)
+
+    /* XCK for clock line and RXD for data line */
+    #define PS2_DATA_PORT_LETTER  D
+    #define PS2_DATA_BIT    2
+    #define PS2_CLOCK_PORT_LETTER D
+    #define PS2_CLOCK_BIT    5
+
+    // RESET pin, but should use dedicated circuitry instead
     #define PS2_RESET_PORT_LETTER B
     #define PS2_RESET_BIT    0
 

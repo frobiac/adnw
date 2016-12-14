@@ -74,6 +74,10 @@ ifneq (,$(findstring BLACKFLAT,$(CC_FLAGS)))
 CC_FLAGS    += -DPS2MOUSE
 endif
 
+ifneq (,$(findstring BLACKBOWL,$(CC_FLAGS)))
+CC_FLAGS    += -DPS2MOUSE
+endif
+
 ifneq (,$(findstring HYPERNANO,$(CC_FLAGS)))
 CC_FLAGS    += -DPINKYDROP
 CC_FLAGS    += -DPS2MOUSE
