@@ -5,6 +5,15 @@ BUGS
 ----
 * Compiled with TP support, firmware hangs on init if TP error / not connected
 * Find leaner printf replacement
+Test sizes:
+* avr-nm --size-sort --print-size -td *.elf
+* avr-size --mcu=atmega32u4 --format=avr *.elf
+
+- mousekey accel not working: normal, slow, fast
+* mousemode not exited on other keys fast enough with thumb keys
+    also maybe only activate after threshold? clearance of TP could be ignored more easily..
+* BF: Shift C issue?
+      TP clearance
 
 ISSUES
 ------
@@ -43,10 +52,30 @@ Trackpoint
     - Diode https://sites.google.com/site/thepihacker/ps2pi
             https://sites.google.com/site/thepirow/home/ps2pi
     - Voltage divider: https://www.seanet.com/~karllunt/bareRasPi.html
+* PtS for scrolling, button mask?
 
 HW
 --
 * PS/2 pull-ups needed
+
+I2C
+---
+* mcp23018
+    - https://github.com/jackhumbert/qmk_firmware/blob/master/keyboards/ergodox/
+    - https://github.com/benblazak/ergodox-firmware/blob/master/src/keyboard/ergodox/controller/mcp23018.c
+    - https://github.com/ecerulm/tmk_ergodox
+
+* Pull-ups:
+    - http://www.varesano.net/blog/fabio/how-disable-internal-arduino-atmega-pullups-sda-and-scl-i2c-bus
+
+SPI
+---
+* http://maxembedded.com/2013/11/the-spi-of-the-avr/
+
+Teensy 2.0
+----------
+* Doc of ergodox: PWM ...
+    - https://github.com/benblazak/ergodox-firmware/blob/master/src/keyboard/ergodox/controller/teensy-2-0.md
 
 Refactor
 --------
@@ -55,6 +84,8 @@ Refactor
 * Code refactor: http://www.avrfreaks.net/forum/tut-modularizing-c-code-managing-large-projects?name=PNphpBB2&file=viewtopic&t=48535
     - global vars
     - static functions
+    - volatile only for variables shared with interrupt context, variables in delay loops that would be optimized away
+    * EXTERN global.h http://www.mikrocontroller.net/topic/72934
 
 Layout
 ------
@@ -80,13 +111,6 @@ Commandmode
 * read data like tp settings
 * hierarchical command structure
 
-BUGS
-----
-Test sizes:
-* avr-nm --size-sort --print-size -td *.elf
-* avr-size --mcu=atmega32u4 --format=avr *.elf
-
-- mousekey accel not working: normal, slow, fast
 
 Coding style
 ------------
@@ -100,7 +124,7 @@ Ideas
 - prntscreen...
 - openmoko touchpad?
 - analog input for 2-wire matrix-scan
-
+- LED interface (blinking, list of modes...)
 
 Thumbkey double usage
 ---------------------

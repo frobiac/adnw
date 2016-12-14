@@ -115,7 +115,7 @@ inline void zeroReport(USB_KeyboardReport_Data_t *report_data)
   */
 ISR(TIMER0_OVF_vect)
 {
-    idle_count++;
+    ++idle_count;
     /// @todo What happens on overflow? with 61/s and 16bit=65536
     // (2^15-1)/61/60        ~= 9 minutes till overflow
     // (2^31-1)/61/60/60/24   = 407 days should suffice...

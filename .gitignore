@@ -18,7 +18,8 @@
 generated
 build
 log
-src/*.d
+log.err
+*.d
 src/_private_macros.h
 # qtcreator files
 *.creator*
@@ -27,3 +28,7 @@ src/_private_macros.h
 *.includes
 *.orig
 *.rej
+src/_private_data.h
+adnw.bin
+*.swp
+.merge_file_*
