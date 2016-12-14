@@ -75,7 +75,10 @@ void tp_ram_write(uint8_t addr, uint8_t val)
 
 bool tp_send_read_ack(uint8_t val)
 {
-    return ps2_send_expect(val, PS2_ACK);
+    bool ret = ps2_send_expect(val, PS2_ACK);
+    if(!ret)
+        printf("\ntp_sra(%02x) failed %02x.", val, ps2_error);
+    return ret;
 }
 
 

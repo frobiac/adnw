@@ -21,6 +21,9 @@
 #define TRACKPOINT_H
 
 #include "ps2mouse.h"
+#include "tmk_ps2/ps2.h"
+
+#define PS2_DELAY 150
 
 bool    tp_send_read_ack( uint8_t val );
 void    tp_reset( void );

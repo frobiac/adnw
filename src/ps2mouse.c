@@ -26,7 +26,6 @@ volatile uint8_t     scrollcnt;
 volatile uint32_t    mouse_timer; /// toggle mouse mode for a specified time
 volatile uint16_t    accel; /// toggle mouse mode for a specified time
 
-
 bool ps2_send_recv(uint8_t send, uint8_t *recv)
 {
     if(!g_ps2_connected)
@@ -72,35 +71,35 @@ bool ps2_read(uint8_t * res)
  */
 bool ps2_init_mouse(void)
 {
+    uint8_t rcv __attribute__((unused)); // only for debug output
+
+    g_ps2_connected=1;
     g_mouse_enabled = 0;
     scrollcnt = 0;
-
-    uint8_t d[2] __attribute__((unused));
 
 #ifndef BLACKFLAT
     tp_reset();
 #endif
 
-    // set temporarily for first try...
-    g_ps2_connected=1;
-    uint8_t retries=0;
-    while(retries<5 && !ps2_send_expect(0xff, PS2_ACK) ) {
-        ++retries;
-        printf(".");
-    }
-    if(retries>=5) {
-        // No PS/2 device attached? We should stop all further PS/2 accesses then...
-        printf("\nPS/2: No device detected.");
-        g_ps2_connected=0; // this stops all tries to send or read
-        return false;
-    }
+    ps2_host_init();
 
-    ps2_read(&d[0]);  // Bat
-    ps2_read(&d[1]);  // dev ID
+    _delay_ms(1000);    // wait for powering up
+
+    // send Reset
+    rcv = ps2_host_send(0xFF);
+    printf("\nps2 RST: %02x %02x", rcv, ps2_error);
+
+    // read completion code of BAT
+    rcv = ps2_host_recv_response();
+    printf("\nps2 BAT: %02x %02x", rcv, ps2_error);
+
+    // read Device ID
+    rcv = ps2_host_recv_response();
+    printf("\nps2 DEV: %02x %02x", rcv, ps2_error);
 
     //Enable Data reporting
-    if ( ! ps2_send_expect(0xf4, PS2_ACK) )
-        return false;
+    rcv = ps2_host_send(0xF4);
+    printf("\nps2 REP: %02x %02x", rcv, ps2_error);
 
     //ps2_send_expect(0xe8, PS2_ACK); // set resolution
     //ps2_send_expect(0x01, PS2_ACK); // 8 counts/mm
@@ -108,11 +107,10 @@ bool ps2_init_mouse(void)
     //ps2_send_expect(0x01, PS2_ACK);
     //ps2_host_send(0x64); //200 smaples a second
 
-    //Set remote mode
-    if( ! ps2_send_expect(0xf0, PS2_ACK) )
-        return false;
+    // send Set Remote mode
+    rcv = ps2_host_send(0xF0);
+    printf("\nps2 REM: %02x %02x", rcv, ps2_error);
 
-    printf("\nTP init: Bat:%02x Id:%02x",d[0],d[1]);
 
     tp_init();
 
@@ -133,7 +131,9 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
     *BTNS=0;
     int mouseinf;
     {
-        if(ps2_send_expect(0xeb, PS2_ACK)) {
+        uint8_t rcv;
+        rcv = ps2_host_send(PS2_MOUSE_READ_DATA);
+        if(rcv == PS2_ACK) {
             mouseinf=ps2_host_recv_response();
             /// Bits 2 1 0 correspond to  M R L button so swap M&R for RML
             /// @todo Make mouse button order mapping configurable
@@ -180,6 +180,7 @@ uint8_t getMouseReport(USB_WheelMouseReport_Data_t *MouseReport)
     int16_t dx=0, dy=0;
     uint8_t ps2_buttons=0;
 
+    /// @TODO why another check here??
 #ifdef PS2MOUSE
     ps2_read_mouse(&dx, &dy, &ps2_buttons);
 #endif

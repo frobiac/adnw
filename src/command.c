@@ -22,6 +22,7 @@
 #include "hid_usage.h"
 #include "keyboard_class.h"
 #include "keymap.h"
+#include "trackpoint.h"
 #include "jump_bootloader.h"
 
 #ifdef PH_ENABLED
