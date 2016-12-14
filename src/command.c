@@ -149,12 +149,18 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 #endif
 
 #ifdef PS2MOUSE
-        case 'm':
+        case 'm': {
             // @TODO  only activate if init worked!
             g_cfg.fw.mouse_enabled = !g_cfg.fw.mouse_enabled;
-            xprintf("Mouse %sabled\n", g_cfg.fw.mouse_enabled ? "en" : "dis");
+
+            if(g_cfg.fw.mouse_enabled) {
+                g_cfg.fw.mouse_enabled = ps2_init_mouse();
+            }
+
+            xprintf("\nMouse %sabled", g_cfg.fw.mouse_enabled ? "en" : "dis");
             setCommandMode(false);
-            break;
+        }
+        break;
 #endif
         case 'x':
             subcmd=SUB_MACRO;

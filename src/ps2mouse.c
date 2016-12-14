@@ -32,17 +32,18 @@ bool ps2_init_mouse(void)
 {
     uint8_t rcv __attribute__((unused)); // only for debug output
 
-    g_ps2_connected=1;
+    g_ps2_connected=0;
     g_cfg.fw.mouse_enabled = 0;
 
+    // without any of these, it works when only started and stopped manually after boot
     tp_reset();
-
+    _delay_ms(500);  // wait for power up
     ps2_host_init();
+    _delay_ms(1000);  // wait for power up
 
-    // send Reset
     rcv = ps2_host_send(0xFF);
-    if(rcv != PS2_ACK)
-        return false;
+    // This triggers on USART when ps2_init is called a second time, but later call to ID will be ok
+    // if(rcv != PS2_ACK) {  return false; }
 
     // read completion code = AA
     rcv = ps2_host_recv_response(); // xprintf("\nps2 BAT: %02X %02X", rcv, ps2_error);
@@ -62,15 +63,16 @@ bool ps2_init_mouse(void)
 
     // Further options: 0xE8 (resolution), 0xF3 (sample rate)
 
-    if(! tp_id())
+    if(! tp_id()) {
         return false;
+    };
 
     if(! tp_init()) {
-        g_ps2_connected=0;
         return false;
     };
 
     /// @todo Set only on successful init
+    g_ps2_connected=1;
     g_cfg.fw.mouse_enabled = 1;
 
     return true;
