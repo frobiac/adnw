@@ -39,29 +39,30 @@ void tp_reset()
 
 
 
-void tp_ram_toggle(uint8_t addr, uint8_t val)
+void tp_ram_toggle(uint8_t addr, uint8_t mask)
 {
-    tp_send_read_ack(0xe2);
-    tp_send_read_ack(0x2c);
+    /*
+    // Check prior to toggle
     uint8_t tmp;
-    ps2_read(&tmp);
-    if( (tmp & val) != 0x00) {
-        //printf("\nAlready set");
+    tp_send_read_ack(0xe2);
+    ps2_host_send(addr);
+    tmp = ps2_host_recv_response();
+    if( (tmp & mask) != 0x00) {
+        printf("\nToggle %02x -> %02x", tmp, mask);
     }
-
+    */
     tp_send_read_ack(0xe2);
     tp_send_read_ack(0x47);
     tp_send_read_ack(addr);
-    tp_send_read_ack(val);
+    tp_send_read_ack(mask);
 }
 
 uint8_t tp_ram_read(uint8_t addr)
 {
+    uint8_t tmp;
     tp_send_read_ack(0xe2);
     tp_send_read_ack(0x80);
-    tp_send_read_ack(addr);
-    uint8_t tmp;
-    ps2_read(&tmp);
+    tmp = tp_send_read_ack(addr);
     return tmp;
 }
 
@@ -73,12 +74,13 @@ void tp_ram_write(uint8_t addr, uint8_t val)
     tp_send_read_ack(val);
 }
 
-bool tp_send_read_ack(uint8_t val)
+uint8_t tp_send_read_ack(uint8_t val)
 {
-    bool ret = ps2_send_expect(val, PS2_ACK);
-    if(!ret)
-        printf("\ntp_sra(%02x) failed %02x.", val, ps2_error);
-    return ret;
+    uint8_t rcv=ps2_host_send(val);
+
+    if(rcv != PS2_ACK)
+        printf("\ntp_sra(%02x) failed %02x.", val, rcv);
+    return rcv;
 }
 
 
@@ -95,10 +97,10 @@ uint8_t tp_read_config()
 {
     //@TODO: check return status in whole file and abort
     //       KB must work without trackpoint connected even when activated!
+    uint8_t config;
     tp_send_read_ack(0xe2);
     tp_send_read_ack(0x2c);
-    uint8_t config;
-    ps2_read(&config);
+    config = ps2_host_recv_response();
     printf("\nTP cfg=0x%02x", config);
     return config;
 }
@@ -108,22 +110,24 @@ uint8_t tp_read_config()
  */
 void tp_id(void)
 {
+    uint8_t tmp='0';
+
     // read secondary ID
-    if( tp_send_read_ack(0xe1) ) {
-        uint8_t id[2] __attribute__((unused));;
-        ps2_read(&id[0]);
-        ps2_read(&id[1]);
-        printf("2nd ID=%02x%02x\nExt.ID=", id[0],id[1]);
-    }
+    tmp=ps2_host_send(0xE1);
+    tmp=ps2_host_recv_response();
+    printf("\n2nd ID=%02x", tmp);
+    tmp=ps2_host_recv_response();
+    printf("%02x", tmp);
+
     // read extended ID, which ends in ')'
-    if( tp_send_read_ack(0xd0) ) {
-        uint8_t tmp='0';
-        while(tmp != (uint8_t)')') {
-            ps2_read(&tmp);
-            printf("%c",tmp);
-        }
-        printf(")\n");
+    tmp=ps2_host_send(0xD0);
+    tmp=ps2_host_recv_response();
+    printf("\nExt.ID=%c", tmp);
+    while(tmp != (uint8_t)')') {
+        tmp=ps2_host_recv_response();
+        printf("%c",tmp);
     }
+    printf("\n");
 }
 
 /** Set TrackPoint sensitivity.

@@ -31,12 +31,7 @@ bool ps2_send_recv(uint8_t send, uint8_t *recv)
     if(!g_ps2_connected)
         return false;
 
-    if( ! ps2_host_send(send) ) {
-        printf("\nPS/2 failed to send %x.", send);
-        return false;
-    }
-    *recv = ps2_host_recv_response();
-
+    *recv = ps2_host_send(send);
     return true;
 }
 
@@ -98,8 +93,8 @@ bool ps2_init_mouse(void)
     printf("\nps2 DEV: %02x %02x", rcv, ps2_error);
 
     //Enable Data reporting
-    rcv = ps2_host_send(0xF4);
-    printf("\nps2 REP: %02x %02x", rcv, ps2_error);
+    //rcv = ps2_host_send(0xF4);
+    //printf("\nps2 REP: %02x %02x", rcv, ps2_error);
 
     //ps2_send_expect(0xe8, PS2_ACK); // set resolution
     //ps2_send_expect(0x01, PS2_ACK); // 8 counts/mm
@@ -113,6 +108,7 @@ bool ps2_init_mouse(void)
 
 
     tp_init();
+    tp_id();
 
     /// @todo Set only on successful init
     g_mouse_enabled = 1;

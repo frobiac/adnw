@@ -25,7 +25,7 @@
 
 #define PS2_DELAY 150
 
-bool    tp_send_read_ack( uint8_t val );
+uint8_t tp_send_read_ack( uint8_t val );
 void    tp_reset( void );
 bool    tp_init( void );
 void    tp_id( void );
