@@ -153,9 +153,15 @@ void initKeyboard()
 
     // bootloader if CMD_MODE combo is pressed during startup
     clearActiveKeys();
-    scan_matrix();
-    if(CMD_MODE())
+    uint8_t tmp;
+    for(tmp=0; tmp<8; ++tmp) {
+        scan_matrix();
+        _delay_ms(150);
+    }
+    if(CMD_MODE()) {
+        invalidate_config();
         jump_bootloader();
+    }
 
 }
 
