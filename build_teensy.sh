@@ -7,7 +7,10 @@
 #
 # teensy_loader_cli needs udev rules for user access:
 #   www.pjrc.com/teensy/49-teensy.rules
-
+#
+# VMWARE config
+# usb.generic.allowHID = "TRUE"
+# usb.generic.allowLastHID = "TRUE"
 
 MCU=$( grep "^MCU\s*=" makefile | sed "s/.*=\s*//")
 HEX=$( grep "^TARGET\s*=" makefile | sed "s/.*=\s*//")
@@ -39,9 +42,14 @@ make >> log 2>log.err || { tail -n 10 log.err; echo "*** BUILD FAILED, see log.e
 KB=$(grep "KB_HW defined" log | sed "s/^.*defined as //")
 
 if [ -f $HEX.hex ]; then
-  echo "*** Now flashing $KB ($MCU) with $HEX.hex ..." &
-  teensy_loader_cli -mmcu=$MCU -w -v $HEX.hex &&
-  sudo -S  /usr/sbin/hid_listen
+  if [ $(lspci | grep -i vmware -c ) -gt 0 ]; then
+        echo "Not flashing in VM"
+        cp $HEX.hex adnw_vm_shared.hex
+  else
+      echo "*** Now flashing $KB ($MCU) with $HEX.hex ..."
+      teensy_loader_cli -mmcu=$MCU -w -v $HEX.hex
+      sudo -S  /usr/sbin/hid_listen
+  fi
 else
   echo "$HEX not found, cannot flash."
 fi
