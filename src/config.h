@@ -80,6 +80,9 @@
  * TP_FLIP_Y     : flip y axis
  * TP_SWAP_XY    : swap axies (does not work in TrackPoint firmware, though.
  */
+// TP config register: See p33 of YKT3Eext.pdf
+enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FTRANS };
+
 
 #define TP_PTS_ENABLE
 #define TP_SENS_DEF 0x60

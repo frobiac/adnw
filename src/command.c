@@ -229,6 +229,11 @@ void handleSubCmd(char c)
                 case 'a': g_tp_sens = (g_tp_sens-5) % 256; break;
                 case ':': g_tp_sens_low = (g_tp_sens_low+1) % 256; break;
                 case 'A': g_tp_sens_low = (g_tp_sens_low-1) % 256; break;
+
+                case 'x': tp_ram_toggle(0x2C, (1<<TP_FLIPX));  tp_read_config(); break;
+                case 'y': tp_ram_toggle(0x2C, (1<<TP_FLIPY));  tp_read_config(); break;
+                case 'X': tp_ram_toggle(0x2C, (1<<TP_SWAPXY)); tp_read_config(); break;
+                case 'Y': tp_ram_toggle(0x2C, (1<<TP_PTS));    tp_read_config(); break;
 #endif
 
 #ifdef HAS_LED

@@ -73,9 +73,6 @@ void tp_ram_write(uint8_t addr, uint8_t val)
     ps2_host_send(val);
 }
 
-// TP config register: See p33 of YKT3Eext.pdf
-enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FTRANS };
-
 /**
  * Print out trackpoint config register
  * read config byte at 2C: E2 2C or E2 80 2C

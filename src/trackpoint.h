@@ -30,9 +30,11 @@ bool    tp_init( void );
 bool    tp_id( void );
 uint8_t tp_read_config(void);
 uint8_t tp_sensitivity(uint8_t sensitivity);
+void    tp_ram_toggle(uint8_t addr, uint8_t mask);
 
 uint8_t g_tp_sens;
 uint8_t g_tp_sens_low;
+
 
 /// https://git.kernel.org/cgit/linux/kernel/git/stable/linux-stable.git/plain/drivers/input/mouse/trackpoint.h
 /*
