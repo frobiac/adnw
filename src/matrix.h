@@ -43,7 +43,7 @@
 // this must be called once before matrix_scan.
 static inline column_size_t read_col(void)
 {
-    uint8_t resF = PINF;
+    uint8_t resF __attribute__((unused)) = PINF;
 
     // flipped teensy 2.0: F 01  4567 for columns
 #ifdef BLUECUBE
