@@ -1,6 +1,6 @@
-/* 
+/*
  * This is a template file for private data that must not be checked into git.
- * 
+ *
  * It is copied to _private_data.h during the first run of make.
  * This copy is ignored in git and can be freely edited.
  *
@@ -14,7 +14,7 @@
 
 /* This is the private key of the passhash implementation.
  * Sample from a Twik profile, 36 char UUID: TFCY2AJI-NBPU-V01E-F7CP-PJIZNRKPF25W
- * Put the private key enclosed in "" below. 
+ * Put the private key enclosed in "" below.
  */
 #define PH_PRIVATE_KEY "secret"
 
@@ -23,8 +23,8 @@
  * If defined, the passhash creation is only activated if the expected result matches after entry of the master password.
  *
  * Format: "tag", length,  mode, "expected hash"
- * 
- * Example for a private key="secret" defined above and 
+ *
+ * Example for a private key="secret" defined above and
  * tag "a" with length 4 and mode 3 (numeric) should result in 4616
  * when password "key" is entered.
  */
