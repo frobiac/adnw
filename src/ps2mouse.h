@@ -40,10 +40,6 @@ uint8_t g_ps2_connected; ///< >0 if a PS/2 device was detected.
 void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS );
 bool ps2_init_mouse(void);
 
-bool ps2_send_expect(uint8_t send, uint8_t expect);
-bool ps2_send_recv(uint8_t send, uint8_t *recv);
-bool ps2_read(uint8_t *recv);
-
 uint8_t getMouseReport(USB_WheelMouseReport_Data_t *report_data);
 
 

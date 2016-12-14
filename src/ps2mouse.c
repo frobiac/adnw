@@ -26,41 +26,6 @@ volatile uint8_t     scrollcnt;
 volatile uint32_t    mouse_timer; /// toggle mouse mode for a specified time
 volatile uint16_t    accel; /// toggle mouse mode for a specified time
 
-bool ps2_send_recv(uint8_t send, uint8_t *recv)
-{
-    if(!g_ps2_connected)
-        return false;
-
-    *recv = ps2_host_send(send);
-    return true;
-}
-
-
-bool ps2_send_expect(uint8_t send, uint8_t expect)
-{
-    if(!g_ps2_connected)
-        return false;
-
-    uint8_t recv;
-    ps2_send_recv(send, &recv);
-    if(recv != expect) {
-        printf("\nPS/2 %02x -> %02x, expected %02x.", send, recv, expect);
-        return false;
-    }
-    return true;
-}
-
-// checking wrapper around ps2_host_recv_response()
-bool ps2_read(uint8_t * res)
-{
-    if(!g_ps2_connected)
-        return false;
-
-    *res=ps2_host_recv_response();
-    return true;
-}
-
-
 /**
  * Setup PS/2 connection
  */
