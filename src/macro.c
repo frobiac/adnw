@@ -195,7 +195,6 @@ uint8_t updateEEMacroHID(const uint8_t * macro, uint8_t idx)
     while(macro[len] != 0 && len < MACRO_MAX_LEN) {
         len++ ;
     }
-    //uint8_t i; for(i=0;i<len;++i) xprintf(" %02x", macro[i]);
 
     eeprom_busy_wait();
     eeprom_update_byte ((void *) EE_ADDR_MACRO(idx), len );

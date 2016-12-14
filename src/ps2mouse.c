@@ -45,14 +45,14 @@ bool ps2_init_mouse(void)
         return false;
 
     // read completion code = AA
-    rcv = ps2_host_recv_response();
+    rcv = ps2_host_recv_response(); // xprintf("\nps2 BAT: %02X %02X", rcv, ps2_error);
     // @TODO check for error (FC 00 instead of AA 00) (p9: 2.3.1 RESET)
 
     // read I.D. = 00
-    rcv = ps2_host_recv_response();
+    rcv = ps2_host_recv_response(); // xprintf("\nps2 DEV: %02X %02X", rcv, ps2_error);
 
     // send Set Remote mode
-    rcv = ps2_host_send(0xF0);
+    rcv = ps2_host_send(0xF0); // xprintf("\nps2 REM: %02X %02X", rcv, ps2_error);
 
     // Enable Data reporting (not needed for remote mode)
     // rcv = ps2_host_send(0xF4);
@@ -114,7 +114,7 @@ void ps2_read_mouse(int8_t *dx, int8_t *dy, int8_t *BTNS )
 
             return;
         } else {
-            xprintf("\nERR read_mouse %0x", rcv);
+            xprintf("\nERR read_mouse %0X", rcv);
         }
     }
 }

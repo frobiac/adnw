@@ -53,7 +53,7 @@ void tp_ram_toggle(uint8_t addr, uint8_t mask)
     ps2_host_send(addr);
     tmp = ps2_host_recv_response();
     if( (tmp & mask) != 0x00) {
-        xprintf("\nToggle %02x -> %02x", tmp, mask);
+        xprintf("\nToggle %02X -> %02X", tmp, mask);
     }
     */
 
@@ -106,7 +106,7 @@ bool tp_id(void)
         return false;
     }
     tmp=ps2_host_recv_response();
-    xprintf("\n2nd ID=%02x", tmp);
+    xprintf("\n2nd ID=%02X", tmp);
 
     // read extended ID, which ends in ')'
     tmp=ps2_host_send(0xD0);

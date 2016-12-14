@@ -61,7 +61,7 @@ void init_config()
     // @TODO implement major/minor versioning to keep macros and other settings
     uint16_t magic = eeprom_read_word(EE_CFG_MAGIC);
     if(magic != EE_CFG_MAGIC_NUM) {
-        xprintf("\nEE magic %04x != %04x", magic, EE_CFG_MAGIC_NUM);
+        xprintf("\nEE magic %04X != %04X", magic, EE_CFG_MAGIC_NUM);
         save_config(&g_cfg);
     } else {
         xprintf("\nEE magic OK");
@@ -73,10 +73,10 @@ void init_config()
 
 void print_config()
 {
-    xprintf("\nEE[%d] %04x: %02x ", sizeof(g_cfg), g_cfg.magic, g_cfg.fw.raw);
+    xprintf("\nEE[%d] %04X: %02X ", sizeof(g_cfg), g_cfg.magic, g_cfg.fw.raw);
     xprintf("Mouse=%d", g_cfg.fw.mouse_enabled);
 #ifdef HAS_LED
-    xprintf("LED:%02x %02x %02x ", g_cfg.led.brightness, g_cfg.led.on, g_cfg.led.off);
+    xprintf("LED:%02X %02X %02X ", g_cfg.led.brightness, g_cfg.led.on, g_cfg.led.off);
 #endif
 #ifdef PINKYDROP
     xprintf("PD=%d", g_cfg.fw.pinkydrop);
@@ -86,7 +86,7 @@ void print_config()
 #endif
 #ifdef PS2MOUSE
     xprintf("\nTP: Sens: %3d/%3d SP=%3d TH=%3d ", g_cfg.tp_config.sensL, g_cfg.tp_config.sens, g_cfg.tp_config.speed, g_cfg.tp_config.thres);
-    xprintf("PTS=%1x X=%1x Y=%1x (%0x)",g_cfg.tp_axis.pts, g_cfg.tp_axis.flipx, g_cfg.tp_axis.flipy, g_cfg.tp_axis.raw);
+    xprintf("PTS=%1X X=%1X Y=%1X (%0X)",g_cfg.tp_axis.pts, g_cfg.tp_axis.flipx, g_cfg.tp_axis.flipy, g_cfg.tp_axis.raw);
 #endif
 }
 
