@@ -17,6 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "print.h"
 
 #ifndef MATRIX_H
 #define  MATRIX_H
@@ -41,7 +42,7 @@
 #include "config.h"
 
 #ifdef BLACKBOWL
-#include "external/mcp23018.h"
+#include "mcp23018.h"
 
 // these are the initially tested hardwired addresses that should work
 // 0x46 -> 3 on chip=left side, 0x4E -> 7 on chip (VCC) = right side
@@ -90,7 +91,7 @@ static inline bool init_cols(void)
 
     // detect both attached MCP23018 which should be on addresses +3 and +7
     if( mcp23018_init_addr(i2c_adr[0]) && mcp23018_init_addr(i2c_adr[1]) ) {
-        printf("\nI2C: both found.");
+        xprintf("\nI2C: both found.");
         return true;
     }
 
