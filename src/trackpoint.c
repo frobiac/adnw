@@ -28,13 +28,18 @@
 
 #include "trackpoint.h"
 
+/**
+ *  If the recommended reset circuitry is not attached to trackpoints reset line,
+ *  it is possible do simulate it with a regular GPIO.
+ */
 void tp_reset()
 {
-    PS2_RESET_DDR |= (1 << PS2_RESET_BIT);
-    PS2_RESET_PORT |= (1 << PS2_RESET_BIT);
+#if defined(PS2_RESET_DDR)
+    PS2_RESET_DDR |= (1 << PS2_RESET_BIT);   // output
+    PS2_RESET_PORT |= (1 << PS2_RESET_BIT);  // high
     _delay_us(150 /*PS2_DELAY*/);
-    PS2_RESET_PORT &= ~(1 << PS2_RESET_BIT);
-    return;
+    PS2_RESET_PORT &= ~(1 << PS2_RESET_BIT); // low
+#endif
 }
 
 

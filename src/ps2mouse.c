@@ -35,9 +35,7 @@ bool ps2_init_mouse(void)
     g_ps2_connected=1;
     g_cfg.fw.mouse_enabled = 0;
 
-#ifndef BLACKFLAT
     tp_reset();
-#endif
 
     ps2_host_init();
 
