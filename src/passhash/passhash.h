@@ -21,6 +21,7 @@
 #ifndef uint8_t
     #include <stdint.h>
 #endif
+#include <stdbool.h>
 
 #define PH_MIN_LEN       4
 #define PH_MAX_LEN      26
@@ -31,4 +32,5 @@
 
 ///  password array must be one longer then requested length!
 uint8_t passHash(char * password, uint8_t len, uint8_t type, char * secret, char * key, char * tag);
+bool verifyHash(char * ph_master_pw, char * ph_priv_key, char * tag, uint8_t len, uint8_t type, char * hash );
 

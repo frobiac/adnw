@@ -175,4 +175,14 @@ uint8_t passHash(char * password, uint8_t len, uint8_t type, char * secret, char
     return 0;
 }
 
+bool verifyHash(char * secret, char * key, char * tag, uint8_t len, uint8_t type, char * expected )
+{
+    char password[len+1];
+    passHash(password, len, type, secret, key, tag);
+    if( memcmp( expected, password, len) == 0)
+        return true;
+
+    return false;
+}
+
 

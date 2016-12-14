@@ -36,7 +36,8 @@ PS/2 support is copied from [TMK sources][tmk].
 
 A dedicated USB ID was generously supplied by Openmoko, Inc.
 
-Password hash generation is implemented after the algorithm from the Android apps [Twik][twik_android] ([python implementation here][twik_python]) and [HashIt!][hashit_android], which in turn are based on the chrome extension Password Hasher Plus.
+Password hash generation is implemented after the algorithm from Password Hasher Plus chrome extension.
+It is compatible with the [Twik][twik_home] implementations for [Android][twik_android] and [python][twik_python].
 
 It uses hmac-sha1 and sha1 implementations from [avr-crypto-lib][avr_crypto_lib], licensed under GPL3.
 
@@ -103,15 +104,15 @@ The following commands need further input:
     * Full TrackPoint configuration of axes orientations and speed/sensitivity/threshold can be performed.
 
 - h PassHash
-    * Enter tag [length [mode]] for passhash creation
+    * On first call the master password must be entered. A check against given test data is performed.
+    * Subsequent calls take arguments as tag [length [mode]]
 
 
 Password Hash Support
 ---------------------
-Support for passwords compatible with PassHash implementations, for example the android app Twik,
+Support for passwords compatible with Password Hasher implementations, for example [Twik][twik_home],
 must be configured in a separate header:
-Twik private key of a profile and master password can be set in src/_private_data.h,
-which is created on first make call and ignored in git.
+Twik private key of a profile must be set in src/_private_data.h, which is created on first make call and ignored in git.
 
 
 Current Layout
@@ -156,9 +157,9 @@ Current default layout as implemented in [keymap.h](/src/keymap.h) :
 [ergodox]:   http://github.com/benblazak/ergodox-firmware
 [hhkb]:      http://github.com/humblehacker/keyboard
 [RT_AdNW]:   http://www.keyboard-layout-editor.com/#/layouts/aff6811ce65a019e45942ed73f99ddd6
+[twik_home]: http://gustavomondron.github.io/twik/
 [twik_python]: http://github.com/coxande/Twik
 [twik_android]: https://github.com/gustavomondron/twik/blob/master/app/src/main/java/com/reddyetwo/hashmypass/app/hash
-[hashit_android]: https://github.com/ginkel/hashit/blob/master/src/main/java/com/ginkel/hashit
 [avr_crypto_lib]: https://github.com/cantora/avr-crypto-lib
 [lufa]:           http://www.lufa-lib.org
 

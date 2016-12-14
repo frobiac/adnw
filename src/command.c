@@ -45,10 +45,15 @@ bool g_cmd_mode_active=false;
     #include "extra.h"
 #endif
 
-#define TAGLEN 8
+#define TAGLEN 32
 char tag[TAGLEN+1];
+char ph_master_pw[TAGLEN+1];
 
 static uint8_t subcmd;           ///< currently active subcommand
+
+#ifdef PH_ENABLED
+    static bool passhash_pw_entered = false;
+#endif
 
 void setCommandMode(bool on)
 {
@@ -171,9 +176,6 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             break;
 #ifdef PH_ENABLED
         case 'h':
-            /// only generate passhash if a private key was defined during compile and
-            /// the master password was entered.
-            /// @TODO read password from user, maybe renew periodically
             memset(tag,0,TAGLEN);
             subcmd=SUB_PASSHASH;
             break;
@@ -230,15 +232,33 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 
 #ifdef PH_ENABLED
         case SUB_PASSHASH:
+            // press return immediately to unset password
+            // on first call enter password
+            // on subsequent runs enter tag [len [type]]
+            //
             // read until return=10 is pressed or maximum length reached
             if( (uint8_t)(c) != 10 && strlen(tag) < TAGLEN) {
                 tag[strlen(tag)]= c;
             } else {
                 setCommandMode(false);
+                if(strlen(tag) == 0) {
+                    memset(ph_master_pw,0,TAGLEN);
+                    passhash_pw_entered = false;
+                    printf("PH clear\n");
+                    return true;
+                }
+
+                char password[PH_MAX_LEN+1];
+                if( passhash_pw_entered == false ) {
+                    sscanf(tag, "%s", ph_master_pw);
+                    if(verifyHash(PH_PRIV_KEY, ph_master_pw,  PH_TEST /*tag len type hash*/ ))
+                        passhash_pw_entered = true;
+
+                    return true;
+                }
 
                 uint16_t type=PH_TYPE_ALNUMSYM;
                 uint16_t len=12;
-                char password[PH_MAX_LEN+1];
                 char splitTag[TAGLEN+1];
 
                 // parse input into "tag len type"
@@ -247,10 +267,9 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
                     len=12;
                 if(type<PH_TYPE_ALNUMSYM||type>PH_TYPE_NUM)
                     type=PH_TYPE_ALNUMSYM;
-                /// @todo secret and key from compileflag or EEPROM.
                 /// PH_PRIV_KEY  "secret" is the Twik private key of a profile
-                /// PH_MASTER_PW "key" is the master password needed to create pass hashes for a tag
-                uint8_t ret = passHash(password, (uint8_t)len, (uint8_t)type, PH_PRIV_KEY, PH_MASTER_PW, splitTag);
+                /// ph_master_pw "key" is the master password needed to create pass hashes for a tag
+                uint8_t ret = passHash(password, (uint8_t)len, (uint8_t)type, PH_PRIV_KEY, ph_master_pw, splitTag);
                 if(ret==0) {
                     setOutputString(password);
                 }

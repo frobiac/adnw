@@ -145,3 +145,9 @@ suspend/wakeup:
     win: powercfg -devicequery wake_armed
     implement EVENT_USB_Device_Suspend() ??
 
+Passhash
+--------
+naming of key secret
+url and name of alternatives
+twik
+testcases

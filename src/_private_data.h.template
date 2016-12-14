@@ -12,11 +12,7 @@
 // This is the private key of a Twik profile
 #define PH_PRIV_KEY "myPrivateKey"
 
-// @TODO This should be entered at least once during runtime by user for security reasons.
-// This is the master key required to create a passhash for a tag 
-#define PH_MASTER_PW "MasterPassword"
-
-
 // test vector to verify correct entry of password
 // tag len mode hash
-#define PH_TEST a 4 3 1234
+// example for PRIV_KEY "secret" and password "key"
+#define PH_TEST "a", 4, 3, "4616"
