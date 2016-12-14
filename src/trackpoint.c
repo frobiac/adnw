@@ -44,45 +44,34 @@ void tp_ram_toggle(uint8_t addr, uint8_t mask)
     /*
     // Check prior to toggle
     uint8_t tmp;
-    tp_send_read_ack(0xe2);
+    ps2_host_send(0xe2);
     ps2_host_send(addr);
     tmp = ps2_host_recv_response();
     if( (tmp & mask) != 0x00) {
         printf("\nToggle %02x -> %02x", tmp, mask);
     }
     */
-    tp_send_read_ack(0xe2);
-    tp_send_read_ack(0x47);
-    tp_send_read_ack(addr);
-    tp_send_read_ack(mask);
+
+    ps2_host_send(0xe2);
+    ps2_host_send(0x47);
+    ps2_host_send(addr);
+    ps2_host_send(mask);
 }
 
 uint8_t tp_ram_read(uint8_t addr)
 {
-    uint8_t tmp;
-    tp_send_read_ack(0xe2);
-    tp_send_read_ack(0x80);
-    tmp = tp_send_read_ack(addr);
-    return tmp;
+    ps2_host_send(0xe2);
+    ps2_host_send(0x80);
+    return ps2_host_send(addr);
 }
 
 void tp_ram_write(uint8_t addr, uint8_t val)
 {
-    tp_send_read_ack(0xe2);
-    tp_send_read_ack(0x81);
-    tp_send_read_ack(addr);
-    tp_send_read_ack(val);
+    ps2_host_send(0xe2);
+    ps2_host_send(0x81);
+    ps2_host_send(addr);
+    ps2_host_send(val);
 }
-
-uint8_t tp_send_read_ack(uint8_t val)
-{
-    uint8_t rcv=ps2_host_send(val);
-
-    if(rcv != PS2_ACK)
-        printf("\ntp_sra(%02x) failed %02x.", val, rcv);
-    return rcv;
-}
-
 
 // TP config register: See p33 of YKT3Eext.pdf
 enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FTRANS };
@@ -98,8 +87,8 @@ uint8_t tp_read_config()
     //@TODO: check return status in whole file and abort
     //       KB must work without trackpoint connected even when activated!
     uint8_t config;
-    tp_send_read_ack(0xe2);
-    tp_send_read_ack(0x2c);
+    ps2_host_send(0xe2);
+    ps2_host_send(0x2c);
     config = ps2_host_recv_response();
     printf("\nTP cfg=0x%02x", config);
     return config;
