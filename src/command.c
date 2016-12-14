@@ -143,8 +143,6 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 #ifdef PS2MOUSE
         case 't':
             ps2_init_mouse();
-            tp_read_config();
-            tp_id();
             setCommandMode(false);
             break;
 #endif

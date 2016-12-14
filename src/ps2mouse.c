@@ -43,15 +43,16 @@ bool ps2_init_mouse(void)
 
     ps2_host_init();
 
-    _delay_ms(1000);    // wait for powering up
-
     // send Reset
     rcv = ps2_host_send(0xFF); // printf("\nps2 RST: %02x %02x", rcv, ps2_error);
+    if(rcv != PS2_ACK)
+        return false;
 
-    // read completion code of BAT
+    // read completion code = AA
     rcv = ps2_host_recv_response(); // printf("\nps2 BAT: %02x %02x", rcv, ps2_error);
+    // @TODO check for error (FC 00 instead of AA 00) (p9: 2.3.1 RESET)
 
-    // read Device ID
+    // read I.D. = 00
     rcv = ps2_host_recv_response(); // printf("\nps2 DEV: %02x %02x", rcv, ps2_error);
 
     // send Set Remote mode
@@ -65,8 +66,13 @@ bool ps2_init_mouse(void)
 
     // Further options: 0xE8 (resolution), 0xF3 (sample rate)
 
-    tp_init();
-    tp_id();
+    if(! tp_id())
+        return false;
+
+    if(! tp_init()) {
+        g_ps2_connected=0;
+        return false;
+    };
 
     /// @todo Set only on successful init
     g_mouse_enabled = 1;
@@ -105,6 +111,8 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
                 *dy=-(256-*dy);
 
             return;
+        } else {
+            printf("\nERR read_mouse %0x", rcv);
         }
     }
 }

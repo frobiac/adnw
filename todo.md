@@ -37,7 +37,12 @@ Trackpoint
 * document most important registers ( see trackpoint.[ch] from kernel)
 * configuration editable at runtime + eeprom store
 * startup even if TP is disabled
-* TP_ROTATE in hw via register
+* PS/2 -> 3.3V on Raspberry Pi:
+    - http://www.deater.net/weave/vmwprod/hardware/pi-ps2/
+      https://github.com/deater/vmw-meter/tree/master/pi-ps2/hardware
+    - Diode https://sites.google.com/site/thepihacker/ps2pi
+            https://sites.google.com/site/thepirow/home/ps2pi
+    - Voltage divider: https://www.seanet.com/~karllunt/bareRasPi.html
 
 HW
 --

@@ -84,20 +84,15 @@ enum { TP_PTS=0, TP_RES, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_SWAPXY, TP_FT
  */
 uint8_t tp_read_config()
 {
-    //@TODO: check return status in whole file and abort
-    //       KB must work without trackpoint connected even when activated!
-    uint8_t config;
     ps2_host_send(TP_COMMAND);
     ps2_host_send(0x2c);
-    config = ps2_host_recv_response();
-    printf("\nTP cfg=0x%02x", config);
-    return config;
+    return ps2_host_recv_response();
 }
 
 /** Read id from trackpoint.
  *  smaller TP: 2nd ID=010e  Ext.ID= M 19990623($IBM3780)
  */
-void tp_id(void)
+bool tp_id(void)
 {
     uint8_t tmp='0';
 
@@ -106,7 +101,7 @@ void tp_id(void)
     tmp=ps2_host_recv_response();
     if(tmp != TP_MAGIC_IDENT) {
         printf("\nFailed to read ID");
-        return;
+        return false;
     }
     tmp=ps2_host_recv_response();
     printf("\n2nd ID=%02x", tmp);
@@ -119,7 +114,7 @@ void tp_id(void)
         tmp=ps2_host_recv_response();
         printf("%c",tmp);
     }
-    printf("\n");
+    return true;
 }
 
 /** Set TrackPoint sensitivity.
@@ -171,6 +166,7 @@ bool tp_init(void)
     tp_ram_write(0x41, 0xff);
     tp_ram_write(0x42, 0xff);
 
+    tp_config = tp_read_config();
 
     return true;
 }

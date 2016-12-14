@@ -27,7 +27,7 @@
 
 void    tp_reset( void );
 bool    tp_init( void );
-void    tp_id( void );
+bool    tp_id( void );
 uint8_t tp_read_config(void);
 uint8_t tp_sensitivity(uint8_t sensitivity);
 
