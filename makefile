@@ -134,6 +134,11 @@ FW_VERSION := unknown_version-$(shell date +%Y%m%d)
 endif
 CC_FLAGS    += -DFW_VERSION=\"$(FW_VERSION)\"
 
+# generate a sample uuid for passhash secret
+UUID := $(shell cat /proc/sys/kernel/random/uuid)
+ifndef UUID
+	UUID := $(shell tr -dc 'a-zA-Z0-9' </dev/urandom | tr -d 'lIO' | head -c 26 | sed 's/./-/9; s/./-/14; s/./-/19; s/./-/24')
+endif
 
 # Default target
 all: lufacheck configtest private_data_check submodule
@@ -144,7 +149,7 @@ ifneq ("$(wildcard $(SRCDIR)/_private_data.h)","")
 else
 	@echo "*** PRIVATE DATA $(SRCDIR)/_private_data.h NOT found.";
 	@echo "*** Creating default one. Please edit template to your needs (file is ignored in git)";
-	@cp $(SRCDIR)/_private_data_template.h $(SRCDIR)/_private_data.h ;
+	@sed "s/^#define PH_PRIVATE_KEY .*/#define PH_PRIVATE_KEY \"$(UUID)\"/" $(SRCDIR)/_private_data_template.h > $(SRCDIR)/_private_data.h ;
 	@chmod 600 $(SRCDIR)/_private_data.h ;
 	@false;
 endif
