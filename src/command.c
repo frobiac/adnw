@@ -45,9 +45,16 @@ bool g_cmd_mode_active=false;
     #include "extra.h"
 #endif
 
-#define TAGLEN 32
-char tag[TAGLEN+1];
-char ph_master_pw[TAGLEN+1];
+// buffer for input and passhash generation
+#define PH_INPUT_LEN PH_MAX_LEN + 1
+char ph_input[PH_INPUT_LEN];
+
+// longest possible tag is input minus length, mode and two spaces
+#define TAGLEN PH_INPUT_LEN - 5 // tag_XY_M
+
+#define PH_PW_LEN 32
+char ph_master_pw[PH_PW_LEN];
+
 
 static uint8_t subcmd;           ///< currently active subcommand
 
@@ -176,7 +183,7 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             break;
 #ifdef PH_ENABLED
         case 'h':
-            memset(tag,0,TAGLEN);
+            memset(ph_input,0,PH_INPUT_LEN);
             subcmd=SUB_PASSHASH;
             break;
 #endif
@@ -232,25 +239,25 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 
 #ifdef PH_ENABLED
         case SUB_PASSHASH:
-            // press return immediately to unset password
             // on first call enter password
             // on subsequent runs enter tag [len [type]]
             //
             // read until return=10 is pressed or maximum length reached
-            if( (uint8_t)(c) != 10 && strlen(tag) < TAGLEN) {
-                tag[strlen(tag)]= c;
+            if( (uint8_t)(c) != 10 && strlen(ph_input) < PH_INPUT_LEN) {
+                ph_input[strlen(ph_input)]= c;
             } else {
                 setCommandMode(false);
-                if(strlen(tag) == 0) {
-                    memset(ph_master_pw,0,TAGLEN);
+
+                if(strlen(ph_input) == 0) {
+                    // only return was pressed -> clear master password and return
+                    memset(ph_master_pw,0,PH_PW_LEN);
                     passhash_pw_entered = false;
                     printf("PH clear\n");
                     return true;
                 }
 
-                char passhash[PH_MAX_LEN+1];
                 if( passhash_pw_entered == false ) {
-                    sscanf(tag, "%s", ph_master_pw);
+                    memcpy(ph_master_pw, ph_input, strlen(ph_input));
 #ifdef PH_TEST
                     if(verifyHash(PH_PRIVATE_KEY, ph_master_pw,  PH_TEST_DATA /*tag len type hash*/ ))
 #endif
@@ -259,23 +266,25 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
                     return true;
                 }
 
-                uint16_t type=PH_TYPE_ALNUMSYM;
-                uint16_t len=12;
-                char splitTag[TAGLEN+1];
+                char tag[TAGLEN+1];
+                uint16_t type, len;
 
                 // parse input into "tag len type"
-                sscanf(tag,"%s %u %u", splitTag, &len, &type);
-                if(len<PH_MIN_LEN||len>PH_MAX_LEN)
+                sscanf(ph_input,"%s %u %u", tag, &len, &type);
+                memset(ph_input,0,PH_INPUT_LEN);
+
+                // defaults if invalid input
+                if(len<PH_MIN_LEN || len>PH_MAX_LEN)
                     len=12;
-                if(type<PH_TYPE_ALNUMSYM||type>PH_TYPE_NUM)
+                if(type<PH_TYPE_ALNUMSYM || type>PH_TYPE_NUM)
                     type=PH_TYPE_ALNUMSYM;
-                /// PH_PRIVATE_KEY  is the Twik private key of a profile
-                /// ph_master_pw    is the master password needed to create pass hashes for a tag
-                uint8_t ret = passHash(passhash, (uint8_t)len, (uint8_t)type, PH_PRIVATE_KEY, ph_master_pw, splitTag);
+
+                // reuse ph_input buffer
+                uint8_t ret = passHash(ph_input, (uint8_t)len, (uint8_t)type, PH_PRIVATE_KEY, ph_master_pw, tag);
                 if(ret==0) {
-                    setOutputString(passhash);
+                    setOutputString(ph_input);
+                    memset(ph_input,0,len);
                 }
-                memset(tag,0,TAGLEN);
             }
             break;
 #endif
