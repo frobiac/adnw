@@ -150,9 +150,11 @@ void genHash(char * result, char * key, char * tag, uint8_t len, uint8_t type)
     result[len] = '\0';
 }
 /**
- *  password array must be one longer then requested length!
+ *  passhash array must be one longer then requested length!
+ *
+ *  @ret passhash
  */
-uint8_t passHash(char * password, uint8_t len, uint8_t type, char * secret, char * key, char * tag)
+uint8_t passHash(char * passhash, uint8_t len, uint8_t type, char * private_key, char * master_pw, char * tag)
 {
     if(len<4 || len>26) {
         return(3);
@@ -169,17 +171,17 @@ uint8_t passHash(char * password, uint8_t len, uint8_t type, char * secret, char
       - private_key is from config               (=secret)
       - tag         is domain name
      */
-    genHash(mhash,    secret, tag, 24,  1);
-    genHash(password, mhash,  key, len, type);
+    genHash(mhash,    private_key, tag, 24,  1);
+    genHash(passhash, mhash,  master_pw, len, type);
 
     return 0;
 }
 
-bool verifyHash(char * secret, char * key, char * tag, uint8_t len, uint8_t type, char * expected )
+bool verifyHash(char * private_key, char * master_pw, char * tag, uint8_t len, uint8_t type, char * expected_hash )
 {
-    char password[len+1];
-    passHash(password, len, type, secret, key, tag);
-    if( memcmp( expected, password, len) == 0)
+    char passhash[len+1];
+    passHash(passhash, len, type, private_key, master_pw, tag);
+    if( memcmp( expected_hash, passhash, len) == 0)
         return true;
 
     return false;

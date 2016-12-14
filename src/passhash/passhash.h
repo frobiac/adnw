@@ -30,7 +30,17 @@
 #define PH_TYPE_ALNUM    2
 #define PH_TYPE_ALNUMSYM 1
 
-///  password array must be one longer then requested length!
-uint8_t passHash(char * password, uint8_t len, uint8_t type, char * secret, char * key, char * tag);
-bool verifyHash(char * ph_master_pw, char * ph_priv_key, char * tag, uint8_t len, uint8_t type, char * hash );
+/**
+ *  Calculate passhash from given values.
+ *
+ *  The passhash array passed as first argument must be one larger than requested length!
+ *
+ *  @ret passhash will contain calculated hash
+ */
+uint8_t passHash(char * passhash, uint8_t len, uint8_t type, char * private_key, char * master_password, char * tag);
+
+/**
+ *  Compare expected_hash to calculated result.
+ */
+bool verifyHash(char * ph_master_pw, char * ph_priv_key, char * tag, uint8_t len, uint8_t type, char * expected_hash );
 

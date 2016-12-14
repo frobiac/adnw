@@ -13,9 +13,10 @@ Test sizes:
 * mousemode not exited on other keys fast enough with thumb keys
     also maybe only activate after threshold? clearance of TP could be ignored more easily..
 
+
 FEATURES
 --------
-* require code to unlock macros and passhash password on boot
+* read code to unlock macros, passhash private key and xorshift seed on boot
 * password card easier?
 
 
@@ -89,6 +90,7 @@ Refactor
     * EXTERN global.h http://www.mikrocontroller.net/topic/72934
 
 
+
 Layout
 ------
 * usage page for system keys
@@ -148,6 +150,5 @@ suspend/wakeup:
 Passhash
 --------
 naming of key secret
-url and name of alternatives
-twik
-testcases
+allowed length of entries
+error checks on all input...
