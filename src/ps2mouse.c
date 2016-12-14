@@ -83,7 +83,12 @@ bool ps2_init_mouse(void)
 /*
  *
  */
-void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
+#define X_IS_NEG  (mouseinf & (1<<4))
+#define Y_IS_NEG  (mouseinf & (1<<5))
+#define X_IS_OVF  (mouseinf & (1<<6))
+#define Y_IS_OVF  (mouseinf & (1<<7))
+
+void ps2_read_mouse(int8_t *dx, int8_t *dy, int8_t *BTNS )
 {
     if(!g_ps2_connected)
         return;
@@ -104,29 +109,18 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
             *dx= ps2_host_recv_response();
             *dy= ps2_host_recv_response();
 
-            if(mouseinf&0x10)
-                *dx=-(256-*dx);
-
-            if(mouseinf&0x20)
-                *dy=-(256-*dy);
+            *dx=  X_IS_NEG ?
+                  ((!X_IS_OVF && -127 <= *dx && *dx <= -1) ?  *dx : -127) :
+                  ((!X_IS_OVF && 0 <= *dx && *dx <= 127) ? *dx : 127);
+            *dy=  Y_IS_NEG ?
+                  ((!Y_IS_OVF && -127 <= *dy && *dy <= -1) ?  *dy : -127) :
+                  ((!Y_IS_OVF && 0 <= *dy && *dy <= 127) ? *dy : 127);
 
             return;
         } else {
             printf("\nERR read_mouse %0x", rcv);
         }
     }
-}
-
-/**
- * Rotate 90° by exchanging x and y and changing sign of new x
- */
-void rotateXY(int8_t *x, int8_t *y)
-{
-#ifdef TP_ROTATE
-    int8_t tmp = *y;
-    *y = *x;
-    *x = -tmp;
-#endif
 }
 
 /**
@@ -139,8 +133,8 @@ uint8_t getMouseReport(USB_WheelMouseReport_Data_t *MouseReport)
     if(!g_mouse_enabled)
         return 0;
 
-    int16_t dx=0, dy=0;
-    uint8_t ps2_buttons=0;
+    int8_t dx=0, dy=0;
+    int8_t ps2_buttons=0;
 
     /// @TODO why another check here??
 #ifdef PS2MOUSE
@@ -171,7 +165,13 @@ uint8_t getMouseReport(USB_WheelMouseReport_Data_t *MouseReport)
     if(g_mouse_keys_enabled || ps2_buttons) {
         // factor = 1 + [0..400]*1.5/400 = 1..2.5
         //factor= 1 + accel * (ACC_MAX-1) / ACC_RAMPTIME;
-
+#ifdef TP_SWAP_XY
+        // swapxy does not work with trackpoint.
+        int8_t tmp;
+        tmp = dx;
+        dx = dy;
+        dy = tmp;
+#endif
         // keyboard mouse buttons only in mousemode
         if( (ps2_buttons & 0x05)==0x05 || (g_mouse_keys & 0x08)) {
             int8_t sx = (dx&0xFF00) ? -(256-(dx+0x100)) : dx;
@@ -189,12 +189,10 @@ uint8_t getMouseReport(USB_WheelMouseReport_Data_t *MouseReport)
                 // factor here had been mapped to 0..0.5 -> use 0.25
                 MouseReport->H = -sx>>2;
                 MouseReport->V = -sy>>2;
-                rotateXY(&MouseReport->V, &MouseReport->H);
             }
         } else { // no scroll-wheel support or not active
-            MouseReport->X = -dx;
+            MouseReport->X = dx;
             MouseReport->Y = dy;
-            rotateXY(&(MouseReport->X), &(MouseReport->Y));
             MouseReport->Button = g_mouse_keys & ~(0x08); // do not emit the scroll button
             MouseReport->Button |= ps2_buttons;           // PS/2 buttons if set
         }

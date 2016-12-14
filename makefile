@@ -65,12 +65,10 @@ CC_FLAGS += -DDEBUG_OUTPUT
 endif
 
 ifneq (,$(findstring REDTILT,$(CC_FLAGS)))
-CC_FLAGS    += -DTP_ROTATE
 CC_FLAGS    += -DPS2MOUSE
 endif
 
 ifneq (,$(findstring BLACKFLAT,$(CC_FLAGS)))
-# CC_FLAGS    += -DTP_ROTATE
 CC_FLAGS    += -DPS2MOUSE
 endif
 
