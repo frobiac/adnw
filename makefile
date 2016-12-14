@@ -68,19 +68,23 @@ endif
 
 ifneq (,$(findstring REDTILT,$(CC_FLAGS)))
 CC_FLAGS    += -DPS2MOUSE
+PS2_USE_BUSYWAIT = yes # uses primitive reference code
 endif
 
 ifneq (,$(findstring BLACKFLAT,$(CC_FLAGS)))
 CC_FLAGS    += -DPS2MOUSE
+PS2_USE_BUSYWAIT = yes # uses primitive reference code
 endif
 
 ifneq (,$(findstring BLACKBOWL,$(CC_FLAGS)))
 CC_FLAGS    += -DPS2MOUSE
+PS2_USE_USART = yes # uses primitive reference code
 endif
 
 ifneq (,$(findstring HYPERNANO,$(CC_FLAGS)))
 CC_FLAGS    += -DPINKYDROP
 CC_FLAGS    += -DPS2MOUSE
+PS2_USE_BUSYWAIT = yes # uses primitive reference code
 endif
 
 ifneq (,$(findstring PH_ENABLED,$(CC_FLAGS)))
@@ -103,7 +107,8 @@ endif
 
 ifneq (,$(findstring PS2MOUSE,$(CC_FLAGS)))
 	PS2_MOUSE_ENABLE = yes # PS/2 mouse(TrackPoint) support
-	PS2_USE_BUSYWAIT = yes # uses primitive reference code
+	# Define variant used per board above
+	#PS2_USE_BUSYWAIT = yes # uses primitive reference code
 	#PS2_USE_INT      = yes # uses external interrupt for falling edge of PS/2 clock pin
 	#PS2_USE_USART    = yes # uses hardware USART engine for PS/2 signal receive(recomened)
 
