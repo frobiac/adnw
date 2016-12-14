@@ -106,6 +106,14 @@ The following commands need further input:
     * Enter tag [length [mode]] for passhash creation
 
 
+Password Hash Support
+---------------------
+Support for passwords compatible with PassHash implementations, for example the android app Twik, can be configured via compile switches.
+Twik private key of a profile and master password can be set during compile
+
+    $ make PH_PRIV_KEY=MySecretMasterKey PH_MASTER_PW=password
+
+
 Current Layout
 ==============
 Current default layout as implemented in [keymap.h](/src/keymap.h) :

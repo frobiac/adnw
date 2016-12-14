@@ -170,6 +170,9 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             break;
 #ifdef PH_ENABLED
         case 'h':
+            /// only generate passhash if a private key was defined during compile and
+            /// the master password was entered.
+            /// @TODO read password from user, maybe renew periodically
             memset(tag,0,TAGLEN);
             subcmd=SUB_PASSHASH;
             break;
@@ -244,7 +247,9 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
                 if(type<PH_TYPE_ALNUMSYM||type>PH_TYPE_NUM)
                     type=PH_TYPE_ALNUMSYM;
                 /// @todo secret and key from compileflag or EEPROM.
-                uint8_t ret = passHash(password, (uint8_t)len, (uint8_t)type, "secret", "key", splitTag);
+                /// PH_PRIV_KEY  "secret" is the Twik private key of a profile
+                /// PH_MASTER_PW "key" is the master password needed to create pass hashes for a tag
+                uint8_t ret = passHash(password, (uint8_t)len, (uint8_t)type, PH_PRIV_KEY, PH_MASTER_PW, splitTag);
                 if(ret==0) {
                     setOutputString(password);
                 }

@@ -29,6 +29,12 @@ KB_PH  ?= 1
 KB_DBG ?= 1
 KB_EXT ?= 1
 
+# -----------------------------------------------------------
+# PassHash secret key from environment
+# -----------------------------------------------------------
+#PH_PRIV_KEY ?= 
+#PH_MASTER_PW ?= 
+
 ##################################################################
 #
 # Should not need to change anything below ...
@@ -131,12 +137,26 @@ FW_VERSION := $(shell git describe --tags --always)-$(shell git log --pretty=for
 ifeq ('',$(FW_VERSION))
 FW_VERSION := unknown_version-$(shell date +%Y%m%d)
 endif
-
 CC_FLAGS    += -DFW_VERSION=\"$(FW_VERSION)\"
 
-# Default target
-all: lufacheck configtest submodule # macrocheck
+# test if both key and password are defined to activate passhash
+ifdef PH_PRIV_KEY
+	ifdef PH_MASTER_PW
+		PH_ENABLED = true
+		CC_FLAGS += -DPH_ENABLED -DPH_PRIV_KEY=\"$(PH_PRIV_KEY)\" -DPH_MASTER_PW=\"$(PH_MASTER_PW)\"
+	endif
+endif
 
+
+# Default target
+all: lufacheck configtest submodule passhash # macrocheck
+
+passhash:
+ifeq (true,$(PH_ENABLED))
+	@echo "*** PassHash enabled."
+else
+	@echo "*** PassHash disabled, no PH_PRIV_KEY and PH_MASTER_PW passed."
+endif
 
 # test macro existance
 macrocheck:
