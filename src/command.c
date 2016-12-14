@@ -251,7 +251,9 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
                 char password[PH_MAX_LEN+1];
                 if( passhash_pw_entered == false ) {
                     sscanf(tag, "%s", ph_master_pw);
+#ifdef PH_TEST
                     if(verifyHash(PH_PRIVATE_KEY, ph_master_pw,  PH_TEST_DATA /*tag len type hash*/ ))
+#endif
                         passhash_pw_entered = true;
 
                     return true;

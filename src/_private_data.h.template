@@ -20,10 +20,13 @@
 
 /*
  * Test vector to verify correct entry of password upon unlock.
+ * If defined, the passhash creation is only activated if the expected result matches after entry of the master password.
+ *
  * Format: "tag", length,  mode, "expected hash"
  * 
  * Example for a private key="secret" defined above and 
  * tag "a" with length 4 and mode 3 (numeric) should result in 4616
  * when password "key" is entered.
  */
+
 #define PH_TEST_DATA "a", 4, 3, "4616"
