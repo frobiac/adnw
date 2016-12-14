@@ -27,6 +27,9 @@ void    tp_reset( void );
 bool    tp_init( void );
 void    tp_id( void );
 uint8_t tp_read_config(void);
+uint8_t tp_sensitivity(uint8_t sensitivity);
 
+uint8_t g_tp_sens;
+uint8_t g_tp_sens_low;
 
 #endif // TRACKPOINT_H

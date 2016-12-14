@@ -19,9 +19,10 @@
 
 
 // see drivers/input/mouse/trackpoint.h in linux source for config registers
-
 // or
 // wwwcssrv.almaden.ibm.com/trackpoint/files/YKT3Eext.pdf
+
+/// @TODO: configure based on model detected?
 
 #include <util/delay.h>
 
@@ -118,6 +119,17 @@ void tp_id(void)
     }
 }
 
+/** Set TrackPoint sensitivity.
+ * Tested values were 0x60 for RedTilt, 0x40 for BlackFlat.
+ *
+ * @return Old sensitivity setting.
+ */
+uint8_t tp_sensitivity(uint8_t sens)
+{
+    uint8_t old = tp_ram_read(0x4A);
+    tp_ram_write(0x4A, sens);
+    return old;
+}
 
 bool tp_init(void)
 {
@@ -130,16 +142,23 @@ bool tp_init(void)
      * 4A sensitivity
      * 60 speed
      */
+    g_tp_sens = TP_SENS_DEF;
+    g_tp_sens_low = TP_SENS_LOW;
 
     // setup PressToSroll by enabling PTS, setting button masks and increasing threshold
     tp_ram_toggle(0x2c, (1<<TP_PTS) );
     tp_ram_write(0x41, 0xff);
     tp_ram_write(0x42, 0xff);
-    tp_ram_write(0x5c, 0x0A); // 08 is default, 10 too hard
 
+    // sensitivity, speed
+    tp_ram_write(0x4A, g_tp_sens);
 #ifdef REDTILT
-    tp_ram_write(0x4A, 0x60);
     tp_ram_write(0x60, 0x53);
+    tp_ram_write(0x5c, 0x0A); // 08 is default, 10 too hard
+#elif defined BLACKFLAT
+    // activate higher sensitivity via PtS
+    tp_ram_write(0x60, 0x53);
+    tp_ram_write(0x5c, 0x09);
 #endif
 
     uint8_t tp_config = tp_read_config();

@@ -13,6 +13,12 @@ ISSUES
 * REDTILT: Left thumb rests on center key (space), while right one on second from middle (Shift)
         Win/Ctrl/Spc not like other boards...
 
+CONFIG
+----
+* general configuration interface: Storage in eeprom, control via command mode menu
+* dump config on request
+* usage help for command mode?
+
 LUFA
 ----
 * inquire about upstream horizontal scroll support

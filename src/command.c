@@ -216,8 +216,21 @@ void handleSubCmd(char c)
 #ifdef HAS_LED
             printf("\nLED: %d/%d@%d",led_save.on, led_save.off, led_save.brightness);
 #endif
+#ifdef PS2MOUSE
+            printf("\nTP:%d/%d",g_tp_sens_low, g_tp_sens);
+#endif
 
             switch(c) {
+
+#ifdef PS2MOUSE
+                // change sensitivity for initial and normal operation
+                ///@TODO generic interface, always allow '0' (no %256)
+                case '.': g_tp_sens = (g_tp_sens+5) % 256; break;
+                case 'a': g_tp_sens = (g_tp_sens-5) % 256; break;
+                case ':': g_tp_sens_low = (g_tp_sens_low+1) % 256; break;
+                case 'A': g_tp_sens_low = (g_tp_sens_low-1) % 256; break;
+#endif
+
 #ifdef HAS_LED
                 // Operate on the saved config that will be restored when leaving command mode
                 case 'j': led_save.off = (led_save.off-5) % 256; break;
