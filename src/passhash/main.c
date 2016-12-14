@@ -44,7 +44,7 @@ int main (int argc, char * argv[])
     if(ret==0)
         fprintf(stdout, "%s\n", password);
     else
-        fprintf(stdout, "ERROR creating pw: %d\n", ret);
+        fprintf(stdout, "ERROR %d creating pw: %s\n", ret, (ret==3?"Invalid length [4-26]" : (ret==4 ? "Invalid type [1-3]" : "Unknown error" ) ) );
 
     return 0;
 }
