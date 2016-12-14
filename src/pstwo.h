@@ -36,7 +36,7 @@
 #define DELY (dapack[2]-(((dapack[0] & (1 << 5)) >> 5) << 8))
 */
 
-bool send_packet(uint8_t);
-uint8_t read_packet(void);
+bool ps2_host_send(uint8_t);
+uint8_t ps2_host_recv_response(void);
 uint8_t serin(void);
 

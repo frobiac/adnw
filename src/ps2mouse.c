@@ -32,11 +32,11 @@ bool ps2_send_recv(uint8_t send, uint8_t *recv)
     if(!g_ps2_connected)
         return false;
 
-    if( ! send_packet(send) ) {
-        printf("\nPS/2: send %x failed.", send);
+    if( ! ps2_host_send(send) ) {
+        printf("\nPS/2 failed to send %x.", send);
         return false;
     }
-    *recv = read_packet();
+    *recv = ps2_host_recv_response();
 
     return true;
 }
@@ -56,13 +56,13 @@ bool ps2_send_expect(uint8_t send, uint8_t expect)
     return true;
 }
 
-// checking wrapper around read_packet()
+// checking wrapper around ps2_host_recv_response()
 bool ps2_read(uint8_t * res)
 {
     if(!g_ps2_connected)
         return false;
 
-    *res=read_packet();
+    *res=ps2_host_recv_response();
     return true;
 }
 
@@ -106,7 +106,7 @@ bool ps2_init_mouse(void)
     //ps2_send_expect(0x01, PS2_ACK); // 8 counts/mm
     //ps2_send_expect(0xf3, PS2_ACK); // set sample rate
     //ps2_send_expect(0x01, PS2_ACK);
-    //send_packet(0x64); //200 smaples a second
+    //ps2_host_send(0x64); //200 smaples a second
 
     //Set remote mode
     if( ! ps2_send_expect(0xf0, PS2_ACK) )
@@ -134,15 +134,15 @@ void ps2_read_mouse(int *dx, int *dy, uint8_t *BTNS )
     int mouseinf;
     {
         if(ps2_send_expect(0xeb, PS2_ACK)) {
-            mouseinf=read_packet();
+            mouseinf=ps2_host_recv_response();
             /// Bits 2 1 0 correspond to  M R L button so swap M&R for RML
             /// @todo Make mouse button order mapping configurable
             *BTNS = ((mouseinf & 0x01) /*LMB*/ << 0) |
                     ((mouseinf & 0x04) /*MMB*/ << 1) |
                     ((mouseinf & 0x02) /*RMB*/ << 2);
 
-            *dx= read_packet();
-            *dy= read_packet();
+            *dx= ps2_host_recv_response();
+            *dy= ps2_host_recv_response();
 
             if(mouseinf&0x10)
                 *dx=-(256-*dx);

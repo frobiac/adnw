@@ -100,7 +100,7 @@ uint8_t oparity(uint8_t byte)
 
 
 
-bool send_packet(uint8_t byte)
+bool ps2_host_send(uint8_t byte)
 {
     /// @todo Error checking in PS/2 code
     uint8_t sent_retries=0;
@@ -137,7 +137,7 @@ bool send_packet(uint8_t byte)
     return (sent_retries<5);
 }
 
-uint8_t read_packet(void)
+uint8_t ps2_host_recv_response(void)
 {
     uint8_t byte=0,par;
     serin(); //Start
@@ -153,7 +153,7 @@ uint8_t read_packet(void)
     serin(); //Stop
 
     if(par != oparity(byte))
-        send_packet(0xfe); //Resend
+        ps2_host_send(0xfe); //Resend
 
     return byte;
 }
