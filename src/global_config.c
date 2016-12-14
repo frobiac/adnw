@@ -74,7 +74,7 @@ void init_config()
 void print_config()
 {
     xprintf("\nEE[%d] %04X: %02X ", sizeof(g_cfg), g_cfg.magic, g_cfg.fw.raw);
-    xprintf("Mouse=%d", g_cfg.fw.mouse_enabled);
+    xprintf("Mouse=%d-%d", g_cfg.fw.mouse_enabled, g_cfg.fw.swap_xy);
 #ifdef HAS_LED
     xprintf("LED:%02X %02X %02X ", g_cfg.led.brightness, g_cfg.led.on, g_cfg.led.off);
 #endif
@@ -86,7 +86,7 @@ void print_config()
 #endif
 #ifdef PS2MOUSE
     xprintf("\nTP: Sens: %3d/%3d SP=%3d TH=%3d ", g_cfg.tp_config.sensL, g_cfg.tp_config.sens, g_cfg.tp_config.speed, g_cfg.tp_config.thres);
-    xprintf("PTS=%1X X=%1X Y=%1X (%0X)",g_cfg.tp_axis.pts, g_cfg.tp_axis.flipx, g_cfg.tp_axis.flipy, g_cfg.tp_axis.raw);
+    xprintf("\nPTS=%1X X=%1X Y=%1X (%0X)",g_cfg.tp_axis.pts, g_cfg.tp_axis.flipx, g_cfg.tp_axis.flipy, g_cfg.tp_axis.raw);
 #endif
 }
 
@@ -108,3 +108,8 @@ void load_config(kb_cfg_t *cfg)
     eeprom_read_block (( void *) cfg, (const void *) (EE_CFG_MAGIC), sizeof(kb_cfg_t));
 }
 
+
+void invalidate_config()
+{
+    eeprom_update_word( EE_CFG_MAGIC, 0xFFFF);
+}

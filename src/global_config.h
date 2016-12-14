@@ -53,7 +53,7 @@
  * this is only required if the address layout changes.
  * simple additions will be fine as long as they are saved somehow and random values are ok initially.
  */
-#define EE_CFG_MAGIC_NUM    (uint16_t) 0x0003
+#define EE_CFG_MAGIC_NUM    (uint16_t) 0x0004
 
 #define EE_CFG_MAGIC        (uint16_t *) 0
 #define EE_CFG_END          (uint8_t  *) (sizeof(kb_cfg_t)) // end of config
@@ -150,6 +150,7 @@ void save_config(kb_cfg_t *cfg);
 void load_config(kb_cfg_t *cfg);
 
 void print_config(void);
+void invalidate_config(void);
 
 #endif // GLOBAL_CONFIG_H
 
