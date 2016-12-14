@@ -18,9 +18,9 @@
 */
 
 
-// see drivers/input/mouse/trackpoint.h in linux source for config registers
-// or
-// wwwcssrv.almaden.ibm.com/trackpoint/files/YKT3Eext.pdf
+/// @see  see drivers/input/mouse/trackpoint.h in linux source for config registers:
+///
+///  wwwcssrv.almaden.ibm.com/trackpoint/files/YKT3Eext.pdf
 
 /// @TODO: configure based on model detected?
 
@@ -44,7 +44,7 @@ void tp_ram_toggle(uint8_t addr, uint8_t mask)
     /*
     // Check prior to toggle
     uint8_t tmp;
-    ps2_host_send(0xe2);
+    ps2_host_send(TP_COMMAND);
     ps2_host_send(addr);
     tmp = ps2_host_recv_response();
     if( (tmp & mask) != 0x00) {
@@ -52,23 +52,23 @@ void tp_ram_toggle(uint8_t addr, uint8_t mask)
     }
     */
 
-    ps2_host_send(0xe2);
-    ps2_host_send(0x47);
+    ps2_host_send(TP_COMMAND);
+    ps2_host_send(TP_TOGGLE);
     ps2_host_send(addr);
     ps2_host_send(mask);
 }
 
 uint8_t tp_ram_read(uint8_t addr)
 {
-    ps2_host_send(0xe2);
-    ps2_host_send(0x80);
+    ps2_host_send(TP_COMMAND);
+    ps2_host_send(TP_READ_MEM);
     return ps2_host_send(addr);
 }
 
 void tp_ram_write(uint8_t addr, uint8_t val)
 {
-    ps2_host_send(0xe2);
-    ps2_host_send(0x81);
+    ps2_host_send(TP_COMMAND);
+    ps2_host_send(TP_WRITE_MEM);
     ps2_host_send(addr);
     ps2_host_send(val);
 }
@@ -87,7 +87,7 @@ uint8_t tp_read_config()
     //@TODO: check return status in whole file and abort
     //       KB must work without trackpoint connected even when activated!
     uint8_t config;
-    ps2_host_send(0xe2);
+    ps2_host_send(TP_COMMAND);
     ps2_host_send(0x2c);
     config = ps2_host_recv_response();
     printf("\nTP cfg=0x%02x", config);
@@ -102,11 +102,14 @@ void tp_id(void)
     uint8_t tmp='0';
 
     // read secondary ID
-    tmp=ps2_host_send(0xE1);
+    tmp=ps2_host_send(TP_READ_ID);
+    tmp=ps2_host_recv_response();
+    if(tmp != TP_MAGIC_IDENT) {
+        printf("\nFailed to read ID");
+        return;
+    }
     tmp=ps2_host_recv_response();
     printf("\n2nd ID=%02x", tmp);
-    tmp=ps2_host_recv_response();
-    printf("%02x", tmp);
 
     // read extended ID, which ends in ')'
     tmp=ps2_host_send(0xD0);
@@ -120,45 +123,31 @@ void tp_id(void)
 }
 
 /** Set TrackPoint sensitivity.
- * Tested values were 0x60 for RedTilt, 0x40 for BlackFlat.
+ * Tested values were TP_SPEED for RedTilt, 0x40 for BlackFlat.
  *
  * @return Old sensitivity setting.
  */
 uint8_t tp_sensitivity(uint8_t sens)
 {
-    uint8_t old = tp_ram_read(0x4A);
-    tp_ram_write(0x4A, sens);
+    uint8_t old = tp_ram_read(TP_SENS);
+    tp_ram_write(TP_SENS, sens);
     return old;
 }
 
 bool tp_init(void)
 {
-    /* RAM locations:
-     * - Read with E2 80 ADDR
-     * - Read with E2 81 ADDR VAL
-     *
-     * 41,42,43 pts btn mask
-     * 5C PtS thres
-     * 4A sensitivity
-     * 60 speed
-     */
     g_tp_sens = TP_SENS_DEF;
     g_tp_sens_low = TP_SENS_LOW;
 
-    // setup PressToSroll by enabling PTS, setting button masks and increasing threshold
-    tp_ram_toggle(0x2c, (1<<TP_PTS) );
-    tp_ram_write(0x41, 0xff);
-    tp_ram_write(0x42, 0xff);
-
     // sensitivity, speed
-    tp_ram_write(0x4A, g_tp_sens);
+    tp_ram_write(TP_SENS, g_tp_sens);
 #ifdef REDTILT
-    tp_ram_write(0x60, 0x53);
-    tp_ram_write(0x5c, 0x0A); // 08 is default, 10 too hard
+    tp_ram_write(TP_SPEED, 0x53);
+    tp_ram_write(TP_THRESH, 0x0A); // 08 is default, 10 too hard
 #elif defined BLACKFLAT
     // activate higher sensitivity via PtS
-    tp_ram_write(0x60, 0x53);
-    tp_ram_write(0x5c, 0x09);
+    tp_ram_write(TP_SPEED, 0x53);
+    tp_ram_write(TP_THRESH, 0x09);
 #endif
 
     uint8_t tp_config = tp_read_config();
@@ -176,7 +165,12 @@ bool tp_init(void)
 #endif
 
     // now write back config
-    tp_ram_write(0x2c, tp_config);
+    tp_ram_write(TP_TOGGLE_PTSON, tp_config);
+
+    // setup PressToSroll by enabling PTS, setting button masks and increasing threshold
+    tp_ram_write(0x41, 0xff);
+    tp_ram_write(0x42, 0xff);
+
 
     return true;
 }

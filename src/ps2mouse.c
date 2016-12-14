@@ -46,31 +46,24 @@ bool ps2_init_mouse(void)
     _delay_ms(1000);    // wait for powering up
 
     // send Reset
-    rcv = ps2_host_send(0xFF);
-    printf("\nps2 RST: %02x %02x", rcv, ps2_error);
+    rcv = ps2_host_send(0xFF); // printf("\nps2 RST: %02x %02x", rcv, ps2_error);
 
     // read completion code of BAT
-    rcv = ps2_host_recv_response();
-    printf("\nps2 BAT: %02x %02x", rcv, ps2_error);
+    rcv = ps2_host_recv_response(); // printf("\nps2 BAT: %02x %02x", rcv, ps2_error);
 
     // read Device ID
-    rcv = ps2_host_recv_response();
-    printf("\nps2 DEV: %02x %02x", rcv, ps2_error);
-
-    //Enable Data reporting
-    //rcv = ps2_host_send(0xF4);
-    //printf("\nps2 REP: %02x %02x", rcv, ps2_error);
-
-    //ps2_send_expect(0xe8, PS2_ACK); // set resolution
-    //ps2_send_expect(0x01, PS2_ACK); // 8 counts/mm
-    //ps2_send_expect(0xf3, PS2_ACK); // set sample rate
-    //ps2_send_expect(0x01, PS2_ACK);
-    //ps2_host_send(0x64); //200 smaples a second
+    rcv = ps2_host_recv_response(); // printf("\nps2 DEV: %02x %02x", rcv, ps2_error);
 
     // send Set Remote mode
-    rcv = ps2_host_send(0xF0);
-    printf("\nps2 REM: %02x %02x", rcv, ps2_error);
+    rcv = ps2_host_send(0xF0); // printf("\nps2 REM: %02x %02x", rcv, ps2_error);
 
+    // Enable Data reporting (not needed for remote mode)
+    // rcv = ps2_host_send(0xF4); //printf("\nps2 REP: %02x %02x", rcv, ps2_error);
+    //
+    // disable external PS/2 device: not required in remote mode
+    // ps2_host_send(TP_COMMAND); ps2_host_send(TP_DISABLE_EXT);
+
+    // Further options: 0xE8 (resolution), 0xF3 (sample rate)
 
     tp_init();
     tp_id();
