@@ -26,29 +26,9 @@
 
 #define PS2_DELAY 150
 
-/////////////////////////////
-///General purpose macros////
-#define CCPORT(name)    CONCAT(PORT,name)
-#define CCPIN(name)     CONCAT(PIN,name)
-#define CCDDR(name)     CONCAT(DDR,name)
-/////////////////////////////
-
-#define DPORT   CCPORT(DAPORT)
-#define DPIN    CCPIN(DAPORT)
-#define DDDR    CCDDR(DAPORT)
-
-#define CPORT   CCPORT(CLKPORT)
-#define CPIN    CCPIN(CLKPORT)
-#define CDDR    CCDDR(CLKPORT)
-
-#define RPORT   CCPORT(RSTPORT)
-#define RPIN    CCPIN(RSTPORT)
-#define RDDR    CCDDR(RSTPORT)
-//////////////////////////////
-
-#define DATA ((DPIN & (1 << DBIT)) >> DBIT)
-#define CLK  ((CPIN & (1 << CBIT)) >> CBIT)
-#define RESET ((RPIN & (1 << RBIT)) >> RBIT)))
+#define DATA ((PS2_DATA_PIN & (1 << PS2_DATA_BIT)) >> PS2_DATA_BIT)
+#define CLK  ((PS2_CLOCK_PIN & (1 << PS2_CLOCK_BIT)) >> PS2_CLOCK_BIT)
+#define RESET ((PS2_RESET_PIN & (1 << PS2_RESET_BIT)) >> PS2_RESET_BIT)))
 ///////////////////////////////
 
 /*

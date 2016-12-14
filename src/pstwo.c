@@ -36,21 +36,21 @@ uint8_t serin(void);
 
 void data(uint8_t x)
 {
-    DDDR |= (1 << DBIT);
+    PS2_DATA_DDR |= (1 << PS2_DATA_BIT);
     if(x==0)
-        DPORT &= ~(1 << DBIT);
+        PS2_DATA_PORT &= ~(1 << PS2_DATA_BIT);
     else if(x==1)
-        DPORT |= (1 << DBIT);
+        PS2_DATA_PORT |= (1 << PS2_DATA_BIT);
     return;
 }
 
 void clk(uint8_t x)
 {
-    CDDR |= (1 << CBIT);
+    PS2_CLOCK_DDR |= (1 << PS2_CLOCK_BIT);
     if(x==0)
-        CPORT &= ~(1 << CBIT);
+        PS2_CLOCK_PORT &= ~(1 << PS2_CLOCK_BIT);
     else if(x==1)
-        CPORT |= (1 << CBIT);
+        PS2_CLOCK_PORT |= (1 << PS2_CLOCK_BIT);
     return;
 }
 
@@ -112,8 +112,8 @@ bool send_packet(uint8_t byte)
         data(0); //Start
         _delay_us(PS2_DELAY/2);
         clk(1);
-        CDDR &= ~(1 << CBIT); // Release clock
-        CPORT |= (1 << CBIT); //Set the pull up on Clock
+        PS2_CLOCK_DDR &= ~(1 << PS2_CLOCK_BIT); // Release clock
+        PS2_CLOCK_PORT |= (1 << PS2_CLOCK_BIT); //Set the pull up on Clock
 
         /////////////
         serout((byte & (1 << 0)) >> 0);
@@ -128,8 +128,8 @@ bool send_packet(uint8_t byte)
 
         serout(1); //Stop
 
-        DDDR &= ~(1 << DBIT); //Release the Data line
-        DPORT |= (1 << DBIT); //Set the pull up on Data
+        PS2_DATA_DDR &= ~(1 << PS2_DATA_BIT); //Release the Data line
+        PS2_DATA_PORT |= (1 << PS2_DATA_BIT); //Set the pull up on Data
 
         sent_retries++;
     } while (serin() != 0 && sent_retries < 5 );

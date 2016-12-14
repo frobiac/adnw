@@ -31,6 +31,7 @@
  *
  * @todo : Still need to configure command keys here.
  */
+#include "LUFA/Common/Common.h"  // CONCAT
 
 /// define DEBUG_OUTPUT in makefile to enable printf() for hid_listen.
 #ifdef DEBUG_OUTPUT
@@ -85,25 +86,25 @@
 #define TP_SENS_LOW 0x60
 
 #ifdef BLUECUBE
-    #define DAPORT  B
-    #define DBIT    7
-    #define CLKPORT E
-    #define CBIT    6
-    #define RSTPORT B
-    #define RBIT    3
+    #define PS2_DATA_PORT_LETTER  B
+    #define PS2_DATA_BIT    7
+    #define PS2_CLOCK_PORT_LETTER E
+    #define PS2_CLOCK_BIT    6
+    #define PS2_RESET_PORT_LETTER B
+    #define PS2_RESET_BIT    3
 
 #elif defined HYPERNANO || defined REDTILT
-    #define DAPORT  B
-    #define DBIT    1
-    #define CLKPORT B
-    #define CBIT    2
-    #define RSTPORT B
-    #define RBIT    0
-
     // trackpoint sideways, nub to the left
     #define TP_SWAP_XY
     #define TP_FLIP_X
     #define TP_FLIP_Y
+
+    #define PS2_DATA_PORT_LETTER  B
+    #define PS2_DATA_BIT    1
+    #define PS2_CLOCK_PORT_LETTER B
+    #define PS2_CLOCK_BIT    2
+    #define PS2_RESET_PORT_LETTER B
+    #define PS2_RESET_BIT    0
 
 #elif defined BLACKFLAT
     #define HAS_LED //@TODO LED port configurable
@@ -123,13 +124,12 @@
     // DATA green, CLK blue, RESET Yellow
     // Working: E6/D4.  C6/C7 works but in use by rows. D6 ok but LED.
     // Not ok: B7 is fried.
-    #define DAPORT  D
-    #define DBIT    4
-    #define CLKPORT B
-    #define CBIT    3
-    // no RESET pin, dedicated circuitry instead
-    #define RSTPORT B
-    #define RBIT    0
+    #define PS2_DATA_PORT_LETTER  D
+    #define PS2_DATA_BIT    4
+    #define PS2_CLOCK_PORT_LETTER B
+    #define PS2_CLOCK_BIT    3
+    #define PS2_RESET_PORT_LETTER B
+    #define PS2_RESET_BIT    0
 
 /// @TODO Hypermicro defines for trackpoint
 #else 
@@ -137,6 +137,23 @@
         #error PS2MOUSE selected, but no pins defined
     #endif
 #endif
+
+// Create defines for TMK compatibility
+#define CONCAT_PORT(name)    CONCAT(PORT,name)
+#define CONCAT_PIN(name)     CONCAT(PIN,name)
+#define CONCAT_DDR(name)     CONCAT(DDR,name)
+
+#define PS2_DATA_PORT   CONCAT_PORT(PS2_DATA_PORT_LETTER)
+#define PS2_DATA_PIN    CONCAT_PIN(PS2_DATA_PORT_LETTER)
+#define PS2_DATA_DDR    CONCAT_DDR(PS2_DATA_PORT_LETTER)
+
+#define PS2_CLOCK_PORT   CONCAT_PORT(PS2_CLOCK_PORT_LETTER)
+#define PS2_CLOCK_PIN    CONCAT_PIN(PS2_CLOCK_PORT_LETTER)
+#define PS2_CLOCK_DDR    CONCAT_DDR(PS2_CLOCK_PORT_LETTER)
+
+#define PS2_RESET_PORT   CONCAT_PORT(PS2_RESET_PORT_LETTER)
+#define PS2_RESET_PIN    CONCAT_PIN(PS2_RESET_PORT_LETTER)
+#define PS2_RESET_DDR    CONCAT_DDR(PS2_RESET_PORT_LETTER)
 
 #endif // CONFIG_H
 

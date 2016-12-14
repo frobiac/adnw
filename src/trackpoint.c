@@ -30,10 +30,10 @@
 
 void tp_reset()
 {
-    RDDR |= (1 << RBIT);
-    RPORT |= (1 << RBIT);
+    PS2_RESET_DDR |= (1 << PS2_RESET_BIT);
+    PS2_RESET_PORT |= (1 << PS2_RESET_BIT);
     _delay_us(PS2_DELAY);
-    RPORT &= ~(1 << RBIT);
+    PS2_RESET_PORT &= ~(1 << PS2_RESET_BIT);
     return;
 }
 
