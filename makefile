@@ -29,11 +29,6 @@ KB_PH  ?= 1
 KB_DBG ?= 1
 KB_EXT ?= 1
 
-# -----------------------------------------------------------
-# PassHash secret key from environment
-# -----------------------------------------------------------
-#PH_PRIV_KEY ?= 
-#PH_MASTER_PW ?= 
 
 ##################################################################
 #
@@ -139,33 +134,21 @@ FW_VERSION := unknown_version-$(shell date +%Y%m%d)
 endif
 CC_FLAGS    += -DFW_VERSION=\"$(FW_VERSION)\"
 
-# test if both key and password are defined to activate passhash
-ifdef PH_PRIV_KEY
-	ifdef PH_MASTER_PW
-		PH_ENABLED = true
-		CC_FLAGS += -DPH_ENABLED -DPH_PRIV_KEY=\"$(PH_PRIV_KEY)\" -DPH_MASTER_PW=\"$(PH_MASTER_PW)\"
-	endif
-endif
-
 
 # Default target
-all: lufacheck configtest submodule passhash # macrocheck
+all: lufacheck configtest private_data_check submodule
 
-passhash:
-ifeq (true,$(PH_ENABLED))
-	@echo "*** PassHash enabled."
+private_data_check:
+ifneq ("$(wildcard $(SRCDIR)/_private_data.h)","")
+	@echo "*** Private data definition found ";
 else
-	@echo "*** PassHash disabled, no PH_PRIV_KEY and PH_MASTER_PW passed."
+	@echo "*** PRIVATE DATA $(SRCDIR)/_private_data.h NOT found.";
+	@echo "*** Creating default one. Please edit template to your needs (file is ignored in git)";
+	@cp $(SRCDIR)/_private_data.h.template $(SRCDIR)/_private_data.h ;
+	@chmod 600 $(SRCDIR)/_private_data.h ;
+	@false;
 endif
 
-# test macro existance
-macrocheck:
-	@if test -f $(SRCDIR)/_private_macros.h; then \
-	    echo "*** Macro definition found ";  \
-	else \
-	    echo -e "\n\n\n*** ERROR: $(SRCDIR)/_private_macros.h NOT found. \n*** Please copy template and edit as wanted:\n\n    cp $(SRCDIR)/_private_macros.h.template $(SRCDIR)/_private_macros.h\n\n"; \
-	    false; \
-	fi
 
 # check that LUFA is there
 lufacheck:

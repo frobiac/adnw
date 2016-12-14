@@ -108,10 +108,10 @@ The following commands need further input:
 
 Password Hash Support
 ---------------------
-Support for passwords compatible with PassHash implementations, for example the android app Twik, can be configured via compile switches.
-Twik private key of a profile and master password can be set during compile
-
-    $ make PH_PRIV_KEY=MySecretMasterKey PH_MASTER_PW=password
+Support for passwords compatible with PassHash implementations, for example the android app Twik,
+must be configured in a separate header:
+Twik private key of a profile and master password can be set in src/_private_data.h,
+which is created on first make call and ignored in git.
 
 
 Current Layout

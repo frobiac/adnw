@@ -1,0 +1,22 @@
+/* 
+ * This is a template file for private data that must not be checked into git.
+ * 
+ * It is copied to _private_data.h during the first run of make.
+ * This copy is ignored in git and can be freely edited.
+ *
+ */
+
+// Remove comment to enable passhash functionality
+// #define PH_ENABLED
+
+// This is the private key of a Twik profile
+#define PH_PRIV_KEY "myPrivateKey"
+
+// @TODO This should be entered at least once during runtime by user for security reasons.
+// This is the master key required to create a passhash for a tag 
+#define PH_MASTER_PW "MasterPassword"
+
+
+// test vector to verify correct entry of password
+// tag len mode hash
+#define PH_TEST a 4 3 1234

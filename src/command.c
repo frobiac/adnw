@@ -32,6 +32,7 @@
 #endif
 
 #include "print.h"
+#include "_private_data.h"
 
 #ifdef PS2MOUSE
     #include "trackpoint.h"
