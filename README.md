@@ -34,7 +34,7 @@ Implementation of mousekey layer, KEYMAP macro and other neat ideas borrowed fro
 
 Klaus Weber contributed greatly to an enhanced secondary use state machine and provided several other modifications, including alternate layouts as well as PC/Mac and host language differentiations.
 
-PS/2 support is credited in large part to Akshay Srinivasan <akshaysrinivasan@nitk.ac.in>
+PS/2 support is copied from [TMK sources][tmk] so uart and interrupt based code should hopefully also work in the future.
 
 A dedicated USB ID was generously supplied by Openmoko, Inc.
 
@@ -45,6 +45,7 @@ It uses hmac-sha1 and sha1 implementations from [avr-crypto-lib][avr_crypto_lib]
 License
 -------
 Unless otherwise mentioned all code is licensed under GPL3.
+External code may use a different license which should be declared in the relevant files.
 
 **If you create a firmware from this code you _must_ change the vendor and product id!**
 

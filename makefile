@@ -96,9 +96,6 @@ ifneq (,$(findstring ANALOGSTICK,$(CC_FLAGS)))
 endif
 
 ifneq (,$(findstring PS2MOUSE,$(CC_FLAGS)))
-	# Old PS/2 code prior to TMK
-	# SRC += $(SRCDIR)/pstwo.c
-
 	PS2_MOUSE_ENABLE = yes # PS/2 mouse(TrackPoint) support
 	PS2_USE_BUSYWAIT = yes # uses primitive reference code
 	#PS2_USE_INT      = yes # uses external interrupt for falling edge of PS/2 clock pin

@@ -22,7 +22,6 @@
 
 #include <stdbool.h>
 
-//#include "pstwo.h"
 #include "tmk_ps2/ps2_mouse.h"
 #include "tmk_ps2/ps2.h"
 #include "Keyboard.h"  // for USB_Mouse_Report_Data_t

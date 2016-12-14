@@ -32,7 +32,7 @@ void tp_reset()
 {
     PS2_RESET_DDR |= (1 << PS2_RESET_BIT);
     PS2_RESET_PORT |= (1 << PS2_RESET_BIT);
-    _delay_us(PS2_DELAY);
+    _delay_us(150 /*PS2_DELAY*/);
     PS2_RESET_PORT &= ~(1 << PS2_RESET_BIT);
     return;
 }
