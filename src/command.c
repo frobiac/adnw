@@ -54,6 +54,8 @@ char ph_input[PH_INPUT_LEN];
 
 #define PH_PW_LEN 32
 char ph_master_pw[PH_PW_LEN];
+char tag[TAGLEN+1];
+uint8_t type, len, read_field;
 
 
 static uint8_t subcmd;           ///< currently active subcommand
@@ -184,6 +186,8 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 #ifdef PH_ENABLED
         case 'h':
             memset(ph_input,0,PH_INPUT_LEN);
+            read_field=0; len=0; type=0;
+            memset(tag,0,TAGLEN);
             subcmd=SUB_PASSHASH;
             break;
 #endif
@@ -244,7 +248,25 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             //
             // read until return=10 is pressed or maximum length reached
             if( (uint8_t)(c) != 10 && strlen(ph_input) < PH_INPUT_LEN) {
-                ph_input[strlen(ph_input)]= c;
+                if ( c == ' ' ) {
+                    read_field++;
+                    return true;
+                }
+                if (read_field == 0) {
+                    ph_input[strlen(ph_input)]= c;
+                    tag[strlen(tag)]=c;
+                    return true;
+                }
+
+                if( c<='9' && c >= '0') {
+                    if(read_field==1)
+                        len=len*10+c-'0';
+                    else if(read_field==2)
+                        type=c-'0';
+                    return true;
+                }
+                return true;
+
             } else {
                 setCommandMode(false);
 
@@ -257,6 +279,7 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
                 }
 
                 if( passhash_pw_entered == false ) {
+                    // entered string is initial entry of master password
                     memcpy(ph_master_pw, ph_input, strlen(ph_input));
 #ifdef PH_TEST
                     if(verifyHash(PH_PRIVATE_KEY, ph_master_pw,  PH_TEST_DATA /*tag len type hash*/ ))
@@ -266,12 +289,8 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
                     return true;
                 }
 
-                char tag[TAGLEN+1];
-                uint16_t type, len;
-
-                // parse input into "tag len type"
-                sscanf(ph_input,"%s %u %u", tag, &len, &type);
                 memset(ph_input,0,PH_INPUT_LEN);
+                // xprintf("\n%s: %s %u %u", ph_master_pw, tag, len, type);
 
                 // defaults if invalid input
                 if(len<PH_MIN_LEN || len>PH_MAX_LEN)
