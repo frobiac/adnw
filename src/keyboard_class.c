@@ -540,6 +540,9 @@ column_size_t get_kb_rpt( column_size_t key_mask, uint8_t col )
 /**
  * Set led blink mode to current configured state in g_cfg.led.
  */
+
+uint8_t rgb[3];
+
 void set_led()
 {
 #ifdef HAS_LED
@@ -547,6 +550,24 @@ void set_led()
         return;
 
 #ifdef __AVR_ATmega32U4__
+
+    rgb[0]=0; rgb[1]=0; rgb[2]=0;
+    if(g_mouse_keys_enabled) {
+        rgb[1] = 10;
+        set_led_color(rgb[0], rgb[1], rgb[2]);
+        return;
+    }
+    if(commandMode()) {
+        if(commandModeSub() == SUB_MACRO_REC) {
+            rgb[0] = 50;
+        } else if(commandModeSub() == SUB_PASSHASH) {
+            rgb[2] = 25;
+        } else {
+            rgb[0]=15;
+        }
+        set_led_color(rgb[0], rgb[1], rgb[2]);
+        return;
+    }
 
     // global blinking:
     if(idle_count % (g_cfg.led.on+g_cfg.led.off+1)  < g_cfg.led.on) // +1 needed for mod 0 ?
