@@ -140,16 +140,6 @@ void initKeyboard()
 
     init_cols();
 
-    //initMacros();
-    init_config();
-
-#ifdef PS2MOUSE
-    // default to false as not to hang the firmware when something goes wrong with init.
-    g_ps2_connected = 0;
-    g_cfg.fw.mouse_enabled=0;
-    // too early for ps2_init here, it seems.
-    // better to activate manually via commmand mode once upon boot for now
-#endif
 
     // bootloader if CMD_MODE combo is pressed during startup
     clearActiveKeys();
@@ -162,6 +152,17 @@ void initKeyboard()
         invalidate_config();
         jump_bootloader();
     }
+
+    //initMacros();
+    init_config();
+
+#ifdef PS2MOUSE
+    // default to false as not to hang the firmware when something goes wrong with init.
+    g_ps2_connected = 0;
+    g_cfg.fw.mouse_enabled=0;
+    // too early for ps2_init here, it seems.
+    // better to activate manually via commmand mode once upon boot for now
+#endif
 
 }
 
