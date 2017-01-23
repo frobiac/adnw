@@ -129,7 +129,9 @@ ISR(TIMER0_OVF_vect)
  */
 void initKeyboard()
 {
-    //idle_count=0;
+    idle_count=0;
+
+    set_led_color(16,0,0);
     // not strictly necessary
     clearRowData();
 
@@ -140,11 +142,15 @@ void initKeyboard()
 
     init_cols();
 
+    set_led_color(0,16,0);
 
     // bootloader if CMD_MODE combo is pressed during startup
     clearActiveKeys();
+
+    set_led_color(0,0,5);
     uint8_t tmp;
     for(tmp=0; tmp<8; ++tmp) {
+        set_led_color(0,0,5+tmp*5);
         scan_matrix();
         _delay_ms(150);
     }
@@ -152,6 +158,7 @@ void initKeyboard()
         invalidate_config();
         jump_bootloader();
     }
+    set_led_color(16,16,0);
 
     //initMacros();
     init_config();
@@ -163,6 +170,7 @@ void initKeyboard()
     // too early for ps2_init here, it seems.
     // better to activate manually via commmand mode once upon boot for now
 #endif
+    set_led_color(0,2,0);
 
 }
 
