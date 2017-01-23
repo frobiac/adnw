@@ -40,6 +40,7 @@ bool g_cmd_mode_active=false;
 
 
 led_t led_save;
+static uint8_t r=0, g=0, b=0;
 
 
 static uint8_t subcmd;           ///< currently active subcommand
@@ -128,8 +129,13 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
         case 'b':
             jump_bootloader();
             break;
+
         case 'c':
             subcmd=SUB_CONFIG;
+            break;
+
+        case 'l':
+            subcmd=SUB_LED;
             break;
 
 /// @todo Trackpoint availability
@@ -141,7 +147,7 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 #endif
 
 #ifdef ALTERNATE_LAYER
-        case 'l':
+        case 'L':
             g_cfg.fw.alt_layer = !g_cfg.fw.alt_layer;
             //xprintf("AltL %s\n", g_cfg.fw.alt_layer ? "on" : "off");
             setCommandMode(false);
@@ -212,7 +218,8 @@ void handleSubCmd(char c)
             break;
 #endif
 
-        case SUB_CONFIG:
+        case SUB_CONFIG: {
+            // 120
             switch(c) {
                 case 'I': init_config();       tp_init(); break;
                 case 'S': save_config(&g_cfg); tp_init(); break;
@@ -237,27 +244,56 @@ void handleSubCmd(char c)
                 case 'X': g_cfg.fw.swap_xy     = !g_cfg.fw.swap_xy;                break;
                 case 'Y': g_cfg.tp_axis.pts    = !g_cfg.tp_axis.pts;    tp_init(); break;
 #endif
-
-#ifdef HAS_LED
-                // Operate on the saved config that will be restored when leaving command mode
-                case 'j': led_save.off = (led_save.off-5) % 256; break;
-                case 'J': led_save.off = (led_save.off+5) % 256; break;
-                case 'o': led_save.on = (led_save.on-5) % 256; break;
-                case 'O': led_save.on = (led_save.on+5) % 256; break;
-#endif
-
                 case 'q':
                 default:
                     setCommandMode(false);
                     break;
             }
             print_config();
-            break; // allow consecutive changes to variables
+            break;
+        }
 
+        case SUB_LED: {
+            // +120 byte
+            led_save.r=r;
+            led_save.g=g;
+            led_save.b=b;
+            g_cfg.led = led_save;
+            //set_led_color(r,g,b);
+            switch(c) {
+#ifdef HAS_LED
+                // @TODO 8 bit resolution, map to curve for lower brightnesses
+                case 'r': r-=16; break;
+                case 'g': g-=16; break;
+                case 'b': b-=16; break;
+                case 'R': r+=16; break;
+                case 'G': g+=16; break;
+                case 'B': b+=16; break;
+
+                // Operate on the saved config that will be restored when leaving command mode
+                case 'f': led_save.off--; break;
+                case 'F': led_save.off++; break;
+                case 'n': led_save.on--; break;
+                case 'N': led_save.on++; break;
+                case '5': r=0; g=0; b=0; led_save.on =   5; led_save.off=5; break;
+                case '0': r=0; g=0; b=0; led_save.on =   0; led_save.off=255; break;
+                case '1': led_save.on = 255; led_save.off=0;   break;
+#endif
+
+                case 'q':
+                default:
+                    setCommandMode(false);
+                    set_led_color(0,0,0);
+                    break;
+            }
+            print_config();
+            break; // allow consecutive changes to variables
+        }
+
+        // quit SUBCOMMAND on invalid
         default:
             setCommandMode(false);
             break;
     }
 }
-
 
