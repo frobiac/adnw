@@ -26,8 +26,23 @@
 
 void setCommandMode(bool);
 bool commandMode(void);
+uint8_t commandModeSub(void);
 
 /// return true if handled here and no echo is needed
 bool handleCommand(uint8_t hid, uint8_t mod);
+void handleSubCmd(char c);
+
+/// possible subcommands
+enum {
+    SUB_NONE=0,
+    SUB_TP,
+    SUB_LAYOUT,
+    SUB_MACRO,
+    SUB_MACRO_REC,
+    SUB_PASSHASH,
+    SUB_CONFIG,
+    SUB_LED,
+    SUB_END
+};
 
 #endif // _COMMAND_H

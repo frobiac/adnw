@@ -39,17 +39,6 @@ bool g_cmd_mode_active=false;
 
 led_t led_save;
 
-/// possible subcommands
-enum {
-    SUB_NONE=0,
-    SUB_TP,
-    SUB_LAYOUT,
-    SUB_MACRO,
-    SUB_MACRO_REC,
-    SUB_PASSHASH,
-    SUB_CONFIG,
-    SUB_END
-};
 
 static uint8_t subcmd;           ///< currently active subcommand
 
@@ -69,7 +58,8 @@ void setCommandMode(bool on)
 }
 
 bool commandMode(void) { return g_cmd_mode_active; }
-void handleSubCmd(char c);
+uint8_t commandModeSub(void) { return subcmd; }
+
 
 
 /** Called when command mode is active.
