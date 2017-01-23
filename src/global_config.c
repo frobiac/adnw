@@ -40,7 +40,7 @@ void init_config()
     g_cfg = (kb_cfg_t) {
         .magic=EE_CFG_MAGIC_NUM, .fw.raw=0,
         .tp_axis.raw=0, .tp_config.raw=0,
-        .led = (led_t) { .brightness=5, .on=0, .off=60 }
+        .led = (led_t) { .r=0, .g=5, .b=0, .on=0, .off=60 }
     };
 
 #ifdef PS2MOUSE
@@ -76,7 +76,7 @@ void print_config()
     xprintf("\nEE[%d] %04X: %02X ", sizeof(g_cfg), g_cfg.magic, g_cfg.fw.raw);
     xprintf("Mouse=%d-%d", g_cfg.fw.mouse_enabled, g_cfg.fw.swap_xy);
 #ifdef HAS_LED
-    xprintf(" LED:%02X %02X %02X ", g_cfg.led.brightness, g_cfg.led.on, g_cfg.led.off);
+    xprintf(" LED:(%02X,%02X,%02X) %02X %02X ", g_cfg.led.r, g_cfg.led.g, g_cfg.led.b, g_cfg.led.on, g_cfg.led.off);
 #endif
 #ifdef PINKYDROP
     xprintf(" PD=%d", g_cfg.fw.pinkydrop);

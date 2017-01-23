@@ -68,6 +68,8 @@ uint8_t getActiveLayer(void);
 uint8_t getActiveKeyCodeModifier(void);
 
 void set_led(void);
+void set_led_color(uint8_t r, uint8_t g, uint8_t b);
+
 void scan_matrix(void);
 
 uint8_t fillReport(USB_KeyboardReport_Data_t *report_data);

@@ -53,7 +53,7 @@
  * this is only required if the address layout changes.
  * simple additions will be fine as long as they are saved somehow and random values are ok initially.
  */
-#define EE_CFG_MAGIC_NUM    (uint16_t) 0x0004
+#define EE_CFG_MAGIC_NUM    (uint16_t) 0x0005
 
 #define EE_CFG_MAGIC        (uint16_t *) 0
 #define EE_CFG_END          (uint8_t  *) (sizeof(kb_cfg_t)) // end of config
@@ -120,7 +120,7 @@ typedef union {
 
 /// led config, used regularly to update LED
 typedef struct {
-    uint8_t brightness;
+    uint8_t r, g, b;
     // in 100ms, roughly based on idle_count updates via ISR
     uint8_t on;
     uint8_t off;

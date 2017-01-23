@@ -530,7 +530,7 @@ column_size_t get_kb_rpt( column_size_t key_mask, uint8_t col )
 }
 
 /**
- * Set led to current configured state in g_cfg.led.
+ * Set led blink mode to current configured state in g_cfg.led.
  */
 void set_led()
 {
@@ -539,13 +539,28 @@ void set_led()
         return;
 
 #ifdef __AVR_ATmega32U4__
-    if(idle_count % (g_cfg.led.on+g_cfg.led.off) < g_cfg.led.on)
-        OCR4D = g_cfg.led.brightness;
+
+    // global blinking:
+    if(idle_count % (g_cfg.led.on+g_cfg.led.off+1)  < g_cfg.led.on) // +1 needed for mod 0 ?
+        set_led_color(g_cfg.led.r, g_cfg.led.g, g_cfg.led.b);
     else
-        OCR4D = 0;
+        set_led_color(0,0,0);
 #endif
 #endif
 }
+
+void set_led_color(uint8_t r, uint8_t g, uint8_t b)
+{
+// # ifdef __AVR_ATmega32U4__
+#ifdef BLACKFLAT
+    OCR4D = g;
+#elif defined(BLACKBOWL)
+    OCR1A = b;
+    OCR1B = r;
+    OCR1C = g;
+#endif
+}
+
 
 /** The real hardware access take place here.
  *  Each of the rows is individually activated and the resulting column value read.
