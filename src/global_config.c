@@ -76,13 +76,13 @@ void print_config()
     xprintf("\nEE[%d] %04X: %02X ", sizeof(g_cfg), g_cfg.magic, g_cfg.fw.raw);
     xprintf("Mouse=%d-%d", g_cfg.fw.mouse_enabled, g_cfg.fw.swap_xy);
 #ifdef HAS_LED
-    xprintf("LED:%02X %02X %02X ", g_cfg.led.brightness, g_cfg.led.on, g_cfg.led.off);
+    xprintf(" LED:%02X %02X %02X ", g_cfg.led.brightness, g_cfg.led.on, g_cfg.led.off);
 #endif
 #ifdef PINKYDROP
-    xprintf("PD=%d", g_cfg.fw.pinkydrop);
+    xprintf(" PD=%d", g_cfg.fw.pinkydrop);
 #endif
 #ifdef ALTERNATE_LAYER
-    xprintf("AL=%d", g_cfg.fw.alt_layer);
+    xprintf(" AL=%d", g_cfg.fw.alt_layer);
 #endif
 #ifdef PS2MOUSE
     xprintf("\nTP: Sens: %3d/%3d SP=%3d TH=%3d ", g_cfg.tp_config.sensL, g_cfg.tp_config.sens, g_cfg.tp_config.speed, g_cfg.tp_config.thres);

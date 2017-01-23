@@ -143,7 +143,7 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 #ifdef ALTERNATE_LAYER
         case 'l':
             g_cfg.fw.alt_layer = !g_cfg.fw.alt_layer;
-            xprintf("AltL %s\n", g_cfg.fw.alt_layer ? "on" : "off");
+            //xprintf("AltL %s\n", g_cfg.fw.alt_layer ? "on" : "off");
             setCommandMode(false);
             break;
 #endif
@@ -157,7 +157,7 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
                 g_cfg.fw.mouse_enabled = ps2_init_mouse();
             }
 
-            xprintf("\nMouse %sabled", g_cfg.fw.mouse_enabled ? "en" : "dis");
+            //xprintf("\nMouse %sabled", g_cfg.fw.mouse_enabled ? "en" : "dis");
             setCommandMode(false);
         }
         break;
@@ -166,7 +166,7 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             subcmd=SUB_MACRO;
             break;
         case 'r':
-            xprintf("Rec macro\n");
+            //xprintf("Rec macro\n");
             subcmd=SUB_MACRO_REC;
             break;
 #ifdef PH_ENABLED
