@@ -134,7 +134,13 @@ enum { TP_PTS=0, TP_HALFTAC, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_RES, TP_F
     #define PS2_CLOCK_BIT    3
 
 #elif defined BLACKBOWL
-    #define HAS_LED //@TODO LED port configurable
+    #define HAS_LED
+    /*
+     * @TODO LED port configurable: RGB on B6,7,5
+     * R= PB6, OC1B
+     * G= PB7, OC1C
+     * B= PB5, OC1A
+     */
     #define HAS_I2C
     #define TP_AXES (1<<TP_PTS | 1<<TP_FLIPY)
 

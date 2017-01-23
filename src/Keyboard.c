@@ -174,21 +174,37 @@ int main(void)
     return 0;
 }
 
-/** PD7 is OC4D, can set OCR4D to 0-255
- * http://extremeelectronics.co.in/avr-tutorials/pwm-signal-generation-by-using-avr-timers-part-ii/
- * http://www.avrfreaks.net/forum/help-needed-pwm-atmega-2560
- * http://forums.overclockers.com.au/showthread.php?t=942326
+/**
+ * BF: One on PD7 is OC4D, can set OCR4D to 0-255
+ * BB: RGB on PB5,6,7 = OC1A, OC1B, 0C1C and Timer 1
+ *
+ * http://www.mikrocontroller.net/articles/AVR-GCC-Tutorial/Die_Timer_und_Z%C3%A4hler_des_AVR
+ * http://blog.saikoled.com/post/43165849837/secret-konami-cheat-code-to-high-resolution-pwm-on
  */
 void initPWM()
 {
     // timer 4 not available on teensy++2.0 with at90usb1286
 #if defined(HAS_LED) && defined(__AVR_ATmega32U4__)
+#   ifdef BLACKFLAT
     DDRD = (1<<7);
     //@TODO what is really required to get PWM on PD7?
     TCCR4A = 1 << COM4A1 | 1 << COM4B1 | 1 << PWM4A | 1 << PWM4B; // Enable outputs A and B in PWM mode
-    TCCR4B = 1 << CS43 | 1 << CS40; // Clock divided by 256 for 244kHz PWM
+    TCCR4B = 1 << CS43 | 1 << CS40;    // Clock divided by 256 for 244kHz PWM
     TCCR4C = 1 << COM4D1 | 1 << PWM4D; // Enable output D in PWM mode
     // OC4C=0xFF; // Set top to FFFF
+
+#   elif defined BLACKBOWL
+    //Set 8-bit fast PWM mode for RGB on B5,6,7
+    DDRB |= (1<<7)|(1<<6)|(1<<5);
+
+    //Mode and Prescaler (Phase Correct PWM und Prescaler 1)
+    TCCR1A |= (1<<COM1A1)|(1<<COM1B1)|(1<<COM1C1)|(1<<WGM11); // 0xAA
+    TCCR1B |= (1<<WGM13)|(1<<CS10); // 0x19
+    // 16-Bit Resolution ICR1 |= 0xFFFF;
+    // 8-Bit Resolution
+    ICR1 |= 0x00FF;
+
+#   endif
 #endif
 }
 
@@ -234,14 +250,20 @@ void SetupHardware()
     // set up timer
     TCCR0A = 0x00;
     TCCR0B = 0x05;
+
 #ifdef HAS_LED
     // @TODO tensy++2.0 at90usb1286 does not have 4th timer?
-    // https://forum.pjrc.com/threads/15822-Use-of-IRRemote-Lib-and-AltSerial-with-Teensy-2-0
-    //
+#  ifdef BLACKFLAT
     PORTC &= ~(1<<7);
     DDRC |= (1<<7);  // D7 is external LED on BF -> output
+#  elif defined(BLACKBOWL)
+    // BB: RGB on B5,67=OC1A, OC1B, OC1C
+    PORTB &= ~((1<<7)|(1<<6)|(1<<5));
+    DDRB |= (1<<7)|(1<<6)|(1<<5);  // B5,6,7 is external RGB LED on BF -> output
+#  endif
     initPWM();
 #endif
+
     TIMSK0 = (1<<TOIE0);
 
     /* Task init */
