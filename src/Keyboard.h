@@ -1,7 +1,7 @@
 /*
     This file is part of the AdNW keyboard firmware.
 
-    Copyright 2010-2015 Stefan Fröbe, <frobiac /at/ gmail [d0t] com>
+    Copyright 2010-2016 Stefan Fröbe, <frobiac /at/ gmail [d0t] com>
 
     It is based on the KeyboardMouse demo from LUFA.
 
