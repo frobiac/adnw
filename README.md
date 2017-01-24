@@ -66,6 +66,35 @@ Then simply call
 
     $ make
 
+To build for a different hardware, either edit KB_HW in makefile or export via environment:
+
+    $ make KB_HW=REDTILT
+
+
+Command Mode Keys
+-----------------
+For a full list of commands refer to handleCommand() in [command.c](/src/command.c) :
+
+- v Version info
+- q Quit command mode where possible
+- b Jump to bootloader
+- t TrackPoint info output
+- l Alternate layer toggle
+- m Mouse toggle
+
+The following commands need further input:
+- x Execute macro
+    * Press key to playback its macro
+
+- r Record macro (see number/length limits in [macro.h](/src/macro.h)
+    * Press key to record macro for
+    * Type in macro slowly
+    * <Ctrl>+<Esc> aborts, <Ctrl>+<Return> saves, <Alt>+<Return> insert pause
+
+- h PassHash
+    * Enter tag [length [mode]] for passhash creation
+
+
 Current Layout
 ==============
 Current default layout as implemented in [keymap.h](/src/keymap.h) :
