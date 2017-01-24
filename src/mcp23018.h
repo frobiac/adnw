@@ -1,7 +1,7 @@
 /*
    This file is part of the AdNW keyboard firmware.
 
-   Copyright 2010-2016 Stefan Fröbe, <frobiac /at/ gmail [d0t] com>
+   Copyright 2010-2017 Stefan Fröbe, <frobiac /at/ gmail [d0t] com>
 
    Created with the helpful code and advice from
    http://rubenlaguna.com/blog/2014/01/16/mcp23018-i2c-communication-advice/
