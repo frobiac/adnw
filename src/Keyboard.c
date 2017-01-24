@@ -164,6 +164,11 @@ int main(void)
     return 0;
 }
 
+void enable_mouse_keys(uint8_t on)
+{
+    g_mouse_keys_enabled = on;
+}
+
 
 /** Configures the board hardware and chip peripherals for keyboard and mouse functionality. */
 void SetupHardware()

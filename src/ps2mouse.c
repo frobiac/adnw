@@ -148,7 +148,7 @@ uint8_t getMouseReport(USB_WheelMouseReport_Data_t *MouseReport)
 
     if( (g_mouse_keys & 0x0F) || (ps2_buttons & 0x07) || (dx!=0) || (dy!=0) ) {
         if(g_mouse_keys_enabled==0) {
-            g_mouse_keys_enabled=1;
+            enable_mouse_keys(1);
             accel=0;
         }
 
@@ -160,7 +160,7 @@ uint8_t getMouseReport(USB_WheelMouseReport_Data_t *MouseReport)
         // After last detected trackpoint movement that much time remains to press a button.
     } else {
         if(idle_count-mouse_timer > 1/*seconds*/ *61 ) {
-            g_mouse_keys_enabled=0;
+            enable_mouse_keys(0);
             accel=0;
             scrollcnt=0;
         }
