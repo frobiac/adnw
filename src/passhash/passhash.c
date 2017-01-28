@@ -29,7 +29,7 @@
     https://github.com/cantora/avr-crypto-lib
 */
 
-#include "sha1.h"
+//#include "sha1.h"
 #include "hmac-sha1.h"
 #include "passhash.h"
 #include <string.h>
