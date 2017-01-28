@@ -166,7 +166,8 @@ void initKeyboard()
 #ifdef PS2MOUSE
     // default to false as not to hang the firmware when something goes wrong with init.
     g_ps2_connected = 0;
-    g_cfg.fw.mouse_enabled=0;
+    if(g_cfg.fw.mouse_enabled)
+        ps2_init_mouse();
     // too early for ps2_init here, it seems.
     // better to activate manually via commmand mode once upon boot for now
 #endif
