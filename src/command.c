@@ -39,22 +39,11 @@
 bool g_cmd_mode_active=false;
 
 
-led_t led_save;
-static uint8_t r=0, g=0, b=0;
-
-
 static uint8_t subcmd;           ///< currently active subcommand
 
 void setCommandMode(bool on)
 {
     if(on!=g_cmd_mode_active) {
-        if(on) {
-            led_save = g_cfg.led;
-            g_cfg.led = (led_t) { .r=5, .g=0, .b=0, .on=30,  .off=30 };
-        } else {
-            g_cfg.led = led_save;
-        }
-
         g_cmd_mode_active=on;
         subcmd = SUB_NONE;
     }
@@ -255,29 +244,23 @@ void handleSubCmd(char c)
 
         case SUB_LED: {
             // +120 byte
-            led_save.r=r;
-            led_save.g=g;
-            led_save.b=b;
-            g_cfg.led = led_save;
             //set_led_color(r,g,b);
             switch(c) {
 #ifdef HAS_LED
                 // @TODO 8 bit resolution, map to curve for lower brightnesses
-                case 'r': r-=16; break;
-                case 'g': g-=16; break;
-                case 'b': b-=16; break;
-                case 'R': r+=16; break;
-                case 'G': g+=16; break;
-                case 'B': b+=16; break;
+                case 'r': g_cfg.led.r-=16; break;
+                case 'g': g_cfg.led.g-=16; break;
+                case 'b': g_cfg.led.b-=16; break;
+                case 'R': g_cfg.led.r+=16; break;
+                case 'G': g_cfg.led.g+=16; break;
+                case 'B': g_cfg.led.b+=16; break;
 
                 // Operate on the saved config that will be restored when leaving command mode
-                case 'f': led_save.off--; break;
-                case 'F': led_save.off++; break;
-                case 'n': led_save.on--; break;
-                case 'N': led_save.on++; break;
-                case '5': r=0; g=0; b=0; led_save.on =   5; led_save.off=5; break;
-                case '0': r=0; g=0; b=0; led_save.on =   0; led_save.off=255; break;
-                case '1': led_save.on = 255; led_save.off=0;   break;
+                case 'f': g_cfg.led.off--; break;
+                case 'F': g_cfg.led.off++; break;
+                case 'n': g_cfg.led.on--; break;
+                case 'N': g_cfg.led.on++; break;
+                case '0': g_cfg.led = (led_t) { .r=0, .g=0, .b=0, .on=0,  .off=255 }; break;
 #endif
 
                 case 'q':
