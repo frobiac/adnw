@@ -48,6 +48,7 @@ void encodeblock( unsigned char *in, unsigned char *out, int len )
 }
 
 // minimum result length : i*4/3 + (i%3>0?1:0)
+// sha1hash = 20 Byte -> 80/3 +1 => 27 b64
 void b64enc(const unsigned char* data, size_t len, char* result, size_t resultSize)
 {
     size_t x;
@@ -115,13 +116,16 @@ uint16_t letterSum(const char * str)
     return sum;
 }
 
-void genHash(char * result, char * key, char * tag, uint8_t len, uint8_t type)
+/**
+ * b64result must be 27 chars (20Byte SHA1_HASH to b64)
+ */
+void genHash(char * b64result, char * key, char * tag, uint8_t len, uint8_t type)
 {
     char dest[HMAC_SHA1_BYTES];
-    char b64result[30]; // 22 Byte hash -> 7*4+2
+    //char b64result[30]; // 20 Byte hash -> 7*4+2
     uint16_t seed = 0;  // max is 27*122
 
-    memset(b64result, 0, 30);
+    //memset(b64result, 0, 30);
     memset(dest, 0, HMAC_SHA1_BYTES);
 
     hmac_sha1((void*)(&dest), tag, 8*strlen(tag), key, 8*strlen(key));
@@ -143,11 +147,13 @@ void genHash(char * result, char * key, char * tag, uint8_t len, uint8_t type)
         if(type==2) // alnum only
             remPunct( b64result, seed, len);
     }
-
-    uint8_t i;
-    for(i=0; i<len; ++i)
-        result[i]=b64result[i];
-    result[len] = '\0';
+    /*
+        uint8_t i;
+        for(i=0; i<len; ++i)
+            result[i]=b64result[i];
+        result[len] = '\0';
+        */
+    b64result[len] = '\0';
 }
 /**
  *  passhash array must be one longer then requested length!
@@ -164,7 +170,9 @@ uint8_t passHash(char * passhash, uint8_t len, uint8_t type, char * private_key,
         return(4);
     }
 
-    char mhash[24+1];
+    char mhash[26];
+    //memset(mhash, 0, 24);
+    //char mhash[30+1];
 
     /* Naming conventions form twik / passhash
       - master_key  is read in Gui (or run.py)   (=key   )

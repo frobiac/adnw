@@ -22,7 +22,8 @@
 
 #include <string.h>
 #include <stdio.h>
-#include <stdint.h>
+#include <stdlib.h>
+
 
 int main (int argc, char * argv[])
 {
@@ -38,7 +39,7 @@ int main (int argc, char * argv[])
     char * key     = argv[4]; // gui key in twik
     char * tag     = argv[5]; // private_key in twik config
 
-    char password[len+1];
+    char password[26+0];
     uint8_t ret = passHash(password, len, type, secret, key, tag);
 
     if(ret==0)
