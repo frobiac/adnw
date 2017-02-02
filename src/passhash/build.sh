@@ -1,15 +1,16 @@
 rm ./passhash
 # using -O0 fails, need to check
 FLAGS="-g -O -W"
+CC=gcc
 mkdir .build 2>/dev/null
 (
   cd .build
-  gcc $FLAGS -c ../sha1.c      &&
-  gcc $FLAGS -c ../hmac-sha1.c &&
-  gcc $FLAGS -c ../passhash.c  &&
-  gcc $FLAGS -c ../main.c &&
+  $CC $FLAGS -c ../sha1.c      &&
+  $CC $FLAGS -c ../hmac-sha1.c &&
+  $CC $FLAGS -c ../passhash.c  &&
+  $CC $FLAGS -c ../main.c &&
 
-  gcc main.o passhash.o sha1.o hmac-sha1.o -o ../passhash
+  $CC main.o passhash.o sha1.o hmac-sha1.o -o ../passhash
 )
 
 #########
@@ -36,11 +37,15 @@ test()
 }
 
 test '3!Ke' 4 1 0 1 0
+test 'O00BtcHlhd1yoX2J!sRWCXfsv' 25 1 'x-gl5' '/.-ail026' 'tag'
+test 'zDcDtvo5lJv8Yi/uweHdPHJpyJ' 26 1 'secret' 'key' 'aa'
+
 test '*Zw4' 4 1 'x-gl5' '1' '0'
 test 3546   4 3 0 '1' '0'
 test 'Ag8)' 4 1 'secret' 'key' 'tag'
 test 'Ag8q' 4 2 'secret' 'key' 'tag'
 test '8608' 4 3 'secret' 'key' 'tag'
+
 test '8.0q7wKK8Av' 11 1 'secret' 'key' 'tag'
 test '8X0q7wKK8Av' 11 2 'secret' 'key' 'tag'
 test '86087555868' 11 3 'secret' 'key' 'tag'
