@@ -33,9 +33,9 @@
 /**
  *  Calculate passhash from given values.
  *
- *  The passhash array passed as first argument must be one larger than requested length!
+ *  The passhash array passed as first argument must fit 27 chars!
  *
- *  @ret passhash will contain calculated hash
+ *  @ret passhash will contain calculated hash, '\0'-delimited at requested length.
  */
 uint8_t passHash(char * passhash, uint8_t len, uint8_t type, char * private_key, char * master_password, char * tag);
 

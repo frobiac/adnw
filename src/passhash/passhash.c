@@ -47,8 +47,12 @@ void encodeblock( unsigned char *in, unsigned char *out, int len )
     out[3] = (unsigned char) (len > 2 ? b64[ (int)(in[2] & 0x3f) ] : '=');
 }
 
-// minimum result length : i*4/3 + (i%3>0?1:0)
-// sha1hash = 20 Byte -> 80/3 +1 => 27 b64
+//
+/** Encode data of size len to base64 result
+ *  Result must be at least len*4.0/3 (rounded up!)
+ *
+ *  A SHA1 hash of 20 Bytes will thus occupy 27 Bytes (20*4/3=26.666)
+ */
 void b64enc(const unsigned char* data, size_t len, char* result, size_t resultSize)
 {
     size_t x;
@@ -121,17 +125,16 @@ uint16_t letterSum(const char * str)
  */
 void genHash(char * b64result, char * key, char * tag, uint8_t len, uint8_t type)
 {
-    char dest[HMAC_SHA1_BYTES];
-    //char b64result[30]; // 20 Byte hash -> 7*4+2
+    char sha1hash[HMAC_SHA1_BYTES];
     uint16_t seed = 0;  // max is 27*122
 
-    //memset(b64result, 0, 30);
-    memset(dest, 0, HMAC_SHA1_BYTES);
+    memset(sha1hash, 0, HMAC_SHA1_BYTES);
 
-    hmac_sha1((void*)(&dest), tag, 8*strlen(tag), key, 8*strlen(key));
+    hmac_sha1((void*)(&sha1hash), tag, 8*strlen(tag), key, 8*strlen(key));
 
-    b64enc((unsigned char*)dest, HMAC_SHA1_BYTES, b64result, sizeof(b64result));
-    // remove last 2 characters ('=' padding and end)
+    b64enc((unsigned char*)sha1hash, HMAC_SHA1_BYTES, b64result, sizeof(b64result));
+
+    // b64 of 20 Byte sha1hash -> 27 Bytes ending in '=' which must be removed
     b64result[27] ='\0';
 
     seed=letterSum(b64result);
@@ -147,16 +150,12 @@ void genHash(char * b64result, char * key, char * tag, uint8_t len, uint8_t type
         if(type==2) // alnum only
             remPunct( b64result, seed, len);
     }
-    /*
-        uint8_t i;
-        for(i=0; i<len; ++i)
-            result[i]=b64result[i];
-        result[len] = '\0';
-        */
+
+    // truncate result to requested length
     b64result[len] = '\0';
 }
 /**
- *  passhash array must be one longer then requested length!
+ *  passhash array must be 27 chars and will contain '\0' terminated passhash upon completion
  *
  *  @ret passhash
  */
@@ -170,17 +169,13 @@ uint8_t passHash(char * passhash, uint8_t len, uint8_t type, char * private_key,
         return(4);
     }
 
-    char mhash[26];
-    //memset(mhash, 0, 24);
-    //char mhash[30+1];
-
-    /* Naming conventions form twik / passhash
+    /* Naming conventions from twik / passhash
       - master_key  is read in Gui (or run.py)   (=key   )
       - private_key is from config               (=secret)
       - tag         is domain name
      */
-    genHash(mhash,    private_key, tag, 24,  1);
-    genHash(passhash, mhash,  master_pw, len, type);
+    genHash(passhash, private_key, tag, 24,  1);
+    genHash(passhash, passhash,  master_pw, len, type);
 
     return 0;
 }
