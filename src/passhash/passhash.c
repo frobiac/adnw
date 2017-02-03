@@ -121,10 +121,11 @@ uint16_t letterSum(const char * str)
 }
 
 /**
- * b64result must be 27 chars (20Byte SHA1_HASH to b64)
+ * key must have room for 27 chars (20Byte SHA1_HASH to base64)
  */
-void genHash(char * b64result, char * key, char * tag, uint8_t len, uint8_t type)
+void genHash(char * key, char * tag, uint8_t len, uint8_t type)
 {
+    //fprintf(stderr, "\nKey: %s Tag: %s", key, tag);
     char sha1hash[HMAC_SHA1_BYTES];
     uint16_t seed = 0;  // max is 27*122
 
@@ -132,34 +133,34 @@ void genHash(char * b64result, char * key, char * tag, uint8_t len, uint8_t type
 
     hmac_sha1((void*)(&sha1hash), tag, 8*strlen(tag), key, 8*strlen(key));
 
-    b64enc((unsigned char*)sha1hash, HMAC_SHA1_BYTES, b64result, sizeof(b64result));
+    b64enc((unsigned char*)sha1hash, HMAC_SHA1_BYTES, key, sizeof(key));
 
     // b64 of 20 Byte sha1hash -> 27 Bytes ending in '=' which must be removed
-    b64result[27] ='\0';
+    key[27] ='\0';
 
-    seed=letterSum(b64result);
+    seed=letterSum(key);
 
     if(type==3) { // numeric
-        conv2digits(b64result,seed,len);
+        conv2digits(key,seed,len);
     } else {
-        injectChar( b64result, 0, 4, seed, len, '0', 10); // digit
+        injectChar( key, 0, 4, seed, len, '0', 10); // digit
         if(type==1) // digit + punctuation
-            injectChar( b64result, 1, 4, seed, len, '!', 15); // punctuation
-        injectChar( b64result, 2, 4, seed, len, 'A', 26); // uppercase
-        injectChar( b64result, 3, 4, seed, len, 'a', 26); // lowercase
+            injectChar( key, 1, 4, seed, len, '!', 15); // punctuation
+        injectChar( key, 2, 4, seed, len, 'A', 26); // uppercase
+        injectChar( key, 3, 4, seed, len, 'a', 26); // lowercase
         if(type==2) // alnum only
-            remPunct( b64result, seed, len);
+            remPunct( key, seed, len);
     }
 
     // truncate result to requested length
-    b64result[len] = '\0';
+    key[len] = '\0';
 }
 /**
- *  passhash array must be 27 chars and will contain '\0' terminated passhash upon completion
+ *  key array must be 27 chars and will contain '\0' terminated passhash upon completion
  *
- *  @ret passhash
+ *  @ret key
  */
-uint8_t passHash(char * passhash, uint8_t len, uint8_t type, char * private_key, char * master_pw, char * tag)
+uint8_t passHash(uint8_t len, uint8_t type, char * private_key, char * master_pw, char * tag)
 {
     if(len<4 || len>26) {
         return(3);
@@ -174,17 +175,18 @@ uint8_t passHash(char * passhash, uint8_t len, uint8_t type, char * private_key,
       - private_key is from config               (=secret)
       - tag         is domain name
      */
-    genHash(passhash, private_key, tag, 24,  1);
-    genHash(passhash, passhash,  master_pw, len, type);
+    genHash(private_key, tag, 24,  1);
+    // now key contains first run result
+    genHash(private_key, master_pw, len, type);
+    // now key contains final passhash
 
     return 0;
 }
 
 bool verifyHash(char * private_key, char * master_pw, char * tag, uint8_t len, uint8_t type, char * expected_hash )
 {
-    char passhash[len+1];
-    passHash(passhash, len, type, private_key, master_pw, tag);
-    if( memcmp( expected_hash, passhash, len) == 0)
+    passHash( len, type, private_key, master_pw, tag);
+    if( memcmp( expected_hash, private_key, len) == 0)
         return true;
 
     return false;

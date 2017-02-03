@@ -28,22 +28,24 @@
 int main (int argc, char * argv[])
 {
     if( argc != 6) {
-        fprintf(stderr, "\nNeed 5 args: \n   len type secret key tag\n\n");
+        fprintf(stderr, "\nNeed 5 args: \n   len type private_key master_pw tag\n\n");
         return(2) ;
     }
 
     uint8_t len    = atoi(argv[1]);
     uint8_t type   = atoi(argv[2]);
 
-    char * secret  = argv[3];
-    char * key     = argv[4]; // gui key in twik
-    char * tag     = argv[5]; // private_key in twik config
+    char * private_key  = argv[3];
+    //char * master_pw     = argv[4]; // gui master_pw in twik
+    char master_pw[27];
+    memset(master_pw, 0, 27);
+    snprintf(master_pw, 27, "%s", argv[4]);
+    char * tag     = argv[5]; // private_master_pw in twik config
 
-    char password[26+0];
-    uint8_t ret = passHash(password, len, type, secret, key, tag);
+    uint8_t ret = passHash(len, type, private_key, master_pw, tag);
 
     if(ret==0)
-        fprintf(stdout, "%s\n", password);
+        fprintf(stdout, "%s\n", private_key);
     else
         fprintf(stdout, "ERROR %d creating pw: %s\n", ret, (ret==3?"Invalid length [4-26]" : (ret==4 ? "Invalid type [1-3]" : "Unknown error" ) ) );
 

@@ -33,11 +33,11 @@
 /**
  *  Calculate passhash from given values.
  *
- *  The passhash array passed as first argument must fit 27 chars!
+ *  The key array passed must fit 27 chars for final result!
  *
- *  @ret passhash will contain calculated hash, '\0'-delimited at requested length.
+ *  @ret key will contain calculated hash, '\0'-delimited at requested length.
  */
-uint8_t passHash(char * passhash, uint8_t len, uint8_t type, char * private_key, char * master_password, char * tag);
+uint8_t passHash(uint8_t len, uint8_t type, char * private_key, char * master_password, char * tag);
 
 /**
  *  Compare expected_hash to calculated result.

@@ -291,7 +291,8 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
                     type=PH_TYPE_ALNUMSYM;
 
                 // reuse ph_input buffer
-                uint8_t ret = passHash(ph_input, (uint8_t)len, (uint8_t)type, PH_PRIVATE_KEY, ph_master_pw, tag);
+                memcpy(ph_input, PH_PRIVATE_KEY, strlen(PH_PRIVATE_KEY));
+                uint8_t ret = passHash((uint8_t)len, (uint8_t)type, ph_input, ph_master_pw, tag);
                 if(ret==0)
                     setOutputString(ph_input);
 
