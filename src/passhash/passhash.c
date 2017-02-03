@@ -29,12 +29,11 @@
     https://github.com/cantora/avr-crypto-lib
 */
 
-//#include "sha1.h"
+#include <string.h>
+
 #include "hmac-sha1.h"
 #include "passhash.h"
-#include <string.h>
 #include "../helpers.h"
-
 
 static const char b64[]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
