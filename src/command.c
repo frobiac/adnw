@@ -42,10 +42,10 @@ bool g_cmd_mode_active=false;
     #include "passhash/passhash.h"
     #include "_private_data.h"
 
-    #define PH_INPUT_LEN PH_MAX_LEN + 1
+    #define PH_INPUT_LEN 27 // PH_MAX_LEN + 1
     // longest possible tag is input minus length, mode and two spaces
     #define TAGLEN PH_INPUT_LEN - 5 // tag_XY_M
-    #define PH_PW_LEN 32
+
     // buffer for input and passhash generation
     char ph_input[PH_INPUT_LEN];
     char ph_master_pw[PH_PW_LEN];
