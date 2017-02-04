@@ -58,11 +58,14 @@
 #define EE_CFG_MAGIC        (uint16_t *) 0
 #define EE_CFG_END          (uint8_t  *) (sizeof(kb_cfg_t)) // end of config
 
+/// NOTE: This address is compile-time checked against config size in init_config()
+#define EE_ADDR_START       200
+
 // @TODO refactor to adjust after changes to macro count and max len
 //       or use from end of eeprom ...
-#define EE_ADDR_START       100
-#define EE_ADDR_MACROS      (EE_ADDR_START+100)
-#define EE_ADDR_MACRO(idx)  (EE_ADDR_MACROS + (idx*(MACRO_MAX_LEN+1)))
+#define EE_ADDR_MACRO_MAP   (EE_ADDR_START) // mapping of characters to id
+#define EE_ADDR_MACROS      (EE_ADDR_MACRO_MAP + MACROCOUNT)
+#define EE_ADDR_MACRO(idx)  (EE_ADDR_MACROS    + ((idx%MACROCOUNT)*(MACRO_MAX_LEN+1)))
 
 // Compile time assert to test overlap of kb_cfg_t with macro storage
 // see linux kernel BUILD_BUG_ON

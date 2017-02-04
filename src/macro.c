@@ -17,6 +17,14 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/**
+ * @TODO:
+ *   - clear up convoluted mess of string assembly in command.c
+ *   - interface for dynamic lengths of different macros
+ *   - usability: signal remaining free slots, used characters, ...
+ */
+
+
 #include "macro.h"
 #include "Keyboard.h"
 
@@ -26,12 +34,12 @@
 #define MACRO_INVALID    255     // can be used by anyone here 
 #define MACRO_COMPLETE   254     // outstring has been written to completely and can be printed
 
-uint8_t curMacro  = MACROCOUNT;
 uint8_t sendEmpty = 0;    // empty report needed to send the same character twice in a row
 
 bool macromode=false;
 /// Holds index of macro while recording, 0<=idx<MACROCOUNT.
 uint8_t g_macrorecord=MACRO_ID_INVALID;
+uint8_t g_macrochar; // char to map macro to
 
 /// cur offset in outHidCodes, both read & write for macro
 uint8_t outOffs = MACRO_INVALID;
@@ -46,6 +54,8 @@ inline void setMacroMode( bool on ) { macromode=on; };
 
 bool appendHidCode(uint8_t hid);
 bool clearHIDCodes(void);
+uint8_t findMacroId(char macro_char);
+void print_used_macro_chars(void);
 
 
 /**
@@ -79,12 +89,55 @@ char hid2asciicode(uint8_t hid, uint8_t mod)
     return ('\0');
 }
 
-bool setMacroRecording( uint8_t id )
+/**
+ * Find macro id for given character.
+ *
+ * @return id, or MACRO_ID_INVALID if not found.
+ */
+uint8_t findMacroId(char macro_char)
 {
-    if(id<MACROCOUNT && clearHIDCodes() ) {
-        g_macrorecord=id;
-        return true;
+    uint8_t offs;
+    for(offs=0; offs<MACROCOUNT; ++offs) {
+        if(macro_char == eeprom_read_byte (( const void *) (EE_ADDR_MACRO_MAP + offs)) ) {
+            return offs;
+        }
     }
+    // not found
+    return MACRO_ID_INVALID;
+}
+
+void print_used_macro_chars()
+{
+    uint8_t offs;
+    char macro_char __attribute__((unused));
+    xprintf("\nM:");
+    for(offs=0; offs<MACROCOUNT; ++offs) {
+        macro_char = eeprom_read_byte (( const void *) (EE_ADDR_MACRO_MAP + offs)) ;
+        xprintf("%c", macro_char == MACRO_ID_INVALID ? '-' : macro_char);
+    }
+}
+
+/**
+ * Update macro for character c, or create a new one in free slot.
+ * Free slot is indicated with map entry of index = MACRO_INVALID.
+ *
+ */
+bool setMacroRecording(char macro_char)
+{
+    uint8_t offs = MACRO_ID_INVALID;
+
+    offs = findMacroId(macro_char); // first check if macro_char is already in use
+    if(offs == MACRO_ID_INVALID)
+        offs = findMacroId(MACRO_INVALID); // find empty spot
+
+    if(offs != MACRO_ID_INVALID && clearHIDCodes()) {
+        g_macrorecord=offs;
+        g_macrochar=macro_char;
+        return true;
+    } else {
+        print_used_macro_chars();
+    }
+
     g_macrorecord = MACRO_ID_INVALID;
     return false;
 };
@@ -151,12 +204,18 @@ void macro_key(uint8_t hid, uint8_t mod)
 }
 
 /// shortcut to put macro directly in print buffer
-uint8_t printMacro(uint8_t idx)
+uint8_t printMacro(char macro_char)
 {
     uint8_t ret=0;
-    if(outOffs==MACRO_INVALID) {
-        ret=readEEMacroHID(outHidCodes, idx);
-        outOffs=MACRO_COMPLETE;
+    if(outOffs==MACRO_INVALID) { // Ready to read, not in use
+        uint8_t macro_idx = MACRO_ID_INVALID;
+        macro_idx=findMacroId(macro_char);
+        if(macro_idx != MACRO_INVALID) {
+            ret=readEEMacroHID(outHidCodes, macro_idx);
+            outOffs=MACRO_COMPLETE;
+        } else {
+            print_used_macro_chars();
+        }
     }
     return ret;
 }
@@ -187,6 +246,8 @@ uint8_t readEEMacroHID(uint8_t * macro, uint8_t idx)
 
 /**
  * Writes the macro to eeprom at given index and returns length of written string.
+ * If macro[0] is 0 then clear its access character from map to free it.
+ *
  * As eeprom update functions are used, no unnecessary writes are performed.
  *
  * @param macro array of hid/modifier codes to store, '0' signals end of macro
@@ -197,10 +258,19 @@ uint8_t updateEEMacroHID(const uint8_t * macro, uint8_t idx)
     if(idx>=MACROCOUNT)
         return 0;
 
+    if(macro[0] == 0) { // clear macro
+        eeprom_busy_wait();
+        eeprom_update_byte ((void *) (EE_ADDR_MACRO_MAP + idx), MACRO_ID_INVALID);
+        return 0;
+    }
+
     uint8_t len=0;
     while(macro[len] != 0 && len < MACRO_MAX_LEN) {
         len++ ;
     }
+
+    eeprom_busy_wait();
+    eeprom_update_byte ((void *) (EE_ADDR_MACRO_MAP + idx), g_macrochar);
 
     eeprom_busy_wait();
     eeprom_update_byte ((void *) EE_ADDR_MACRO(idx), len );

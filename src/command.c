@@ -191,12 +191,12 @@ void handleSubCmd(char c)
 
     switch( subcmd ) {
         case SUB_MACRO:
-            printMacro( (((uint8_t)c)%MACROCOUNT) );
+            printMacro(c);
             setCommandMode(false);
             break;
         case SUB_MACRO_REC:
             // stay in command mode until macro is read.
-            if(!setMacroRecording(((uint8_t)c)%MACROCOUNT))
+            if(!setMacroRecording(c))
                 setCommandMode(false);
             break;
 #ifdef PH_ENABLED

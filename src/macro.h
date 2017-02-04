@@ -40,14 +40,14 @@
 uint8_t updateEEMacroHID(const uint8_t macro[MACRO_MAX_LEN], uint8_t idx);
 uint8_t readEEMacroHID  (uint8_t macro[MACRO_MAX_LEN], uint8_t idx);
 /// shortcut to put macro directly in print buffer
-uint8_t printMacro(uint8_t idx);
+uint8_t printMacro(char macro_char);
 
 void printMacros(void);
 
 void setMacroMode(bool on);
 
 bool macroRecording(void);
-bool setMacroRecording( uint8_t id );
+bool setMacroRecording(char macro_char);
 void macro_key(uint8_t hid, uint8_t mod);
 
 char hid2asciicode(uint8_t hid, uint8_t mod);
