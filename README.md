@@ -1,8 +1,8 @@
 About
 -----
-This is a firmware for AVR microcontrollers with USB device support like the Teensy to simulate a keyboard and a mouse. It was created for a custom split keyboard design with 4x6 keys on each side in a matrix layout but could be adapted easily for other hardware.
+This is a firmware for AVR microcontrollers with USB device support to simulate a keyboard and a mouse. It was initially created for a custom split keyboard design with 4x6 keys on each side but can be adapted easily for other hardware.
 
-By default, it implements a different, more ergonomic layout without any further drivers on any host operating system. In its current state, the well evolved [AdNW layout][adnw] is implemented with modified layers 3&4 (special characters, navigational keys and numpad) from the [neo layout][neo]. In addition, an integrated IBM trackpoint is also supported, but any PS/2 compatible device can also be hooked-up to the controller.
+By default, it implements a more ergonomic layout without any further drivers on any host operating system. In its current state, the well evolved [AdNW layout][adnw] is implemented with modified layers 3&4 (special characters, navigational keys and numpad) from the [neo layout][neo]. In addition, an integrated IBM trackpoint is also supported, but any PS/2 compatible device can also be hooked-up to the controller.
 
 ![BlueCube](http://frobiac.github.com/adnw/img/bluecube/BlueCube-4-tilted.jpg)
 ![HyperNano](http://frobiac.github.com/adnw/img/hypernano/2-Final_top.JPG)
@@ -22,19 +22,19 @@ Features
 - IBM trackpoint configuration
 - Supports multiple layouts in switchable layers
 - Native support for different host keyboard language settings, qwertz and qwerty implemented
-- HMAC-SHA1 based string generatiom for safer passwords
+- HMAC-SHA1 based string generation for safer passwords
 
 Credits
 -------
 USB device support depends on the [LUFA][lufa] framework by Dean Camera.
 
-The driver was originally based on humblehackers [hhkb firmware][hhkb], but I found some things (while pretty neat and cleanly implemented) a little too difficult to adjust, so I revamped everything but the most basic USB code.
+The driver was originally based on humblehackers [hhkb firmware][hhkb].
 
 Implementation of mousekey layer, KEYMAP macro and other neat ideas borrowed from the very advanced [tmk_firmware][tmk].
 
-Klaus Weber contributed greatly to an enhanced secondary use state machine and provided several other modifications, including alternate layouts as well as PC/Mac and host language differentiations.
+Klaus Weber contributed to an enhanced secondary use state machine and developed several other modifications, including alternate layouts as well as PC/Mac and host language differentiations..
 
-PS/2 support is copied from [TMK sources][tmk] so uart and interrupt based code should hopefully also work in the future.
+PS/2 support is copied from [TMK sources][tmk].
 
 A dedicated USB ID was generously supplied by Openmoko, Inc.
 
