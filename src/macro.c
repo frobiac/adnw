@@ -26,6 +26,7 @@
 
 
 #include "macro.h"
+#include "helpers.h"
 #include "Keyboard.h"
 
 #include "global_config.h"
@@ -55,6 +56,7 @@ inline void setMacroMode( bool on ) { macromode=on; };
 bool appendHidCode(uint8_t hid);
 bool clearHIDCodes(void);
 uint8_t findMacroId(char macro_char);
+uint8_t findFreeMacroId(void);
 void print_used_macro_chars(void);
 
 
@@ -106,14 +108,32 @@ uint8_t findMacroId(char macro_char)
     return MACRO_ID_INVALID;
 }
 
+/**
+ * Return index of first non-alnum macro character in map,
+ * or MACRO_ID_INVALID if all slots are in use.
+ */
+uint8_t findFreeMacroId()
+{
+    char macro_char;
+    uint8_t offs;
+    for(offs=0; offs<MACROCOUNT; ++offs) {
+        macro_char = eeprom_read_byte (( const void *) (EE_ADDR_MACRO_MAP + offs));
+        if(! isalnum(macro_char)) {
+            return offs;
+        }
+    }
+    // not found
+    return MACRO_ID_INVALID;
+}
+
 void print_used_macro_chars()
 {
     uint8_t offs;
     char macro_char __attribute__((unused));
     xprintf("\nM:");
     for(offs=0; offs<MACROCOUNT; ++offs) {
-        macro_char = eeprom_read_byte (( const void *) (EE_ADDR_MACRO_MAP + offs)) ;
-        xprintf("%c", macro_char == MACRO_ID_INVALID ? '-' : macro_char);
+        macro_char = eeprom_read_byte (( const void *) (EE_ADDR_MACRO_MAP + offs));
+        xprintf("%c ", isalnum(macro_char) ? macro_char : '-');
     }
 }
 
@@ -124,20 +144,24 @@ void print_used_macro_chars()
  */
 bool setMacroRecording(char macro_char)
 {
+    if(!isalnum(macro_char)) // do not store what cannot be retrieved :-)
+        goto err;
+
     uint8_t offs = MACRO_ID_INVALID;
 
     offs = findMacroId(macro_char); // first check if macro_char is already in use
     if(offs == MACRO_ID_INVALID)
-        offs = findMacroId(MACRO_INVALID); // find empty spot
+        offs = findFreeMacroId(); // find empty spot
 
     if(offs != MACRO_ID_INVALID && clearHIDCodes()) {
         g_macrorecord=offs;
         g_macrochar=macro_char;
         return true;
-    } else {
+    } else { // no free slot found
         print_used_macro_chars();
     }
 
+err:
     g_macrorecord = MACRO_ID_INVALID;
     return false;
 };
