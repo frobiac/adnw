@@ -13,6 +13,19 @@ MCU=$( grep "^MCU\s*=" makefile | sed "s/.*=\s*//")
 HEX=$( grep "^TARGET\s*=" makefile | sed "s/.*=\s*//")
 KB=$( grep "^KB_HW\s*=" makefile | sed "s/.*=\s*//")
 
+
+# test for existance of pre-commit hook, and link astyle check.
+# always link latest pre-commit and make executable
+HOOK=$(git rev-parse --show-toplevel)/.git/hooks/pre-commit
+if [ ! -h $HOOK ]; then
+	echo "pre-commit hook file found, creating backup."
+    mv $HOOK ${HOOK}.orig
+fi
+ln -sf ../../tools/pre-commit.astyle.git_hook $HOOK
+chmod +x $HOOK
+
+
+
 mv $HEX.hex $HEX.hex.old 2>/dev/null
 
 rm log log.err 2>/dev/null
