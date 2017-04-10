@@ -1,12 +1,14 @@
 #!/bin/bash
 #
-# Get hid_listen from
-# http://www.pjrc.com/teensy/hid_listen_1.01.zip
-# and allow user to run via
-# username ALL=(ALL) NOPASSWD: /usr/sbin/hid_listen
+# hid_listen
+#   https://www.pjrc.com/teensy/hid_listen_1.01.zip
+#   and allow user to run via
+#   username ALL=(ALL) NOPASSWD: /usr/sbin/hid_listen
 #
-# teensy_loader_cli needs udev rules for user access:
-#   www.pjrc.com/teensy/49-teensy.rules
+# teensy_loader_cli
+#   https://github.com/PaulStoffregen/teensy_loader_cli
+#   needs udev rules for user access:
+#   https://www.pjrc.com/teensy/49-teensy.rules
 #
 # VMWARE config
 # usb.generic.allowHID = "TRUE"
