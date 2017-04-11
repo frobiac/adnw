@@ -204,12 +204,12 @@ void changeSecondUseState(SecondUse_State currentState, SecondUse_State newState
         secondUse_state_prev = currentState;
 
 #ifdef DBG_2ND_USE
-        char * stateStr;
-        if (secondUse_state == SECOND_USE_ACTIVE) stateStr = "Active";
-        if (secondUse_state == SECOND_USE_PASSIVE) stateStr = "Passive";
-        if (secondUse_state == SECOND_USE_REPEAT) stateStr = "Repeat";
-        if (secondUse_state == SECOND_USE_OFF) stateStr = "Off";
-        xprintf("\n2nd: -> %s (%d->%d active)",stateStr, secondUse_Prev_activeKeys.keycnt, activeKeys.keycnt);
+        char stateStr = '-';
+        if      (secondUse_state == SECOND_USE_ACTIVE)  stateStr = 'A';
+        else if (secondUse_state == SECOND_USE_PASSIVE) stateStr = 'P';
+        else if (secondUse_state == SECOND_USE_REPEAT)  stateStr = 'R';
+        else if (secondUse_state == SECOND_USE_OFF)     stateStr = 'O';
+        xprintf("\n2nd: -> %c (%d->%d active)", stateStr, secondUse_Prev_activeKeys.keycnt, activeKeys.keycnt);
 #endif
     }
 }
@@ -234,10 +234,10 @@ void handleModifierTransmission(USB_KeyboardReport_Data_t* report_data, Modifier
     if (prev_modTrans_state != newState) {
         prev_modTrans_state = newState;
 #ifdef DBG_2ND_USE
-        char * stateStr;
-        if (newState == MOD_TRANS_ON) stateStr = "TRANS_ON";
-        if (newState == DELAY_MOD_TRANS) stateStr = "DELAY";
-        xprintf("; Mod %d->%d %s\n",prev_modTrans_state, newState, stateStr);
+        char stateStr = '-' ;
+        if (newState == MOD_TRANS_ON) stateStr = 'T';
+        else if (newState == DELAY_MOD_TRANS) stateStr = 'D';
+        xprintf("; Mod %d->%d %c\n",prev_modTrans_state, newState, stateStr);
 #endif
     }
 }
@@ -327,6 +327,7 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data)
             fill_secondUse_Prev_activeKeys();
             break;
         }
+
         case SECOND_USE_ACTIVE: {
             bool normalKeyPresent = false;
             // Normal key among pressed ?
