@@ -278,18 +278,17 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data)
                 changeSecondUseState(SECOND_USE_OFF, SECOND_USE_REPEAT);
                 break;
             }
-            bool modifierOrLayerKeyPresent = false;
+            uint8_t modifierOrLayerKeysPresent = 0;
             // Modifier among pressed keys?
             for (uint8_t i = 0; i < activeKeys.keycnt; ++i) {
                 struct Key current_key = activeKeys.keys[i];
                 if (!current_key.normalKey) {
-                    modifierOrLayerKeyPresent = true;
-                    break;
+                    modifierOrLayerKeysPresent++;
                 }
             }
 
             // activate 2nd-use when modifier is pressed
-            if(modifierOrLayerKeyPresent) {
+            if(modifierOrLayerKeysPresent>0) {
                 // @TODO should drop extra global g_send_now, maybe by checking in Passive transition instead?
                 //       also work with N normal keys prior to modifier...
                 // previously pressed key was normal, now a modifier that should probably
@@ -297,7 +296,8 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data)
                 // "t " will only send space if it is pressed after t has been released due to secondary usage of space
                 if(secondUse_Prev_activeKeys.keycnt == 1 &&
                    secondUse_Prev_activeKeys.keys[0].normalKey &&
-                   activeKeys.keycnt == 2) {
+                   activeKeys.keycnt == 2 &&
+                   modifierOrLayerKeysPresent==1) {
 
                     uint8_t key_regular=0, key_second=0;
                     for (uint8_t i = 0; i < activeKeys.keycnt; ++i) {
@@ -310,11 +310,9 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data)
                     zeroReport(report_data);
                     report_data->KeyCode[0]=key_regular;
                     report_data->KeyCode[1]=key_second;
-                    xprintf(".%d-%d ", key_regular, key_second);
                     g_send_now=true;
 
                 } else {
-
                     changeSecondUseState(SECOND_USE_OFF, SECOND_USE_ACTIVE);
                     secondUse_timer=idle_count;
                     // fix for repeat of last released modifier if another one is held directly afterwards.
