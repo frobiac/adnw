@@ -47,6 +47,8 @@
     #include "trackpoint.h"
 #endif
 
+// #define DBG_2ND_USE
+
 column_size_t rowData[ROWS];
 column_size_t prevRowData[ROWS];
 
@@ -200,14 +202,15 @@ void changeSecondUseState(SecondUse_State currentState, SecondUse_State newState
     if (currentState != newState) {
         secondUse_state = newState;
         secondUse_state_prev = currentState;
-        /*
+
+#ifdef DBG_2ND_USE
         char * stateStr;
         if (secondUse_state == SECOND_USE_ACTIVE) stateStr = "Active";
         if (secondUse_state == SECOND_USE_PASSIVE) stateStr = "Passive";
         if (secondUse_state == SECOND_USE_REPEAT) stateStr = "Repeat";
         if (secondUse_state == SECOND_USE_OFF) stateStr = "Off";
-        // xprintf("\n2nd: -> %s (%d->%d active)",stateStr, secondUse_Prev_activeKeys.keycnt, activeKeys.keycnt);
-        */
+        xprintf("\n2nd: -> %s (%d->%d active)",stateStr, secondUse_Prev_activeKeys.keycnt, activeKeys.keycnt);
+#endif
     }
 }
 
@@ -225,17 +228,17 @@ void handleModifierTransmission(USB_KeyboardReport_Data_t* report_data, Modifier
             break;
 
         default:    // invalid state, should not happen!
-            TRACE("ModifierTransmission: illegal state");
             break;
     }
 
     if (prev_modTrans_state != newState) {
         prev_modTrans_state = newState;
-        /*
+#ifdef DBG_2ND_USE
         char * stateStr;
         if (newState == MOD_TRANS_ON) stateStr = "TRANS_ON";
         if (newState == DELAY_MOD_TRANS) stateStr = "DELAY";
-        */
+        xprintf("; Mod %d->%d %s\n",prev_modTrans_state, newState, stateStr);
+#endif
     }
 }
 
@@ -671,7 +674,6 @@ void clearActiveKeys()
 /// @todo Switch back from mouse layer!
 uint8_t getActiveLayer()
 {
-    TRACE("gAL ");
 
     uint8_t layer=0;
     for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
@@ -691,7 +693,6 @@ uint8_t getActiveLayer()
  */
 uint8_t getActiveKeyCodeModifier()
 {
-    TRACE("gAKCM ");
     for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
         struct Key k=activeKeys.keys[i];
         if(k.normalKey) {
@@ -704,7 +705,6 @@ uint8_t getActiveKeyCodeModifier()
 // Assuming there is only one active key
 uint8_t getActiveModifiers()
 {
-    TRACE("gAM ");
     uint8_t modifiers=0;
     for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
         struct Key k = activeKeys.keys[i];
@@ -726,7 +726,6 @@ uint8_t getActiveModifiers()
   */
 bool isModifierKey(uint8_t row, uint8_t col)
 {
-    TRACE("iMK ");
     if( getModifier(row,col,0) >= MOD_L_CTRL  && getModifier(row,col,0) < MOD_END)
         return true;
     return false;
@@ -738,7 +737,6 @@ bool isModifierKey(uint8_t row, uint8_t col)
  */
 bool isLayerKey(uint8_t row, uint8_t col)
 {
-    TRACE("iLK ");
     if( getModifier(row,col,0) > MOD_LAYER_0 && getModifier(row,col,0) < MOD_LAYER_LAST) {
         return true;
     }
@@ -747,7 +745,6 @@ bool isLayerKey(uint8_t row, uint8_t col)
 
 bool isNormalKey(uint8_t row, uint8_t col)
 {
-    TRACE("iNK ");
     return !(isLayerKey(row,col) || isModifierKey(row,col));
 }
 

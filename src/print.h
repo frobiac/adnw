@@ -31,8 +31,6 @@
 /// @TODO printf hangs (after buffer overflow?)
 #define printf err_use_xprintf_instead
 
-#define TRACE(...)
-
 #ifdef DEBUG_OUTPUT
 #include "Descriptors.h"
 #include "mem-check.h"
