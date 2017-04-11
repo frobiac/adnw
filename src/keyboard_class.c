@@ -86,7 +86,7 @@ struct Key  secondUse_key;
 
 #define REPEAT_GESTURE_TIMEOUT 10 // = x/61 [s]: a modekey will remain modifier key if pressed this long; if released earlier the second use normal key is signaled
 uint32_t    repeatGesture_timer;
-
+bool g_send_now;
 
 /// debounce variables
 volatile column_size_t kb_state[ROWS];    // debounced and inverted key state: bit = 1: key pressed
@@ -290,12 +290,38 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data)
 
             // activate 2nd-use when modifier is pressed
             if(modifierOrLayerKeyPresent) {
-                changeSecondUseState(SECOND_USE_OFF, SECOND_USE_ACTIVE);
-                secondUse_timer=idle_count;
-                // fix for repeat of last released modifier if another one is held directly afterwards.
-                modTrans_prev_Mods=0;
-                fillReport(report_data);    // prepare to send, but modifiers not just yet
-                handleModifierTransmission(report_data, DELAY_MOD_TRANS);
+                // @TODO should drop extra global g_send_now, maybe by checking in Passive transition instead?
+                //       also work with N normal keys prior to modifier...
+                // previously pressed key was normal, now a modifier that should probably
+                // be interpreted as normal once the first has been released, e.g
+                // "t " will only send space if it is pressed after t has been released due to secondary usage of space
+                if(secondUse_Prev_activeKeys.keycnt == 1 &&
+                   secondUse_Prev_activeKeys.keys[0].normalKey &&
+                   activeKeys.keycnt == 2) {
+
+                    uint8_t key_regular=0, key_second=0;
+                    for (uint8_t i = 0; i < activeKeys.keycnt; ++i) {
+                        struct Key k = activeKeys.keys[i];
+                        if (k.normalKey)
+                            key_regular=getKeyCode(k.row, k.col, getActiveLayer());
+                        else
+                            getSecondaryUsage(k.row, k.col, &key_second);
+                    }
+                    zeroReport(report_data);
+                    report_data->KeyCode[0]=key_regular;
+                    report_data->KeyCode[1]=key_second;
+                    xprintf(".%d-%d ", key_regular, key_second);
+                    g_send_now=true;
+
+                } else {
+
+                    changeSecondUseState(SECOND_USE_OFF, SECOND_USE_ACTIVE);
+                    secondUse_timer=idle_count;
+                    // fix for repeat of last released modifier if another one is held directly afterwards.
+                    modTrans_prev_Mods=0;
+                    fillReport(report_data);    // prepare to send, but modifiers not just yet
+                    handleModifierTransmission(report_data, DELAY_MOD_TRANS);
+                }
             } else { // normal key / no modifier
                 changeSecondUseState(SECOND_USE_OFF, SECOND_USE_OFF);
             }
@@ -449,7 +475,8 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
     /// @todo return early!
 
     handleSecondaryKeyUsage(report_data);
-    if( secondUse_state != SECOND_USE_OFF ) {
+    if( secondUse_state != SECOND_USE_OFF || g_send_now ) {
+        g_send_now=false;
         // buffer already filled by 2nd-use
         return sizeof(USB_KeyboardReport_Data_t);
     }
