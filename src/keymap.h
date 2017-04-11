@@ -282,7 +282,7 @@ static const uint8_t SecondaryUsage[ROWS][COLS] PROGMEM =
  HID_ESC, 0, 0, 0, 0, 0,                                  0, 0, 0, 0, 0, 0 ,
        0, 0, 0, 0, 0, 0,                                  0, 0, 0, 0, 0, 0 ,
        0, 0, 0, 0, 0, 0,                                  0, 0, 0, 0, 0, 0 ,
-       0, 0, 0, 0, HID_TAB,0,  /*is real SPACE*/ /*|*/  HID_ESC, HID_BACKSPACE, HID_ENTER, 0, 0, 0
+       0, 0, 0, 0, HID_TAB, HID_SPACE,  /*|*/  HID_ESC, HID_BACKSPACE, HID_ENTER, 0, 0, 0
 );
 
 
@@ -303,7 +303,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _ESC,    _k, _u, _q,     _PERIOD,_j  ,   _p,  _c, _l, _m, _f, _BSPACE ,
     _TAB,    _h, _i, _e,     _a,     _o  ,   _d,  _t, _r, _n, _s, _ENTER  ,
     _DQUOTE, _x, _y, _MINUS,_COMMA,_SLASH,   _b,  _g, _w, _v, _z, _MOD_MOUSEKEY,
-    _L_SHIFT, _L_ALT ,  _MACRO, _L_GUI, _L_CTRL, _SPACE,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
+    _L_SHIFT, _L_ALT ,  _MACRO, _L_GUI, _L_CTRL, _L_ALT,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
   ),
 
   // MOD1 layer (special char)
@@ -311,7 +311,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _no, _AT,      _DEGREE,   _L_BRACKET, _R_BRACKET, _HASH   , _EXCLAM,  _LESS,      _GREATER,   _EQUAL,     _AMPERSAND, _no ,
     _no, _BSLASH,  _EURO  ,   _L_BRACE,   _R_BRACE,   _ASTERIX, _QUESTION,_L_PAREN,   _R_PAREN,   _PLUS,      _no,        _no ,
     _no, _no,      _DOLLAR,   _PIPE,      _TILDE,     _GRAVE ,  _CARET,   _PERCENT,   _DQUOTE,    _SQUOTE,    _no,        _no ,
-    _L_SHIFT, _L_ALT ,  _MACRO, _L_GUI, _L_CTRL, _SPACE,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
+    _L_SHIFT, _L_ALT ,  _MACRO, _L_GUI, _L_CTRL, _L_ALT,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
   ),
 
   // MOD2 layer (movement controls and numbers)
@@ -319,7 +319,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _no, _PGUP,   _BSPACE,    _UP,        _DEL ,      _PGDN, _SSHARP,_7,         _8,         _9,     _a_UML, _A_UML ,
     _no, _HOME,   _LEFT,      _DOWN,      _RIGHT,     _END , _PERIOD,_4,         _5,         _6,     _o_UML, _O_UML ,
     _no, _no  ,   _no  ,      _INS,       _no   ,     _no ,  _0,     _1,         _2,         _3,     _u_UML, _U_UML ,
-    _L_SHIFT, _L_ALT ,  _MACRO, _L_GUI, _L_CTRL, _SPACE,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
+    _L_SHIFT, _L_ALT ,  _MACRO, _L_GUI, _L_CTRL, _L_ALT,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
     ),
 
   // MOD3 Fx layer
@@ -327,7 +327,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _no,      _no,     _no,    _u_UML, _A_UML,  _O_UML,   _F12,   _F7,      _F8,    _F9,    _no,    _no ,
     _no,      _no,     _no,    _U_UML, _a_UML,  _o_UML,   _F11,   _F4,      _F5,    _F6,    _no,    _no ,
     _no,      _no,     _no,    _no,    _no,     _no,      _F10,   _F1,      _F2,    _F3,    _no,    _no ,
-    _L_SHIFT, _L_ALT , _MACRO, _L_GUI, _L_CTRL, _SPACE,   _MOD_2, _L_SHIFT, _MOD_1, _R_ALT, _MOD_3, _no
+    _L_SHIFT, _L_ALT , _MACRO, _L_GUI, _L_CTRL, _L_ALT,   _MOD_2, _L_SHIFT, _MOD_1, _R_ALT, _MOD_3, _no
     ),
 
   // MOD_MOUSE layer
@@ -335,7 +335,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _no, _no, _MS_W_U, _MS_U, _MS_W_D, _no,  _no,    _no,      _no,      _no,      _no, _no,
     _no, _no, _MS_L,   _MS_D, _MS_R,   _no,  _no,    _MS_BTN1, _MS_BTN3, _MS_BTN2, _no, _no,
     _no, _no, _MS_W_L, _no,   _MS_W_R, _no,  _no,    _MS_ACC0, _MS_ACC1, _MS_ACC2, _no, _no,
-    _L_SHIFT, _L_ALT ,  _MACRO, _L_GUI, _L_CTRL, _SPACE,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
+    _L_SHIFT, _L_ALT ,  _MACRO, _L_GUI, _L_CTRL, _L_ALT,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
     )
 
 #ifdef ALTERNATE_LAYER
@@ -345,7 +345,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _ESC,   _k, _u, _q,     _PERIOD, _j,      _v, _g, _c, _l, _f, _BSPACE ,
     _TAB,   _h, _i, _e,     _a,      _o,      _d, _t, _r, _n, _s, _ENTER  ,
     _DQUOTE,_x, _y, _MINUS, _COMMA,  _SLASH,  _b, _p, _w, _m, _z, _MOD_MOUSEKEY,
-    _L_SHIFT, _L_ALT ,  _MACRO, _L_GUI, _L_CTRL, _SPACE,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
+    _L_SHIFT, _L_ALT ,  _MACRO, _L_GUI, _L_CTRL, _L_ALT,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
   )
 #endif
 
