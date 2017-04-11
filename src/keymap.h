@@ -176,7 +176,7 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 
 
 #ifdef HYPERNANO
-  #define CMD_MODE() ( (rowData[3] & (1<<1)) && (rowData[7] & (1<<5)) ) 
+  #define CMD_MODE() ( (rowData[3] & (1<<1)) && (rowData[7] & (1<<5)) )
 
 /*  Row/col matrix: (0-based)
  *  unused in layout: 00,10,20, 45,55,65
@@ -287,7 +287,7 @@ static const uint8_t SecondaryUsage[ROWS][COLS] PROGMEM =
 
 
 
-static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM = 
+static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
 {
 /**
   /// only debug to test matrix
@@ -307,7 +307,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
   ),
 
   // MOD1 layer (special char)
-  KEYMAP( _no, 
+  KEYMAP( _no,
     _no, _AT,      _DEGREE,   _L_BRACKET, _R_BRACKET, _HASH   , _EXCLAM,  _LESS,      _GREATER,   _EQUAL,     _AMPERSAND, _no ,
     _no, _BSLASH,  _EURO  ,   _L_BRACE,   _R_BRACE,   _ASTERIX, _QUESTION,_L_PAREN,   _R_PAREN,   _PLUS,      _no,        _no ,
     _no, _no,      _DOLLAR,   _PIPE,      _TILDE,     _GRAVE ,  _CARET,   _PERCENT,   _DQUOTE,    _SQUOTE,    _no,        _no ,
