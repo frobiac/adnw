@@ -34,7 +34,7 @@
  *  .
  *  @todo Enable pre-loading under certain conditions via *.eep like with _private_macros.c previously?
 */
-#define MACROCOUNT        6
+#define MACROCOUNT       12
 #define MACRO_MAX_LEN    40
 
 uint8_t updateEEMacroHID(const uint8_t macro[MACRO_MAX_LEN], uint8_t idx);
