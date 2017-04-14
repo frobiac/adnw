@@ -19,17 +19,22 @@
  *
  * Put the private key enclosed in "" below and store a copy somewhere safe!
  */
+
+// ATTENTION: MAXIMUM LENGTH = 26
 #define PH_PRIVATE_KEY "secret"
 
 /*
  * Test vector to verify correct entry of password upon unlock.
  * If defined, the passhash creation is only activated if the expected result matches after entry of the master password.
+ * Useful mainly to prevent too many failed login attempts due to wrong passhashes.
+ * And since this is the most simple passhash generated it will not aid much in reconstructing the password...
  *
- * Format: "tag", length,  mode, "expected hash"
+ * This is the result of a 4 digit generated passhash with selected private key and master password for tag "a"
  *
- * Example for a private key="secret" defined above and
- * tag "a" with length 4 and mode 3 (numeric) should result in 4616
- * when password "key" is entered.
+ * Example:
+ * For a private key="secret" defined above and the password="key"
+ * tag "a" should result in 4616
  */
 
-// #define PH_TEST_DATA "a", 4, 3, "4616"
+// enclose 4 digits in "" here:
+// #define PH_EXPECTED_4_DIGITS_FOR_A "4616"

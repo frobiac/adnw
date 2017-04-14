@@ -33,11 +33,11 @@
 
 #include "hmac-sha1.h"
 #include "passhash.h"
-#include "../_private_data.h"
 #include "../helpers.h"
 
 #ifdef __AVR__
-#include "../macro.h" // for direct output via setOutputString()
+#include "../_private_data.h"   // don't include for testing on x86 where private key is defined separately
+#include "../macro.h"           // for direct output via setOutputString()
 #else
 // these are only required for external testing with different private keys.
 #include <stdio.h>
@@ -234,10 +234,10 @@ uint8_t passHash(char * ph_result, char * master_pw, char * tag, uint8_t len, ui
     return 0;
 }
 
-bool verifyHash(char * ph_result, char * master_pw, char * tag, uint8_t len, uint8_t type, char * expected_hash )
+bool verifyHash(char * master_pw, char * tag, uint8_t len, uint8_t type, char * expected_hash )
 {
-    passHash( ph_result, master_pw, tag, len, type);
-    if( memcmp( expected_hash, ph_result, len) == 0)
+    passHash( ph_input, master_pw, tag, len, type);
+    if( memcmp( expected_hash, ph_input, len) == 0)
         return true;
 
     return false;
@@ -285,8 +285,8 @@ uint8_t ph_parse(char c)
         // entered string is initial entry of master password
         if( ph_master_pw[0] == 0 ) {
             memcpy(ph_master_pw, ph_input, strlen(ph_input));
-#ifdef PH_TEST
-            if(!verifyHash(PH_PRIVATE_KEY, ph_master_pw,  PH_TEST_DATA /*tag len type hash*/ )) {
+#if defined(PH_EXPECTED_4_DIGITS_FOR_A)
+            if(!verifyHash(ph_master_pw,  "a", 4, 3, PH_EXPECTED_4_DIGITS_FOR_A )) {
                 memset(ph_master_pw,0,PH_PW_LEN);
                 return PH_PW_ERROR;
             }

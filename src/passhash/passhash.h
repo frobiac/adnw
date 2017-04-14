@@ -48,7 +48,7 @@ uint8_t passHash(char * ph_result, char * master_pw, char * tag, uint8_t len, ui
 /**
  *  Compare expected_hash to calculated result.
  */
-bool verifyHash(char * ph_master_pw, char * ph_priv_key, char * tag, uint8_t len, uint8_t type, char * expected_hash );
+bool verifyHash(char * master_pw, char * tag, uint8_t len, uint8_t type, char * expected_hash);
 
 
 /**
