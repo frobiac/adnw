@@ -40,18 +40,6 @@ bool g_cmd_mode_active=false;
 
 #ifdef PH_ENABLED
     #include "passhash/passhash.h"
-    #include "_private_data.h"
-
-    #define PH_INPUT_LEN 27 // PH_MAX_LEN + 1
-    // longest possible tag is input minus length, mode and two spaces
-    #define PH_TAGLEN PH_INPUT_LEN - 5 // tag_XY_M
-
-    // buffer for input and passhash generation
-    char ph_input[PH_INPUT_LEN];
-    char ph_master_pw[PH_PW_LEN];
-    char ph_tag[PH_TAGLEN+1];
-    uint8_t type, len, read_field;
-    static bool passhash_pw_entered = false;
 #endif
 
 
@@ -179,9 +167,6 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             break;
 #ifdef PH_ENABLED
         case 'h':
-            memset(ph_input,0,PH_INPUT_LEN);
-            read_field=0; len=0; type=0;
-            memset(ph_tag,0,PH_TAGLEN);
             subcmd=SUB_PASSHASH;
             break;
 #endif
@@ -204,6 +189,7 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 
 bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 {
+
     switch( subcmd ) {
         case SUB_MACRO:
             printMacro(c);
@@ -236,68 +222,25 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 #endif
 
 #ifdef PH_ENABLED
+            uint8_t ph_state;
         case SUB_PASSHASH:
-            // on first call enter password, or press return to clear previously entered one
-            // on subsequent runs enter tag [len [type]]
-            //
-            // read until return=10 is pressed or maximum length reached
-            if( (uint8_t)(c) != 10 && strlen(ph_input) < PH_INPUT_LEN) {
-                if ( c == ' ' ) { // space -> advance to next field
-                    read_field++;
-                    return true;
-                }
-                if (read_field == 0) {      // still reading ph_tag
-                    ph_input[strlen(ph_input)]= c;
-                    ph_tag[strlen(ph_tag)]=c;
-                    return true;
-                }
+            ph_state = ph_parse(c);
 
-                if( c<='9' && c >= '0') {   // digits for length or type
-                    if(read_field==1)
-                        len=len*10+c-'0';
-                    else if(read_field==2)
-                        type=c-'0';
-                }
+            if( PH_READING == ph_state ) // not yet done reading, so stay in command mode and wait for next char.
                 return true;
 
-            } else { // input was terminated or reached limit
-                setCommandMode(false);
+            // input was terminated or reached limit, in any case command mode is done after this iteration.
+            setCommandMode(false);
 
-                if(strlen(ph_input) == 0) {
-                    // only return was pressed -> clear master password and return
-                    memset(ph_master_pw,0,PH_PW_LEN);
-                    passhash_pw_entered = false;
-                    return true;
-                }
+            // getting here means password had been set, all data was entered, so passhash is ready
+            if( PH_DONE == ph_state )
+                setOutputString( ph_getPasshash() );
 
-                if( passhash_pw_entered == false ) {
-                    // entered string is initial entry of master password
-                    memcpy(ph_master_pw, ph_input, strlen(ph_input));
-#ifdef PH_TEST
-                    if(verifyHash(PH_PRIVATE_KEY, ph_master_pw,  PH_TEST_DATA /*tag len type hash*/ ))
-#endif
-                        passhash_pw_entered = true;
+            // could check state here for errors ...
+            // if( PH_PW_CLEARED == ph_state || PH_PW_ENTERED == ph_state ) {
 
-                    return true;
-                }
+            ph_reset();
 
-                memset(ph_input,0,PH_INPUT_LEN);
-                // xprintf("\n%s: %s %u %u", ph_master_pw, tag, len, type);
-
-                // defaults if invalid input
-                if(len<PH_MIN_LEN || len>PH_MAX_LEN)
-                    len=12;
-                if(type<PH_TYPE_ALNUMSYM || type>PH_TYPE_NUM)
-                    type=PH_TYPE_ALNUMSYM;
-
-                // reuse ph_input buffer
-                memcpy(ph_input, PH_PRIVATE_KEY, strlen(PH_PRIVATE_KEY));
-                uint8_t ret = passHash((uint8_t)len, (uint8_t)type, ph_input, ph_master_pw, ph_tag);
-                if(ret==0)
-                    setOutputString(ph_input);
-
-                memset(ph_input,0,PH_INPUT_LEN);
-            }
             break;
 #endif
 

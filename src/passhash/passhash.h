@@ -31,6 +31,8 @@
 #define PH_TYPE_ALNUM    2
 #define PH_TYPE_ALNUMSYM 1
 
+enum PH_STATES { PH_DONE, PH_READING, PH_PW_ENTERED, PH_PW_CLEARED, PH_PW_ERROR, PH_FAIL, PH_UNUSED_LAST };
+
 /**
  *  Calculate passhash from given values.
  *
@@ -44,4 +46,12 @@ uint8_t passHash(uint8_t len, uint8_t type, char * private_key, char * master_pa
  *  Compare expected_hash to calculated result.
  */
 bool verifyHash(char * ph_master_pw, char * ph_priv_key, char * tag, uint8_t len, uint8_t type, char * expected_hash );
+
+
+/**
+ * Parser additions
+ */
+uint8_t ph_parse(char c);
+void ph_reset(void);
+char * ph_getPasshash(void);
 

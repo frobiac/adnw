@@ -33,8 +33,27 @@
 
 #include "hmac-sha1.h"
 #include "passhash.h"
+#include "../_private_data.h"
 #include "../helpers.h"
 
+
+//################################################################################
+// Parsing additions
+//################################################################################
+#define PH_INPUT_LEN 27 // PH_MAX_LEN + 1
+// longest possible tag is input minus length, mode and two spaces
+#define PH_TAGLEN PH_INPUT_LEN - 5 // tag_XY_M
+
+// master password must be kept separately from other buffers and never stored...
+char ph_master_pw[PH_PW_LEN];
+
+// buffer for input and passhash generation
+char ph_input[PH_INPUT_LEN];
+char ph_tag[PH_TAGLEN+1];
+
+uint8_t type, len, read_field;
+static bool passhash_pw_entered = false;
+//################################################################################
 
 char b64( uint8_t i )
 {
@@ -206,6 +225,90 @@ bool verifyHash(char * private_key, char * master_pw, char * tag, uint8_t len, u
         return true;
 
     return false;
+}
+
+
+
+
+/**
+ * Parser called from command mode
+ */
+uint8_t ph_parse(char c)
+{
+    // on first call enter password, or press return to clear previously entered one
+    // on subsequent runs enter tag [len [type]]
+    //
+    // read until return=10 is pressed or maximum length reached
+    if( (uint8_t)(c) != 10 && strlen(ph_input) < PH_INPUT_LEN) {
+        if ( c == ' ' ) { // space -> advance to next field
+            ++read_field;
+            return PH_READING;
+        }
+        if (read_field == 0) {      // still reading ph_tag
+            ph_input[strlen(ph_input)]= c;
+            ph_tag[strlen(ph_tag)]=c;
+            return PH_READING;
+        }
+
+        if( c<='9' && c >= '0') {   // digits for length or type
+            if(read_field==1)
+                len=len*10+c-'0';
+            else if(read_field==2)
+                type=c-'0';
+        }
+        return PH_READING;                     // character was handled
+
+    } else { // Done reading any input:
+
+        // only return was pressed -> clear master password and return
+        if(strlen(ph_input) == 0) {
+            memset(ph_master_pw,0,PH_PW_LEN);
+            passhash_pw_entered = false;
+            return PH_PW_CLEARED;
+        }
+
+        // entered string is initial entry of master password
+        if( passhash_pw_entered == false ) {
+            memcpy(ph_master_pw, ph_input, strlen(ph_input));
+#ifdef PH_TEST
+            if(verifyHash(PH_PRIVATE_KEY, ph_master_pw,  PH_TEST_DATA /*tag len type hash*/ ))
+#endif
+                passhash_pw_entered = true;
+
+            return PH_PW_ENTERED;
+        }
+        // getting here means password had been set, all data was entered, so passhash is ready
+        {
+            memset(ph_input,0,PH_INPUT_LEN);
+            // xprintf("\n%s: %s %u %u", ph_master_pw, ph_tag, len, type);
+
+            // defaults if invalid input
+            if(len<PH_MIN_LEN || len>PH_MAX_LEN)
+                len=12;
+            if(type<PH_TYPE_ALNUMSYM || type>PH_TYPE_NUM)
+                type=PH_TYPE_ALNUMSYM;
+
+            // reuse ph_input buffer
+            memcpy(ph_input, PH_PRIVATE_KEY, strlen(PH_PRIVATE_KEY));
+            uint8_t ret = passHash((uint8_t)len, (uint8_t)type, ph_input, ph_master_pw, ph_tag);
+            return (ret==0 ? PH_DONE : PH_FAIL);
+        }
+    }
+}
+
+char * ph_getPasshash(void)
+{
+    return ph_input;
+}
+
+/**
+ *  Reset all fields after successful parsing.
+ */
+void ph_reset()
+{
+    memset(ph_input,0,PH_INPUT_LEN);
+    read_field=0; len=0; type=0;
+    memset(ph_tag,0,PH_TAGLEN);
 }
 
 
