@@ -27,7 +27,6 @@ test()
     run=$(($run +1));
     pw=$(./passhash $2 $3 $4 $5 $6)
     if [ "$1" != "$pw" ]; then
-        echo ""
         echo "FAIL $1 != \"$pw\" from ./passhash $2 $3 \"$4\" \"$5\" \"$6\""
     else
         passed=$(($passed+1))

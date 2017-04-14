@@ -35,15 +35,32 @@
 #include "passhash.h"
 #include "../helpers.h"
 
-static const char b64[]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+char b64( uint8_t i )
+{
+    //static const char b64[]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    if(i<26)
+        return 'A'+i;
+    if(i<52)
+        return 'a'+ i-26;
+    if(i<62)
+        return '0'+ i-52;
+    if(i==62)
+        return '+';
+    if(i==63)
+        return '/';
+
+    // should never get here!!!
+    return '-';
+}
 
 /// encode 3 8-bit binary bytes as 4 '6-bit' characters
 void encodeblock( unsigned char *in, unsigned char *out, int len )
 {
-    out[0] = (unsigned char) b64[ (int)(in[0] >> 2) ];
-    out[1] = (unsigned char) b64[ (int)(((in[0] & 0x03) << 4) | ((in[1] & 0xf0) >> 4)) ];
-    out[2] = (unsigned char) (len > 1 ? b64[ (int)(((in[1] & 0x0f) << 2) | (((len>2?in[2]:0) & 0xc0) >> 6)) ] : '=');
-    out[3] = (unsigned char) (len > 2 ? b64[ (int)(in[2] & 0x3f) ] : '=');
+    out[0] = (unsigned char) b64( (int)(in[0] >> 2) );
+    out[1] = (unsigned char) b64( (int)(((in[0] & 0x03) << 4) | ((in[1] & 0xf0) >> 4)) );
+    out[2] = (unsigned char) (len > 1 ? b64( (int)(((in[1] & 0x0f) << 2) | (((len>2?in[2]:0) & 0xc0) >> 6)) ) : '=');
+    out[3] = (unsigned char) (len > 2 ? b64( (int)(in[2] & 0x3f) ) : '=');
 }
 
 //

@@ -44,12 +44,12 @@ bool g_cmd_mode_active=false;
 
     #define PH_INPUT_LEN 27 // PH_MAX_LEN + 1
     // longest possible tag is input minus length, mode and two spaces
-    #define TAGLEN PH_INPUT_LEN - 5 // tag_XY_M
+    #define PH_TAGLEN PH_INPUT_LEN - 5 // tag_XY_M
 
     // buffer for input and passhash generation
     char ph_input[PH_INPUT_LEN];
     char ph_master_pw[PH_PW_LEN];
-    char tag[TAGLEN+1];
+    char ph_tag[PH_TAGLEN+1];
     uint8_t type, len, read_field;
     static bool passhash_pw_entered = false;
 #endif
@@ -181,7 +181,7 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
         case 'h':
             memset(ph_input,0,PH_INPUT_LEN);
             read_field=0; len=0; type=0;
-            memset(tag,0,TAGLEN);
+            memset(ph_tag,0,PH_TAGLEN);
             subcmd=SUB_PASSHASH;
             break;
 #endif
@@ -246,9 +246,9 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
                     read_field++;
                     return true;
                 }
-                if (read_field == 0) {      // still reading tag
+                if (read_field == 0) {      // still reading ph_tag
                     ph_input[strlen(ph_input)]= c;
-                    tag[strlen(tag)]=c;
+                    ph_tag[strlen(ph_tag)]=c;
                     return true;
                 }
 
@@ -292,7 +292,7 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 
                 // reuse ph_input buffer
                 memcpy(ph_input, PH_PRIVATE_KEY, strlen(PH_PRIVATE_KEY));
-                uint8_t ret = passHash((uint8_t)len, (uint8_t)type, ph_input, ph_master_pw, tag);
+                uint8_t ret = passHash((uint8_t)len, (uint8_t)type, ph_input, ph_master_pw, ph_tag);
                 if(ret==0)
                     setOutputString(ph_input);
 
