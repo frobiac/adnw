@@ -38,12 +38,12 @@ enum PH_STATES { PH_DONE, PH_READING, PH_PW_ENTERED, PH_PW_CLEARED, PH_PW_ERROR,
 /**
  *  Calculate passhash from given values.
  *
- *  private_key must fit 27 chars for final result!
+ *  ph_result must fit 27 chars for final result!
  *  it will contain calculated hash, '\0'-delimited at requested length.
  *
  *  @ret 0
  */
-uint8_t passHash(uint8_t len, uint8_t type, char * private_key, char * master_password, char * tag);
+uint8_t passHash(char * ph_result, char * master_pw, char * tag, uint8_t len, uint8_t type);
 
 /**
  *  Compare expected_hash to calculated result.
@@ -61,4 +61,7 @@ bool verifyHash(char * ph_master_pw, char * ph_priv_key, char * tag, uint8_t len
 uint8_t ph_parse(char c);
 void    ph_reset(void);
 
-
+#ifndef __AVR__
+    // allows to set otherwise hardcoded private key for tests
+    void ph_setPrivateKey(char * privateKey);
+#endif

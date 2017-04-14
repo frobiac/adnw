@@ -200,11 +200,11 @@ void genHash(char * key, char * tag, uint8_t len, uint8_t type)
 }
 
 /**
- *  private_key must be 27 chars long and will contain '\0' terminated passhash upon completion
+ *  ph_result must be 27 chars long and will contain '\0' terminated passhash upon completion
  *
  *  @ret 0
  */
-uint8_t passHash(uint8_t len, uint8_t type, char * private_key, char * master_pw, char * tag)
+uint8_t passHash(char * ph_result, char * master_pw, char * tag, uint8_t len, uint8_t type)
 {
     if(len<4 || len>26) {
         return(3);
@@ -216,30 +216,31 @@ uint8_t passHash(uint8_t len, uint8_t type, char * private_key, char * master_pw
 
 
 #ifdef __AVR__
-    memcpy(private_key, PH_PRIVATE_KEY, PH_INPUT_LEN);
+    memcpy(ph_result, PH_PRIVATE_KEY, PH_INPUT_LEN);
 #else
     if(testing_pk)
-        strncpy(private_key, testing_pk, PH_INPUT_LEN);
-    //fprintf(stderr, "\nPH:%d %d %s PK=%s MP=%s", len, type, tag, private_key, master_pw);
+        strncpy(ph_result, testing_pk, PH_INPUT_LEN);
+    //fprintf(stderr, "\nPH:%d %d %s PK=%s MP=%s", len, type, tag, ph_result, master_pw);
 #endif
 
     /* Naming conventions from twik / passhash
       - master_key  is read in Gui (or run.py)   (=key   )
-      - private_key is from config               (=secret)
+      - ph_result is from config               (=secret)
       - tag         is domain name
      */
-    genHash(private_key, tag, 24,  1);
-    // now key contains first run result
-    genHash(private_key, master_pw, len, type);
-    // now key contains final passhash
+    // ph_result = real private key defined
+    genHash(ph_result, tag, 24,  1);
+    // ph_result = first runs hmac_sha1
+    genHash(ph_result, master_pw, len, type);
+    // ph_result = pk = final passhash
 
     return 0;
 }
 
-bool verifyHash(char * private_key, char * master_pw, char * tag, uint8_t len, uint8_t type, char * expected_hash )
+bool verifyHash(char * ph_result, char * master_pw, char * tag, uint8_t len, uint8_t type, char * expected_hash )
 {
-    passHash( len, type, private_key, master_pw, tag);
-    if( memcmp( expected_hash, private_key, len) == 0)
+    passHash( ph_result, master_pw, tag, len, type);
+    if( memcmp( expected_hash, ph_result, len) == 0)
         return true;
 
     return false;
@@ -308,7 +309,7 @@ uint8_t ph_parse(char c)
                 type=PH_TYPE_ALNUMSYM;
 
             // reuse ph_input buffer in passhash calculation
-            passHash((uint8_t)len, (uint8_t)type, ph_input, ph_master_pw, ph_tag);
+            passHash( ph_input, ph_master_pw, ph_tag, (uint8_t)len, (uint8_t)type);
             setOutputString( ph_input );
             ph_reset();
             return PH_DONE;

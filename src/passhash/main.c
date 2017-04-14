@@ -43,9 +43,9 @@ int main (int argc, char * argv[])
     }
 
     fprintf(stderr, "\n------");
-    char private_key[PH_INPUT_LEN];
-    memset(private_key, 0, PH_INPUT_LEN);
-    snprintf(private_key, PH_INPUT_LEN, "%s", argv[3]);
+    char ph_result[PH_INPUT_LEN];
+    memset(ph_result, 0, PH_INPUT_LEN);
+    snprintf(ph_result, PH_INPUT_LEN, "%s", argv[3]);
 
 #ifdef NO_PER_CHARACTER_MODE
     uint8_t len    = atoi(argv[1]);
@@ -57,9 +57,9 @@ int main (int argc, char * argv[])
 
     char * tag     = argv[5]; // private_master_pw in twik config
 
-    uint8_t ret = passHash(len, type, private_key, master_pw, tag);
+    uint8_t ret = passHash(ph_result, master_pw, tag, len, type);
     if(ret==0)
-        fprintf(stdout, "%s\n", private_key);
+        fprintf(stdout, "%s\n", ph_result);
     else
         fprintf(stdout, "\nERROR %d creating pw: %s", ret, (ret==3?"Invalid length [4-26]" : (ret==4 ? "Invalid type [1-3]" : "Unknown error" ) ) );
 
