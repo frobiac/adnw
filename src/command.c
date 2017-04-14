@@ -232,12 +232,13 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             // input was terminated or reached limit, in any case command mode is done after this iteration.
             setCommandMode(false);
 
-            // getting here means password had been set, all data was entered, so passhash is ready
-            if( PH_DONE == ph_state )
-                setOutputString( ph_getPasshash() );
-
+            // getting here means either
+            // 1) password has been set (again)
+            // 2) or all data was entered, so passhash has been already printed
+            // 3) password had been cleared
             // could check state here for errors ...
-            // if( PH_PW_CLEARED == ph_state || PH_PW_ENTERED == ph_state ) {
+            //if( ph_state > PH_ERRORS )
+            //  xprintf("PH:%d", ph_state);
 
             ph_reset();
 

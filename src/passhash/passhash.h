@@ -60,6 +60,5 @@ bool verifyHash(char * ph_master_pw, char * ph_priv_key, char * tag, uint8_t len
  */
 uint8_t ph_parse(char c);
 void    ph_reset(void);
-char *  ph_getPasshash(void);
 
 

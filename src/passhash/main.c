@@ -79,10 +79,7 @@ int main (int argc, char * argv[])
     len=strlen(input); input[len]='\n'; input[len+1]=0;
 
     // fprintf(stderr, "\nWILL SEND %s|", input);
-
-    // ph_clear_master_pw();
-    // ph_parse((char)(10));
-    ph_reset();
+    //ph_reset();
 
     for(uint8_t i=0; i<strlen(input); ++i) {
         char c=input[i];
@@ -94,20 +91,18 @@ int main (int argc, char * argv[])
             if( PH_READING == ph_state ) // not yet done reading, so stay in command mode and wait for next char.
                 continue;
 
-            // getting here means password had been set, all data was entered, so passhash is ready
-            if( PH_DONE == ph_state )
-                fprintf(stdout, "%s\n", ph_getPasshash() );
-            else if( PH_PW_ENTERED != ph_state )
+            // getting here means either
+            // 1) password has been set (again)
+            // 2) or all data was entered, so passhash has been already printed
+            // 3) password had been cleared
+            if( PH_PW_ENTERED != ph_state && PH_DONE != ph_state)
                 fprintf(stderr, "\nERROR %d creating pw", ph_state);
 
             // could check state here for errors ...
             // if( PH_PW_CLEARED == ph_state || PH_PW_ENTERED == ph_state )
-
-            ph_reset();
         }
     }
 #endif
-
 
     return 0;
 }

@@ -36,14 +36,15 @@
 #include "../_private_data.h"
 #include "../helpers.h"
 
-#ifndef __AVR__
+#ifdef __AVR__
+#include "../macro.h" // for direct output via setOutputString()
+#else
 // these are only required for external testing with different private keys.
 #include <stdio.h>
+
 char * testing_pk;
-void ph_setPrivateKey(char * k)
-{
-    testing_pk = k;
-}
+void ph_setPrivateKey(char * k) { testing_pk = k; }
+void setOutputString(char * str) { printf("%s", str); }
 #endif
 
 //################################################################################
@@ -307,16 +308,12 @@ uint8_t ph_parse(char c)
                 type=PH_TYPE_ALNUMSYM;
 
             // reuse ph_input buffer in passhash calculation
-            uint8_t ret = passHash((uint8_t)len, (uint8_t)type, ph_input, ph_master_pw, ph_tag);
-            return (ret==0 ? PH_DONE : PH_FAIL);
+            passHash((uint8_t)len, (uint8_t)type, ph_input, ph_master_pw, ph_tag);
+            setOutputString( ph_input );
+            ph_reset();
+            return PH_DONE;
         }
     }
-}
-
-
-char * ph_getPasshash(void)
-{
-    return ph_input;
 }
 
 /**
