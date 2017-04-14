@@ -10,9 +10,6 @@
  *
  */
 
-// Maximum length of runtime master password
-#define PH_PW_LEN 16
-
 /* This is the private key of the passhash implementation.
  * Twik uses 36 character uuids with capital letters, but any string should do here.
  *

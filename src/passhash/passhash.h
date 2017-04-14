@@ -23,6 +23,7 @@
 #endif
 #include <stdbool.h>
 
+#define PH_PW_LEN       16
 #define PH_MIN_LEN       4
 #define PH_MAX_LEN      26
 
