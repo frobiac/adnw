@@ -36,11 +36,19 @@
 #include "../_private_data.h"
 #include "../helpers.h"
 
+#ifndef __AVR__
+// these are only required for external testing with different private keys.
+#include <stdio.h>
+char * testing_pk;
+void ph_setPrivateKey(char * k)
+{
+    testing_pk = k;
+}
+#endif
 
 //################################################################################
 // Parsing additions
 //################################################################################
-#define PH_INPUT_LEN 27 // PH_MAX_LEN + 1
 // longest possible tag is input minus length, mode and two spaces
 #define PH_TAGLEN PH_INPUT_LEN - 5 // tag_XY_M
 
@@ -189,10 +197,11 @@ void genHash(char * key, char * tag, uint8_t len, uint8_t type)
     // truncate result to requested length
     key[len] = '\0';
 }
+
 /**
- *  key array must be 27 chars and will contain '\0' terminated passhash upon completion
+ *  private_key must be 27 chars long and will contain '\0' terminated passhash upon completion
  *
- *  @ret key
+ *  @ret 0
  */
 uint8_t passHash(uint8_t len, uint8_t type, char * private_key, char * master_pw, char * tag)
 {
@@ -203,6 +212,15 @@ uint8_t passHash(uint8_t len, uint8_t type, char * private_key, char * master_pw
     if(type<1 || type>3) {
         return(4);
     }
+
+
+#ifdef __AVR__
+    memcpy(private_key, PH_PRIVATE_KEY, PH_INPUT_LEN);
+#else
+    if(testing_pk)
+        strncpy(private_key, testing_pk, PH_INPUT_LEN);
+    //fprintf(stderr, "\nPH:%d %d %s PK=%s MP=%s", len, type, tag, private_key, master_pw);
+#endif
 
     /* Naming conventions from twik / passhash
       - master_key  is read in Gui (or run.py)   (=key   )
@@ -269,9 +287,13 @@ uint8_t ph_parse(char c)
         if( ph_master_pw[0] == 0 ) {
             memcpy(ph_master_pw, ph_input, strlen(ph_input));
 #ifdef PH_TEST
-            if(verifyHash(PH_PRIVATE_KEY, ph_master_pw,  PH_TEST_DATA /*tag len type hash*/ ))
+            if(!verifyHash(PH_PRIVATE_KEY, ph_master_pw,  PH_TEST_DATA /*tag len type hash*/ )) {
+                memset(ph_master_pw,0,PH_PW_LEN);
+                return PH_PW_ERROR;
+            }
 #endif
-                return PH_PW_ENTERED;
+            ph_reset();
+            return PH_PW_ENTERED;
         }
         // getting here means password had been set, all data was entered, so passhash is ready
         {
@@ -284,13 +306,13 @@ uint8_t ph_parse(char c)
             if(type<PH_TYPE_ALNUMSYM || type>PH_TYPE_NUM)
                 type=PH_TYPE_ALNUMSYM;
 
-            // reuse ph_input buffer
-            memcpy(ph_input, PH_PRIVATE_KEY, strlen(PH_PRIVATE_KEY));
+            // reuse ph_input buffer in passhash calculation
             uint8_t ret = passHash((uint8_t)len, (uint8_t)type, ph_input, ph_master_pw, ph_tag);
             return (ret==0 ? PH_DONE : PH_FAIL);
         }
     }
 }
+
 
 char * ph_getPasshash(void)
 {
@@ -306,5 +328,4 @@ void ph_reset()
     read_field=0; len=0; type=0;
     memset(ph_tag,0,PH_TAGLEN);
 }
-
 

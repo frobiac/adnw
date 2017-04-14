@@ -20,12 +20,13 @@ if [ ! -f passhash ]; then
 fi
 
 # test code
+rm ph.errors
 passed=0
 run=0
 test()
 {
     run=$(($run +1));
-    pw=$(./passhash $2 $3 $4 $5 $6)
+    pw=$(./passhash $2 $3 $4 $5 $6 2>>ph.errors)
     if [ "$1" != "$pw" ]; then
         echo "FAIL $1 != \"$pw\" from ./passhash $2 $3 \"$4\" \"$5\" \"$6\""
     else
@@ -35,10 +36,15 @@ test()
     fi
 }
 
+
+# EXPECT len type PK MPW TAG
+test 'jmuiM6+N' 8 1 12345678901234567890123456 1234567890123456 tag
+test 'LHBd1(3V' 8 1 12345678901234567890123456 123456789012345  tag
+test '.9CWlRM8' 8 1 12345678901234567890123456 1 tag
 test '3!Ke' 4 1 0 1 0
+
 test 'O00BtcHlhd1yoX2J!sRWCXfsv' 25 1 'x-gl5' '/.-ail026' 'tag'
 test 'zDcDtvo5lJv8Yi/uweHdPHJpyJ' 26 1 'secret' 'key' 'aa'
-
 test '*Zw4' 4 1 'x-gl5' '1' '0'
 test 3546   4 3 0 '1' '0'
 test 'Ag8)' 4 1 'secret' 'key' 'tag'

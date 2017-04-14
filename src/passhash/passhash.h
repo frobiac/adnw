@@ -24,6 +24,8 @@
 #include <stdbool.h>
 
 #define PH_PW_LEN       16
+#define PH_INPUT_LEN PH_MAX_LEN + 1 // 27
+
 #define PH_MIN_LEN       4
 #define PH_MAX_LEN      26
 
@@ -36,9 +38,10 @@ enum PH_STATES { PH_DONE, PH_READING, PH_PW_ENTERED, PH_PW_CLEARED, PH_PW_ERROR,
 /**
  *  Calculate passhash from given values.
  *
- *  The key array passed must fit 27 chars for final result!
+ *  private_key must fit 27 chars for final result!
+ *  it will contain calculated hash, '\0'-delimited at requested length.
  *
- *  @ret key will contain calculated hash, '\0'-delimited at requested length.
+ *  @ret 0
  */
 uint8_t passHash(uint8_t len, uint8_t type, char * private_key, char * master_password, char * tag);
 
@@ -51,7 +54,12 @@ bool verifyHash(char * ph_master_pw, char * ph_priv_key, char * tag, uint8_t len
 /**
  * Parser additions
  */
+/** Upon very first run, everything up to return is read as master password
+ *  Subsequent runs are interpreted as tag len type
+ *  Immediate entry of return clears master password
+ */
 uint8_t ph_parse(char c);
-void ph_reset(void);
-char * ph_getPasshash(void);
+void    ph_reset(void);
+char *  ph_getPasshash(void);
+
 
