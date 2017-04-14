@@ -52,7 +52,6 @@ char ph_input[PH_INPUT_LEN];
 char ph_tag[PH_TAGLEN+1];
 
 uint8_t type, len, read_field;
-static bool passhash_pw_entered = false;
 //################################################################################
 
 char b64( uint8_t i )
@@ -263,19 +262,16 @@ uint8_t ph_parse(char c)
         // only return was pressed -> clear master password and return
         if(strlen(ph_input) == 0) {
             memset(ph_master_pw,0,PH_PW_LEN);
-            passhash_pw_entered = false;
             return PH_PW_CLEARED;
         }
 
         // entered string is initial entry of master password
-        if( passhash_pw_entered == false ) {
+        if( ph_master_pw[0] == 0 ) {
             memcpy(ph_master_pw, ph_input, strlen(ph_input));
 #ifdef PH_TEST
             if(verifyHash(PH_PRIVATE_KEY, ph_master_pw,  PH_TEST_DATA /*tag len type hash*/ ))
 #endif
-                passhash_pw_entered = true;
-
-            return PH_PW_ENTERED;
+                return PH_PW_ENTERED;
         }
         // getting here means password had been set, all data was entered, so passhash is ready
         {
