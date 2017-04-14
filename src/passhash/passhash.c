@@ -206,14 +206,11 @@ void genHash(char * key, char * tag, uint8_t len, uint8_t type)
  */
 uint8_t passHash(char * ph_result, char * master_pw, char * tag, uint8_t len, uint8_t type)
 {
-    if(len<4 || len>26) {
+    if(len<4 || len>26)
         return(3);
-    }
 
-    if(type<1 || type>3) {
+    if(type<1 || type>3)
         return(4);
-    }
-
 
 #ifdef __AVR__
     memcpy(ph_result, PH_PRIVATE_KEY, PH_INPUT_LEN);
