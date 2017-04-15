@@ -13,6 +13,12 @@ Test sizes:
 * mousemode not exited on other keys fast enough with thumb keys
     also maybe only activate after threshold? clearance of TP could be ignored more easily..
 
+FEATURES
+--------
+* require code to unlock macros and passhash password on boot
+* password card easier?
+
+
 ISSUES
 ------
 * Modifier mismatch: Press (and hold) "/" and additional character will be capitalized:
@@ -35,7 +41,6 @@ Documentation
 * pinout for different controllers
 * case files and pictures
 
-
 Trackpoint
 ----------
 * initialization not really thought out
@@ -49,10 +54,6 @@ Trackpoint
     - Voltage divider: https://www.seanet.com/~karllunt/bareRasPi.html
 * PtS for scrolling, button mask?
 
-HW
---
-* PS/2 pull-ups needed
-
 I2C
 ---
 * mcp23018
@@ -63,17 +64,19 @@ I2C
 * Pull-ups:
     - http://www.varesano.net/blog/fabio/how-disable-internal-arduino-atmega-pullups-sda-and-scl-i2c-bus
 
-* Optimize performance
 * Error checking if any part fails.
+
 
 SPI
 ---
 * http://maxembedded.com/2013/11/the-spi-of-the-avr/
 
+
 Teensy 2.0
 ----------
 * Doc of ergodox: PWM ...
     - https://github.com/benblazak/ergodox-firmware/blob/master/src/keyboard/ergodox/controller/teensy-2-0.md
+
 
 Refactor
 --------
@@ -85,10 +88,9 @@ Refactor
     - volatile only for variables shared with interrupt context, variables in delay loops that would be optimized away
     * EXTERN global.h http://www.mikrocontroller.net/topic/72934
 
+
 Layout
 ------
-* Alt on redtilt, Ctrl-Alt usage
-* BU-TECK better?
 * usage page for system keys
 * copy/paste
 
@@ -121,21 +123,20 @@ Ideas
 - prntscreen...
 - openmoko touchpad?
 - analog input for 2-wire matrix-scan
-- LED interface (blinking, list of modes...)
 
 Thumbkey double usage
 ---------------------
 - outmost column only on hypernano
 - make lower center keys mousebuttons for TP
-                               _____         _____
-                              |     |       | M3  |
-                              |     |       |     |
-  |- HN:only                  |     |       |     |                         |- HN only, uses pinky key
- _V___________________________|_____|       |_____|_________________________V____
-|     |     | ALT |CTRL |     | WIN |       | M2  | M0  | M1  |AltGr|     |MOUSE |
-|     |     |     |     |     |     |       |     |     |     |     |     |      |
-|     |     |     |     |SPACE| TAB |       | ESC | <-| |ENTER|     |     |      |
- -----------------------------------         ------------------------------------
+                                 _____         _____
+                                |     |       | M3  |
+                                |     |       |     |
+    |- HN:only                  |     |       |     |                         |- HN only, uses pinky key
+   _V___________________________|_____|       |_____|_________________________V____
+  |     |     | ALT |CTRL |     | WIN |       | M2  | M0  | M1  |AltGr|     |MOUSE |
+  |     |     |     |     |     |     |       |     |     |     |     |     |      |
+  |     |     |     |     |SPACE| TAB |       | ESC | <-| |ENTER|     |     |      |
+   -----------------------------------         ------------------------------------
 
 Unsorted
 --------
