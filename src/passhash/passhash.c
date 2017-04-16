@@ -61,6 +61,8 @@ char ph_input[PH_INPUT_LEN];
 
 uint8_t type, len, read_field;
 uint8_t ph_tag_len;
+uint8_t ph_master_pw_len;
+uint8_t ph_pk_len;
 //################################################################################
 
 char b64( uint8_t i )
@@ -163,18 +165,27 @@ uint16_t letterSum(const char * str, uint8_t len)
     return sum;
 }
 
+
+
+void genHash2(char * key, uint8_t key_len,  char * tag, uint8_t tag_len, uint8_t len, uint8_t type);
 /**
  * key must have room for 27 chars (20Byte SHA1_HASH to base64)
  */
 void genHash(char * key, char * tag, uint8_t len, uint8_t type)
 {
-    //fprintf(stderr, "\nKey: %s Tag: %s", key, tag);
+    genHash2(key, strlen(key), tag, strlen(tag), len, type);
+}
+
+void genHash2(char * key, uint8_t key_len,  char * tag, uint8_t tag_len, uint8_t len, uint8_t type)
+{
+
     char sha1hash[HMAC_SHA1_BYTES];
     uint16_t seed = 0;  // max is 27*122
 
     memset(sha1hash, 0, HMAC_SHA1_BYTES);
 
-    hmac_sha1((void*)(&sha1hash), tag, 8*strlen(tag), key, 8*strlen(key));
+    //hmac_sha1((void*)(&sha1hash), tag, 8*strlen(tag), key, 8*strlen(key));
+    hmac_sha1((void*)(&sha1hash), tag, 8*tag_len, key, 8*key_len);
 
     b64enc((unsigned char*)sha1hash, HMAC_SHA1_BYTES, key, sizeof(key));
 
@@ -203,9 +214,11 @@ void fillPrivateKey(char * pk)
 {
 #ifdef __AVR__
     memcpy(pk, PH_PRIVATE_KEY, PH_INPUT_LEN);
+    ph_pk_len=strlen(pk);
 #else
     if(testing_pk)
         strncpy(pk, testing_pk, PH_INPUT_LEN);
+    ph_pk_len=strlen(pk);
 #endif
 }
 
@@ -233,11 +246,11 @@ uint8_t passHash(uint8_t len, uint8_t type)
       - ph_result is from config               (=secret)
       - tag         is domain name
      */
-    // ph_result = real private key defined
-    genHash(ph_input, tag, 24,  1);
-    // ph_result = first runs hmac_sha1
-    genHash(ph_input, ph_master_pw, len, type);
-    // ph_result = pk = final passhash
+
+    //genHash(ph_input, tag, 24,  1);
+    //genHash(ph_input, ph_master_pw, len, type);
+    genHash2(ph_input, ph_pk_len, tag,          ph_tag_len,            24,  1);
+    genHash2(ph_input, 24,        ph_master_pw, ph_master_pw_len,  len, type);
 
     return 0;
 }
@@ -277,6 +290,7 @@ uint8_t ph_parse(char c)
 
         // only return was pressed -> clear master password and return
         if(ph_tag_len == 0) {
+            ph_master_pw_len=0;
             memset(ph_master_pw,0,PH_PW_LEN);
             return PH_PW_CLEARED;
         }
@@ -284,6 +298,7 @@ uint8_t ph_parse(char c)
         // entered string is initial entry of master password
         if( ph_master_pw[0] == '\0' ) {
             memcpy(ph_master_pw, ph_input, ph_tag_len);
+            ph_master_pw_len=ph_tag_len;
             ph_reset();
             return PH_PW_ENTERED;
         }
