@@ -63,6 +63,8 @@ uint8_t ph_pk_len;
 //################################################################################
 
 #include "b64.h"
+char sha1hash[HMAC_SHA1_BYTES]; // save Progmem vs Data compared to local definition
+
 
 void injectChar( char * mhash, uint8_t offset, uint8_t reserved,
                  uint32_t seed, uint8_t length, char cstart, uint8_t cnum)
@@ -136,9 +138,6 @@ void genHash(char * key, char * tag, uint8_t len, uint8_t type)
 
 void genHash2(char * key, uint8_t key_len,  char * tag, uint8_t tag_len, uint8_t len, uint8_t type)
 {
-
-    char sha1hash[HMAC_SHA1_BYTES];
-
     memset(sha1hash, 0, HMAC_SHA1_BYTES);
 
     hmac_sha1((void*)(&sha1hash), tag, 8*tag_len, key, 8*key_len);
