@@ -60,6 +60,7 @@ static char ph_master_pw[PH_PW_LEN+1];
 char ph_input[PH_INPUT_LEN];
 
 uint8_t type, len, read_field;
+uint8_t ph_tag_len;
 //################################################################################
 
 char b64( uint8_t i )
@@ -246,19 +247,21 @@ uint8_t passHash(uint8_t len, uint8_t type)
 /**
  * Parser called from command mode
  */
+
 uint8_t ph_parse(char c)
 {
     // on first call enter password, or press return to clear previously entered one
     // on subsequent runs enter tag [len [type]]
     //
     // read until return=10 is pressed or maximum length reached
-    if( (uint8_t)(c) != 10 && strlen(ph_input) < PH_INPUT_LEN) {
+    if( (uint8_t)(c) != 10 && ph_tag_len < PH_INPUT_LEN) {
         if ( c == ' ' ) { // space -> advance to next field
             ++read_field;
             return PH_READING;
         }
         if (read_field == 0) {      // still reading tag
-            ph_input[strlen(ph_input)]= c;
+            ph_input[ph_tag_len]= c;
+            ++ph_tag_len;
             return PH_READING;
         }
 
@@ -273,14 +276,14 @@ uint8_t ph_parse(char c)
     } else { // Done reading any input:
 
         // only return was pressed -> clear master password and return
-        if(strlen(ph_input) == 0) {
+        if(ph_tag_len == 0) {
             memset(ph_master_pw,0,PH_PW_LEN);
             return PH_PW_CLEARED;
         }
 
         // entered string is initial entry of master password
-        if( ph_master_pw[0] == 0 ) {
-            memcpy(ph_master_pw, ph_input, strlen(ph_input));
+        if( ph_master_pw[0] == '\0' ) {
+            memcpy(ph_master_pw, ph_input, ph_tag_len);
             ph_reset();
             return PH_PW_ENTERED;
         }
@@ -309,6 +312,7 @@ uint8_t ph_parse(char c)
  */
 void ph_reset()
 {
+    ph_tag_len=0;
     memset(ph_input,0,PH_INPUT_LEN);
     read_field=0; len=0; type=0;
 }
