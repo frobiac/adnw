@@ -46,11 +46,6 @@ enum PH_STATES { PH_DONE, PH_READING, PH_PW_ENTERED, PH_PW_CLEARED, PH_PW_ERROR,
  */
 uint8_t passHash(char * ph_result, uint8_t len, uint8_t type);
 
-/**
- *  Compare expected_hash to calculated result.
- */
-bool verifyHash(char * tag, uint8_t len, uint8_t type, char * expected_hash);
-
 
 /**
  * Parser additions

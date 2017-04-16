@@ -241,17 +241,6 @@ uint8_t passHash(char * ph_result, uint8_t len, uint8_t type)
     return 0;
 }
 
-bool verifyHash(char * tag, uint8_t len, uint8_t type, char * expected_hash )
-{
-    strncpy (ph_input, tag, PH_INPUT_LEN);
-    passHash( ph_input, len, type);
-    if( memcmp( expected_hash, ph_input, len) == 0)
-        return true;
-
-    return false;
-}
-
-
 
 
 /**
@@ -292,12 +281,6 @@ uint8_t ph_parse(char c)
         // entered string is initial entry of master password
         if( ph_master_pw[0] == 0 ) {
             memcpy(ph_master_pw, ph_input, strlen(ph_input));
-#if defined(PH_EXPECTED_4_DIGITS_FOR_A)
-            if(!verifyHash("a", 4, 3, PH_EXPECTED_4_DIGITS_FOR_A )) {
-                memset(ph_master_pw,0,PH_PW_LEN);
-                return PH_PW_ERROR;
-            }
-#endif
             ph_reset();
             return PH_PW_ENTERED;
         }

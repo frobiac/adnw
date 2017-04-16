@@ -3,13 +3,10 @@
 # call with extra arg to test ph verification
 #   '-DPH_EXPECTED_4_DIGITS_FOR_A=4616'
 #
-if [ "x$1" = "xverify" ]; then
-    EXTRA_DEF='-DPH_EXPECTED_4_DIGITS_FOR_A="4616"'
-fi
 
 rm ./passhash
 # using -O0 fails, need to check
-FLAGS="-g -O -W $EXTRA_DEF"
+FLAGS="-g -O -W "
 CC=gcc
 mkdir .build 2>/dev/null
 (
@@ -19,7 +16,7 @@ mkdir .build 2>/dev/null
   $CC $FLAGS -c ../passhash.c  &&
   $CC $FLAGS -c ../main.c &&
 
-  $CC $EXTRA_DEF main.o passhash.o sha1.o hmac-sha1.o -o ../passhash
+  $CC main.o passhash.o sha1.o hmac-sha1.o -o ../passhash
 )
 
 #########
@@ -44,12 +41,6 @@ test()
         #echo "OK   $@ = $res"
     fi
 }
-
-if [ "x$1" = "xverify" ]; then
-    test '8608' 4 3 'secret' 'key' 'tag'
-    exit 2
-fi
-
 
 # EXPECT len type PK MPW TAG
 test 'jmuiM6+N' 8 1 12345678901234567890123456 1234567890123456 tag
