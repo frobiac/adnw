@@ -215,7 +215,7 @@ void fillPrivateKey(char * pk)
  *
  *  @ret 0
  */
-uint8_t passHash(char * ph_result, uint8_t len, uint8_t type)
+uint8_t passHash(uint8_t len, uint8_t type)
 {
     if(len<4 || len>26)
         return(3);
@@ -224,18 +224,18 @@ uint8_t passHash(char * ph_result, uint8_t len, uint8_t type)
         return(4);
 
     char tag[PH_TAGLEN+1];
-    memcpy(tag, ph_result, PH_TAGLEN);
+    memcpy(tag, ph_input, PH_TAGLEN);
 
-    fillPrivateKey(ph_result);
+    fillPrivateKey(ph_input);
     /* Naming conventions from twik / passhash
       - master_key  is read in Gui (or run.py)   (=key   )
       - ph_result is from config               (=secret)
       - tag         is domain name
      */
     // ph_result = real private key defined
-    genHash(ph_result, tag, 24,  1);
+    genHash(ph_input, tag, 24,  1);
     // ph_result = first runs hmac_sha1
-    genHash(ph_result, ph_master_pw, len, type);
+    genHash(ph_input, ph_master_pw, len, type);
     // ph_result = pk = final passhash
 
     return 0;
@@ -296,7 +296,7 @@ uint8_t ph_parse(char c)
                 type=PH_TYPE_ALNUMSYM;
 
             // reuse ph_input buffer in passhash calculation
-            passHash( ph_input, (uint8_t)len, (uint8_t)type);
+            passHash( (uint8_t)len, (uint8_t)type);
             setOutputString( ph_input );
             ph_reset();
             return PH_DONE;
