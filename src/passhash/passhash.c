@@ -130,7 +130,7 @@ void remPunct( char * mhash, uint16_t seed, uint8_t length)
     uint8_t pivot=0;
     uint8_t i;
 
-    for(i=0; i<strlen(mhash); ++i) {
+    for(i=0; i<length; ++i) {
         if( ! isalnum(mhash[i]) ) {
             mhash[i] = (char)( (seed+pivot)%26 + 65 /*'A'*/);
             pivot=i+1;
@@ -152,11 +152,11 @@ void conv2digits( char * mhash, uint16_t seed, uint8_t length)
 }
 
 
-uint16_t letterSum(const char * str)
+uint16_t letterSum(const char * str, uint8_t len)
 {
     uint8_t i;
     uint16_t sum=0;
-    for(i=0; i<strlen(str); i++) {
+    for(i=0; i<len; i++) {
         sum+=(int)(str[i]);
     }
     return sum;
@@ -180,7 +180,7 @@ void genHash(char * key, char * tag, uint8_t len, uint8_t type)
     // b64 of 20 Byte sha1hash -> 27 Bytes ending in '=' which must be removed
     key[27] ='\0';
 
-    seed=letterSum(key);
+    seed=letterSum(key, 27);
 
     if(type==3) { // numeric
         conv2digits(key,seed,len);
