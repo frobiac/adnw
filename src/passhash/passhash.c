@@ -23,6 +23,9 @@
 
     It uses hmac-sha1 and sha1 implementations from avr-crypto-lib licensed under GPL3:
     https://github.com/cantora/avr-crypto-lib
+
+    @todo: ???
+    https://github.com/Cathedrow/Cryptosuite
 */
 
 /**
@@ -350,7 +353,9 @@ void ph_parse(char c)
 
 exit:
     ph_reset();
+#ifdef __AVR__
     setCommandMode(false);
+#endif
 }
 
 /**
@@ -363,3 +368,19 @@ void ph_reset()
     read_field=0; len=0; type=0;
 }
 
+#ifndef __AVR__
+
+uint8_t passHashArgs(char * priv_key, char * master_pw, char * tag, uint8_t len, uint8_t type)
+{
+    ph_reset();
+    ph_setPrivateKey(priv_key);
+    ph_setMasterPW(master_pw);
+
+    char input[80];
+    snprintf(input, 80, "%s %d %d\n", tag, len, type);
+
+    for(uint8_t i=0; i<strlen(input); ++i) {
+        ph_parse(input[i]);
+    }
+}
+#endif

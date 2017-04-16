@@ -66,23 +66,24 @@ int main (int argc, char * argv[])
 
     for(uint8_t i=0; i<strlen(input); ++i) {
         char c=input[i];
-        uint8_t ph_state;
+        uint8_t ph_state=18;
         {
             /// more or less same code as in subcommand
-            ph_state = ph_parse(c);
+            ph_parse(c);
+            /*
+                        if( PH_READING == ph_state ) // not yet done reading, so stay in command mode and wait for next char.
+                            continue;
 
-            if( PH_READING == ph_state ) // not yet done reading, so stay in command mode and wait for next char.
-                continue;
+                        // getting here means either
+                        // 1) password has been set (again)
+                        // 2) or all data was entered, so passhash has been already printed
+                        // 3) password had been cleared
+                        if( PH_PW_ENTERED != ph_state && PH_DONE != ph_state)
+                            fprintf(stderr, "\nERROR %d creating pw", ph_state);
 
-            // getting here means either
-            // 1) password has been set (again)
-            // 2) or all data was entered, so passhash has been already printed
-            // 3) password had been cleared
-            if( PH_PW_ENTERED != ph_state && PH_DONE != ph_state)
-                fprintf(stderr, "\nERROR %d creating pw", ph_state);
-
-            // could check state here for errors ...
-            // if( PH_PW_CLEARED == ph_state || PH_PW_ENTERED == ph_state )
+                        // could check state here for errors ...
+                        // if( PH_PW_CLEARED == ph_state || PH_PW_ENTERED == ph_state )
+            */
         }
     }
 
