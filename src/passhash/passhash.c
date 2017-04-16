@@ -44,8 +44,8 @@
 // longest possible tag is input minus length, mode and two spaces
 #define PH_TAGLEN PH_INPUT_LEN - 5 // tag_XY_M
 
-// master password must be kept separately from other buffers and never stored...
-char ph_master_pw[PH_PW_LEN];
+// master password: filled during runtime and never stored persistently.
+static char ph_master_pw[PH_PW_LEN+1];
 
 // buffer for input and passhash generation
 char ph_input[PH_INPUT_LEN];
