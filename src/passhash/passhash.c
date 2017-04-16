@@ -58,7 +58,6 @@ static char ph_master_pw[PH_PW_LEN+1];
 
 // buffer for input and passhash generation
 char ph_input[PH_INPUT_LEN];
-char ph_tag[PH_TAGLEN+1];
 
 uint8_t type, len, read_field;
 //################################################################################
@@ -211,11 +210,13 @@ void fillPrivateKey(char * pk)
 }
 
 /**
- *  ph_result must be 27 chars long and will contain '\0' terminated passhash upon completion
+ *  ph_result must have size for 27 chars.
+ *  Input tag there
+ *  Will contain '\0' terminated passhash upon completion
  *
  *  @ret 0
  */
-uint8_t passHash(char * ph_result, char * master_pw, char * tag, uint8_t len, uint8_t type)
+uint8_t passHash(char * ph_result, char * master_pw, uint8_t len, uint8_t type)
 {
     if(len<4 || len>26)
         return(3);
@@ -223,8 +224,10 @@ uint8_t passHash(char * ph_result, char * master_pw, char * tag, uint8_t len, ui
     if(type<1 || type>3)
         return(4);
 
-    fillPrivateKey(ph_result);
+    char tag[PH_TAGLEN+1];
+    memcpy(tag, ph_result, PH_TAGLEN);
 
+    fillPrivateKey(ph_result);
     /* Naming conventions from twik / passhash
       - master_key  is read in Gui (or run.py)   (=key   )
       - ph_result is from config               (=secret)
@@ -241,7 +244,8 @@ uint8_t passHash(char * ph_result, char * master_pw, char * tag, uint8_t len, ui
 
 bool verifyHash(char * master_pw, char * tag, uint8_t len, uint8_t type, char * expected_hash )
 {
-    passHash( ph_input, master_pw, tag, len, type);
+    strncpy (ph_input, tag, PH_INPUT_LEN);
+    passHash( ph_input, master_pw, len, type);
     if( memcmp( expected_hash, ph_input, len) == 0)
         return true;
 
@@ -265,9 +269,8 @@ uint8_t ph_parse(char c)
             ++read_field;
             return PH_READING;
         }
-        if (read_field == 0) {      // still reading ph_tag
+        if (read_field == 0) {      // still reading tag
             ph_input[strlen(ph_input)]= c;
-            ph_tag[strlen(ph_tag)]=c;
             return PH_READING;
         }
 
@@ -301,8 +304,8 @@ uint8_t ph_parse(char c)
         }
         // getting here means password had been set, all data was entered, so passhash is ready
         {
-            memset(ph_input,0,PH_INPUT_LEN);
-            // xprintf("\n%s: %s %u %u", ph_master_pw, ph_tag, len, type);
+            // xprintf("\nPW:%s: T:%s %u/%u", ph_master_pw, ph_input, len, type);
+            //memset(ph_input,0,PH_INPUT_LEN);
 
             // defaults if invalid input
             if(len<PH_MIN_LEN || len>PH_MAX_LEN)
@@ -311,7 +314,7 @@ uint8_t ph_parse(char c)
                 type=PH_TYPE_ALNUMSYM;
 
             // reuse ph_input buffer in passhash calculation
-            passHash( ph_input, ph_master_pw, ph_tag, (uint8_t)len, (uint8_t)type);
+            passHash( ph_input, ph_master_pw, (uint8_t)len, (uint8_t)type);
             setOutputString( ph_input );
             ph_reset();
             return PH_DONE;
@@ -326,6 +329,5 @@ void ph_reset()
 {
     memset(ph_input,0,PH_INPUT_LEN);
     read_field=0; len=0; type=0;
-    memset(ph_tag,0,PH_TAGLEN);
 }
 

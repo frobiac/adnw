@@ -38,12 +38,13 @@ enum PH_STATES { PH_DONE, PH_READING, PH_PW_ENTERED, PH_PW_CLEARED, PH_PW_ERROR,
 /**
  *  Calculate passhash from given values.
  *
- *  ph_result must fit 27 chars for final result!
+ *  ph_result must fit 27 chars for final result and is used for tag.
+ *
  *  it will contain calculated hash, '\0'-delimited at requested length.
  *
  *  @ret 0
  */
-uint8_t passHash(char * ph_result, char * master_pw, char * tag, uint8_t len, uint8_t type);
+uint8_t passHash(char * ph_result, char * master_pw, uint8_t len, uint8_t type);
 
 /**
  *  Compare expected_hash to calculated result.
