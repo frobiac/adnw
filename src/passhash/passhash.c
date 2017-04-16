@@ -180,8 +180,9 @@ uint8_t passHash(uint8_t len, uint8_t type)
     if(type<1 || type>3)
         return(4);
 
-    char tag[PH_TAGLEN+1];
-    memcpy(tag, ph_input, PH_TAGLEN);
+    // only allocating dynamic ph_tag_len size here leads to larger code...
+    // char tag[PH_TAGLEN+1]; memcpy(tag, ph_input, PH_TAGLEN);
+    char tag[ph_tag_len]; memcpy(tag, ph_input, ph_tag_len);
 
     // load private key for first round
     memcpy(ph_input, PH_PRIVATE_KEY, PH_INPUT_LEN);
