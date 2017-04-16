@@ -199,10 +199,31 @@ uint8_t passHash(uint8_t len, uint8_t type)
 
 #else
 
+
+void injectCharsOnly(char * ph_result, uint8_t len, uint8_t type);
+
 /**
  *  ph_result must be 27 chars long and will contain '\0' terminated passhash upon completion
  *
  *  @ret 0
+ *
+ *  ph_result -> general buffer to finally contain result
+ *  master_pw -> static, shall contain master_pw once it has been set in memory but never in eeprom.
+ *  tag       -> temporary buffer per run
+ *  sha1      -> temporary
+ *
+ *  tag <- tag from user , also len & type
+ *  first iteration:
+ *     ph_result = PRIVKEY from define/progmem/eeprom
+ *     sha1      = hmac(tag, ph_result) // tag done
+ *     ph_result = b64enc(sha1)         // sha1 done
+ *     ph_result = injectChars()
+ *
+ *  second iteration:
+ *     sha1      = hmac(ph_result, master_pw) //
+ *     ph_result = b64enc(sha1)         // sha1 done
+ *     ph_result = injectChars(len, type)
+ *
  */
 uint8_t passHash(char * ph_result, char * master_pw, char * tag, uint8_t len, uint8_t type)
 {
@@ -229,61 +250,48 @@ uint8_t passHash(char * ph_result, char * master_pw, char * tag, uint8_t len, ui
     // ph_result = real private key defined
     // genHash(ph_result, tag, 24,  1);
     char sha1hash[HMAC_SHA1_BYTES];
-    uint16_t seed = 0;  // max is 27*122
-    {
 
-        memset(sha1hash, 0, HMAC_SHA1_BYTES);
+    memset(sha1hash, 0, HMAC_SHA1_BYTES);
+    hmac_sha1((void*)(&sha1hash), tag, 8*strlen(tag), ph_result, 8*strlen(ph_result));
+    b64enc((unsigned char*)sha1hash, HMAC_SHA1_BYTES, ph_result, sizeof(ph_result));
+    injectCharsOnly(ph_result, 24, 1);
 
-        hmac_sha1((void*)(&sha1hash), tag, 8*strlen(tag), ph_result, 8*strlen(ph_result));
-
-        b64enc((unsigned char*)sha1hash, HMAC_SHA1_BYTES, ph_result, sizeof(ph_result));
-
-        // b64 of 20 Byte sha1hash -> 27 Bytes ending in '=' which must be removed
-        ph_result[27] ='\0';
-
-        seed=letterSum(ph_result);
-
-        injectChar( ph_result, 0, 4, seed, 24, '0', 10); // digit
-        injectChar( ph_result, 1, 4, seed, 24, '!', 15); // punctuation
-        injectChar( ph_result, 2, 4, seed, 24, 'A', 26); // uppercase
-        injectChar( ph_result, 3, 4, seed, 24, 'a', 26); // lowercase
-
-        // truncate result to 24
-        ph_result[24] = '\0';
-    }
 
     // ph_result = first runs hmac_sha1
     // genHash(ph_result, master_pw, len, type);
-    {
-        memset(sha1hash, 0, HMAC_SHA1_BYTES);
+    memset(sha1hash, 0, HMAC_SHA1_BYTES);
+    hmac_sha1((void*)(&sha1hash), master_pw, 8*strlen(master_pw), ph_result, 8*24/*strlen(ph_result)*/);
+    b64enc((unsigned char*)sha1hash, HMAC_SHA1_BYTES, ph_result, sizeof(ph_result));
+    injectCharsOnly(ph_result, len, type);
 
-        hmac_sha1((void*)(&sha1hash), master_pw, 8*strlen(master_pw), ph_result, 8*24/*strlen(ph_result)*/);
-
-        b64enc((unsigned char*)sha1hash, HMAC_SHA1_BYTES, ph_result, sizeof(ph_result));
-
-        // b64 of 20 Byte sha1hash -> 27 Bytes ending in '=' which must be removed
-        ph_result[27] ='\0';
-
-        seed=letterSum(ph_result);
-
-        if(type==3) { // numeric
-            conv2digits(ph_result,seed,len);
-        } else {
-            injectChar( ph_result, 0, 4, seed, len, '0', 10); // digit
-            if(type==1) // digit + punctuation
-                injectChar( ph_result, 1, 4, seed, len, '!', 15); // punctuation
-            injectChar( ph_result, 2, 4, seed, len, 'A', 26); // uppercase
-            injectChar( ph_result, 3, 4, seed, len, 'a', 26); // lowercase
-            if(type==2) // alnum only
-                remPunct( ph_result, seed, len);
-        }
-
-        // truncate result to requested length
-        ph_result[len] = '\0';
-    }
     // ph_result = pk = final passhash
 
     return 0;
+}
+
+
+void injectCharsOnly(char * ph_result, uint8_t len, uint8_t type)
+{
+    uint16_t seed = 0;  // max is 27*122
+    // b64 of 20 Byte sha1hash -> 27 Bytes ending in '=' which must be removed
+    ph_result[27] ='\0';
+
+    seed=letterSum(ph_result);
+
+    if(type==3) { // numeric
+        conv2digits(ph_result,seed,len);
+    } else {
+        injectChar( ph_result, 0, 4, seed, len, '0', 10); // digit
+        if(type==1) // digit + punctuation
+            injectChar( ph_result, 1, 4, seed, len, '!', 15); // punctuation
+        injectChar( ph_result, 2, 4, seed, len, 'A', 26); // uppercase
+        injectChar( ph_result, 3, 4, seed, len, 'a', 26); // lowercase
+        if(type==2) // alnum only
+            remPunct( ph_result, seed, len);
+    }
+
+    // truncate result to requested length
+    ph_result[len] = '\0';
 }
 #endif
 
