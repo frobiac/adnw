@@ -199,6 +199,17 @@ void genHash(char * key, char * tag, uint8_t len, uint8_t type)
     key[len] = '\0';
 }
 
+void fillPrivateKey(char * pk)
+{
+#ifdef __AVR__
+    memcpy(pk, PH_PRIVATE_KEY, PH_INPUT_LEN);
+#else
+    if(testing_pk)
+        strncpy(pk, testing_pk, PH_INPUT_LEN);
+    fprintf(stderr, "\nPH:%d/%d T=%s PK=%s MP=%s", len, type, tag, ph_result, master_pw);
+#endif
+}
+
 /**
  *  ph_result must be 27 chars long and will contain '\0' terminated passhash upon completion
  *
@@ -212,13 +223,7 @@ uint8_t passHash(char * ph_result, char * master_pw, char * tag, uint8_t len, ui
     if(type<1 || type>3)
         return(4);
 
-#ifdef __AVR__
-    memcpy(ph_result, PH_PRIVATE_KEY, PH_INPUT_LEN);
-#else
-    if(testing_pk)
-        strncpy(ph_result, testing_pk, PH_INPUT_LEN);
-    //fprintf(stderr, "\nPH:%d %d %s PK=%s MP=%s", len, type, tag, ph_result, master_pw);
-#endif
+    fillPrivateKey(ph_result);
 
     /* Naming conventions from twik / passhash
       - master_key  is read in Gui (or run.py)   (=key   )
