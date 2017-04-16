@@ -205,7 +205,6 @@ void fillPrivateKey(char * pk)
 #else
     if(testing_pk)
         strncpy(pk, testing_pk, PH_INPUT_LEN);
-    fprintf(stderr, "\nPH:%d/%d T=%s PK=%s MP=%s", len, type, tag, ph_result, master_pw);
 #endif
 }
 
@@ -216,7 +215,7 @@ void fillPrivateKey(char * pk)
  *
  *  @ret 0
  */
-uint8_t passHash(char * ph_result, char * master_pw, uint8_t len, uint8_t type)
+uint8_t passHash(char * ph_result, uint8_t len, uint8_t type)
 {
     if(len<4 || len>26)
         return(3);
@@ -236,16 +235,16 @@ uint8_t passHash(char * ph_result, char * master_pw, uint8_t len, uint8_t type)
     // ph_result = real private key defined
     genHash(ph_result, tag, 24,  1);
     // ph_result = first runs hmac_sha1
-    genHash(ph_result, master_pw, len, type);
+    genHash(ph_result, ph_master_pw, len, type);
     // ph_result = pk = final passhash
 
     return 0;
 }
 
-bool verifyHash(char * master_pw, char * tag, uint8_t len, uint8_t type, char * expected_hash )
+bool verifyHash(char * tag, uint8_t len, uint8_t type, char * expected_hash )
 {
     strncpy (ph_input, tag, PH_INPUT_LEN);
-    passHash( ph_input, master_pw, len, type);
+    passHash( ph_input, len, type);
     if( memcmp( expected_hash, ph_input, len) == 0)
         return true;
 
@@ -294,7 +293,7 @@ uint8_t ph_parse(char c)
         if( ph_master_pw[0] == 0 ) {
             memcpy(ph_master_pw, ph_input, strlen(ph_input));
 #if defined(PH_EXPECTED_4_DIGITS_FOR_A)
-            if(!verifyHash(ph_master_pw,  "a", 4, 3, PH_EXPECTED_4_DIGITS_FOR_A )) {
+            if(!verifyHash("a", 4, 3, PH_EXPECTED_4_DIGITS_FOR_A )) {
                 memset(ph_master_pw,0,PH_PW_LEN);
                 return PH_PW_ERROR;
             }
@@ -314,7 +313,7 @@ uint8_t ph_parse(char c)
                 type=PH_TYPE_ALNUMSYM;
 
             // reuse ph_input buffer in passhash calculation
-            passHash( ph_input, ph_master_pw, (uint8_t)len, (uint8_t)type);
+            passHash( ph_input, (uint8_t)len, (uint8_t)type);
             setOutputString( ph_input );
             ph_reset();
             return PH_DONE;
