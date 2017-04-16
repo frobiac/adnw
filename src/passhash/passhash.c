@@ -25,6 +25,13 @@
     https://github.com/cantora/avr-crypto-lib
 */
 
+/**
+ * Naming conventions from twik / passhash
+ * - master_key  is read in Gui (or run.py)   (=key   )
+ * - ph_result   is from config               (=secret)
+ * - tag         is domain name
+ */
+
 #include <string.h>
 
 #include "hmac-sha1.h"
