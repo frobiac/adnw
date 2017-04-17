@@ -90,16 +90,10 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
         return true;
     }
 
-    if(macroRecording()) {
-        macro_key(hid,mod);
-        return false; // macro should be echoed!
-    }
-
     char curChar = hid2asciicode(hid, mod);
 
     if(subcmd) {
-        handleSubCmd(curChar);
-        return true;
+        return handleSubCmd(curChar, hid, mod);
     }
 
     switch(curChar) {
@@ -181,7 +175,7 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 }
 
 
-void handleSubCmd(char c)
+bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 {
 #ifdef PH_ENABLED
     uint8_t type=PH_TYPE_ALNUMSYM;
@@ -196,8 +190,9 @@ void handleSubCmd(char c)
             break;
         case SUB_MACRO_REC:
             // stay in command mode until macro is read.
-            if(!setMacroRecording(c))
+            if(!setMacroRecording(c, hid,mod))
                 setCommandMode(false);
+            return false; // printing character ?
             break;
 #ifdef PH_ENABLED
         case SUB_PASSHASH:
@@ -278,5 +273,7 @@ void handleSubCmd(char c)
             setCommandMode(false);
             break;
     }
+
+    return true;
 }
 

@@ -30,7 +30,7 @@ uint8_t commandModeSub(void);
 
 /// return true if handled here and no echo is needed
 bool handleCommand(uint8_t hid, uint8_t mod);
-void handleSubCmd(char c);
+bool handleSubCmd(char c, uint8_t hid, uint8_t mod);
 
 /// possible subcommands
 enum {

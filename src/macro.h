@@ -47,7 +47,7 @@ void printMacros(void);
 void setMacroMode(bool on);
 
 bool macroRecording(void);
-bool setMacroRecording(char macro_char);
+bool setMacroRecording(char macro_char, uint8_t hid, uint8_t mod);
 void macro_key(uint8_t hid, uint8_t mod);
 
 char hid2asciicode(uint8_t hid, uint8_t mod);

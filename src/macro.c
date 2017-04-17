@@ -142,23 +142,28 @@ void print_used_macro_chars()
  * Free slot is indicated with map entry of index = MACRO_INVALID.
  *
  */
-bool setMacroRecording(char macro_char)
+bool setMacroRecording(char macro_char, uint8_t hid, uint8_t mod)
 {
-    if(!isalnum(macro_char)) // do not store what cannot be retrieved :-)
-        goto err;
+    if(g_macrorecord >= MACROCOUNT) { // first call, new macro
+        if(!isalnum(macro_char)) // do not store what cannot be retrieved :-)
+            goto err;
 
-    uint8_t offs = MACRO_ID_INVALID;
+        uint8_t offs = MACRO_ID_INVALID;
 
-    offs = findMacroId(macro_char); // first check if macro_char is already in use
-    if(offs == MACRO_ID_INVALID)
-        offs = findFreeMacroId(); // find empty spot
+        offs = findMacroId(macro_char); // first check if macro_char is already in use
+        if(offs == MACRO_ID_INVALID)
+            offs = findFreeMacroId(); // find empty spot
 
-    if(offs != MACRO_ID_INVALID && clearHIDCodes()) {
-        g_macrorecord=offs;
-        g_macrochar=macro_char;
+        if(offs != MACRO_ID_INVALID && clearHIDCodes()) {
+            g_macrorecord=offs;
+            g_macrochar=macro_char;
+            return true;
+        } else { // no free slot found
+            print_used_macro_chars();
+        }
+    } else { // next macro character
+        macro_key(hid,mod);
         return true;
-    } else { // no free slot found
-        print_used_macro_chars();
     }
 
 err:
