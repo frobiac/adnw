@@ -32,23 +32,21 @@
 #include "global_config.h"
 
 #define MACRO_ID_INVALID 255     // 255 means no recording is going on.
-#define MACRO_INVALID    255     // can be used by anyone here 
+#define MACRO_INVALID    255     // can be used by anyone here
 #define MACRO_COMPLETE   254     // outstring has been written to completely and can be printed
 
-uint8_t sendEmpty = 0;    // empty report needed to send the same character twice in a row
+static uint8_t sendEmpty;    // empty report needed to send the same character twice in a row
 
 /// Holds index of macro while recording, 0<=idx<MACROCOUNT.
-uint8_t g_macrorecord=MACRO_ID_INVALID;
+static uint8_t g_macrorecord=MACRO_ID_INVALID;
 
 /// cur offset in outHidCodes, both read & write for macro
-uint8_t outOffs = MACRO_INVALID;
+static uint8_t outOffs = MACRO_INVALID;
 
 /// Buffer for EEPROM macros and strings to print out
-uint8_t outHidCodes[MACRO_MAX_LEN+1];
+static uint8_t outHidCodes[MACRO_MAX_LEN+1];
 
-
-inline bool macroRecording(void)         { return(g_macrorecord != MACRO_ID_INVALID); };
-inline void disableMacroRecording(void) { g_macrorecord=MACRO_ID_INVALID; setCommandMode(false); outOffs=MACRO_INVALID; };
+static inline void disableMacroRecording(void) { g_macrorecord=MACRO_ID_INVALID; setCommandMode(false); outOffs=MACRO_INVALID; };
 
 bool appendHidCode(uint8_t hid);
 bool clearHIDCodes(void);
@@ -208,7 +206,6 @@ void macro_key(uint8_t hid, uint8_t mod)
 {
     if(hid == HID_ESC && mod == CTRL) {
         disableMacroRecording();
-        xprintf("\nabort");
         return;
     }
     // Ctrl+Enter ends macro recording
@@ -216,7 +213,6 @@ void macro_key(uint8_t hid, uint8_t mod)
         if( appendHidCode(0) ) {
             uint8_t written __attribute__((unused));
             written=updateEEMacroHID(outHidCodes, g_macrorecord);
-            xprintf("\nWrote %d/%d", written, outOffs);
         }
 
         disableMacroRecording();
@@ -302,6 +298,7 @@ uint8_t updateEEMacroHID(const uint8_t * macro, uint8_t idx)
 
     eeprom_busy_wait();
     eeprom_update_byte ((void *) EE_ADDR_MACRO(idx), len-1 );
+
     eeprom_busy_wait();
     eeprom_update_block (( const void *) (&macro[1]), (void *) (EE_ADDR_MACRO(idx)+1), len-1 );
 
