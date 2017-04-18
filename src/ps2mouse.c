@@ -40,22 +40,22 @@ bool ps2_init_mouse(void)
     ps2_host_init();
 
     // send Reset
-    rcv = ps2_host_send(0xFF); // xprintf("\nps2 RST: %02x %02x", rcv, ps2_error);
+    rcv = ps2_host_send(0xFF);
     if(rcv != PS2_ACK)
         return false;
 
     // read completion code = AA
-    rcv = ps2_host_recv_response(); // xprintf("\nps2 BAT: %02x %02x", rcv, ps2_error);
+    rcv = ps2_host_recv_response();
     // @TODO check for error (FC 00 instead of AA 00) (p9: 2.3.1 RESET)
 
     // read I.D. = 00
-    rcv = ps2_host_recv_response(); // xprintf("\nps2 DEV: %02x %02x", rcv, ps2_error);
+    rcv = ps2_host_recv_response();
 
     // send Set Remote mode
-    rcv = ps2_host_send(0xF0); // xprintf("\nps2 REM: %02x %02x", rcv, ps2_error);
+    rcv = ps2_host_send(0xF0);
 
     // Enable Data reporting (not needed for remote mode)
-    // rcv = ps2_host_send(0xF4); //xprintf("\nps2 REP: %02x %02x", rcv, ps2_error);
+    // rcv = ps2_host_send(0xF4);
     //
     // disable external PS/2 device: not required in remote mode
     // ps2_host_send(TP_COMMAND); ps2_host_send(TP_DISABLE_EXT);

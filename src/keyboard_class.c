@@ -220,7 +220,6 @@ void handleModifierTransmission(USB_KeyboardReport_Data_t* report_data, Modifier
         char * stateStr;
         if (newState == MOD_TRANS_ON) stateStr = "TRANS_ON";
         if (newState == DELAY_MOD_TRANS) stateStr = "DELAY";
-        //xprintf("; Mod %d->%d %s\n",prev_modTrans_state, newState, stateStr);
         */
     }
 }
@@ -626,9 +625,6 @@ uint8_t getActiveLayer()
     for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
         struct Key k = activeKeys.keys[i];
         if( isLayerKey(k.row, k.col) ) {
-            if(layer!=0) {
-                // xprintf("\nWARN: More than one layer key pressed!");
-            }
             layer += getModifier(k.row, k.col,0)-MOD_LAYER_0;
         }
     }
@@ -730,7 +726,6 @@ uint8_t getMouseKey(uint8_t r, uint8_t c)
 void ActiveKeys_Add(uint8_t row, uint8_t col)
 {
     if(activeKeys.keycnt>= MAX_ACTIVE_KEYS) {
-        //xprintf("ERR: Too many active keys!");
         return;
     }
 
@@ -791,7 +786,5 @@ void init_active_keys()
 
 void hostLEDChange(uint8_t leds)
 {
-//    xprintf("\nLED 0x%02x, C%d N%d S%d", leds, (leds & HID_KEYBOARD_LED_CAPSLOCK)>0,
-//                  (leds & HID_KEYBOARD_LED_NUMLOCK)>0, (leds & HID_KEYBOARD_LED_SCROLLLOCK)>0);
 }
 

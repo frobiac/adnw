@@ -177,8 +177,6 @@ uint8_t readEEMacroHID(uint8_t * macro, uint8_t idx)
     eeprom_read_block (( void *) macro, ( const void *) (EE_ADDR_MACRO(idx)+1), len);
 
     macro[len]=0;
-    // xprintf("\nEE read #%d @%d len=%d: ", idx, EE_ADDR_MACRO(idx), len);
-    // uint8_t i; for(i=0;i<len;++i) xprintf(" %02x", macro[i]);
 
     return len;
 }
@@ -197,7 +195,6 @@ uint8_t updateEEMacroHID(const uint8_t * macro, uint8_t idx)
     while(macro[len] != 0 && len < MACRO_MAX_LEN) {
         len++ ;
     }
-    //xprintf("\nEE write #%d @%d len=%d: ", idx, EE_ADDR_MACRO(idx), len);
     //uint8_t i; for(i=0;i<len;++i) xprintf(" %02x", macro[i]);
 
     eeprom_busy_wait();
