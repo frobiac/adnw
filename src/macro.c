@@ -216,7 +216,7 @@ uint8_t setOutputString(char * str)
 
     uint8_t i, ch, hid, mod;
     // convert each char to HID codes
-    for(i=0; i<strlen(str); ++i) {
+    for(i=0; str[i] != '\0'; ++i) {
         ch=str[i];
         hid=ascii2hid[ch][0];
         mod=ascii2hid[ch][1];
