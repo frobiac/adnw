@@ -97,7 +97,7 @@ endif
 
 ifneq (,$(findstring PH_ENABLED,$(CC_FLAGS)))
 	SRC += \
-		$(SRCDIR)/passhash/sha1.c \
+		$(SRCDIR)/passhash/sha1-asm.S   \
 		$(SRCDIR)/passhash/hmac-sha1.c  \
 		$(SRCDIR)/passhash/passhash.c
 endif
