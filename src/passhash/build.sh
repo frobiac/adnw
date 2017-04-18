@@ -6,7 +6,7 @@
 
 rm ./passhash
 # using -O0 fails, need to check
-FLAGS="-g -O -W "
+FLAGS="-g -O -W -std=c99"
 CC=gcc
 mkdir .build 2>/dev/null
 (

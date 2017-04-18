@@ -41,9 +41,8 @@
 #else
 // these are only required for external testing with different private keys.
 #include <stdio.h>
-
-char * testing_pk;
-void ph_setPrivateKey(char * k) { testing_pk = k; }
+char * PH_PRIVATE_KEY;
+void ph_setPrivateKey(char * pk) { PH_PRIVATE_KEY = pk; }
 void setOutputString(char * str) { printf("%s", str); }
 #endif
 
@@ -210,18 +209,6 @@ void genHash2(char * key, uint8_t key_len,  char * tag, uint8_t tag_len, uint8_t
     key[len] = '\0';
 }
 
-void fillPrivateKey(char * pk)
-{
-#ifdef __AVR__
-    memcpy(pk, PH_PRIVATE_KEY, PH_INPUT_LEN);
-    ph_pk_len=strlen(pk);
-#else
-    if(testing_pk)
-        strncpy(pk, testing_pk, PH_INPUT_LEN);
-    ph_pk_len=strlen(pk);
-#endif
-}
-
 /**
  *  ph_result must have size for 27 chars.
  *  Input tag there
@@ -240,7 +227,9 @@ uint8_t passHash(uint8_t len, uint8_t type)
     char tag[PH_TAGLEN+1];
     memcpy(tag, ph_input, PH_TAGLEN);
 
-    fillPrivateKey(ph_input);
+    // load private key for first round
+    memcpy(ph_input, PH_PRIVATE_KEY, PH_INPUT_LEN);
+    ph_pk_len=strlen(ph_input);
     /* Naming conventions from twik / passhash
       - master_key  is read in Gui (or run.py)   (=key   )
       - ph_result is from config               (=secret)
