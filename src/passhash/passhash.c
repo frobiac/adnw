@@ -33,7 +33,7 @@
 #include "hmac-sha1.h"
 #include "passhash.h"
 #include <string.h>
-#include <ctype.h>     // isdigit()
+#include "../helpers.h"
 
 
 static const char b64[]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
