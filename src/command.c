@@ -25,14 +25,7 @@
 #include "trackpoint.h"
 #include "jump_bootloader.h"
 #include "ascii2hid.h"
-
-
-#ifdef PH_ENABLED
-    #include "passhash/passhash.h"
-#endif
-
 #include "print.h"
-#include "_private_data.h"
 
 #ifdef PS2MOUSE
     #include "trackpoint.h"
@@ -45,24 +38,25 @@ bool g_cmd_mode_active=false;
     #include "extra.h"
 #endif
 
-// buffer for input and passhash generation
-#define PH_INPUT_LEN PH_MAX_LEN + 1
-char ph_input[PH_INPUT_LEN];
+#ifdef PH_ENABLED
+    #include "passhash/passhash.h"
+    #include "_private_data.h"
 
-// longest possible tag is input minus length, mode and two spaces
-#define TAGLEN PH_INPUT_LEN - 5 // tag_XY_M
-
-#define PH_PW_LEN 32
-char ph_master_pw[PH_PW_LEN];
-char tag[TAGLEN+1];
-uint8_t type, len, read_field;
+    #define PH_INPUT_LEN PH_MAX_LEN + 1
+    // longest possible tag is input minus length, mode and two spaces
+    #define TAGLEN PH_INPUT_LEN - 5 // tag_XY_M
+    #define PH_PW_LEN 32
+    // buffer for input and passhash generation
+    char ph_input[PH_INPUT_LEN];
+    char ph_master_pw[PH_PW_LEN];
+    char tag[TAGLEN+1];
+    uint8_t type, len, read_field;
+    static bool passhash_pw_entered = false;
+#endif
 
 
 static uint8_t subcmd;           ///< currently active subcommand
 
-#ifdef PH_ENABLED
-    static bool passhash_pw_entered = false;
-#endif
 
 void setCommandMode(bool on)
 {
@@ -243,38 +237,36 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 
 #ifdef PH_ENABLED
         case SUB_PASSHASH:
-            // on first call enter password
+            // on first call enter password, or press return to clear previously entered one
             // on subsequent runs enter tag [len [type]]
             //
             // read until return=10 is pressed or maximum length reached
             if( (uint8_t)(c) != 10 && strlen(ph_input) < PH_INPUT_LEN) {
-                if ( c == ' ' ) {
+                if ( c == ' ' ) { // space -> advance to next field
                     read_field++;
                     return true;
                 }
-                if (read_field == 0) {
+                if (read_field == 0) {      // still reading tag
                     ph_input[strlen(ph_input)]= c;
                     tag[strlen(tag)]=c;
                     return true;
                 }
 
-                if( c<='9' && c >= '0') {
+                if( c<='9' && c >= '0') {   // digits for length or type
                     if(read_field==1)
                         len=len*10+c-'0';
                     else if(read_field==2)
                         type=c-'0';
-                    return true;
                 }
                 return true;
 
-            } else {
+            } else { // input was terminated or reached limit
                 setCommandMode(false);
 
                 if(strlen(ph_input) == 0) {
                     // only return was pressed -> clear master password and return
                     memset(ph_master_pw,0,PH_PW_LEN);
                     passhash_pw_entered = false;
-                    printf("PH clear\n");
                     return true;
                 }
 
@@ -300,10 +292,10 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 
                 // reuse ph_input buffer
                 uint8_t ret = passHash(ph_input, (uint8_t)len, (uint8_t)type, PH_PRIVATE_KEY, ph_master_pw, tag);
-                if(ret==0) {
+                if(ret==0)
                     setOutputString(ph_input);
-                    memset(ph_input,0,len);
-                }
+
+                memset(ph_input,0,PH_INPUT_LEN);
             }
             break;
 #endif
