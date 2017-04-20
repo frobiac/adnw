@@ -25,6 +25,15 @@ SRCDIR       = ./src
 KB_HW_SUPPORTED = BLUECUBE HYPERNANO REDTILT HYPERMICRO
 KB_HW		 ?= HYPERMICRO
 
+KB_PH  ?= 1
+KB_DBG ?= 1
+
+##################################################################
+#
+# Should not need to change anything below ...
+#
+##################################################################
+
 # List C source files here. (C dependencies are automatically generated.)
 SRC =   $(LUFA_SRC_USB)          \
 	$(LUFA_SRC_USBCLASS)         \
@@ -36,23 +45,22 @@ SRC =   $(LUFA_SRC_USB)          \
 	$(SRCDIR)/command.c          \
 	$(SRCDIR)/mousekey.c         \
 	$(SRCDIR)/jump_bootloader.c  \
-	$(SRCDIR)/passhash/sha1.c    \
-	$(SRCDIR)/passhash/hmac-sha1.c  \
-	$(SRCDIR)/passhash/passhash.c  \
 
 
 LUFA_PATH    = LUFA/LUFA
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/
-CC_FLAGS    += -DDEBUG_OUTPUT
 CC_FLAGS    += -fdata-sections
 LD_FLAGS     =
 
-##################################################################
-#
-# Should not need to change anything below ...
-#
-##################################################################
 CC_FLAGS += -D$(KB_HW)
+
+ifeq ($(KB_PH), 1)
+CC_FLAGS += -DPH_ENABLED
+endif
+
+ifeq ($(KB_DBG), 1)
+CC_FLAGS += -DDEBUG_OUTPUT
+endif
 
 ifneq (,$(findstring REDTILT,$(CC_FLAGS)))
 CC_FLAGS    += -DTP_ROTATE
@@ -62,6 +70,13 @@ endif
 ifneq (,$(findstring HYPERNANO,$(CC_FLAGS)))
 CC_FLAGS    += -DPINKYDROP
 CC_FLAGS    += -DPS2MOUSE -DMOUSE_HAS_SCROLL_WHEELS
+endif
+
+ifneq (,$(findstring PH_ENABLED,$(CC_FLAGS)))
+	SRC += \
+		$(SRCDIR)/passhash/sha1.c \
+		$(SRCDIR)/passhash/hmac-sha1.c  \
+		$(SRCDIR)/passhash/passhash.c
 endif
 
 ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
@@ -110,6 +125,8 @@ configtest:
 # check that KB_HW is defined and valid
 ifneq (,$(filter $(KB_HW), $(KB_HW_SUPPORTED)))
 	@echo "*** HW  = $(KB_HW) from $(origin KB_HW)"
+	@echo "*** PH  = $(KB_PH) from $(origin KB_PH)"
+	@echo "*** DBG = $(KB_DBG) from $(origin KB_DBG)"
 else
 	$(error *** KB_HW defined as "$(KB_HW)" not valid: not in $(KB_HW_SUPPORTED))
 endif

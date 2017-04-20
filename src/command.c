@@ -20,7 +20,10 @@
 #include "keyboard_class.h"
 #include "keymap.h"
 #include "jump_bootloader.h"
-#include "passhash/passhash.h"
+
+#ifdef PH_ENABLED
+    #include "passhash/passhash.h"
+#endif
 
 #ifdef PS2MOUSE
     #include "trackpoint.h"
@@ -148,9 +151,11 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             printf("Rec macro\n");
             subcmd=SUB_MACRO_REC;
             break;
+#ifdef PH_ENABLED
         case 'h':
             subcmd=SUB_PASSHASH;
             break;
+#endif
         default:
             printf("%c",curChar);
             break;
@@ -162,10 +167,12 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 
 void handleSubCmd(char c)
 {
+#ifdef PH_ENABLED
     uint8_t type=PH_TYPE_ALNUMSYM;
     uint8_t len=12;
     char password[PH_MAX_LEN+1];
     uint8_t ret;
+#endif
 
     switch( subcmd ) {
         case SUB_MACRO:
@@ -177,11 +184,13 @@ void handleSubCmd(char c)
             if(!setMacroRecording(((uint8_t)c)%MACROCOUNT))
                 setCommandMode(false);
             break;
+#ifdef PH_ENABLED
         case SUB_PASSHASH:
             ret = passHash(password, len, type, "secret", "key", "tag");
             printf("\nPH len=%d type=%d = %s", len, type, password);
             setCommandMode(false);
             break;
+#endif
 
         default:
             setCommandMode(false);
