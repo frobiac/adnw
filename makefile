@@ -177,6 +177,11 @@ endif
 submodule:
 	@git submodule update
 
+sizecheck:
+	@echo HW=$(KB_HW) PH=$(KB_PH) PW=$(KB_PW) TR=$(KB_TR) DBG=$(KB_DBG)
+	@avr-size --mcu=atmega32u4 -B adnw.elf
+
+
 
 # Include LUFA build script makefiles
 # lines begin with "-" so if not found, the lufacheck above prints message
