@@ -86,7 +86,7 @@ endif
 CC_FLAGS    += -DFW_VERSION=\"$(FW_VERSION)\"
 
 # Default target
-all: lufacheck configtest # macrocheck
+all: lufacheck configtest submodule # macrocheck
 
 
 # test macro existance
@@ -135,6 +135,10 @@ ifneq (,$(findstring MOUSE_HAS_SCROLL_WHEELS,$(CC_FLAGS)))
 else
 	@echo "*** SCROLLWHEEL not defined"
 endif
+
+
+submodule:
+	@git submodule update
 
 
 # Include LUFA build script makefiles
