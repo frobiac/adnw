@@ -179,10 +179,10 @@ uint8_t getMouseKeyReport(USB_MouseReport_Data_t *MouseReport)
             return sizeof(USB_MouseReport_Data_t);
 
         if (mouse_report.v == 0 && mouse_report.h == 0 &&
-                (idle_count-last_sent)*1000/61 < MS_PER_REPORT )
+            (idle_count-last_sent)*1000/61 < MS_PER_REPORT )
             return sizeof(USB_MouseReport_Data_t);
         if (mouse_report.x == 0 && mouse_report.y == 0 &&
-                (idle_count-last_sent)*1000/61 < 100)
+            (idle_count-last_sent)*1000/61 < 100)
             return sizeof(USB_MouseReport_Data_t);
     }
 

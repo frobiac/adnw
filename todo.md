@@ -8,7 +8,7 @@ BUGS
 
 ISSUES
 ------
-* Modifier mismatch: Press (and hold) "/" and additional character will be capitalized: 
+* Modifier mismatch: Press (and hold) "/" and additional character will be capitalized:
     may be explained as "/" implies shift on german layout
 * REDTILT: Left thumb rests on center key (space), while right one on second from middle (Shift)
         Win/Ctrl/Spc not like other boards...
@@ -77,6 +77,7 @@ Coding style
 ------------
 * astyle --style=linux --convert-tabs --lineend=linux --indent=spaces=4  -o -O -S src/\*.[ch]
 * astyle -o -O -S src/\*.[ch]
+* astyle --options=$(pwd)/.astyle.rc -R "src/*.h" "src/*.c"
 
 Ideas
 -----

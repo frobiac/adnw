@@ -43,13 +43,14 @@ inline void setMacroMode( bool on ) { macromode=on; };
  * with valid modifiers = shift and altgr.
  *
  */
-char hid2asciicode(uint8_t hid, uint8_t mod){
+char hid2asciicode(uint8_t hid, uint8_t mod)
+{
     uint8_t i;
-    for(i=0; i<128; ++i){
-        if( ascii2hid[i][0] == hid){
+    for(i=0; i<128; ++i) {
+        if( ascii2hid[i][0] == hid) {
             // either no modifier is needed and neither shift or altgr are pressed
             // or the required modifier is pressed
-            if((ascii2hid[i][1]==0 && !(mod && (SHIFT|ALTGR))) || (ascii2hid[i][1] & mod)){
+            if((ascii2hid[i][1]==0 && !(mod && (SHIFT|ALTGR))) || (ascii2hid[i][1] & mod)) {
                 //printf("MATCH=%c; ",ascii2hid[i][2] );
                 return(ascii2hid[i][2]);
             }
@@ -70,69 +71,69 @@ char hid2asciicode(uint8_t hid, uint8_t mod){
  */
 void macro_key(uint8_t mod, uint8_t hid)
 {
-  // printf("\nMC(%d) : %d:%d =%c   ",idx, mod, hid, hid2asciicode(hid,mod) );
-  // int i; for(i=0; i<MACROLEN; ++i) printf("%d ", hidmacro[i]);
-  if(!macroRecording())
-      return;
+    // printf("\nMC(%d) : %d:%d =%c   ",idx, mod, hid, hid2asciicode(hid,mod) );
+    // int i; for(i=0; i<MACROLEN; ++i) printf("%d ", hidmacro[i]);
+    if(!macroRecording())
+        return;
 
-  if(hid == HID_ESC && mod == CTRL){
-    setMacroRecording(0);
-    printf("\nabort");
-    return;
-  }
-  // Ctrl+Enter ends macro recording
-  if((hid == HID_ENTER && mod == CTRL) || idx==MACROLEN-1){
-    hidmacro[idx]=0;
-    uint8_t written=updateEEMacroHID(hidmacro, g_macrorecord-1);
-    printf("\nWrote %d/%d", written,idx);
-    idx=0;
+    if(hid == HID_ESC && mod == CTRL) {
+        setMacroRecording(0);
+        printf("\nabort");
+        return;
+    }
+    // Ctrl+Enter ends macro recording
+    if((hid == HID_ENTER && mod == CTRL) || idx==MACROLEN-1) {
+        hidmacro[idx]=0;
+        uint8_t written=updateEEMacroHID(hidmacro, g_macrorecord-1);
+        printf("\nWrote %d/%d", written,idx);
+        idx=0;
 
-/*
-#ifdef DEBUG_OUTPUT
-    printf("\n");
-    uint8_t i; 
-    for(i=0; i<MACROLEN; ++i) {
-        uint8_t c=hidmacro[i];
-        uint8_t m=0;
-        if(c==0){
-            i=MACROLEN;
-            break;
-        }
-        if(c&0x80){
-            m=(c&0x7f);
-            if(c& SHIFT) printf("S");
-            if(c& CTRL) printf("C");
-            if(c& ALT) printf("A");
-            if(c& ALTGR) printf("ag");
-            if(c& GUI) printf("G");
-            if(++i<MACROLEN){
-                c=hidmacro[i];
-                printf("(%d=%c) ", c, hid2asciicode(c,m));
+        /*
+        #ifdef DEBUG_OUTPUT
+            printf("\n");
+            uint8_t i;
+            for(i=0; i<MACROLEN; ++i) {
+                uint8_t c=hidmacro[i];
+                uint8_t m=0;
+                if(c==0){
+                    i=MACROLEN;
+                    break;
+                }
+                if(c&0x80){
+                    m=(c&0x7f);
+                    if(c& SHIFT) printf("S");
+                    if(c& CTRL) printf("C");
+                    if(c& ALT) printf("A");
+                    if(c& ALTGR) printf("ag");
+                    if(c& GUI) printf("G");
+                    if(++i<MACROLEN){
+                        c=hidmacro[i];
+                        printf("(%d=%c) ", c, hid2asciicode(c,m));
+                    }
+                } else {
+                    printf("%d=%c ", c, hid2asciicode(c,m));
+                }
             }
-        } else {
-            printf("%d=%c ", c, hid2asciicode(c,m));
+        #endif
+        */
+        setMacroRecording(0);
+        return;
+    }
+
+    if(idx<MACROLEN) {
+        if(mod != 0) {
+            //printf("\n%02x->%02x", hidmacro[idx],mod+0x80);
+            hidmacro[idx]=(mod+0x80);
+            ++idx;
         }
     }
-#endif
-*/
-    setMacroRecording(0);
-    return;
-  }
-
-  if(idx<MACROLEN){
-    if(mod != 0){
-        //printf("\n%02x->%02x", hidmacro[idx],mod+0x80);
-        hidmacro[idx]=(mod+0x80);
-        ++idx;
+    if(idx<MACROLEN) {
+        if(hid != 0) {
+            //printf("\n%02x->%02x", hidmacro[idx],hid);
+            hidmacro[idx]=hid;
+            ++idx;
+        }
     }
-  }
-  if(idx<MACROLEN){
-    if(hid != 0){
-        //printf("\n%02x->%02x", hidmacro[idx],hid);
-        hidmacro[idx]=hid;
-        ++idx;
-    }
-  }
 }
 
 
@@ -209,11 +210,11 @@ bool getMacroReport(USB_KeyboardReport_Data_t *report)
             }
             if( mod==ALT && c==HID_ENTER) {
                 _delay_ms(400);
-                c=0;mod=0;
+                c=0; mod=0;
             }
-            
+
         }
-        
+
         report->KeyCode[0] = c;
         report->Modifier = mod;
         memset(&report->KeyCode[1], 0, 5);
@@ -242,7 +243,7 @@ uint8_t readEEMacroHID(uint8_t * macro, uint8_t idx)
         len=MACROLEN;
 
     eeprom_busy_wait();
-    eeprom_read_block (( void *) macro , ( const void *) (EE_ADDR_MACRO(idx)+1) , len);
+    eeprom_read_block (( void *) macro, ( const void *) (EE_ADDR_MACRO(idx)+1), len);
 
     macro[len]=0;;
     // printf("\nEE read #%d @%d len=%d: ", idx, EE_ADDR_MACRO(idx), len);
@@ -259,16 +260,16 @@ uint8_t readEEMacroHID(uint8_t * macro, uint8_t idx)
 uint8_t updateEEMacroHID(const uint8_t * macro, uint8_t idx)
 {
     uint8_t len=0;
-    while(macro[len] != 0 && len < MACROLEN) { 
+    while(macro[len] != 0 && len < MACROLEN) {
         len++ ;
     }
     //printf("\nEE write #%d @%d len=%d: ", idx, EE_ADDR_MACRO(idx), len);
     //uint8_t i; for(i=0;i<len;++i) printf(" %02x", macro[i]);
 
     eeprom_busy_wait();
-    eeprom_update_byte ((void *) EE_ADDR_MACRO(idx) , len );
+    eeprom_update_byte ((void *) EE_ADDR_MACRO(idx), len );
     eeprom_busy_wait();
-    eeprom_update_block (( const void *) macro , (void *) (EE_ADDR_MACRO(idx)+1) , len );
+    eeprom_update_block (( const void *) macro, (void *) (EE_ADDR_MACRO(idx)+1), len );
 
     return len;
 }

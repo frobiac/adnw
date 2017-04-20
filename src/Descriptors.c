@@ -86,10 +86,10 @@ uint8_t Button; /**< Button mask for currently pressed buttons in the mouse. */
 int8_t  X; /**< Current delta X movement of the mouse. */
 int8_t  Y; /**< Current delta Y movement on the mouse. */
 +   // also adjust descriptors
-+   int8_t  V; /**< Vertical wheel */
+    +   int8_t  V; /**< Vertical wheel */
 +   int8_t  H; /**< Horizontal wheel */
 +
-} ATTR_PACKED USB_MouseReport_Data_t;
+    } ATTR_PACKED USB_MouseReport_Data_t;
 #endif
 
 /// @todo : use HID_DESCRIPTOR_MOUSE(-1, 1, -1, 1, 3, false) with scrollwheel patch ?

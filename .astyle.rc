@@ -1,0 +1,13 @@
+# Use with 
+#   astyle  --options=.astyle.rc src/*.[ch]
+#
+
+--style=linux --lineend=linux
+--indent=spaces=4  --convert-tabs
+# preprocessor 
+--indent-preproc-block  
+--indent-preproc-define 
+--indent-switches
+--keep-one-line-blocks
+--keep-one-line-statements
+--suffix=none 

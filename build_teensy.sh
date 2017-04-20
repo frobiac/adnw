@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Get hid_listen from 
+# Get hid_listen from
 # http://www.pjrc.com/teensy/hid_listen_1.01.zip
 # and allow user to run via
 # username ALL=(ALL) NOPASSWD: /usr/sbin/hid_listen
@@ -17,14 +17,14 @@ mv $HEX.hex $HEX.hex.old 2>/dev/null
 
 rm log log.err 2>/dev/null
 
-if [ ! -z $1 ]; then 
-	echo "*** make clean" 
+if [ ! -z $1 ]; then
+	echo "*** make clean"
 	make clean >> log
 fi
 echo "*** make " &&
 make >> log 2>log.err &&
 
-if [ -f $HEX.hex ]; then 
+if [ -f $HEX.hex ]; then
   echo "*** Now flashing $KB ($MCU) with $HEX.hex ..." &
   teensy_loader_cli -mmcu=$MCU -w -v $HEX.hex &&
   sudo -S  /usr/sbin/hid_listen

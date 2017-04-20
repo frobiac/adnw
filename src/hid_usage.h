@@ -15,6 +15,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// *INDENT-OFF*
+
 #ifndef _HID_USAGE_H
 #define _HID_USAGE_H 1
 

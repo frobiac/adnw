@@ -26,8 +26,8 @@
 #define HMAC_SHA1_BLOCK_BITS  SHA1_BLOCK_BITS
 #define HMAC_SHA1_BLOCK_BYTES SHA1_BLOCK_BYTES
 
-typedef struct{
-	 sha1_ctx_t a, b;
+typedef struct {
+    sha1_ctx_t a, b;
 } hmac_sha1_ctx_t;
 
 

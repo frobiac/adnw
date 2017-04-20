@@ -42,7 +42,7 @@ It uses hmac-sha1 and sha1 implementations from [avr-crypto-lib][avr_crypto_lib]
 
 License
 -------
-Unless otherwise mentioned all code is licensed under GPL3. 
+Unless otherwise mentioned all code is licensed under GPL3.
 
 **If you create a firmware from this code you _must_ change the vendor and product id!**
 
@@ -68,12 +68,12 @@ Then simply call
 
 Current Layout
 ==============
-Current default layout as implemented in [keymap.h](/src/keymap.h) : 
+Current default layout as implemented in [keymap.h](/src/keymap.h) :
 ( discussion at [deskthority][DT_layout] and as a [graphical layout][RT_AdNW] )
 
 ![RedTiltAdNW](http://frobiac.github.com/adnw/img/AdNW-RedTilt-clean-8ca683a4aac4f76e226c78d2b9f55bf8.png)
 
-##### Thumb keys & modifiers 
+##### Thumb keys & modifiers
                             Macro    TP
                             -        -
     LShft LAlt LCtrl Space                  Mod1 Mod3 AltGr Fx
@@ -100,7 +100,7 @@ Current default layout as implemented in [keymap.h](/src/keymap.h) :
     tbd, see keymap.h
 
 
-[DT_hw]:     http://deskthority.net/workshop-f7/my-diy-keyboard-collection-or-how-i-became-a-kb-geek-t2534.html 
+[DT_hw]:     http://deskthority.net/workshop-f7/my-diy-keyboard-collection-or-how-i-became-a-kb-geek-t2534.html
 [DT_layout]: http://deskthority.net/keyboards-f2/the-decent-keyboard-layout-discussion-thread-matrix-t2898-30.html
 [adnw]:      http://www.adnw.de
 [neo]:       http://www.neo-layout.org/

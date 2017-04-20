@@ -58,13 +58,13 @@ column_size_t prevRowData[ROWS];
  *
  */
 typedef enum {
-    SECOND_USE_OFF ,
-    SECOND_USE_ACTIVE ,
-    SECOND_USE_REPEAT ,
+    SECOND_USE_OFF,
+    SECOND_USE_ACTIVE,
+    SECOND_USE_REPEAT,
     SECOND_USE_PASSIVE
 } SecondUse_State;
 typedef enum {
-    MOD_TRANS_ON ,
+    MOD_TRANS_ON,
     DELAY_MOD_TRANS
 } ModifierTransmission_State;
 
@@ -118,7 +118,7 @@ void initKeyboard()
     // not strictly necessary
     clearRowData();
 
-    // all global variables should be initialized on avr 
+    // all global variables should be initialized on avr
     //g_mouse_keys_enabled = 0;
     //g_mouse_keys = 0;
     secondUse_timer=idle_count + SECOND_USE_TIMEOUT;
@@ -146,7 +146,7 @@ void initKeyboard()
     // bootloader if CMD_MODE combo is pressed during startup
     clearActiveKeys();
     _delay_ms(1000);
-    for(tmp=0; tmp<8; ++tmp){
+    for(tmp=0; tmp<8; ++tmp) {
         scan_matrix();
         _delay_ms(150);
     }
@@ -154,7 +154,8 @@ void initKeyboard()
         jump_bootloader();
 }
 
-void clearRowData() {
+void clearRowData()
+{
     for (uint8_t row = 0; row < ROWS; ++row) {
         rowData[row]=0;
         ct0[row]=0xFF;
@@ -164,7 +165,8 @@ void clearRowData() {
 
 
 // Save all currently pressed keys for later evaluation
-void fill_secondUse_Prev_activeKeys(void) {
+void fill_secondUse_Prev_activeKeys(void)
+{
     secondUse_Prev_activeKeys.keycnt = activeKeys.keycnt;
     for (uint8_t i = 0; i < activeKeys.keycnt; ++i) {
         secondUse_Prev_activeKeys.keys[i] = activeKeys.keys[i];
@@ -172,7 +174,8 @@ void fill_secondUse_Prev_activeKeys(void) {
 }
 
 // Updates new and previous state and prints a debug message
-void changeSecondUseState(SecondUse_State currentState, SecondUse_State newState) {
+void changeSecondUseState(SecondUse_State currentState, SecondUse_State newState)
+{
     if (currentState != newState) {
         secondUse_state = newState;
         secondUse_state_prev = currentState;
@@ -188,7 +191,8 @@ void changeSecondUseState(SecondUse_State currentState, SecondUse_State newState
 }
 
 // Send out necessary modifiers
-void handleModifierTransmission(USB_KeyboardReport_Data_t* report_data, ModifierTransmission_State newState) {
+void handleModifierTransmission(USB_KeyboardReport_Data_t* report_data, ModifierTransmission_State newState)
+{
     switch( newState ) {
         case MOD_TRANS_ON:
             // remember sent mods to be able to repeat them later
@@ -215,11 +219,11 @@ void handleModifierTransmission(USB_KeyboardReport_Data_t* report_data, Modifier
     }
 }
 
-void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
+void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data)
+{
 
     switch( secondUse_state ) {
-        case SECOND_USE_REPEAT:
-        {
+        case SECOND_USE_REPEAT: {
             if( activeKeys.keycnt==1 ) { // only one => previously determined key to repeat still pressed
                 memset(&report_data->KeyCode[0], 0, 6);
                 report_data->Modifier=0;
@@ -231,17 +235,15 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
                 changeSecondUseState(SECOND_USE_REPEAT, SECOND_USE_OFF);
             }
         }
-        case SECOND_USE_OFF:
-        {
+        case SECOND_USE_OFF: {
             uint8_t i;
             getSecondaryUsage(activeKeys.keys[0].row, activeKeys.keys[0].col, &i);
 
             if( activeKeys.keycnt==1 && ! activeKeys.keys[0].normalKey &&
-                    i!=0 && /*0 != SecondaryUsage[activeKeys.keys[0].row][activeKeys.keys[0].col] &&*/
-                    activeKeys.keys[0].row == secondUse_Prev_activeKeys.keys[0].row &&
-                    activeKeys.keys[0].col == secondUse_Prev_activeKeys.keys[0].col &&
-                    idle_count-repeatGesture_timer < 10 )
-            {
+                i!=0 && /*0 != SecondaryUsage[activeKeys.keys[0].row][activeKeys.keys[0].col] &&*/
+                activeKeys.keys[0].row == secondUse_Prev_activeKeys.keys[0].row &&
+                activeKeys.keys[0].col == secondUse_Prev_activeKeys.keys[0].col &&
+                idle_count-repeatGesture_timer < 10 ) {
                 changeSecondUseState(SECOND_USE_OFF, SECOND_USE_REPEAT);
                 break;
             }
@@ -270,8 +272,7 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
             fill_secondUse_Prev_activeKeys();
             break;
         }
-        case SECOND_USE_ACTIVE:
-        {
+        case SECOND_USE_ACTIVE: {
             bool normalKeyPresent = false;
             // Normal key among pressed ?
             for (uint8_t i = 0; i < activeKeys.keycnt; ++i) {
@@ -288,7 +289,7 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
                     struct Key current_key = activeKeys.keys[i];
                     struct Key previous_key = secondUse_Prev_activeKeys.keys[i];
                     if (!(current_key.col == previous_key.col
-                            && current_key.row == previous_key.row)) {
+                          && current_key.row == previous_key.row)) {
                         secondUseNecessityFound = true;
                         secondUse_key = previous_key;
                         break;
@@ -335,8 +336,7 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data) {
             break;
         }
 
-        case SECOND_USE_PASSIVE:
-        {
+        case SECOND_USE_PASSIVE: {
             // number of modifiers now ...
             uint8_t actModNo=0, prevModNo = 0;
             for (uint8_t i = 0; i < activeKeys.keycnt; ++i) {
@@ -390,7 +390,7 @@ void recordMacroChar(USB_KeyboardReport_Data_t *report_data)
     /// @todo Does not get a char pressed twice in a row
     //printf("\nACTUAL %d:%d ", report_data->Modifier,report_data->KeyCode[0]);
     if(lastKeyCode!=report_data->KeyCode[0]) {
-        if(report_data->KeyCode[0] != 0){
+        if(report_data->KeyCode[0] != 0) {
             // printf("\nFR %d:%d => %c ", report_data->Modifier,report_data->KeyCode[0],
             //                        hid2asciicode( report_data->KeyCode[0], report_data->Modifier) );
             // now save modifier and key into macro string...
@@ -487,7 +487,7 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 
     if(macroRecording())
         recordMacroChar(report_data);
-    
+
     return sizeof(USB_KeyboardReport_Data_t);
 }
 
@@ -722,7 +722,7 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
         if(btns != 0) {
             g_mouse_keys |= btns;
             return;
-        } else /*if(isNormalKey(row,col))*/ { // quicker exit from mousekey mode on other key
+        } else { /*if(isNormalKey(row,col))*/  // quicker exit from mousekey mode on other key
             g_mouse_keys_enabled = 0;
         }
     }

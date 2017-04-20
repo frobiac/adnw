@@ -48,6 +48,8 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 #define ROWS   8
 #define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
 
+// *INDENT-OFF*
+
 #ifdef BLUECUBE
   #define CMD_MODE() ((rowData[2] & (1<<0)) && (rowData[6] & (1<<5)) )
 
@@ -259,7 +261,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _no, _no,      _DOLLAR,   _PIPE,      _TILDE,     _GRAVE ,  _CARET,   _PERCENT,   _DQUOTE,    _SQUOTE,    _no,        _no ,
     _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,  _R_ALT, _no
   ),
-    
+
   // MOD2 layer (movement controls and numbers)
   KEYMAP( _no,
     _no, _PGUP,   _BSPACE,    _UP,        _DEL ,      _PGDN, _SSHARP,_7,         _8,         _9,     _a_UML, _A_UML ,
@@ -267,7 +269,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _no, _no  ,   _no  ,      _INS,       _no   ,     _no ,  _0,     _1,         _2,         _3,     _u_UML, _U_UML ,
   _L_SHIFT, _L_ALT ,  _L_CTRL, _SPACE, _L_GUI, _MACRO,   _MOD_3, _MOD_2,  _L_SHIFT, _MOD_1,    _R_ALT, _no
     ),
-  
+
   // MOD3 Fx layer
   KEYMAP( _no,
     _no, _no, _no, _u_UML, _A_UML, _O_UML ,_F1,      _F2,        _F3,        _F4,        _F5,    _F6     ,
@@ -293,6 +295,8 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
   )
 
 }; // end of matrix[][][]
-    
+
+// *INDENT-OFF*
+
 #endif
 
