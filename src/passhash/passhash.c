@@ -230,11 +230,6 @@ uint8_t passHash(uint8_t len, uint8_t type)
     // load private key for first round
     memcpy(ph_input, PH_PRIVATE_KEY, PH_INPUT_LEN);
     ph_pk_len=strlen(ph_input);
-    /* Naming conventions from twik / passhash
-      - master_key  is read in Gui (or run.py)   (=key   )
-      - ph_result is from config               (=secret)
-      - tag         is domain name
-     */
 
     //genHash(ph_input, tag, 24,  1);
     //genHash(ph_input, ph_master_pw, len, type);
