@@ -20,13 +20,10 @@ TARGET       = adnw
 SRCDIR       = ./src
 
 # -----------------------------------------------------------
-# Keyboard selection below: HYPERNANO, BLUECUBE or REDTILT
-# HYPERMICRO by 7bit
+# Keyboard selection below: Override from environment variable
 # -----------------------------------------------------------
-#KB_HW		 = BLUECUBE
-#KB_HW		 = HYPERNANO
-#KB_HW		 = REDTILT
-KB_HW		 = HYPERMICRO
+KB_HW_SUPPORTED = BLUECUBE HYPERNANO REDTILT HYPERMICRO
+KB_HW		 ?= HYPERMICRO
 
 # List C source files here. (C dependencies are automatically generated.)
 SRC =   $(LUFA_SRC_USB)          \
@@ -48,7 +45,6 @@ LUFA_PATH    = LUFA/LUFA
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/
 CC_FLAGS    += -DDEBUG_OUTPUT
 CC_FLAGS    += -fdata-sections
-CC_FLAGS	+= -DKB_HW=$(KB_HW) -D$(KB_HW)
 LD_FLAGS     =
 
 ##################################################################
@@ -56,6 +52,7 @@ LD_FLAGS     =
 # Should not need to change anything below ...
 #
 ##################################################################
+CC_FLAGS += -D$(KB_HW)
 
 ifneq (,$(findstring REDTILT,$(CC_FLAGS)))
 CC_FLAGS    += -DTP_ROTATE
@@ -89,7 +86,7 @@ endif
 CC_FLAGS    += -DFW_VERSION=\"$(FW_VERSION)\"
 
 # Default target
-all: lufacheck # macrocheck
+all: lufacheck configtest # macrocheck
 
 
 # test macro existance
@@ -108,6 +105,15 @@ lufacheck:
 	else \
 		echo -e "*** ERROR: LUFA/LUFA missing - see README for install instructions.\n***        Try to checkout LUFA source with\n***            git submodule init && git submodule update\n\n"; false;\
 	fi
+
+configtest:
+# check that KB_HW is defined and valid
+ifneq (,$(filter $(KB_HW), $(KB_HW_SUPPORTED)))
+	@echo "*** HW  = $(KB_HW) from $(origin KB_HW)"
+else
+	$(error *** KB_HW defined as "$(KB_HW)" not valid: not in $(KB_HW_SUPPORTED))
+endif
+
 
 ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
 	@echo "*** DEBUG is defined" ;
