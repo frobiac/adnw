@@ -59,6 +59,8 @@ void setCommandMode(bool on)
     }
 }
 
+bool unlocked(void)    { return g_pw[PWLEN+1] != 0; }
+void subcmdIfUnlocked(uint8_t cmd) { unlocked() ? subcmd = cmd : setCommandMode(false); }
 bool commandMode(void) { return g_cmd_mode_active; }
 uint8_t commandModeSub(void) { return subcmd; }
 
@@ -165,15 +167,17 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
         break;
 #endif
         case 'x':
-            subcmd=SUB_MACRO;
+            subcmdIfUnlocked(SUB_MACRO);
             break;
+
         case 'r':
-            //xprintf("Rec macro\n");
-            subcmd=SUB_MACRO_REC;
+            subcmdIfUnlocked(SUB_MACRO_REC);
             break;
+
 #ifdef PH_ENABLED
         case 'h':
-            subcmd=SUB_PASSHASH;
+            /// only activate passhash generation if defined during compile.
+            subcmdIfUnlocked(SUB_PASSHASH);
             break;
 #endif
 
@@ -185,7 +189,7 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 
 #ifdef PW_ENABLED
         case 'P':
-            subcmd=SUB_PW_XOR;
+            subcmdIfUnlocked(SUB_PW_XOR);
             break;
 #endif
 
@@ -209,18 +213,23 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
     switch( subcmd ) {
         case SUB_UNLOCK:
             // read until return=10 is pressed or maximum length reached
-            if( (uint8_t)(c) != 10 ) {
-                if( g_pw[PWLEN+1] < PWLEN) {
-                    g_pw[g_pw[PWLEN+1]] = c;
-                    g_pw[PWLEN+1]++;
-                    return false;
-                }
+            if( (uint8_t)(c) != 10 && g_pw[PWLEN+1] < PWLEN) {
+                g_pw[g_pw[PWLEN+1]] = c;
+                g_pw[PWLEN+1]++;
+                return false;
             } else {
-                g_pw[PWLEN] = '\0';
+                uint32_t hash = str2hash((char*)g_pw);
+
+                char out[4];
+                out[0] = mapAscii(g_pw[PWLEN+1]%10);
+                out[1] = mapAscii((hash & 0xf0)>>4);
+                out[2] = mapAscii(hash & 0x0f);
+                out[3] = '\0';
 #ifdef PW_ENABLED
                 // init seed here, unlock
-                set_xor_seed(str2hash((char*)g_pw));
+                set_xor_seed(hash);
 #endif
+                setOutputString(out);
             }
             setCommandMode(false); // length limit reached
             break;
