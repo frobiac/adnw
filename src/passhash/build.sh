@@ -4,7 +4,8 @@
 #   '-DPH_EXPECTED_4_DIGITS_FOR_A=4616'
 #
 
-rm ./passhash
+rm ./passhash 2>/dev/null
+
 # using -O0 fails, need to check
 FLAGS="-g -O -W -std=c99"
 CC=gcc
@@ -16,8 +17,9 @@ mkdir .build 2>/dev/null
   $CC $FLAGS -c ../passhash.c  &&
   $CC $FLAGS -c ../main.c &&
   $CC $FLAGS -c ../b64.c      &&
+  $CC $FLAGS -c ../../helpers.c  &&
 
-  $CC main.o passhash.o sha1.o hmac-sha1.o b64.o -o ../passhash
+  $CC main.o helpers.o passhash.o sha1.o hmac-sha1.o b64.o -o ../passhash
 )
 
 #########

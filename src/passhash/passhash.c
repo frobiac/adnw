@@ -36,9 +36,12 @@
 #include "../macro.h"           // for direct output via setOutputString()
 #include "../global_config.h"   // g_pw
 #else
+
 // these are only required for external testing with different private keys.
 #include <stdio.h>
 char * PH_PRIVATE_KEY;
+char g_pw[PWLEN+2];
+void ph_setMasterPW(char * pk) { memset(g_pw, 0, PWLEN+2); snprintf(g_pw, PWLEN+1, "%s", pk); g_pw[PWLEN+1] = strlen(pk); }
 void ph_setPrivateKey(char * pk) { PH_PRIVATE_KEY = pk; }
 void setOutputString(char * str) { printf("%s", str); }
 #endif

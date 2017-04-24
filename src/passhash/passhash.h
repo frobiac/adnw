@@ -42,7 +42,6 @@
 #endif
 #include <stdbool.h>
 
-#define PH_PW_LEN       16
 #define PH_INPUT_LEN PH_MAX_LEN + 1 // 27
 
 #define PH_MIN_LEN       4
@@ -77,4 +76,6 @@ void    ph_reset(void);
 #ifndef __AVR__
     // allows to set otherwise hardcoded private key for tests
     void ph_setPrivateKey(char * privateKey);
+    void ph_setMasterPW(char * mp);
+    #define PWLEN 16
 #endif
