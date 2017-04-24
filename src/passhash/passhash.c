@@ -46,6 +46,8 @@ void ph_setPrivateKey(char * pk) { PH_PRIVATE_KEY = pk; }
 void setOutputString(char * str) { printf("%s", str); }
 #endif
 
+void genHash2(char * key, uint8_t key_len,  char * tag, uint8_t tag_len, uint8_t len, uint8_t type);
+
 //################################################################################
 // Parsing additions
 //################################################################################
@@ -74,13 +76,13 @@ void injectChar( char * mhash, uint8_t offset, uint8_t reserved,
     // check if desired character is already present (in special range)
     for(i=0; i<length-reserved; ++i) {
         tmp= (pos0+reserved+i)%length;
-        uint8_t ci = (int)(mhash[tmp]);
+        uint8_t ci = (uint8_t)(mhash[tmp]);
         if( ci >= cstartI && ci < cstartI + cnum) {
             return;
         }
     }
 
-    uint8_t injectC = (((seed+(int)(mhash[pos]))%cnum)+cstartI);
+    uint8_t injectC = (((seed+(uint8_t)(mhash[pos]))%cnum)+cstartI);
     mhash[pos] = (char)(injectC);
 }
 
@@ -105,7 +107,7 @@ void conv2digits( char * mhash, uint16_t seed, uint8_t length)
 
     for(i=0; i<length; ++i) {
         if( ! isdigit(mhash[i]) ) {
-            mhash[i] = (char)( (seed+(int)(mhash[pivot]))%10 + 48 /*'0'*/);
+            mhash[i] = (char)( (seed+(uint8_t)(mhash[pivot]))%10 + 48 /*'0'*/);
             pivot=i+1;
         }
     }
@@ -117,14 +119,13 @@ uint16_t letterSum(const char * str, uint8_t len)
     uint8_t i;
     uint16_t sum=0;
     for(i=0; i<len; i++) {
-        sum+=(int)(str[i]);
+        sum+=(uint8_t)(str[i]);
     }
     return sum;
 }
 
 
 
-void genHash2(char * key, uint8_t key_len,  char * tag, uint8_t tag_len, uint8_t len, uint8_t type);
 /**
  * key must have room for 27 chars (20Byte SHA1_HASH to base64)
  */
@@ -137,11 +138,9 @@ void genHash2(char * key, uint8_t key_len,  char * tag, uint8_t tag_len, uint8_t
 {
 
     char sha1hash[HMAC_SHA1_BYTES];
-    uint16_t seed = 0;  // max is 27*122
 
     memset(sha1hash, 0, HMAC_SHA1_BYTES);
 
-    //hmac_sha1((void*)(&sha1hash), tag, 8*strlen(tag), key, 8*strlen(key));
     hmac_sha1((void*)(&sha1hash), tag, 8*tag_len, key, 8*key_len);
 
     b64enc((unsigned char*)sha1hash, HMAC_SHA1_BYTES, key, sizeof(key));
@@ -149,7 +148,7 @@ void genHash2(char * key, uint8_t key_len,  char * tag, uint8_t tag_len, uint8_t
     // b64 of 20 Byte sha1hash -> 27 Bytes ending in '=' which must be removed
     key[27] ='\0';
 
-    seed=letterSum(key, 27);
+    uint16_t seed = letterSum(key, 27); // max is 27*122
 
     if(type==3) { // numeric
         conv2digits(key,seed,len);
