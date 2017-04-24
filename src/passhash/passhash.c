@@ -200,49 +200,49 @@ uint8_t passHash(uint8_t len, uint8_t type)
  * Parser called from command mode
  */
 
-uint8_t ph_parse(char c)
+void ph_parse(char c)
 {
-    // on first call enter password, or press return to clear previously entered one
-    // on subsequent runs enter tag [len [type]]
+    // Enter tag [len [type]]
+    // len and type are set to default values if invalid so no need to check
+    //
+    // @TODO could implement early exits and more checks
     //
     // read until return=10 is pressed or maximum length reached
     if( (uint8_t)(c) != 10 && ph_tag_len < PH_INPUT_LEN) {
-        if ( c == ' ' ) { // space -> advance to next field
+        if ( c == ' ' ) {           // space -> advance to next field
             ++read_field;
-            return PH_READING;
+            if(read_field>2)  // too many spaces
+                goto exit;
+            return;
         }
         if (read_field == 0) {      // still reading tag
             ph_input[ph_tag_len]= c;
             ++ph_tag_len;
-            return PH_READING;
+            return;
+        } else if(read_field==1) {
+            len=len*10+c-'0';
+            return;
+        } else if(read_field==2) {
+            type=c-'0';
         }
-
-        if( c<='9' && c >= '0') {   // digits for length or type
-            if(read_field==1)
-                len=len*10+c-'0';
-            else if(read_field==2)
-                type=c-'0';
-        }
-        return PH_READING;                     // character was handled
-
-    } else { // Done reading any input:
-        if(ph_tag_len == 0) {
-            return PH_FAIL;
-        }
-
-        // getting here means password had been set, all data was entered, so passhash is ready
-        // defaults if invalid input
-        if(len<PH_MIN_LEN || len>PH_MAX_LEN)
-            len=12;
-        if(type<PH_TYPE_ALNUMSYM || type>PH_TYPE_NUM)
-            type=PH_TYPE_ALNUMSYM;
-
-        // reuse ph_input buffer in passhash calculation
-        passHash( (uint8_t)len, (uint8_t)type);
-        setOutputString( ph_input );
-        ph_reset();
-        return PH_DONE;
     }
+
+    if(ph_tag_len==0) // no tag
+        goto exit;
+
+    // getting here means password had been set, all data was entered, so passhash is ready
+    if(len<PH_MIN_LEN || len>PH_MAX_LEN)
+        len=12;
+    if(type<PH_TYPE_ALNUMSYM || type>PH_TYPE_NUM)
+        type=PH_TYPE_ALNUMSYM;
+
+    // reuse ph_input buffer in passhash calculation
+    passHash( (uint8_t)len, (uint8_t)type);
+    setOutputString( ph_input );
+
+exit:
+    ph_reset();
+    setCommandMode(false);
 }
 
 /**

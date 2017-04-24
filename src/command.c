@@ -208,6 +208,14 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 }
 
 
+/**
+Several subcommands intercept entered data for consumption:
+- Macro rec  [MACROLEN] : C-Return or C-Esc
+- Macro play [1]        : reads single macro selector character
+- Passhash   [PH_INPUT] : until Return - reads tag[ <len>[ <type>]
+- Unlock     [PWLEN+2]  : until Return - reads g_pw
+ */
+
 bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 {
     switch( subcmd ) {
@@ -266,26 +274,8 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 #endif
 
 #ifdef PH_ENABLED
-            uint8_t ph_state;
         case SUB_PASSHASH:
-            ph_state = ph_parse(c);
-
-            if( PH_READING == ph_state ) // not yet done reading, so stay in command mode and wait for next char.
-                return true;
-
-            // input was terminated or reached limit, in any case command mode is done after this iteration.
-            setCommandMode(false);
-
-            // getting here means either
-            // 1) password has been set (again)
-            // 2) or all data was entered, so passhash has been already printed
-            // 3) password had been cleared
-            // could check state here for errors ...
-            //if( ph_state > PH_ERRORS )
-            //  xprintf("PH:%d", ph_state);
-
-            ph_reset();
-
+            ph_parse(c);
             break;
 #endif
 

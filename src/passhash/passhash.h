@@ -66,11 +66,7 @@ uint8_t passHash( uint8_t len, uint8_t type);
 /**
  * Parser additions
  */
-/** Upon very first run, everything up to return is read as master password
- *  Subsequent runs are interpreted as tag len type
- *  Immediate entry of return clears master password
- */
-uint8_t ph_parse(char c);
+void    ph_parse(char c);
 void    ph_reset(void);
 
 #ifndef __AVR__
