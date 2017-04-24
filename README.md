@@ -107,8 +107,8 @@ The following commands need further input:
     * Entered string is used as a unlock password
 
 - h PassHash
-    * On first call the master password must be entered. A check against given test data is performed.
-    * Subsequent calls take arguments as tag [length [mode]]
+    * Unlock password is used as master password.
+    * enter arguments as tag [length [mode]]
 
 
 Password Hash Support
@@ -116,6 +116,7 @@ Password Hash Support
 Support for passwords compatible with Password Hasher implementations, for example [Twik][twik_home],
 must be configured in a separate header:
 Twik private key of a profile must be set in src/_private_data.h, which is created on first make call and ignored in git.
+Master password is read with unlock command once, tags and length/type can then be used to create passhashes.
 
 
 Current Layout

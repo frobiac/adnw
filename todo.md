@@ -17,7 +17,6 @@ Test sizes:
 
 FEATURES
 --------
-* read code to unlock macros, passhash private key and xorshift seed on boot
 * password card easier?
 * bootmode for BIOS
 * encrypt secret, simple password card support

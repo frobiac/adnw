@@ -34,6 +34,7 @@
 #ifdef __AVR__
 #include "../_private_data.h"   // don't include for testing on x86 where private key is defined separately
 #include "../macro.h"           // for direct output via setOutputString()
+#include "../global_config.h"   // g_pw
 #else
 // these are only required for external testing with different private keys.
 #include <stdio.h>
@@ -48,15 +49,11 @@ void setOutputString(char * str) { printf("%s", str); }
 // longest possible tag is input minus length, mode and two spaces
 #define PH_TAGLEN PH_INPUT_LEN - 5 // tag_XY_M
 
-// master password: filled during runtime and never stored persistently.
-static char ph_master_pw[PH_PW_LEN+1];
-
 // buffer for input and passhash generation
 char ph_input[PH_INPUT_LEN];
 
 uint8_t type, len, read_field;
 uint8_t ph_tag_len;
-uint8_t ph_master_pw_len;
 uint8_t ph_pk_len;
 //################################################################################
 
@@ -189,10 +186,8 @@ uint8_t passHash(uint8_t len, uint8_t type)
     memcpy(ph_input, PH_PRIVATE_KEY, PH_INPUT_LEN);
     ph_pk_len=strlen(ph_input);
 
-    //genHash(ph_input, tag, 24,  1);
-    //genHash(ph_input, ph_master_pw, len, type);
     genHash2(ph_input, ph_pk_len, tag,          ph_tag_len,            24,  1);
-    genHash2(ph_input, 24,        ph_master_pw, ph_master_pw_len,  len, type);
+    genHash2(ph_input, 24,  (char*) g_pw, (uint8_t) g_pw[PWLEN+1],    len, type);
 
     return 0;
 }
@@ -229,38 +224,22 @@ uint8_t ph_parse(char c)
         return PH_READING;                     // character was handled
 
     } else { // Done reading any input:
-
-        // only return was pressed -> clear master password and return
         if(ph_tag_len == 0) {
-            ph_master_pw_len=0;
-            memset(ph_master_pw,0,PH_PW_LEN);
-            return PH_PW_CLEARED;
+            return PH_FAIL;
         }
 
-        // entered string is initial entry of master password
-        if( ph_master_pw[0] == '\0' ) {
-            memcpy(ph_master_pw, ph_input, ph_tag_len);
-            ph_master_pw_len=ph_tag_len;
-            ph_reset();
-            return PH_PW_ENTERED;
-        }
         // getting here means password had been set, all data was entered, so passhash is ready
-        {
-            // xprintf("\nPW:%s: T:%s %u/%u", ph_master_pw, ph_input, len, type);
-            //memset(ph_input,0,PH_INPUT_LEN);
+        // defaults if invalid input
+        if(len<PH_MIN_LEN || len>PH_MAX_LEN)
+            len=12;
+        if(type<PH_TYPE_ALNUMSYM || type>PH_TYPE_NUM)
+            type=PH_TYPE_ALNUMSYM;
 
-            // defaults if invalid input
-            if(len<PH_MIN_LEN || len>PH_MAX_LEN)
-                len=12;
-            if(type<PH_TYPE_ALNUMSYM || type>PH_TYPE_NUM)
-                type=PH_TYPE_ALNUMSYM;
-
-            // reuse ph_input buffer in passhash calculation
-            passHash( (uint8_t)len, (uint8_t)type);
-            setOutputString( ph_input );
-            ph_reset();
-            return PH_DONE;
-        }
+        // reuse ph_input buffer in passhash calculation
+        passHash( (uint8_t)len, (uint8_t)type);
+        setOutputString( ph_input );
+        ph_reset();
+        return PH_DONE;
     }
 }
 
