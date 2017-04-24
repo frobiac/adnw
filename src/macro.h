@@ -36,7 +36,7 @@
 #define MACROCOUNT       12
 #define MACRO_MAX_LEN    40
 
-uint8_t updateEEMacroHID(const uint8_t macro[MACRO_MAX_LEN], uint8_t idx);
+uint8_t updateEEMacroHID(uint8_t macro[MACRO_MAX_LEN], uint8_t idx);
 uint8_t readEEMacroHID  (uint8_t macro[MACRO_MAX_LEN], uint8_t idx);
 /// shortcut to put macro directly in print buffer
 uint8_t printMacro(char macro_char);

@@ -28,6 +28,11 @@
  * Global variables / configuration options for persistent storage in eeprom.
  */
 
+/// global unlock password used "descramble" stored EEPROM content and init seed
+#define PWLEN 16
+uint8_t g_pw[PWLEN+1+1]; // length at g_pw[PWLEN] plus last '\0'
+
+
 
 /**
  * Convenience macros for individual member access of EEPROM config.

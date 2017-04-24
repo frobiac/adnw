@@ -26,6 +26,7 @@
 #include "jump_bootloader.h"
 #include "ascii2hid.h"
 #include "print.h"
+#include "helpers.h"
 
 #ifdef PW_ENABLED
     #include "passhash/xor.h"
@@ -108,6 +109,7 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
     }
 
     switch(curChar) {
+
 #ifdef PINKYDROP
         case 'd':
             g_cfg.fw.pinkydrop = ! g_cfg.fw.pinkydrop;
@@ -187,6 +189,11 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             break;
 #endif
 
+        case 'U':
+            memset(g_pw, 0, PWLEN+2);
+            subcmd=SUB_UNLOCK;
+            break;
+
         case 'q':
         default:
             setCommandMode(false);
@@ -199,12 +206,30 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 
 bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 {
-
     switch( subcmd ) {
+        case SUB_UNLOCK:
+            // read until return=10 is pressed or maximum length reached
+            if( (uint8_t)(c) != 10 ) {
+                if( g_pw[PWLEN+1] < PWLEN) {
+                    g_pw[g_pw[PWLEN+1]] = c;
+                    g_pw[PWLEN+1]++;
+                    return false;
+                }
+            } else {
+                g_pw[PWLEN] = '\0';
+#ifdef PW_ENABLED
+                // init seed here, unlock
+                set_xor_seed(str2hash((char*)g_pw));
+#endif
+            }
+            setCommandMode(false); // length limit reached
+            break;
+
         case SUB_MACRO:
             printMacro(c);
             setCommandMode(false);
             break;
+
         case SUB_MACRO_REC:
             // stay in command mode until macro is read.
             if(!setMacroRecording(c, hid,mod))
@@ -261,7 +286,6 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             static uint8_t idx;
 
         case SUB_PW_XOR:
-            set_xor_seed(1854);
             idx=idx%3;
             res[idx]=c;
             if(++idx==3) {

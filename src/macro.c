@@ -234,6 +234,11 @@ uint8_t readEEMacroHID(uint8_t * macro, uint8_t idx)
 
     macro[len]=0;
 
+    // xor with unlock code
+    for(uint8_t i=0; i<len; ++i) {
+        macro[i] ^= g_pw[i%g_pw[PWLEN+1]];
+    }
+
     return len;
 }
 
@@ -248,7 +253,7 @@ uint8_t readEEMacroHID(uint8_t * macro, uint8_t idx)
  *              first character is macro selector character
  * @param idx   index of macro to store
  */
-uint8_t updateEEMacroHID(const uint8_t * macro, uint8_t idx)
+uint8_t updateEEMacroHID(uint8_t * macro, uint8_t idx)
 {
     if(idx>=MACROCOUNT)
         return 0;
@@ -262,6 +267,10 @@ uint8_t updateEEMacroHID(const uint8_t * macro, uint8_t idx)
     uint8_t len=0;
     while(macro[len] != 0 && len < MACRO_MAX_LEN) {
         ++len;
+    }
+    // xor with unlock code, macro[0] contains selector character so ignore that one
+    for(uint8_t i=0; i<len-1; ++i) {
+        macro[1+i] ^= g_pw[i%g_pw[PWLEN+1]];
     }
 
     eeprom_busy_wait();
