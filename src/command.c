@@ -40,6 +40,9 @@
 
 bool g_cmd_mode_active=false;
 
+#ifdef EXTRA
+    #include "extra.h"
+#endif
 
 static uint8_t subcmd;           ///< currently active subcommand
 
@@ -168,6 +171,11 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             break;
 #endif
 
+#ifdef EXTRA
+        case 'e':
+            subcmd=SUB_EXTRA;
+            break;
+#endif
 
         case 'q':
         default:
@@ -198,6 +206,26 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
                 setCommandMode(false);
             return false; // printing character ?
             break;
+
+#ifdef EXTRA
+            static uint16_t data;
+        case SUB_EXTRA:
+            if(c==10) {
+                xprintf("\nExtra 0x%0X", data);
+                g_extra_data = data;
+                data=0;
+                setCommandMode(false);
+            } else if( c>='0' && c<='9') {
+                data*=16;
+                data+=(c-'0');
+            } else if(c>='a'&& c<='f') {
+                data*=16;
+                data+= (10+c-'a');
+            }
+
+            break;
+#endif
+
 #ifdef PH_ENABLED
         case SUB_PASSHASH:
             passHash(password, len, type, "secret", "key", "tag");

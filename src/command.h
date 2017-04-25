@@ -41,6 +41,7 @@ enum {
     SUB_PASSHASH,
     SUB_CONFIG,
     SUB_LED,
+    SUB_EXTRA,
     SUB_END
 };
 
