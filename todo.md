@@ -141,4 +141,6 @@ Thumbkey double usage
 Unsorted
 --------
 Testcases/mode
+suspend/wakeup:
+    win: powercfg -devicequery wake_armed
 
