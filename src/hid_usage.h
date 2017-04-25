@@ -313,9 +313,9 @@ typedef enum {
     MOD_R_CTRL,
     MOD_R_SHIFT,
     MOD_R_ALT,
-    MOD_R_GUI,      // 0xE7
-    MOD_L_HYPER,    // 0xE8 dummy mod
-    MOD_LAST    = MOD_L_HYPER,
+    MOD_R_GUI, 
+    MOD_LAST = MOD_R_GUI,
+    MOD_L_HYPER,
 
     ADD_FIRST   = MODHID_MASK,
      SHIFT,

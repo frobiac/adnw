@@ -509,8 +509,12 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 
     for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
         struct Key k=activeKeys.keys[i];
+        uint8_t kc = getKeyCode(k.row, k.col, getActiveLayer());
         if(k.normalKey && idx < 6) {
-            report_data->KeyCode[idx]=getKeyCode(k.row, k.col, getActiveLayer());
+            report_data->KeyCode[idx]= kc;
+            idx++;
+        } else if ( kc == HID_R_GUI && idx<6) {
+            report_data->KeyCode[idx]= HID_INT1;
             idx++;
         }
         if( HID_CMDMODE == getKeyCode(k.row, k.col, getActiveLayer() ) )
@@ -525,6 +529,7 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
     }
 
     report_data->Modifier=getActiveModifiers()|getActiveKeyCodeModifier();
+    report_data->Modifier &= ~(1<<(MOD_R_GUI-MOD_FIRST));
 
     return sizeof(USB_KeyboardReport_Data_t);
 
@@ -749,7 +754,7 @@ uint8_t getActiveModifiers()
   */
 bool isModifierKey(uint8_t row, uint8_t col)
 {
-    if( getModifier(row,col,0) >= MOD_L_CTRL  && getModifier(row,col,0) < MOD_LAST)
+    if( getModifier(row,col,0) >= MOD_FIRST  && getModifier(row,col,0) <= MOD_LAST)
         return true;
     return false;
 }
