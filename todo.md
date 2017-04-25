@@ -143,4 +143,5 @@ Unsorted
 Testcases/mode
 suspend/wakeup:
     win: powercfg -devicequery wake_armed
+    implement EVENT_USB_Device_Suspend() ??
 

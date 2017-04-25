@@ -160,6 +160,19 @@ void led(uint8_t n)
     return;
 }
 
+bool suspend_wakeup_condition(void);
+/**
+ * Wake up host on 3 or more pressed keys.
+ * @todo: Power saving, idle, sleep...
+ */
+bool suspend_wakeup_condition()
+{
+    clearActiveKeys();
+    scan_matrix();
+    init_active_keys();
+    return (activeKeys.keycnt > 2);
+}
+
 /** Main program entry point. This routine contains the overall program flow, including initial
  *  setup of all components and the main program loop.
  */
@@ -174,6 +187,12 @@ static void __attribute__ ((noreturn)) main_loop(void)
     GlobalInterruptEnable();
 
     for (;;) {
+        while (USB_DeviceState == DEVICE_STATE_Suspended) {
+            if (USB_Device_RemoteWakeupEnabled && suspend_wakeup_condition()) {
+                USB_CLK_Unfreeze();
+                USB_Device_SendRemoteWakeup();
+            }
+        }
         if (USB_DeviceState != DEVICE_STATE_Suspended) {
             HID_Device_USBTask(&Keyboard_HID_Interface);
 #ifdef DEBUG_OUTPUT
@@ -186,11 +205,11 @@ static void __attribute__ ((noreturn)) main_loop(void)
             if( g_cfg.fw.mouse_enabled )
                 HID_Device_USBTask(&Mouse_HID_Interface);
 #endif
-        } else if (USB_Device_RemoteWakeupEnabled ) {
-            USB_CLK_Unfreeze();
-            USB_Device_SendRemoteWakeup();
         }
+
+#if !defined(INTERRUPT_CONTROL_ENDPOINT)
         USB_USBTask();
+#endif
     }
 }
 
@@ -358,6 +377,13 @@ void EVENT_USB_Device_StartOfFrame(void)
 }
 
 
+void EVENT_USB_Device_Suspend()
+{
+}
+
+void EVENT_USB_Device_WakeUp()
+{
+}
 /** HID class driver callback function for the creation of HID reports to the host.
  *
  *  \param[in] HIDInterfaceInfo  Pointer to the HID class interface configuration structure being referenced
