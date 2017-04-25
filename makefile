@@ -27,6 +27,7 @@ KB_HW		 ?= BLACKBOWL
 
 KB_PH  ?= 1
 KB_DBG ?= 1
+KB_EXT ?= 1
 
 ##################################################################
 #
@@ -64,6 +65,11 @@ endif
 
 ifeq ($(KB_DBG), 1)
 CC_FLAGS += -DDEBUG_OUTPUT
+endif
+
+ifeq ($(KB_EXT), 1)
+CC_FLAGS += -DEXTRA
+SRC += $(SRCDIR)/extra.c
 endif
 
 ifneq (,$(findstring REDTILT,$(CC_FLAGS)))

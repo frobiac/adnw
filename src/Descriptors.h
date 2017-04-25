@@ -69,6 +69,11 @@ typedef struct {
     USB_HID_Descriptor_HID_t              HID_MouseHID;
     USB_Descriptor_Endpoint_t             HID_MouseReportINEndpoint;
 
+    // Extra HID Interface
+    USB_Descriptor_Interface_t            HID_ExtraInterface;
+    USB_HID_Descriptor_HID_t              HID_ExtraHID;
+    USB_Descriptor_Endpoint_t             HID_ExtraReportINEndpoint;
+
 } USB_Descriptor_Configuration_t;
 
 /** Enum for the device interface descriptor IDs within the device. Each interface descriptor
@@ -79,6 +84,7 @@ enum InterfaceDescriptors_t {
     INTERFACE_ID_Keyboard = 0,
     INTERFACE_ID_Debug    = 1,
     INTERFACE_ID_Mouse    = 2,
+    INTERFACE_ID_Extra    = 3,
 };
 
 
@@ -102,6 +108,12 @@ enum StringDescriptors_t {
 // @TODO may be allow disabling mouse completely? Mousekeys???
 #define MOUSE_IN_EPNUM (DBG_IN_EPNUM + 1)
 
+#ifdef EXTRA
+    #define EXTRA_IN_EPNUM (MOUSE_IN_EPNUM + 1)
+#else
+    #define EXTRA_IN_EPNUM MOUSE_IN_EPNUM
+#endif
+
 
 /// Endpoint numbers and sizes
 #define KEYBOARD_IN_EPADDR           (ENDPOINT_DIR_IN | KEYBOARD_IN_EPNUM)
@@ -113,6 +125,8 @@ enum StringDescriptors_t {
 #define MOUSE_IN_EPADDR              (ENDPOINT_DIR_IN | MOUSE_IN_EPNUM)
 #define MOUSE_EPSIZE                 8
 
+#define EXTRA_IN_EPADDR              (ENDPOINT_DIR_IN | EXTRA_IN_EPNUM)
+#define EXTRA_EPSIZE                 8
 
 
 /* Function Prototypes: */

@@ -96,5 +96,6 @@ typedef struct {
     int8_t H; /// horizontal wheel
 } ATTR_PACKED USB_WheelMouseReport_Data_t;
 
+
 #endif // _KEYBOARD_H_
 

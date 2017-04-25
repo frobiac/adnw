@@ -46,6 +46,9 @@
 
 #include "Descriptors.h"
 #include "config.h"
+#ifdef EXTRA
+    #include "extra.h"
+#endif
 
 
 /** HID class report descriptor. This is a special descriptor constructed with values from the
@@ -171,6 +174,39 @@ const USB_Descriptor_Device_t PROGMEM DeviceDescriptor = {
     .NumberOfConfigurations = FIXED_NUM_CONFIGURATIONS
 };
 
+#ifdef EXTRA
+const USB_Descriptor_HIDReport_Datatype_t PROGMEM ExtraReport[] = {
+    // *INDENT-OFF*
+    HID_RI_USAGE_PAGE(8, 0x01),             // Generic Desktop
+    HID_RI_USAGE(8, 0x80),                  // System Control
+    HID_RI_COLLECTION(8, 0x01),             // Application
+        HID_RI_REPORT_ID(8, REPORT_ID_SYSTEM),
+        HID_RI_LOGICAL_MINIMUM(16, 0x0081),
+        HID_RI_LOGICAL_MAXIMUM(16, 0x00B7),
+        HID_RI_USAGE_MINIMUM(16, 0x0081),   // System Power Down
+        HID_RI_USAGE_MAXIMUM(16, 0x00B7),   // System Display LCD Autoscale
+        HID_RI_REPORT_SIZE(8, 16),
+        HID_RI_REPORT_COUNT(8, 1),
+        HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_ARRAY | HID_IOF_ABSOLUTE),
+    HID_RI_END_COLLECTION(0),
+
+    HID_RI_USAGE_PAGE(8, 0x0C),             // Consumer
+    HID_RI_USAGE(8, 0x01), 	                // Consumer Control
+    HID_RI_COLLECTION(8, 0x01),             // Application
+        HID_RI_REPORT_ID(8, REPORT_ID_CONSUMER),
+        HID_RI_LOGICAL_MINIMUM(16, 0x0001),
+        HID_RI_LOGICAL_MAXIMUM(16, 0x029C),
+        HID_RI_USAGE_MINIMUM(16, 0x0001),   // +10
+        HID_RI_USAGE_MAXIMUM(16, 0x029C),   // AC Distribute Vertically
+        HID_RI_REPORT_SIZE(8, 16),
+        HID_RI_REPORT_COUNT(8, 1),
+        HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_ARRAY | HID_IOF_ABSOLUTE),
+    HID_RI_END_COLLECTION(0),
+    // *INDENT-OFF*
+};
+#endif
+
+
 /** Configuration descriptor structure. This descriptor, located in FLASH memory, describes the usage
  *  of the device in one of its supported configurations, including information about any device interfaces
  *  and endpoints. The descriptor is read out by the USB host during the enumeration process when selecting
@@ -182,7 +218,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .Header                 = {.Size = sizeof(USB_Descriptor_Configuration_Header_t), .Type = DTYPE_Configuration},
 
         .TotalConfigurationSize = sizeof(USB_Descriptor_Configuration_t),
-        .TotalInterfaces        = 3,  // keyboard, debug, mouse
+        .TotalInterfaces        = 4,  // keyboard, debug, mouse,extra
 
         .ConfigurationNumber    = 1,
         .ConfigurationStrIndex  = NO_DESCRIPTOR,
@@ -269,6 +305,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
     },
 #endif
 
+
     // Mouse
     .HID_MouseInterface =
     {
@@ -304,7 +341,46 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {
         .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
         .EndpointSize           = MOUSE_EPSIZE,
         .PollingIntervalMS      = 0x05
-    }
+    },
+
+#ifdef EXTRA
+    .HID_ExtraInterface =
+        {
+            .Header                 = {.Size = sizeof(USB_Descriptor_Interface_t), .Type = DTYPE_Interface},
+
+            .InterfaceNumber        = INTERFACE_ID_Extra,
+            .AlternateSetting       = 0x00,
+
+            .TotalEndpoints         = 1,
+
+            .Class                  = HID_CSCP_HIDClass,
+            .SubClass               = HID_CSCP_NonBootSubclass,
+            .Protocol               = HID_CSCP_NonBootProtocol,
+
+            .InterfaceStrIndex      = NO_DESCRIPTOR
+        },
+
+    .HID_ExtraHID =
+        {
+            .Header                 = {.Size = sizeof(USB_HID_Descriptor_HID_t), .Type = HID_DTYPE_HID},
+
+            .HIDSpec                = VERSION_BCD(1,1,1),
+            .CountryCode            = 0x00,
+            .TotalReportDescriptors = 1,
+            .HIDReportType          = HID_DTYPE_Report,
+            .HIDReportLength        = sizeof(ExtraReport)
+        },
+
+    .HID_ExtraReportINEndpoint =
+        {
+            .Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
+
+            .EndpointAddress        = (ENDPOINT_DIR_IN | EXTRA_IN_EPNUM),
+            .Attributes             = (EP_TYPE_INTERRUPT | ENDPOINT_ATTR_NO_SYNC | ENDPOINT_USAGE_DATA),
+            .EndpointSize           = EXTRA_EPSIZE,
+            .PollingIntervalMS      = 0x0A
+        },
+#endif
 };
 
 /** Language descriptor structure. This descriptor, located in FLASH memory, is returned when the host requests
@@ -377,6 +453,12 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint16_t wIndex
                     Size    = sizeof(USB_HID_Descriptor_HID_t);
                     break;
 #endif
+#ifdef EXTRA
+                case INTERFACE_ID_Extra:
+                    Address = &ConfigurationDescriptor.HID_ExtraHID;
+                    Size    = sizeof(USB_HID_Descriptor_HID_t);
+                    break;
+#endif
                 case INTERFACE_ID_Mouse:
                     Address = &ConfigurationDescriptor.HID_MouseHID;
                     Size    = sizeof(USB_HID_Descriptor_HID_t);
@@ -393,6 +475,12 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint16_t wIndex
                 case INTERFACE_ID_Debug:
                     Address = &DBGReport;
                     Size    = sizeof(DBGReport);
+                    break;
+#endif
+#ifdef EXTRA
+                case INTERFACE_ID_Extra:
+                    Address = &ExtraReport;
+                    Size    = sizeof(ExtraReport);
                     break;
 #endif
                 case INTERFACE_ID_Mouse:

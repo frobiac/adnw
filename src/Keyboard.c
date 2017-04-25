@@ -68,6 +68,10 @@ static uint8_t PrevMouseHIDReportBuffer[sizeof(USB_WheelMouseReport_Data_t)];
     static uint8_t PrevDBGHIDReportBuffer[sizeof(USB_DBGReport_Data_t)];
 #endif
 
+#ifdef EXTRA
+    #include "extra.h"
+    static uint8_t PrevExtraHIDReportBuffer[sizeof(USB_ExtraReport_Data_t)];
+#endif
 /** LUFA HID Class driver interface configuration and state information. This structure is
  *  passed to all HID Class driver functions, so that multiple instances of the same class
  *  within a device can be differentiated from one another.
@@ -126,6 +130,25 @@ USB_ClassInfo_HID_Device_t DBG_HID_Interface = {
 };
 #endif
 
+#ifdef EXTRA
+USB_ClassInfo_HID_Device_t Extra_HID_Interface = {
+    .Config =
+    {
+        .InterfaceNumber              = INTERFACE_ID_Extra,
+
+        .ReportINEndpoint             =
+        {
+            .Address              = EXTRA_IN_EPADDR,
+            .Size                 = EXTRA_EPSIZE,
+            .Banks                = 1,
+        },
+
+        .PrevReportINBuffer           = PrevExtraHIDReportBuffer,
+        .PrevReportINBufferSize       = sizeof(PrevExtraHIDReportBuffer),
+    },
+};
+#endif
+
 
 void led(uint8_t n)
 {
@@ -155,6 +178,9 @@ static void __attribute__ ((noreturn)) main_loop(void)
             HID_Device_USBTask(&Keyboard_HID_Interface);
 #ifdef DEBUG_OUTPUT
             HID_Device_USBTask(&DBG_HID_Interface);
+#endif
+#ifdef EXTRA
+            HID_Device_USBTask(&Extra_HID_Interface);
 #endif
 #ifdef PS2MOUSE
             if( g_cfg.fw.mouse_enabled )
@@ -295,6 +321,9 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 #ifdef DEBUG_OUTPUT
     ConfigSuccess &= HID_Device_ConfigureEndpoints(&DBG_HID_Interface);
 #endif
+#ifdef EXTRA
+    ConfigSuccess &= HID_Device_ConfigureEndpoints(&Extra_HID_Interface);
+#endif
 
     USB_Device_EnableSOFEvents();
 
@@ -308,6 +337,9 @@ void EVENT_USB_Device_ControlRequest(void)
 #ifdef DEBUG_OUTPUT
     HID_Device_ProcessControlRequest(&DBG_HID_Interface);
 #endif
+#ifdef EXTRA
+    HID_Device_ProcessControlRequest(&Extra_HID_Interface);
+#endif
     HID_Device_ProcessControlRequest(&Mouse_HID_Interface);
 }
 
@@ -320,6 +352,9 @@ void EVENT_USB_Device_StartOfFrame(void)
     Console_Task();
 #endif
     HID_Device_MillisecondElapsed(&Mouse_HID_Interface);
+#ifdef EXTRA
+    HID_Device_MillisecondElapsed(&Extra_HID_Interface);
+#endif
 }
 
 
@@ -351,6 +386,14 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
     else if (HIDInterfaceInfo == &DBG_HID_Interface) {
         USB_DBGReport_Data_t* DBGReport = (USB_DBGReport_Data_t*)ReportData;
         *ReportSize = DBG__get_report(DBGReport);
+    }
+#endif
+#ifdef EXTRA
+    else if (HIDInterfaceInfo == &Extra_HID_Interface) {
+        USB_ExtraReport_Data_t* ExtraReport = (USB_ExtraReport_Data_t*)ReportData;
+        *ReportSize = sizeof(USB_ExtraReport_Data_t);
+        getExtraReport(ExtraReport);
+        return false;
     }
 #endif
 
