@@ -19,8 +19,40 @@
 
 // *INDENT-OFF*
 
-#ifndef _HID_USAGE_H
-#define _HID_USAGE_H 1
+#pragma once
+
+/**
+ * This file defines relevant ids for HID and ASCII mappings.
+ *
+ * Certain characters require associated modifiers to be sent along with their HID keycode,
+ * and this mapping is dependant on the selected keyboard layout on the host.
+ * An example is '@', which is composed of 'q' plus AltGr modifier on quertz.
+ *
+ * Information about additional Shift and AltGr requirements must therefore be stored along
+ * with the HID code so these characters can be mapped to different layers.
+ *
+ * A keymap is thus composed of one pair of HID keycode and associated modifier for composing
+ * a character per key per layer.
+ *
+ * Additional keyboard modifiers (shift, alt, ctrl and gui) and firmware specific modifiers
+ * for layer switching or custom usage (dual use / tapping, internal control) can then be also
+ * encoded in the additional field.
+ *
+ * HID modifiers are encoded into a 8 bit mask in USB keyboard report, but since operating systems
+ * tend to handle left and right side modifiers the same with exception of R_Alt = AltGr
+ * 3 bits are unused
+ *
+ * Right               Left
+ * 7    6    5    4    3    2    1     0
+ * Gui  Alt  Shft Ctrl Gui  Alt  Shft Ctrl
+ *      (*)
+ *
+ * Firmware specific modifiers are
+ * - Layer switches
+ * - Dual use / tapping
+ * - Mouse key
+ *
+ */
 
 #include <stdint.h>
 
@@ -96,7 +128,7 @@
 #define HID_F9              66
 #define HID_F10             67
 #define HID_F11             68
-#define HID_F12             69
+#define HID_F12             69 //0x45
 #define HID_PRINTSCREEN     70
 #define HID_SCROLL_LOCK     71
 #define HID_PAUSE           72
@@ -134,27 +166,86 @@
 #define HID_F13             104
 #define HID_F14             105
 #define HID_F15             106
+#define HID_F16             107
+#define HID_F17             108
+#define HID_F18             109
+#define HID_F19             110
+#define HID_F20             111
+#define HID_F21             112
+#define HID_F22             113
+#define HID_F23             114
+#define HID_F24             115 // 0x73
 
+#define HID_EXEC	0x74 //	Keyboard Execute
+#define HID_HELP	0x75 //	Keyboard Help
+#define HID_MENU	0x76 //	Keyboard Menu
+#define HID_SEL 	0x77 //	Keyboard Select
+#define HID_STOP	0x78 //	Keyboard Stop
+#define HID_AGAI	0x79 //	Keyboard Again
+#define HID_UNDO	0x7a //	Keyboard Undo
+#define HID_CUT 	0x7b //	Keyboard Cut
+#define HID_COPY	0x7c //	Keyboard Copy
+#define HID_PAST	0x7d //	Keyboard Paste
+
+#define HID_INT1    0x87 //	Keyboard International1
+#define HID_INT2    0x88 //	Keyboard International1
+#define HID_INT3    0x89 //	Keyboard International1
+#define HID_INT4    0x8a //	Keyboard International1
+#define HID_CMDMODE 0x8b // HID_INT5
+// #define HID_INT5    0x8b //	Keyboard International5
+#define HID_INT6    0x8c //	Keyboard International6
+#define HID_INT7    0x8d //	Keyboard International7
 /*
-   The largest HID usage code is AC_Distribute_Vertically from the Consumer
-   Control usage page.  Its id is 0x29c, which requires 10 bits.  The largest
-   usage page used by a keyboard, on the other hand, is 0x0c, which requires
-   only 4 bits.  So we pack the usage id in the lower 10 bits of a 16 bit int,
-   and the usage page in the upper 6 bits.
+	0x74	Keyboard Execute
+	0x75	Keyboard Help
+	0x76	Keyboard Menu
+	0x77	Keyboard Select
+	0x78	Keyboard Stop
+	0x79	Keyboard Again
+	0x7A	Keyboard Undo
+	0x7B	Keyboard Cut
+	0x7C	Keyboard Copy
+	0x7D	Keyboard Paste
+	0x7E	Keyboard Find
+	0x7F	Keyboard Mute
+	0x80	Keyboard Volume Up
+	0x81	Keyboard Volume Down
+	0x82	Keyboard Locking Caps Lock
+	0x83	Keyboard Locking Num Lock
+	0x84	Keyboard Locking Scroll Lock
+	0x85	Keypad Comma
+	0x86	Keypad Equal Sign
+	0x87	Keyboard International1
+	0x88	Keyboard International2
+	0x89	Keyboard International3
+	0x8A	Keyboard International4
+	0x8B	Keyboard International5
+	0x8C	Keyboard International6
+	0x8D	Keyboard International7
+	0x8E	Keyboard International8
+	0x8F	Keyboard International9
+	0x90	Keyboard LANG1
+	0x91	Keyboard LANG2
+	0x92	Keyboard LANG3
+	0x93	Keyboard LANG4
+	0x94	Keyboard LANG5
+	0x95	Keyboard LANG6
+	0x96	Keyboard LANG7
+	0x97	Keyboard LANG8
+	0x98	Keyboard LANG9
+	0x99	Keyboard Alternate Erase
+	0x9A	Keyboard SysReq/Attention
+	0x9B	Keyboard Cancel
+	0x9C	Keyboard Clear
+	0x9D	Keyboard Prior
+	0x9E	Keyboard Return
+	0x9F	Keyboard Separator
+	0xA0	Keyboard Out
+	0xA1	Keyboard Oper
+	0xA2	Keyboard Clear/Again
+	0xA3	Keyboard CrSel/Props
+	0xA4	Keyboard ExSel
 */
-
-#define MAKE_USAGE(page,id) (((page)<<10)|(id))
-#define USAGE_ID(usage)     (usage&~(0xffff<<10))
-#define USAGE_PAGE(usage)   (usage>>10)
-
-typedef enum {
-    page_keyboard = 0x07,
-    page_system = 0x01,
-    page_consumer = 0x0c
-} usage_page;
-
-// ... till F24             ...
-#define HID_F24             115
 
 #define HID_L_CONTROL       0xE0
 #define HID_L_SHIFT         0xE1
@@ -164,6 +255,7 @@ typedef enum {
 #define HID_R_SHIFT         0xE5
 #define HID_R_ALT           0xE6
 #define HID_R_GUI           0xE7
+#define HID_L_HYPER         HID_INT1
 
 #define HID_SYSRQ           0x9A
 
@@ -174,12 +266,28 @@ typedef enum {
 #define HID_BTN_S (1<<3) // scroll
 #define HID_BTN_5 (1<<4) // 5th
 
+// since multiple modifiers per defined key do not make sense so far,
+// we can use upper nibble for special key type encoding instead
+#define MODKEY_MASK   0x10
+#define MODHID_MASK   0x20
+#define TAPPING_MASK  0x40
+#define LAYER_MASK    0x80
+// encode actual modifier bit in lower nibble.
+#define HID_MOD_MASK(mod) (mod & (MODKEY_MASK|MODHID_MASK) ? 1<<(mod&0x0F) : 0)
 
+
+/**
+ * Any keys or modifiers that need further processing are stored here.
+ * Their actual value has no meaning and must be mapped to something
+ * reasonable later on.
+ */
 typedef enum {
-//##########################################
-    /* Mousekey */
-    MS_BEGIN=0xEF,
-    MS_U, //  = 0xF0,
+    // ##########################################
+    // modifiers needed for keycode on host layout (e.g "@" = HID_Q + ALTGR on qwertz)
+
+    // Mousekey movement, buttons, wheel and acceleration
+    MS_BEGIN=0x20,
+    MS_U=MS_BEGIN,
     MS_D,
     MS_L,
     MS_R,
@@ -187,31 +295,34 @@ typedef enum {
     MS_BTN2,
     MS_BTN3,
     MS_BTN4,
-    MS_BTN5,         /* 0xF8 */
-    /* Mousekey wheel */
+    MS_BTN5,
     MS_W_U,
     MS_W_D,
     MS_W_L,
-    MS_W_R,     /* 0xFC */
-    /* Mousekey accel */
+    MS_W_R,
     MS_ACC0,
     MS_ACC1,
-    MS_ACC2,        /* 0xFF */
-//##########################################
+    MS_ACC2,
 
-    // modifier bits to use, actual HID-modifier is (1<<(modbit-MOD_CTRL))
-    MOD_L_CTRL=0xE0, // E0 is rather arbitrarily taken to be same as HID
+    // modifier bits to use, actual HID-modifier is (1<<(modbit-MOD_FIRST))
+    MOD_FIRST   = MODKEY_MASK,
+    MOD_L_CTRL  = MOD_FIRST,
     MOD_L_SHIFT,
     MOD_L_ALT,
     MOD_L_GUI,
     MOD_R_CTRL,
     MOD_R_SHIFT,
     MOD_R_ALT,
-    MOD_R_GUI,
-    MOD_END,
+    MOD_R_GUI,      // 0xE7
+    MOD_L_HYPER,    // 0xE8 dummy mod
+    MOD_LAST    = MOD_L_HYPER,
+
+    ADD_FIRST   = MODHID_MASK,
+     SHIFT,
+     ALTGR   = MODHID_MASK + 6,
 
     // layer modifiers
-    MOD_LAYER_0=0xF2,
+    MOD_LAYER_0=LAYER_MASK,
     MOD_LAYER_1,
     MOD_LAYER_2,
     MOD_LAYER_3,
@@ -220,10 +331,10 @@ typedef enum {
     MOD_LAYER_LAST
 } modbits;
 
-#define _MS_U     { MS_U, 0 /*,    ' ' */ }
-#define _MS_D     { MS_D, 0 /*,    ' ' */ }
-#define _MS_L     { MS_L, 0 /*,    ' ' */ }
-#define _MS_R     { MS_R, 0 /*,    ' ' */ }
+#define _MS_U       { MS_U, 0 /*,    ' ' */ }
+#define _MS_D       { MS_D, 0 /*,    ' ' */ }
+#define _MS_L       { MS_L, 0 /*,    ' ' */ }
+#define _MS_R       { MS_R, 0 /*,    ' ' */ }
 #define _MS_W_U     { MS_W_U, 0 /*,    ' ' */ }
 #define _MS_W_D     { MS_W_D, 0 /*,    ' ' */ }
 #define _MS_W_L     { MS_W_L, 0 /*,    ' ' */ }
@@ -365,6 +476,7 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _R_ALT      { HID_R_ALT,        MOD_R_ALT    /*, ' ' */ }  //  RAlt
 #define _L_GUI      { HID_L_GUI,        MOD_L_GUI    /*, ' ' */ }  //  LWin
 #define _R_GUI      { HID_R_GUI,        MOD_R_GUI    /*, ' ' */ }  //  RWin
+#define _L_HYPER    { HID_L_HYPER,      MOD_L_HYPER  /*, ' ' */ }  //  Hyper dummy to be mapped on linux
 //
 #define _MOD_0      { HID_NO_KEY,       MOD_LAYER_0  /*, ' ' */ }
 #define _MOD_1      { HID_NO_KEY,       MOD_LAYER_1  /*, ' ' */ }
@@ -403,6 +515,48 @@ AltGr  :           7 8 9 0 ß   q e     +       <
 #define _F10        { HID_F10, 0 /*,    ' ' */ }  //  F10
 #define _F11        { HID_F11, 0 /*,    ' ' */ }  //  F11
 #define _F12        { HID_F12, 0 /*,    ' ' */ }  //  F12
+#define _F13        { HID_F13, 0 /*,    ' ' */ }  //  F13
+#define _F14        { HID_F14, 0 /*,    ' ' */ }  //  F14
+#define _F15        { HID_F15, 0 /*,    ' ' */ }  //  F15
+#define _F16        { HID_F16, 0 /*,    ' ' */ }  //  F16
+#define _F17        { HID_F17, 0 /*,    ' ' */ }  //  F17
+#define _F18        { HID_F18, 0 /*,    ' ' */ }  //  F18
+#define _F19        { HID_F19, 0 /*,    ' ' */ }  //  F19
+#define _F20        { HID_F20, 0 /*,    ' ' */ }  //  F20
+#define _F21        { HID_F21, 0 /*,    ' ' */ }  //  F21
+#define _F22        { HID_F22, 0 /*,    ' ' */ }  //  F22
+#define _F23        { HID_F23, 0 /*,    ' ' */ }  //  F23
+#define _F24        { HID_F24, 0 /*,    ' ' */ }  //  F24
+
+#define _EXEC    { HID_EXEC	    , 0 } // 0x74 -> 142 XF86Open
+#define _HELP 	 { HID_HELP	    , 0 } // 0x75 -> 146 Help
+#define _MENU    { HID_MENU	    , 0 } // 0x76 -> 138 SunProps
+#define _SEL 	 { HID_SEL  	, 0 } // 0x77 -> 140 SunFront
+#define _STOP 	 { HID_STOP	    , 0 } // 0x78 -> 136 Cancel
+
+#define _X1 	 { HID_PRINTSCREEN    , 0 } // 0x46 70
+#define _X2 	 { HID_SCROLL_LOCK    , 0 } // 0x47 71 WIN ok
+#define _X3 	 { HID_PAUSE          , 0 } // 0x48 72 WIN ok
+//#define _X4 	 { HID_NUM_LOCK       , 0 } // 0x53 83
+//#define _X4 	 { HID_NUM_LOCK       , 0 } // 0x53 83
+//#define _X5 	 { HID_KEYPAD_SLASH   , 0 } // 0x54 84
+//#define _X9 	 { HID_KEYPAD_EQUAL   , 0 } // 0x67 103
+#define _X5 	 { HID_AGAI, 0 }
+#define _X6 	 { HID_UNDO, 0 } // nowin
+#define _X7 	 { HID_CUT , 0 } // nowin
+#define _X8 	 { HID_COPY, 0 } // nowin
+#define _X9 	 { HID_PAST, 0 } // nowin
+
+#define _X10	 { HID_APPLICATION    , 0 } // 0x65 101 WIN ok Menu
+//#define _X_POWER { HID_MAC_POWER      , 0 } // 0x66 102
+//#define _X8 	 { HID_KEYPAD_EQUAL   , 0 } // 0x67 103
+
+#define _X11 	 { HID_INT1           , 0 } // 0x87
+#define _X12 	 { HID_INT2           , 0 } // 0x88
+#define _X13 	 { HID_INT3           , 0 } // 0x89
+#define _X14 	 { HID_INT4           , 0 } // 0x8a
+#define _CMDMODE { HID_CMDMODE  , 0 } // 0x8b -> International5
+#define _X15 	 { HID_INT7           , 0 } // 0x8ca //nowin
 
 
 
@@ -648,7 +802,4 @@ static const uint8_t ascii2hid[128][2] = {
     _TILDE ,    // ~      126
     _DEL        // ( del) 127
 } ;
-
-#endif // _HID_USAGE_H
-
 

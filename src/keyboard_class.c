@@ -752,7 +752,7 @@ uint8_t getActiveModifiers()
   */
 bool isModifierKey(uint8_t row, uint8_t col)
 {
-    if( getModifier(row,col,0) >= MOD_L_CTRL  && getModifier(row,col,0) < MOD_END)
+    if( getModifier(row,col,0) >= MOD_L_CTRL  && getModifier(row,col,0) < MOD_LAST)
         return true;
     return false;
 }
