@@ -52,7 +52,6 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 // *INDENT-OFF*
 
 #ifdef BLUECUBE
-  #define CMD_MODE() ((rowData[2] & (1<<0)) && (rowData[6] & (1<<5)) )
 
 /*
             ┌───┐                             ┌───┐
@@ -88,7 +87,6 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 
 
 #ifdef REDTILT
-  #define CMD_MODE() ((rowData[2] & (1<<0)) && (rowData[6] & (1<<5)) )
 
 /*
     RedTilt: outermost "thumb" keys are in topmost row
@@ -127,11 +125,6 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 #if defined(BLACKFLAT) || defined(BLACKBOWL)
 #undef COLS
 #define COLS   5
-
-// additional pinky mini button left:
-// #define CMD_MODE() ((rowData[3] & (1<<1)))
-// top outer buttons
-#define CMD_MODE() ((rowData[3] & (1<<0)) && (rowData[7] & (1<<4)) )
 
 /*
     BlackFlat: RedTilt without outer pinky columns, with 4th button on pinky bottom row
@@ -176,7 +169,6 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 
 
 #ifdef HYPERNANO
-  #define CMD_MODE() ( (rowData[3] & (1<<1)) && (rowData[7] & (1<<5)) )
 
 /*  Row/col matrix: (0-based)
  *  unused in layout: 00,10,20, 45,55,65
@@ -216,7 +208,6 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 #undef COLS
 #define ROWS   4
 #define COLS   12
-#define CMD_MODE() ( (rowData[3] & (1<<0)) && (rowData[0] & (1<<0)) )
 
 /*  Row/col matrix: (0-based)
  *  unused in layout: 29
@@ -310,7 +301,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
   KEYMAP( _no,
     _no, _AT,      _DEGREE,   _L_BRACKET, _R_BRACKET, _HASH   , _EXCLAM,  _LESS,      _GREATER,   _EQUAL,     _AMPERSAND, _no ,
     _no, _BSLASH,  _EURO  ,   _L_BRACE,   _R_BRACE,   _ASTERIX, _QUESTION,_L_PAREN,   _R_PAREN,   _PLUS,      _no,        _no ,
-    _no, _no,      _DOLLAR,   _PIPE,      _TILDE,     _GRAVE ,  _CARET,   _PERCENT,   _DQUOTE,    _SQUOTE,    _no,        _no ,
+    _no, _no,      _DOLLAR,   _PIPE,      _TILDE,     _GRAVE ,  _CARET,   _PERCENT,   _DQUOTE,    _SQUOTE,    _CMDMODE,   _no ,
     _L_SHIFT, _L_ALT ,  _MACRO, _L_GUI, _L_CTRL, _L_ALT,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
   ),
 
@@ -318,7 +309,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
   KEYMAP( _no,
     _no, _PGUP,   _BSPACE,    _UP,        _DEL ,      _PGDN, _SSHARP,_7,         _8,         _9,     _a_UML, _A_UML ,
     _no, _HOME,   _LEFT,      _DOWN,      _RIGHT,     _END , _PERIOD,_4,         _5,         _6,     _o_UML, _O_UML ,
-    _no, _no  ,   _no  ,      _INS,       _no   ,     _no ,  _0,     _1,         _2,         _3,     _u_UML, _U_UML ,
+    _no, _CMDMODE,_no  ,      _INS,       _no   ,     _no ,  _0,     _1,         _2,         _3,     _u_UML, _U_UML ,
     _L_SHIFT, _L_ALT ,  _MACRO, _L_GUI, _L_CTRL, _L_ALT,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
     ),
 

@@ -146,35 +146,22 @@ void initKeyboard()
 
     set_led_color(0,16,0);
 
-    // bootloader if CMD_MODE combo is pressed during startup
     clearActiveKeys();
 
-    set_led_color(0,0,5);
-    uint8_t tmp;
-    for(tmp=0; tmp<8; ++tmp) {
-        set_led_color(0,0,5+tmp*5);
-        scan_matrix();
-        _delay_ms(150);
-    }
-    if(CMD_MODE()) {
-        invalidate_config();
-        jump_bootloader();
-    }
-    set_led_color(16,16,0);
+    // @TODO bootloader if CMD_MODE combo is pressed during startup?
+    scan_matrix();  // don't remove, required for successful mouse init on boot below.
+    _delay_ms(150);
 
-    //initMacros();
     init_config();
 
 #ifdef PS2MOUSE
     // default to false as not to hang the firmware when something goes wrong with init.
+    // Note that scan_matrix() should be called once before this works?!
     g_ps2_connected = 0;
     if(g_cfg.fw.mouse_enabled)
         ps2_init_mouse();
-    // too early for ps2_init here, it seems.
-    // better to activate manually via commmand mode once upon boot for now
 #endif
     set_led_color(0,2,0);
-
 }
 
 void clearRowData()
@@ -526,6 +513,8 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
             report_data->KeyCode[idx]=getKeyCode(k.row, k.col, getActiveLayer());
             idx++;
         }
+        if( HID_CMDMODE == getKeyCode(k.row, k.col, getActiveLayer() ) )
+            goto cmdmode;
 
         if(idx>6) {
             xprintf("\nError: more than 6 keys! ");
@@ -537,6 +526,14 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 
     report_data->Modifier=getActiveModifiers()|getActiveKeyCodeModifier();
 
+    return sizeof(USB_KeyboardReport_Data_t);
+
+cmdmode:
+    for (uint8_t row = 0; row < ROWS; ++row)
+        rowData[row]=0;
+    clearActiveKeys();
+    setCommandMode(true);
+    zeroReport(report_data);
     return sizeof(USB_KeyboardReport_Data_t);
 }
 
@@ -829,15 +826,6 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
   */
 void init_active_keys()
 {
-    // only working silently if there are no keycodes sent on first press of cmd combo.
-    if(CMD_MODE()) {
-        for (uint8_t row = 0; row < ROWS; ++row)
-            rowData[row]=0;
-        clearActiveKeys();
-        setCommandMode(true);
-        return;
-    }
-
     // process row/column data to find the active keys
     for (uint8_t row = 0; row < ROWS; ++row) {
         for (uint8_t col = 0; col < COLS; ++col) {
@@ -855,6 +843,7 @@ void init_active_keys()
             }
         }
     }
+    return;
 }
 
 
