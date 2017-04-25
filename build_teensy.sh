@@ -28,6 +28,19 @@ fi
 ln -sf ../../tools/pre-commit.astyle.git_hook $HOOK
 chmod +x $HOOK
 
+OPT=""
+if [ $(which usb-devices) ]; then
+    CONNECTED_HW=$(usb-devices | grep -A2 "Vendor=1d50 ProdID=6033" | grep Product | sed "s/.*[= ]//" |tr "a-z" "A-Z")
+
+    if [ "x$CONNECTED_HW" = "x" -o $(echo "${CONNECTED_HW}" | wc -l ) -ne 1 ]; then
+        echo "Could not detect connected hardware..."
+    else
+        echo "Detected connected $CONNECTED_HW hardware"
+        OPT="KB_HW=$CONNECTED_HW "
+    fi
+else
+    echo "usb-devices binary not found in PATH."
+fi
 
 
 mv $HEX.hex $HEX.hex.old 2>/dev/null
@@ -38,10 +51,12 @@ if [ ! -z $1 ]; then
 	echo "*** make clean"
 	make clean >> log
 fi
-echo "*** make " &&
-make >> log 2>log.err || { tail -n 10 log.err; echo "*** BUILD FAILED, see log.err." ; exit 2; }
 
-KB=$(grep "KB_HW defined" log | sed "s/^.*defined as //")
+# @TODO : remove potentially secret arguments from log
+echo "*** make $@ $OPT" &&
+make $@ $OPT >> log 2>log.err || { tail -n 10 log.err; echo "*** BUILD FAILED, see log.err." ; exit 2; }
+
+KB=$(grep "^\*\*\* HW\s*=" log | sed "s/^.* = \([A-Z]*\) .*/\1/")
 
 if [ -f $HEX.hex ]; then
   if [ $(lspci | grep -i vmware -c ) -gt 0 ]; then
