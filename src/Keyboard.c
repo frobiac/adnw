@@ -167,7 +167,6 @@ bool suspend_wakeup_condition(void);
  */
 bool suspend_wakeup_condition()
 {
-    clearActiveKeys();
     scan_matrix();
     init_active_keys();
     return (activeKeys.keycnt > 2);

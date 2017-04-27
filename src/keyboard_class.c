@@ -146,8 +146,6 @@ void initKeyboard()
 
     set_led_color(0,16,0);
 
-    clearActiveKeys();
-
     // @TODO bootloader if CMD_MODE combo is pressed during startup?
     scan_matrix();  // don't remove, required for successful mouse init on boot below.
     _delay_ms(150);
@@ -448,9 +446,7 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
     set_led();
 #endif
 
-    clearActiveKeys();
     scan_matrix();
-
     init_active_keys();
 
 
@@ -831,6 +827,8 @@ void ActiveKeys_Add(uint8_t row, uint8_t col)
   */
 void init_active_keys()
 {
+    clearActiveKeys();
+
     // process row/column data to find the active keys
     for (uint8_t row = 0; row < ROWS; ++row) {
         for (uint8_t col = 0; col < COLS; ++col) {
