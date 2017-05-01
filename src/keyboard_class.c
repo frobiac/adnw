@@ -319,7 +319,6 @@ void set_led_color(uint8_t r, uint8_t g, uint8_t b)
 }
 
 
-
 /// @todo Switch back from mouse layer!
 uint8_t getActiveLayer()
 {
@@ -330,7 +329,7 @@ uint8_t getActiveLayer()
         if(activeKeys[i].id == lastDualUseKey.id && lastDualUseKey.state != DUAL_NO_TAP)
             continue;
         if( isLayerKey(row, col)) {
-            layer += getModifier(row, col,0)-MOD_LAYER_0;
+            layer += (getModifier(row, col,0)&0x0F);
         }
     }
     return layer;
@@ -348,7 +347,10 @@ uint8_t getActiveKeyCodeModifier()
         if(activeKeys[i].id == lastDualUseKey.id && lastDualUseKey.state != DUAL_NO_TAP)
             continue;
         if( isNormalKey(activeKeys[i].row, activeKeys[i].col)) {
-            return getModifier(activeKeys[i].row, activeKeys[i].col, getActiveLayer());
+            uint8_t mod = getModifier(activeKeys[i].row, activeKeys[i].col, getActiveLayer());
+            if(mod & MODHID_MASK)
+                return (1<<(mod&0x0F));
+            return 0;
         }
     }
     return 0;
@@ -362,7 +364,7 @@ uint8_t getActiveModifiers()
         if(activeKeys[i].id == lastDualUseKey.id && lastDualUseKey.state != DUAL_NO_TAP)
             continue;
         if( isModifierKey(activeKeys[i].row, activeKeys[i].col)) {
-            modifiers += (1<< (getModifier(activeKeys[i].row, activeKeys[i].col,0)-MOD_L_CTRL));
+            modifiers += (1<< (getModifier(activeKeys[i].row, activeKeys[i].col,0)&0x0F));
         }
     }
     return modifiers;
@@ -497,13 +499,12 @@ bool useAsMouseReport(void)
     if(getActiveLayer() == (MOD_MOUSEKEY-MOD_LAYER_0) ) {
         uint16_t mk_mask=0;
         for(uint8_t i=0; i < activeKeyCount; ++i) {
-            mk_mask |= (1<<(getKeyCode(activeKeys[i].row, activeKeys[i].col, (MOD_MOUSEKEY-MOD_LAYER_0))-1-MS_BEGIN));
+            mk_mask |= (1<<(getKeyCode(activeKeys[i].row, activeKeys[i].col, (MOD_MOUSEKEY-MOD_LAYER_0))-MS_BEGIN));
         }
         mousekey_activate(mk_mask);
         return true;
     } else {
         mousekey_activate(0);
-        return false;
     }
 
     if(g_mouse_keys_enabled) {
@@ -523,6 +524,7 @@ uint8_t getMouseKeys(void)
 }
 
 
+
 void addKey(uint8_t row, uint8_t col)
 {
     if(activeKeyCount>=MAX_ACTIVE_KEYS-1) {
@@ -531,6 +533,8 @@ void addKey(uint8_t row, uint8_t col)
     }
     activeKeys[activeKeyCount].row=row;
     activeKeys[activeKeyCount].col=col;
+    //activeKeys[activeKeyCount].hid=getModifier(row, col);
+    //activeKeys[activeKeyCount].mod=getModifier(row, col);
     ++activeKeyCount;
 
     // immediately exit mouse mode on non-mousekey press.
@@ -645,7 +649,8 @@ void keyIdChange(uint8_t row, uint8_t col, uint8_t change)
         lastDualUseKey.state = DUAL_NO_TAP;
     };
 
-    // any key is added or removed from list
+    // any key is added or removed from list - latest dual use is handled during
+    // modifier, layer or tap analysis
     if(change==1)
         addKey(row, col);
     else if (change==0)
@@ -679,9 +684,7 @@ void keyChange(uint8_t row, column_size_t p, column_size_t h, column_size_t r)
   */
 bool isModifierKey(uint8_t row, uint8_t col)
 {
-    if( getModifier(row,col,0) >= MOD_FIRST  && getModifier(row,col,0) <= MOD_LAST)
-        return true;
-    return false;
+    return ( MODKEY_MASK & getModifier(row,col,0));
 }
 
 /**
@@ -690,10 +693,7 @@ bool isModifierKey(uint8_t row, uint8_t col)
  */
 bool isLayerKey(uint8_t row, uint8_t col)
 {
-    if( getModifier(row,col,0) > MOD_LAYER_0 && getModifier(row,col,0) < MOD_LAYER_LAST) {
-        return true;
-    }
-    return false;
+    return ( LAYER_MASK & getModifier(row,col,0));
 }
 
 bool isNormalKey(uint8_t row, uint8_t col)

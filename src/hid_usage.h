@@ -349,12 +349,14 @@ typedef enum {
 #define _MS_BTN5    { MS_BTN5, 0 /*,    ' ' */ }
 
 /// @todo : cleanup modifiers everywhere
+/*
 #define NONE  0
 #define CTRL  (1<<0)
 #define SHIFT (1<<1)
 #define ALT   (1<<2)
 #define GUI   (1<<3)
 #define ALTGR (1<<6)
+*/
 
 // *************************************************************
 // mapping of characters and HID codes

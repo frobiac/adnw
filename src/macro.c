@@ -78,7 +78,7 @@ char hid2asciicode(uint8_t hid, uint8_t mod)
         if( ascii2hid[i][0] == hid) {
             // either no modifier is needed and neither shift or altgr are pressed
             // or the required modifier is pressed
-            if((ascii2hid[i][1]==0 && !(mod && (SHIFT|ALTGR))) || (ascii2hid[i][1] & mod)) {
+            if(0==(HID_MOD_MASK(ascii2hid[i][1])^mod)) {
                 return((char)(i));
             }
         }
@@ -204,12 +204,12 @@ bool clearHIDCodes()
  */
 void macro_key(uint8_t hid, uint8_t mod)
 {
-    if(hid == HID_ESC && mod == CTRL) {
+    if(hid == HID_ESC && mod == HID_MOD_MASK(MOD_L_CTRL)) {
         disableMacroRecording();
         return;
     }
     // Ctrl+Enter ends macro recording
-    if(hid == HID_ENTER && mod == CTRL) {
+    if(hid == HID_ENTER && mod == HID_MOD_MASK(MOD_L_CTRL)) {
         if( appendHidCode(0) ) {
             uint8_t written __attribute__((unused));
             written=updateEEMacroHID(outHidCodes, g_macrorecord);
@@ -320,7 +320,7 @@ uint8_t setOutputString(char * str)
     for(i=0; str[i] != '\0'; ++i) {
         ch=str[i];
         hid=ascii2hid[ch][0];
-        mod=ascii2hid[ch][1];
+        mod=HID_MOD_MASK(ascii2hid[ch][1]);
 
         if(mod != 0)
             appendHidCode(mod|0x80);
@@ -390,7 +390,7 @@ uint8_t printOutstr(USB_KeyboardReport_Data_t * report)
             mod=(c&0x7F);
             c = outHidCodes[readOffs++];
             // assert c != mod here?
-            if( mod==ALT && c==HID_ENTER) {
+            if( mod==HID_MOD_MASK(MOD_L_ALT) && c==HID_ENTER) {
                 _delay_ms(400);
                 c=0; mod=0;
             }

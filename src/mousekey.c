@@ -118,9 +118,9 @@ void mousekey_activate(uint16_t mask)
 
     for(uint8_t c=0; c<16; ++c) {
         if(mask & (1<<c))
-            mousekey_on(MS_BEGIN+1+c);
+            mousekey_on(MS_BEGIN+c);
         else
-            mousekey_off(MS_BEGIN+1+c);
+            mousekey_off(MS_BEGIN+c);
     }
 }
 
@@ -211,7 +211,7 @@ uint8_t getMouseKeyReport(USB_WheelMouseReport_Data_t *MouseReport)
 void mousekey_clear(void)
 {
     for(uint8_t c=0; c<16; ++c)
-        mousekey_off(MS_BEGIN+1+c);
+        mousekey_off(MS_BEGIN+c);
     mkr = (USB_WheelMouseReport_Data_t) {};
     mousekey_accel = 0;
     first_press_timer=0;
