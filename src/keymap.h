@@ -271,22 +271,11 @@ static const uint8_t MouseUsage[ROWS][COLS] PROGMEM =
 
 
 
-/**
- * MKT keycode if single key and mousekey location is stored in here.
- * In contrast to the keymatrix below, only actual HID-usage codes are used, as
- * there should be no need for modifiers with MKTs.
- * The mouse button locations are put here as there is no overlap whith other keys,
- * but strictly not the right place here.
- */
-static const uint8_t SecondaryUsage[ROWS][COLS] PROGMEM =
-  KEYMAP( 0, /* not used code */
- HID_ESC, 0, 0, 0, 0, 0,                                  0, 0, 0, 0, 0, 0 ,
-       0, 0, 0, 0, 0, 0,                                  0, 0, 0, 0, 0, 0 ,
-       0, 0, 0, 0, 0, 0,                                  0, 0, 0, 0, 0, 0 ,
-       0, 0, 0, 0, HID_TAB, HID_SPACE,  /*|*/  HID_ESC, HID_BACKSPACE, HID_ENTER, 0, 0, 0
-);
-
-
+#define _DU_TAB_CTRL { HID_TAB,       TAPPING_MASK | MOD_L_CTRL  }
+#define _DU_SPC_ALT  { HID_SPACE,     TAPPING_MASK | MOD_L_ALT   }
+#define _DU_ESC_MOD2 { HID_ESC,       TAPPING_MASK | MOD_LAYER_2 }
+#define _DU_BSP_SHFT { HID_BACKSPACE, TAPPING_MASK | MOD_L_SHIFT }
+#define _DU_RET_MOD1 { HID_ENTER,     TAPPING_MASK | MOD_LAYER_1 }
 
 static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
 {
@@ -295,7 +284,7 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _ESC,    _k, _u, _q,     _PERIOD,_j  ,   _p,  _c, _l, _m, _f, _BSPACE ,
     _TAB,    _h, _i, _e,     _a,     _o  ,   _d,  _t, _r, _n, _s, _ENTER  ,
     _DQUOTE, _x, _y, _MINUS,_COMMA,_SLASH,   _b,  _g, _w, _v, _z, _MOD_MOUSEKEY,
-    _L_SHIFT, _L_GUI ,  _MACRO, _R_GUI, _L_CTRL, _L_ALT,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
+    _L_SHIFT, _L_GUI ,  _MACRO, _R_GUI, _DU_TAB_CTRL, _DU_SPC_ALT,   _DU_ESC_MOD2, _DU_BSP_SHFT, _DU_RET_MOD1, _R_ALT,  _MOD_3, _no
   ),
 
   // MOD1 layer (special char)

@@ -47,11 +47,13 @@
     #include "trackpoint.h"
 #endif
 
+
+uint8_t getMouseKeys(void);
 bool    isModifierKey(uint8_t row, uint8_t col);
+bool    isTappingKey (uint8_t row, uint8_t col);
 bool    isLayerKey   (uint8_t row, uint8_t col);
 bool    isNormalKey  (uint8_t row, uint8_t col);
 uint8_t getMouseKey  (uint8_t row, uint8_t col);
-void    getSecondaryUsage(uint8_t r, uint8_t c, uint8_t *hid);
 
 uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer);
 
@@ -59,7 +61,6 @@ uint8_t getActiveModifiers(void);
 uint8_t getActiveLayer(void);
 uint8_t getActiveKeyCodeModifier(void);
 
-uint8_t getMouseKeys(void);
 void reportPrint (USB_KeyboardReport_Data_t * report, char * str);
 
 /**
@@ -213,7 +214,7 @@ void fillKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 
     //@TODO modified characters like "@" or "%" ? Unlikely, but currently not supported...
     if(lastDualUseKey.state == DUAL_TAPPED || lastDualUseKey.state == DUAL_TAPPED_NOW_HELD) {
-        getSecondaryUsage(lastDualUseKey.row, lastDualUseKey.col, &kc);
+        kc = getKeyCode(lastDualUseKey.row, lastDualUseKey.col, 0);
         report_data->KeyCode[idx]= kc;
         idx++;
         if(lastDualUseKey.state == DUAL_TAPPED)
@@ -619,13 +620,11 @@ void keyIdChange(uint8_t row, uint8_t col, uint8_t change)
     static uint32_t tapRepeatTime;
 
     uint8_t id = (row<<4|col);
-    uint8_t dualUseNormal=0;
-    getSecondaryUsage(row, col, &dualUseNormal);
 
-    if(dualUseNormal != 0) {    // change is a dual use key
+    if(isTappingKey(row, col)) {    // change is a dual use key
         if(change!=2) {
             // state is set below
-            lastDualUseKey =  (keypress_t) { .row=row, .col=col, .dual=dualUseNormal };
+            lastDualUseKey =  (keypress_t) { .row=row, .col=col, .dual=true };
         }
         if(change==2) { // held -> dual use is mod
             if(lastDualUseKey.state != DUAL_TAPPED_NOW_HELD)
@@ -687,6 +686,11 @@ bool isModifierKey(uint8_t row, uint8_t col)
     return ( MODKEY_MASK & getModifier(row,col,0));
 }
 
+bool isTappingKey(uint8_t row, uint8_t col)
+{
+    return ( TAPPING_MASK & getModifier(row,col,0));
+}
+
 /**
  * check whether layer 0 key is a modifier )
  * @todo : keys that are not modifiers in layer 0 cannot be in other layers (but no sensible use case)
@@ -699,11 +703,6 @@ bool isLayerKey(uint8_t row, uint8_t col)
 bool isNormalKey(uint8_t row, uint8_t col)
 {
     return !(isLayerKey(row,col) || isModifierKey(row,col));
-}
-
-void getSecondaryUsage(uint8_t r, uint8_t c, uint8_t *hid)
-{
-    memcpy_P(hid, &SecondaryUsage[r][c], sizeof(uint8_t));
 }
 
 /**
