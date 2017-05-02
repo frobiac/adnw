@@ -54,10 +54,12 @@ uint8_t commandModeSub(void) { return subcmd; }
 
 
 
-/** Called when command mode is active.
+/**
+ *  Called when command mode is active.
  *
- *  Key is mapped according to modifiers, but better stick to ascii?
- *  First pressed key is mapped to first layer defined and evaluated. Use only a-z and 0-9 for commands, others exit this mode.
+ *  Will wait until a key that would generate output on press is released and then passes its
+ *  hid code and modifiers to switch statement below.
+ *  This allows to use any printable character with modifiers in switch statement below.
  *
  *  Leave by calling setCommandMode(false) on one-off commands, otherwise any unmapped key or
  *  'q' quit the loop. Don't for adjusting config variables through multiple presses.
@@ -81,19 +83,19 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
         return true;
 
     // ok, something changed:
-    uint8_t hid = hid_prev;
-    uint8_t mod = mod_prev; // these may be used later
+    uint8_t hid_released = hid_prev;
+    uint8_t mod_released = mod_prev; // these may be used later
     hid_prev=hid_now; mod_prev=mod_now; act_prev = act_now;
 
-    if( !(hid_now==0 && hid != 0) ) {
+    if( !(hid_now==0 && hid_released != 0) ) {
         // no release detected
         return true;
     }
 
-    char curChar = hid2asciicode(hid, mod);
+    char curChar = hid2asciicode(hid_released, mod_released);
 
     if(subcmd) {
-        return handleSubCmd(curChar, hid, mod);
+        return handleSubCmd(curChar, hid_released, mod_released);
     }
 
     switch(curChar) {
@@ -274,6 +276,7 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             break;
     }
 
+    // by default, signal we handled command.
     return true;
 }
 
