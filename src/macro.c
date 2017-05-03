@@ -28,6 +28,7 @@
 #include "macro.h"
 #include "helpers.h"
 #include "Keyboard.h"
+#include "ascii2hid.h"
 
 #include "global_config.h"
 
@@ -55,36 +56,6 @@ uint8_t findFreeMacroId(void);
 void print_used_macro_chars(void);
 
 
-/**
- * Return ascii char of given hid code and modifier combination.
- *
- * Only ASCII printable characters - no umlauts or other specials like € or °.
- *
- * @arg hid HID code to map to ascii
- * @arg mod modifier necessary [SHIFT|ALTGR]
- *
- * @ret printable ascii char if found, or '\0' on unprintable characters
- *
- * @todo backslash does it work?
- * @todo handle ESC, BS and the like?
- */
-char hid2asciicode(uint8_t hid, uint8_t mod)
-{
-    if(hid==0)
-        return('\0');
-
-    uint8_t i;
-    for(i=127; i>0; --i) {
-        if( ascii2hid[i][0] == hid) {
-            // either no modifier is needed and neither shift or altgr are pressed
-            // or the required modifier is pressed
-            if(0==(HID_MOD_MASK(ascii2hid[i][1])^mod)) {
-                return((char)(i));
-            }
-        }
-    }
-    return ('\0');
-}
 
 /**
  * Find macro id for given character.
@@ -319,8 +290,9 @@ uint8_t setOutputString(char * str)
     // convert each char to HID codes
     for(i=0; str[i] != '\0'; ++i) {
         ch=str[i];
-        hid=ascii2hid[ch][0];
-        mod=HID_MOD_MASK(ascii2hid[ch][1]);
+        ascii2hid(ch, &hid, &mod);
+        //hid=ascii2hid[ch][0];
+        //mod=HID_MOD_MASK(ascii2hid[ch][1]);
 
         if(mod != 0)
             appendHidCode(mod|0x80);
@@ -410,4 +382,5 @@ all_printed:
     readOffs=0;
     return 0;
 }
+
 

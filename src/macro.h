@@ -50,8 +50,6 @@ bool macroRecording(void);
 bool setMacroRecording(char macro_char, uint8_t hid, uint8_t mod);
 void macro_key(uint8_t hid, uint8_t mod);
 
-char hid2asciicode(uint8_t hid, uint8_t mod);
-
 uint8_t setOutputString(char * str);
 uint8_t setOutputHIDCodes(uint8_t * hidcodes);
 uint8_t printOutstr(USB_KeyboardReport_Data_t * report);

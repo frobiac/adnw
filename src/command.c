@@ -24,6 +24,8 @@
 #include "keymap.h"
 #include "trackpoint.h"
 #include "jump_bootloader.h"
+#include "ascii2hid.h"
+
 
 #ifdef PH_ENABLED
     #include "passhash/passhash.h"

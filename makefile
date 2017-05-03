@@ -45,6 +45,7 @@ SRC =   $(LUFA_SRC_USB)          \
 	$(SRCDIR)/matrix.c           \
 	$(SRCDIR)/macro.c            \
 	$(SRCDIR)/command.c          \
+	$(SRCDIR)/ascii2hid.c        \
 	$(SRCDIR)/mousekey.c         \
 	$(SRCDIR)/jump_bootloader.c  \
 	$(SRCDIR)/external/i2cmaster/twimaster.c \
