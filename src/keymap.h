@@ -251,31 +251,12 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 }
 #endif
 
-
-/**
- * Mouse keycodes that temporarily override normal keycodes during trackpoint usage.
- * Mouse buttons can be mapped to good locations this way.
- * This is not to be confused with the mousekey implementation, which is activated by switching to its layer.
- */
-static const uint8_t MouseUsage[ROWS][COLS] PROGMEM =
-  KEYMAP( 0, /* not used code */
-       HID_ESC,         0,         0,         0,         0,         0, /**/         0,         0,         0,         0,         0,         0,
-             0, HID_BTN_L, HID_BTN_M, HID_BTN_R, HID_BTN_S,         0, /**/         0, HID_BTN_L, HID_BTN_M, HID_BTN_R, HID_BTN_S,         0,
-             0,         0,         0,         0,         0,         0, /**/ HID_BTN_S,         0,         0,         0,         0,         0,
-#ifdef HYPERNANO
-             0,         0,         0,         0, HID_BTN_L, HID_BTN_M, /**/         0, HID_BTN_R,         0,         0,         0,         0
-#else
-             0,         0,         0,         0,         0,         0, /**/         0,         0,         0,         0,         0,         0
-#endif
-);
-
-
-
 #define _DU_TAB_CTRL { HID_TAB,       TAPPING_MASK | MOD_L_CTRL  }
 #define _DU_SPC_ALT  { HID_SPACE,     TAPPING_MASK | MOD_L_ALT   }
 #define _DU_ESC_MOD2 { HID_ESC,       TAPPING_MASK | MOD_LAYER_2 }
 #define _DU_BSP_SHFT { HID_BACKSPACE, TAPPING_MASK | MOD_L_SHIFT }
 #define _DU_RET_MOD1 { HID_ENTER,     TAPPING_MASK | MOD_LAYER_1 }
+
 
 static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
 {
@@ -310,24 +291,22 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     _no,      _X1,     _X2,    _X3,    _F19,    _X5,      _F10,   _F1,      _F2,    _F3,    _no,    _no ,
     _L_SHIFT, _L_GUI , _MACRO, _R_GUI, _L_CTRL, _L_ALT,   _MOD_2, _L_SHIFT, _MOD_1, _R_ALT, _MOD_3, _no
     ),
-
   // MOD_MOUSE layer
   KEYMAP( _no,
-    _no, _no, _MS_W_U, _MS_U, _MS_W_D, _no,  _no,    _no,      _no,      _no,      _no, _no,
-    _no, _no, _MS_L,   _MS_D, _MS_R,   _no,  _no,    _MS_BTN1, _MS_BTN3, _MS_BTN2, _no, _no,
+    _no, _no, _MS_W_U, _MS_U, _MS_W_D, _no,  _no,    _no,      _MS_BTN3, _MS_BTN5,      _no, _no,
+    _no, _no, _MS_L,   _MS_D, _MS_R,   _no,  _no,    _MS_BTN1, _MS_BTN1, _MS_BTN2, _MS_BTN4, _no,
     _no, _no, _MS_W_L, _no,   _MS_W_R, _no,  _no,    _MS_ACC0, _MS_ACC1, _MS_ACC2, _no, _no,
     _L_SHIFT, _L_GUI ,  _MACRO, _R_GUI, _L_CTRL, _L_ALT,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
-    )
+    ),
 
 #ifdef ALTERNATE_LAYER
-,
   // AdNW, ALT_ALPHA_LAYER
   KEYMAP( _no,
     _ESC,   _k, _u, _q,     _PERIOD, _j,      _v, _g, _c, _l, _f, _BSPACE ,
     _TAB,   _h, _i, _e,     _a,      _o,      _d, _t, _r, _n, _s, _ENTER  ,
     _DQUOTE,_x, _y, _MINUS, _COMMA,  _SLASH,  _b, _p, _w, _m, _z, _MOD_MOUSEKEY,
     _L_SHIFT, _L_GUI ,  _MACRO, _R_GUI, _L_CTRL, _L_ALT,   _MOD_2, _L_SHIFT,  _MOD_1, _R_ALT,  _MOD_3, _no
-  )
+  ),
 #endif
 
 }; // end of matrix[][][]

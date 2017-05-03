@@ -48,12 +48,13 @@
 #endif
 
 
-uint8_t getMouseKeys(void);
 bool    isModifierKey(uint8_t row, uint8_t col);
 bool    isTappingKey (uint8_t row, uint8_t col);
 bool    isLayerKey   (uint8_t row, uint8_t col);
 bool    isNormalKey  (uint8_t row, uint8_t col);
+
 uint8_t getMouseKey  (uint8_t row, uint8_t col);
+uint8_t getMouseKeyButtonMask(void);
 
 uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer);
 
@@ -492,7 +493,6 @@ void SetupHardware()
 }
 
 
-
 bool useAsMouseReport(void)
 {
     // Intercept here if we are in mousekey layer...
@@ -500,7 +500,9 @@ bool useAsMouseReport(void)
     if(getActiveLayer() == (MOD_MOUSEKEY-MOD_LAYER_0) ) {
         uint16_t mk_mask=0;
         for(uint8_t i=0; i < activeKeyCount; ++i) {
-            mk_mask |= (1<<(getKeyCode(activeKeys[i].row, activeKeys[i].col, (MOD_MOUSEKEY-MOD_LAYER_0))-MS_BEGIN));
+            uint8_t mk_key = getKeyCode(activeKeys[i].row, activeKeys[i].col, (MOD_MOUSEKEY-MOD_LAYER_0));
+            if(mk_key != 0)
+                mk_mask |= (1<<(mk_key-MS_BEGIN));
         }
         mousekey_activate(mk_mask);
         return true;
@@ -509,21 +511,22 @@ bool useAsMouseReport(void)
     }
 
     if(g_mouse_keys_enabled) {
-        g_mouse_keys = getMouseKeys();
+        g_mouse_keys = getMouseKeyButtonMask();
         return true;
     }
     return false;
 }
 
-uint8_t getMouseKeys(void)
+uint8_t getMouseKeyButtonMask(void)
 {
     uint8_t btns=0;
     for(uint8_t i=0; i<activeKeyCount; ++i) {
-        btns |= getMouseKey(activeKeys[i].row, activeKeys[i].col);
+        uint8_t mk = getMouseKey(activeKeys[i].row, activeKeys[i].col);
+        if(mk>=MS_BTN1 && mk<=MS_BTN5)
+            btns |= (1<<(mk-MS_BTN1));
     }
     return btns;
 }
-
 
 
 void addKey(uint8_t row, uint8_t col)
@@ -676,7 +679,6 @@ void keyChange(uint8_t row, column_size_t p, column_size_t h, column_size_t r)
     }
 }
 
-
 /**
   * check whether layer 0 key is a modifier.
   * @todo : keys that are not modifiers in layer 0 cannot be in other layers (but no sensible use case)
@@ -705,6 +707,7 @@ bool isNormalKey(uint8_t row, uint8_t col)
     return !(isLayerKey(row,col) || isModifierKey(row,col));
 }
 
+
 /**
  * Returns the corresponding mouse hid code, or 0 if none is defined for this matrix position.
  *
@@ -712,10 +715,6 @@ bool isNormalKey(uint8_t row, uint8_t col)
  */
 uint8_t getMouseKey(uint8_t r, uint8_t c)
 {
-    uint8_t hid;
-    memcpy_P(&hid, &MouseUsage[r][c], sizeof(uint8_t));
-    if ( hid >= HID_BTN_L && hid <= HID_BTN_S )
-        return (hid);
-    return 0;
+    return getKeyCode(r, c, MOD_MOUSEKEY-MOD_LAYER_0);
 }
 
