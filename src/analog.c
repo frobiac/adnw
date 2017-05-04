@@ -113,16 +113,7 @@ void analogDataAcquire(void)
     analogData.layer=analogData.mods=0;
 
     if(g_mouse_keys_enabled) {
-        /*  //should be handled in key detection routine
-        if(rowData[5] & (1<<1))
-            g_mouse_keys = 0x01;
-        if(rowData[5] & (1<<2))
-            g_mouse_keys = 0x04;
-        if(rowData[5] & (1<<3))
-            g_mouse_keys = 0x02;
-        if(rowData[4] & (1<<1))
-            g_mouse_keys = 0x08;
-        */
+        //should be handled in key detection routine
     } else {
         int16_t dx=0, dy=0;
         getXY(&dx, &dy);
