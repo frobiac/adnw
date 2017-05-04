@@ -20,15 +20,6 @@
 #ifndef MATRIX_H
 #define  MATRIX_H
 
-#if   (COLS <= 8)
-    typedef uint8_t  column_size_t;
-#elif (COLS <= 16)
-    typedef uint16_t column_size_t;
-#elif (COLS <= 32)
-    typedef uint32_t column_size_t;
-#else
-    #error "More than 32 columns are not supported"
-#endif
 
 /** @file matrix.h
  *

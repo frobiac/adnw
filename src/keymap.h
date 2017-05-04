@@ -353,5 +353,16 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
 
 // *INDENT-OFF*
 
+#if   (COLS <= 8)
+    typedef uint8_t  column_size_t;
+#elif (COLS <= 16)
+    typedef uint16_t column_size_t;
+#elif (COLS <= 32)
+    typedef uint32_t column_size_t;
+#else
+    #error "More than 32 columns are not supported"
 #endif
+
+#endif
+
 
