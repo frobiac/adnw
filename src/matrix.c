@@ -21,7 +21,8 @@
 
 #include "config.h"
 #include "matrix.h"
-#include "keyboard_class.h"  // idle_count
+#include "keyboard_class.h"
+#include "Keyboard.h"  // idle_count
 
 #ifdef BLACKBOWL
 #include "mcp23018.h"
@@ -32,7 +33,7 @@ static uint8_t i2c_adr[2] = {0x46, 0x4E};
 static bool i2c_left = 0;
 
 // this must be called once before matrix_scan.
-inline column_size_t read_col(void)
+static inline column_size_t read_col(void)
 {
     return mcp23018_read_rows();
 }
@@ -45,7 +46,7 @@ static inline void unselect_rows(void)
 }
 
 
-inline void activate(uint8_t row)
+static inline void activate(uint8_t row)
 {
     unselect_rows();
 
@@ -213,7 +214,7 @@ static inline void unselect_rows(void)
 }
 
 
-inline void activate(uint8_t row)
+static inline void activate(uint8_t row)
 {
     unselect_rows();
 
@@ -320,4 +321,101 @@ bool init_cols(void)
     return true;
 }
 #endif // non-I2C
+
+
+
+
+/// debounce variables
+volatile column_size_t kb_state[ROWS];    // debounced and inverted key state: bit = 1: key pressed
+volatile column_size_t kb_press[ROWS];    // key press detect
+volatile column_size_t kb_release[ROWS];  // key release detect
+volatile column_size_t kb_rpt[ROWS];      // key long press and repeat
+
+static column_size_t ct0[ROWS], ct1[ROWS];
+static int32_t rpt[ROWS];
+
+#define ALL_COLS_MASK ((1<<COLS)-1)  // 0x63 or all lower 6 bits
+#define REPEAT_MASK    ALL_COLS_MASK // repeat: key0 = 0x3F = 63
+#define REPEAT_START   31            // 61 = 1000ms
+#define REPEAT_NEXT    15
+
+
+column_size_t get_kb_release( column_size_t key_mask, uint8_t col)
+{
+    ATOMIC_BLOCK(ATOMIC_FORCEON) {
+        key_mask &= kb_release[col];                      // read key(s)
+        kb_release[col] ^= key_mask;                      // clear key(s)
+    }
+    return key_mask;
+}
+
+column_size_t get_kb_press( column_size_t key_mask, uint8_t col )
+{
+    ATOMIC_BLOCK(ATOMIC_FORCEON) {
+        key_mask &= kb_press[col];                      // read key(s)
+        kb_press[col] ^= key_mask;                      // clear key(s)
+    }
+    return key_mask;
+}
+
+column_size_t get_kb_rpt( column_size_t key_mask, uint8_t col )
+{
+    ATOMIC_BLOCK(ATOMIC_FORCEON) {
+        key_mask &= kb_rpt[col];                        // read key(s)
+        kb_rpt[col] ^= key_mask;                        // clear key(s)
+    }
+    return key_mask;
+}
+
+/** The real hardware access take place here.
+ *  Each of the rows is individually activated and the resulting column value read.
+ *  Should more than 8 channels be needed, this can easily be extended to 16/32bit.
+ *  By means of a neat routine found on http://hackaday.com/2010/11/09/debounce-code-one-post-to-rule-them-all/
+ *
+ */
+void scan_matrix(void)
+{
+    column_size_t i, data;
+
+    for (uint8_t row = 0; row < ROWS; ++row) {
+        activate(row);
+
+        // Insert NOPs for synchronization
+#ifndef HAS_I2C
+        _delay_us(20);
+#endif
+        // Place data on all column pins for active row
+        // into a single 8/16/32 bit value.
+        data = read_col();
+        /// @see top comment for source of debounce magic
+        // Needs to be adjusted for more than 8 columns
+        i = kb_state[row] ^ (~data);                    // key changed ?
+        ct0[row] = ~( ct0[row] & i );                   // reset or count ct0
+        ct1[row] = ct0[row] ^ (ct1[row] & i);           // reset or count ct1
+        i &= ct0[row] & ct1[row];                       // count until roll over ?
+        kb_state[row] ^= i;                             // then toggle debounced state
+
+        kb_press  [row] |=  kb_state[row] & i;          // 0->1: key press detect
+        kb_release[row] |= ~kb_state[row] & i;          // 1->0: key release detect
+
+        if( (kb_state[row] & REPEAT_MASK) == 0 ) {      // check repeat function
+            rpt[row] = idle_count + REPEAT_START;       // start delay
+        }
+        if(  rpt[row] <= idle_count ) {
+            rpt[row] = idle_count + REPEAT_NEXT;        // repeat delay
+            kb_rpt[row] |= kb_state[row] & REPEAT_MASK;
+        }
+
+        // Now evaluate results
+        column_size_t p,r,h;
+        p=get_kb_press  (ALL_COLS_MASK, row);
+        h=get_kb_rpt    (ALL_COLS_MASK, row);
+        r=get_kb_release(ALL_COLS_MASK, row);
+
+        //if(p|h|r)
+        //    keyChange(row, p,h,r);
+
+        rowData[row] = ((rowData[row]|(p|h)) & ~r);
+    }
+}
 

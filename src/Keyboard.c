@@ -45,6 +45,7 @@
 
 #include "Keyboard.h"
 #include "keyboard_class.h"
+#include "matrix.h" //scan_matrix()
 #include "print.h"
 
 #include "hid_usage.h"

@@ -49,9 +49,6 @@
 
 // #define DBG_2ND_USE
 
-column_size_t rowData[ROWS];
-column_size_t prevRowData[ROWS];
-
 /**
  * SecondUseToggle is a simple state machine that enables keys to:
  * 1) emit a normal keycode, including its modifiers, if pressed without any other key being
@@ -88,21 +85,6 @@ struct Key  secondUse_key;
 uint32_t    repeatGesture_timer;
 bool g_send_now;
 
-/// debounce variables
-volatile column_size_t kb_state[ROWS];    // debounced and inverted key state: bit = 1: key pressed
-volatile column_size_t kb_press[ROWS];    // key press detect
-volatile column_size_t kb_release[ROWS];  // key release detect
-volatile column_size_t kb_rpt[ROWS];      // key long press and repeat
-
-static column_size_t ct0[ROWS], ct1[ROWS];
-static int32_t rpt[ROWS];
-
-#define ALL_COLS_MASK ((1<<COLS)-1)  // 0x63 or all lower 6 bits
-#define REPEAT_MASK    ALL_COLS_MASK // repeat: key0 = 0x3F = 63
-#define REPEAT_START   31            // 61 = 1000ms
-#define REPEAT_NEXT    15
-
-
 inline void zeroReport(USB_KeyboardReport_Data_t *report_data)
 {
     // todo: is this neccessary?
@@ -134,8 +116,6 @@ void initKeyboard()
     idle_count=0;
 
     set_led_color(16,0,0);
-    // not strictly necessary
-    clearRowData();
 
     // all global variables should be initialized on avr
     //g_mouse_keys_enabled = 0;
@@ -160,15 +140,6 @@ void initKeyboard()
         ps2_init_mouse();
 #endif
     set_led_color(0,2,0);
-}
-
-void clearRowData()
-{
-    for (uint8_t row = 0; row < ROWS; ++row) {
-        rowData[row]=0;
-        ct0[row]=0xFF;
-        ct1[row]=0xFF;
-    }
 }
 
 
@@ -539,32 +510,6 @@ cmdmode:
 }
 
 
-column_size_t get_kb_release( column_size_t key_mask, uint8_t col)
-{
-    ATOMIC_BLOCK(ATOMIC_FORCEON) {
-        key_mask &= kb_release[col];                      // read key(s)
-        kb_release[col] ^= key_mask;                      // clear key(s)
-    }
-    return key_mask;
-}
-
-column_size_t get_kb_press( column_size_t key_mask, uint8_t col )
-{
-    ATOMIC_BLOCK(ATOMIC_FORCEON) {
-        key_mask &= kb_press[col];                      // read key(s)
-        kb_press[col] ^= key_mask;                      // clear key(s)
-    }
-    return key_mask;
-}
-column_size_t get_kb_rpt( column_size_t key_mask, uint8_t col )
-{
-    ATOMIC_BLOCK(ATOMIC_FORCEON) {
-        key_mask &= kb_rpt[col];                        // read key(s)
-        kb_rpt[col] ^= key_mask;                        // clear key(s)
-    }
-    return key_mask;
-}
-
 /**
  * Set led blink mode to current configured state in g_cfg.led.
  */
@@ -616,77 +561,6 @@ void set_led_color(uint8_t r, uint8_t g, uint8_t b)
     OCR1B = r;
     OCR1C = g;
 #endif
-}
-
-
-/** The real hardware access take place here.
- *  Each of the rows is individually activated and the resulting column value read.
- *  Should more than 8 channels be needed, this can easily be extended to 16/32bit.
- *  By means of a neat routine found on http://hackaday.com/2010/11/09/debounce-code-one-post-to-rule-them-all/
- *
- */
-void scan_matrix(void)
-{
-    column_size_t i, data;
-
-    for (uint8_t row = 0; row < ROWS; ++row) {
-        activate(row);
-
-        // Insert NOPs for synchronization
-#ifndef HAS_I2C
-        _delay_us(20);
-#endif
-        // Place data on all column pins for active row
-        // into a single 8/16/32 bit value.
-        data = read_col();
-        /// @see top comment for source of debounce magic
-        // Needs to be adjusted for more than 8 columns
-        i = kb_state[row] ^ (~data);                    // key changed ?
-        ct0[row] = ~( ct0[row] & i );                   // reset or count ct0
-        ct1[row] = ct0[row] ^ (ct1[row] & i);           // reset or count ct1
-        i &= ct0[row] & ct1[row];                       // count until roll over ?
-        kb_state[row] ^= i;                             // then toggle debounced state
-
-        kb_press  [row] |=  kb_state[row] & i;          // 0->1: key press detect
-        kb_release[row] |= ~kb_state[row] & i;          // 1->0: key press detect
-
-        if( (kb_state[row] & REPEAT_MASK) == 0 ) {      // check repeat function
-            rpt[row] = idle_count + REPEAT_START;       // start delay
-        }
-        if(  rpt[row] <= idle_count ) {
-            rpt[row] = idle_count + REPEAT_NEXT;        // repeat delay
-            kb_rpt[row] |= kb_state[row] & REPEAT_MASK;
-        }
-
-        // Now evaluate results
-        column_size_t p,r,h;
-        p=get_kb_press  (ALL_COLS_MASK, row);
-        h=get_kb_rpt    (ALL_COLS_MASK, row);
-        r=get_kb_release(ALL_COLS_MASK, row);
-
-        rowData[row] = ((rowData[row]|(p|h)) & ~r);
-    }
-}
-
-void printCurrentKeys(void)
-{
-    for(uint8_t r=0; r<ROWS/2; ++r) {
-        xprintf("\n");
-        for(uint8_t c=0; c< COLS; ++c) {
-            if( rowData[r] & (1<<c))
-                xprintf("X");
-            else
-                xprintf(".");
-        }
-        xprintf("|  |");
-        for(uint8_t c=0; c< COLS; ++c) {
-            if( rowData[r+ROWS/2] & (1<<c))
-                xprintf("X");
-            else
-                xprintf(".");
-        }
-    }
-    xprintf("\n");
 }
 
 

@@ -21,7 +21,8 @@
 
 #include "keymap.h" // column_size_t
 
+column_size_t rowData[ROWS];
+
 bool init_cols(void);
-void activate(uint8_t row);
-column_size_t read_col(void);
+void scan_matrix(void);
 
