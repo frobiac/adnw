@@ -21,6 +21,7 @@
 
 #include "ps2mouse.h"
 #include "trackpoint.h"
+#include "keyboard_class.h" // enable_mouse_keys()
 
 volatile uint32_t    mouse_timer; /// toggle mouse mode for a specified time
 volatile uint16_t    accel; /// toggle mouse mode for a specified time

@@ -729,3 +729,119 @@ void hostLEDChange(uint8_t leds)
 {
 }
 
+
+void led(uint8_t n)
+{
+    DDRD |= (1 << 6);
+    if(n==0)
+        PORTD &= ~(1 << 6);
+    else if(n==1)
+        PORTD |= (1 << 6);
+    return;
+}
+
+/**
+ * Wake up host on 3 or more pressed keys.
+ * @todo: Power saving, idle, sleep...
+ */
+bool suspend_wakeup_condition()
+{
+    scan_matrix();
+    return (activeKeys.keycnt>2);
+}
+
+/**
+ * BF: One on PD7 is OC4D, can set OCR4D to 0-255
+ * BB: RGB on PB5,6,7 = OC1A, OC1B, 0C1C and Timer 1
+ *
+ * http://www.mikrocontroller.net/articles/AVR-GCC-Tutorial/Die_Timer_und_Z%C3%A4hler_des_AVR
+ * http://blog.saikoled.com/post/43165849837/secret-konami-cheat-code-to-high-resolution-pwm-on
+ */
+void initPWM()
+{
+    // timer 4 not available on teensy++2.0 with at90usb1286
+#if defined(HAS_LED) && defined(__AVR_ATmega32U4__)
+#   ifdef BLACKFLAT
+    DDRD = (1<<7);
+    //@TODO what is really required to get PWM on PD7?
+    TCCR4A = 1 << COM4A1 | 1 << COM4B1 | 1 << PWM4A | 1 << PWM4B; // Enable outputs A and B in PWM mode
+    TCCR4B = 1 << CS43 | 1 << CS40;    // Clock divided by 256 for 244kHz PWM
+    TCCR4C = 1 << COM4D1 | 1 << PWM4D; // Enable output D in PWM mode
+    // OC4C=0xFF; // Set top to FFFF
+
+#   elif defined BLACKBOWL
+    //Set 8-bit fast PWM mode for RGB on B5,6,7
+    DDRB |= (1<<7)|(1<<6)|(1<<5);
+
+    //Mode and Prescaler (Phase Correct PWM und Prescaler 1)
+    TCCR1A |= (1<<COM1A1)|(1<<COM1B1)|(1<<COM1C1)|(1<<WGM11); // 0xAA
+    TCCR1B |= (1<<WGM13)|(1<<CS10); // 0x19
+    // 16-Bit Resolution ICR1 |= 0xFFFF;
+    // 8-Bit Resolution
+    ICR1 |= 0x00FF;
+
+#   endif
+#endif
+}
+
+void enable_mouse_keys(uint8_t on)
+{
+    if(on!=g_mouse_keys_enabled) {
+#if defined (PS2MOUSE)
+        tp_sensitivity(on? g_cfg.tp_config.sens : g_cfg.tp_config.sensL);
+#endif
+        // @TODO must use some way of activating different modes, keeping track of changes:
+        // e.g: Start command mode, change some values there, move mouse and while it
+        // is still enabled leave command mode...
+        //set_led_mode(LED_MOUSE, on); // -> OCR4D= (on ? 20 : 0);
+    }
+    g_mouse_keys_enabled = on;
+}
+
+
+/** Configures the board hardware and chip peripherals for keyboard and mouse functionality. */
+void SetupHardware()
+{
+#if (ARCH == ARCH_AVR8)
+    /* Disable watchdog if enabled by bootloader/fuses */
+    MCUSR &= ~(1 << WDRF);
+    wdt_disable();
+
+    /* Disable clock division */
+    clock_prescale_set(clock_div_1);
+#endif
+
+    /* Hardware Initialization */
+#ifdef ANALOGSTICK
+    Analog_Init();
+#endif
+
+    LEDs_Init();
+    USB_Init();
+
+    // set up timer
+    TCCR0A = 0x00;
+    TCCR0B = 0x05;
+
+#ifdef HAS_LED
+    // @TODO tensy++2.0 at90usb1286 does not have 4th timer?
+#  ifdef BLACKFLAT
+    PORTC &= ~(1<<7);
+    DDRC |= (1<<7);  // D7 is external LED on BF -> output
+#  elif defined(BLACKBOWL)
+    // BB: RGB on B5,67=OC1A, OC1B, OC1C
+    PORTB &= ~((1<<7)|(1<<6)|(1<<5));
+    DDRB |= (1<<7)|(1<<6)|(1<<5);  // B5,6,7 is external RGB LED on BF -> output
+#  endif
+    initPWM();
+#endif
+
+    TIMSK0 = (1<<TOIE0);
+
+    /* Task init */
+    initKeyboard();
+
+    xprintf("\nAdNW : %s", FW_VERSION);
+}
+
+

@@ -28,6 +28,7 @@
 
 #include "config.h"
 
+volatile uint32_t idle_count;   ///< interupt-incremented timer used for timeouts of MKT and mousekeys
 
 void      initKeyboard(void);
 void      init_active_keys(void);
@@ -75,5 +76,15 @@ uint8_t fillMacroReport(USB_KeyboardReport_Data_t *report_data);
 
 void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data);
 void hostLEDChange(uint8_t leds);
+
+bool suspend_wakeup_condition(void);
+void SetupHardware(void);
+
+uint8_t     g_mouse_keys;       ///< stores keys to be interpreted as mouse buttons
+uint8_t     g_mouse_keys_enabled;       ///< temporarily active while mouse in in use,
+
+void enable_mouse_keys(uint8_t on);
+void initPWM(void);
+
 
 #endif // __KEYBOARD_CLASS_H__

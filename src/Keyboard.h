@@ -65,8 +65,6 @@
 /** LED mask for the library LED driver, to indicate that an error has occurred in the USB interface. */
 #define LEDMASK_USB_ERROR        (LEDS_LED1 | LEDS_LED3)
 
-/* Function Prototypes: */
-void SetupHardware(void);
 
 void EVENT_USB_Device_Connect(void);
 void EVENT_USB_Device_Disconnect(void);
@@ -78,15 +76,6 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
         const uint8_t ReportType, void* ReportData, uint16_t* ReportSize);
 void CALLBACK_HID_Device_ProcessHIDReport(USB_ClassInfo_HID_Device_t* const HIDInterfaceInfo, const uint8_t ReportID,
         const uint8_t ReportType, const void* ReportData, const uint16_t ReportSize);
-
-
-uint8_t     g_mouse_keys;       ///< stores keys to be interpreted as mouse buttons
-uint8_t     g_mouse_keys_enabled;       ///< temporarily active while mouse in in use,
-
-void enable_mouse_keys(uint8_t on);
-void initPWM(void);
-
-volatile uint32_t idle_count;   ///< interupt-incremented timer used for timeouts of MKT and mousekeys
 
 #endif // _KEYBOARD_H_
 

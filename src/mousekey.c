@@ -24,7 +24,7 @@
 #include <stdint.h>
 #include <util/delay.h>
 #include "hid_usage.h"
-#include "Keyboard.h" // idle_count, should go into timer
+#include "keyboard_class.h" // idle_count, should go into timer
 #include "mousekey.h"
 #include "print.h"
 

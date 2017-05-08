@@ -22,7 +22,6 @@
 #include "config.h"
 #include "matrix.h"
 #include "keyboard_class.h"
-#include "Keyboard.h"  // idle_count
 
 #ifdef BLACKBOWL
 #include "mcp23018.h"
