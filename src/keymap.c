@@ -38,15 +38,6 @@ uint8_t getKeyCode(uint8_t row, uint8_t col, uint8_t layer)
 {
     return getKeyStruct(row, col, layer).hid;
 }
-/*
-uint8_t getKeyChar(uint8_t row, uint8_t col, uint8_t layer)
-{
-    uint8_t ch = getKeyStruct(row, col, layer).ch;
-    if(ch < 33)
-        return ' '; // '_' (uint8_t)('a');
-    return ch;
-}
-*/
 
 keycode getKeyStruct(uint8_t row, uint8_t col, uint8_t layer)
 {
@@ -62,25 +53,4 @@ keycode getKeyStruct(uint8_t row, uint8_t col, uint8_t layer)
 
     return kc;
 }
-
-/*
-void printLayout(uint8_t l)
-{
-    uint8_t ch;
-    xprintf("\n---");
-    for(uint8_t r=0; r<ROWS/2-1; ++r) {
-        xprintf("\n");
-        for(uint8_t c=0; c<COLS; ++c) {
-            ch=getKeyChar(r,c,l);
-            if(ch==92)
-                xprintf("\\\\");
-            else
-                xprintf("%c", ch );
-        }
-        xprintf("  ");
-        for(uint8_t c=0; c<COLS; ++c)
-            xprintf("%c", getKeyChar(r+ROWS/2,c,l) );
-    }
-}
-*/
 

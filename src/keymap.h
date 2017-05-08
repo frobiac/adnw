@@ -298,15 +298,6 @@ static const uint8_t SecondaryUsage[ROWS][COLS] PROGMEM =
 
 static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
 {
-/**
-  /// only debug to test matrix
-  KEYMAP( _no,
-    _Z,    _k, _u, _q,     _PERIOD,_j  ,   _p,  _c, _l, _m, _f, _E,
-    _Y,    _h, _i, _e,     _a,     _o  ,   _d,  _t, _r, _n, _s, _D,
-    _X,    _x, _y, _MINUS,_COMMA,_SLASH,   _b,  _g, _w, _v, _z, _C,
-    _0,    _1, _2, _3,    _4,    _5,       _6,  _7, _8, _9, _A, _B
-  ),
-*/
   // modified BU-TECK is default
   KEYMAP( _no,
     _ESC,    _k, _u, _q,     _PERIOD,_j  ,   _p,  _c, _l, _m, _f, _BSPACE ,
