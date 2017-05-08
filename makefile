@@ -42,6 +42,7 @@ SRC =   $(LUFA_SRC_USB)          \
 	$(SRCDIR)/Descriptors.c      \
 	$(SRCDIR)/keyboard_class.c   \
 	$(SRCDIR)/keymap.c           \
+	$(SRCDIR)/matrix.c           \
 	$(SRCDIR)/macro.c            \
 	$(SRCDIR)/command.c          \
 	$(SRCDIR)/mousekey.c         \
