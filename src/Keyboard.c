@@ -179,6 +179,7 @@ static void __attribute__ ((noreturn)) main_loop(void)
             HID_Device_USBTask(&Extra_HID_Interface);
 #endif
 #ifdef PS2MOUSE
+            //@TODO should be always active for mousekey usage...
             if( g_cfg.fw.mouse_enabled )
                 HID_Device_USBTask(&Mouse_HID_Interface);
 #endif

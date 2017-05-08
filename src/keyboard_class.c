@@ -117,9 +117,6 @@ void initKeyboard()
 
     set_led_color(16,0,0);
 
-    // all global variables should be initialized on avr
-    //g_mouse_keys_enabled = 0;
-    //g_mouse_keys = 0;
     secondUse_timer=idle_count + SECOND_USE_TIMEOUT;
 
     init_cols();
@@ -401,13 +398,12 @@ void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data)
 /**
  * This function is periodically called from host.
  *
- * Last chance to modify the data being send is here!
+ * Last chance to modify the data being sent.
  *
  * Logical flow:
- *   - scan matrix
- *   - init active keys from detected row/col pairs
- *   - determine whether secondary usage has a result to send
- *   - send
+ *   - scan matrix -> keyChange() which in turn updates dual usage state
+ *   - check overrides like macro or passhash playback
+ *   - fill report with keyboard data.
  *
  *
  */
@@ -784,6 +780,13 @@ void initPWM()
 #endif
 }
 
+
+/**
+ * This enables interpretation of key presses as mouse buttons or movements.
+ * It is temporarily activated on PS/2 data detection, or
+ * when the separate mouse key layer is active.
+ *
+ */
 void enable_mouse_keys(uint8_t on)
 {
     if(on!=g_mouse_keys_enabled) {
@@ -840,8 +843,6 @@ void SetupHardware()
 
     /* Task init */
     initKeyboard();
-
-    xprintf("\nAdNW : %s", FW_VERSION);
 }
 
 

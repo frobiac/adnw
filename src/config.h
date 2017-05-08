@@ -29,7 +29,6 @@
  * Debug and PS/2 options must be set in makefile.
  * Do not forget to adjust matrix.h to the hardware wiring used.
  *
- * @todo : Still need to configure command keys here.
  */
 #include "LUFA/Common/Common.h"  // CONCAT
 
