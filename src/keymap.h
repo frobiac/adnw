@@ -64,8 +64,6 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 
 #define _MACRO _no
 #define LAYERS 6
-#define ROWS   8
-#define COLS   6  ///< cols of both keyboard halves are "stacked" in layout and physically connected
 
 // *INDENT-OFF*
 
@@ -141,8 +139,6 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 #endif
 
 #if defined(BLACKFLAT) || defined(BLACKBOWL)
-#undef COLS
-#define COLS   5
 
 /*
     BlackFlat: RedTilt without outer pinky columns, with 4th button on pinky bottom row
@@ -222,10 +218,6 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 #endif
 
 #ifdef HYPERMICRO
-#undef ROWS
-#undef COLS
-#define ROWS   4
-#define COLS   12
 
 /*  Row/col matrix: (0-based)
  *  unused in layout: 29

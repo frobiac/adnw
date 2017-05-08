@@ -97,6 +97,9 @@
 enum { TP_PTS=0, TP_HALFTAC, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_RES, TP_FTRANS };
 
 #ifdef BLUECUBE
+    #define ROWS   8
+    #define COLS   6
+
     #define TP_AXES (1<<TP_PTS | 1<<TP_FLIPY) // ???
 
     #define PS2_DATA_PORT_LETTER  B
@@ -107,6 +110,9 @@ enum { TP_PTS=0, TP_HALFTAC, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_RES, TP_F
     #define PS2_RESET_BIT    3
 
 #elif defined HYPERNANO || defined REDTILT
+    #define ROWS   8
+    #define COLS   6
+
     // trackpoint sideways, nub to the left
     #define TP_AXES (1<<TP_PTS | 1<<TP_FLIPX | 1<<TP_FLIPY)
 
@@ -118,6 +124,9 @@ enum { TP_PTS=0, TP_HALFTAC, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_RES, TP_F
     #define PS2_RESET_BIT    0
 
 #elif defined BLACKFLAT
+    #define ROWS   8
+    #define COLS   5
+
     #define HAS_LED //@TODO LED port configurable
 
     // Trackpoint from new batch of 3 with dedicated reset circuitry
@@ -134,6 +143,9 @@ enum { TP_PTS=0, TP_HALFTAC, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_RES, TP_F
     #define PS2_CLOCK_BIT    3
 
 #elif defined BLACKBOWL
+    #define ROWS   8
+    #define COLS   5
+
     #define HAS_LED
     /*
      * @TODO LED port configurable: RGB on B6,7,5
@@ -149,6 +161,10 @@ enum { TP_PTS=0, TP_HALFTAC, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_RES, TP_F
     #define PS2_DATA_BIT    2
     #define PS2_CLOCK_PORT_LETTER D
     #define PS2_CLOCK_BIT    5
+
+#elif defined HYPERMICRO
+#define ROWS   4
+#define COLS   12
 
 /// @TODO Hypermicro defines for trackpoint
 #else 
