@@ -24,7 +24,8 @@
 
 #include "tmk_ps2/ps2_mouse.h"
 #include "tmk_ps2/ps2.h"
-#include "Keyboard.h"  // for USB_Mouse_Report_Data_t
+#include "Keyboard.h"   // g_mouse_keys
+#include "hid_usage.h"  // for USB_Mouse_Report_Data_t
 #include "config.h"
 
 #define PS2_ACK 0xFA

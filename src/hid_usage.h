@@ -803,3 +803,11 @@ static const uint8_t ascii2hid[128][2] = {
     _DEL        // ( del) 127
 } ;
 
+typedef struct {
+    uint8_t Button;
+    int8_t X;
+    int8_t Y;
+    int8_t V; /// vertical wheel
+    int8_t H; /// horizontal wheel
+} __attribute__((packed)) USB_WheelMouseReport_Data_t;
+
