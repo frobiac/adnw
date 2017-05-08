@@ -56,18 +56,6 @@ struct sfrActiveKeys {
 
 void clearActiveKeys(void);
 
-bool    isModifierKey(uint8_t row, uint8_t col);
-bool    isLayerKey   (uint8_t row, uint8_t col);
-bool    isNormalKey  (uint8_t row, uint8_t col);
-uint8_t getMouseKey  (uint8_t row, uint8_t col);
-void    getSecondaryUsage(uint8_t r, uint8_t c, uint8_t *hid);
-
-uint8_t getModifier(uint8_t row, uint8_t col, uint8_t layer);
-
-uint8_t getActiveModifiers(void);
-uint8_t getActiveLayer(void);
-uint8_t getActiveKeyCodeModifier(void);
-
 void set_led(void);
 void set_led_color(uint8_t r, uint8_t g, uint8_t b);
 
