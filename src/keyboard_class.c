@@ -615,53 +615,6 @@ uint8_t getActiveModifiers()
 
 
 /**
-  * check whether layer 0 key is a modifier.
-  * @todo : keys that are not modifiers in layer 0 cannot be in other layers (but no sensible use case)
-  */
-bool isModifierKey(uint8_t row, uint8_t col)
-{
-    if( getModifier(row,col,0) >= MOD_FIRST  && getModifier(row,col,0) <= MOD_LAST)
-        return true;
-    return false;
-}
-
-/**
- * check whether layer 0 key is a modifier )
- * @todo : keys that are not modifiers in layer 0 cannot be in other layers (but no sensible use case)
- */
-bool isLayerKey(uint8_t row, uint8_t col)
-{
-    if( getModifier(row,col,0) > MOD_LAYER_0 && getModifier(row,col,0) < MOD_LAYER_LAST) {
-        return true;
-    }
-    return false;
-}
-
-bool isNormalKey(uint8_t row, uint8_t col)
-{
-    return !(isLayerKey(row,col) || isModifierKey(row,col));
-}
-
-void getSecondaryUsage(uint8_t r, uint8_t c, uint8_t *hid)
-{
-    memcpy_P(hid, &SecondaryUsage[r][c], sizeof(uint8_t));
-}
-
-/**
- * Returns the corresponding mouse hid code, or 0 if none is defined for this matrix position.
- *
- * This enables overiding normal keys when in mouse mode.
- */
-uint8_t getMouseKey(uint8_t r, uint8_t c)
-{
-    uint8_t hid;
-    memcpy_P(&hid, &MouseUsage[r][c], sizeof(uint8_t));
-    if ( hid >= HID_BTN_L && hid <= HID_BTN_S )
-        return (hid);
-    return 0;
-}
-
-/**
  * Appends a row/column pair to the currently active key list unless
  * g_mouse_keys are enabled (for a short while after mouse movement)
  * MKT is either stopped or initialized, depending on the situation.
@@ -845,4 +798,51 @@ void SetupHardware()
     initKeyboard();
 }
 
+
+/**
+  * check whether layer 0 key is a modifier.
+  * @todo : keys that are not modifiers in layer 0 cannot be in other layers (but no sensible use case)
+  */
+bool isModifierKey(uint8_t row, uint8_t col)
+{
+    if( getModifier(row,col,0) >= MOD_FIRST  && getModifier(row,col,0) <= MOD_LAST)
+        return true;
+    return false;
+}
+
+/**
+ * check whether layer 0 key is a modifier )
+ * @todo : keys that are not modifiers in layer 0 cannot be in other layers (but no sensible use case)
+ */
+bool isLayerKey(uint8_t row, uint8_t col)
+{
+    if( getModifier(row,col,0) > MOD_LAYER_0 && getModifier(row,col,0) < MOD_LAYER_LAST) {
+        return true;
+    }
+    return false;
+}
+
+bool isNormalKey(uint8_t row, uint8_t col)
+{
+    return !(isLayerKey(row,col) || isModifierKey(row,col));
+}
+
+void getSecondaryUsage(uint8_t r, uint8_t c, uint8_t *hid)
+{
+    memcpy_P(hid, &SecondaryUsage[r][c], sizeof(uint8_t));
+}
+
+/**
+ * Returns the corresponding mouse hid code, or 0 if none is defined for this matrix position.
+ *
+ * This enables overiding normal keys when in mouse mode.
+ */
+uint8_t getMouseKey(uint8_t r, uint8_t c)
+{
+    uint8_t hid;
+    memcpy_P(&hid, &MouseUsage[r][c], sizeof(uint8_t));
+    if ( hid >= HID_BTN_L && hid <= HID_BTN_S )
+        return (hid);
+    return 0;
+}
 
