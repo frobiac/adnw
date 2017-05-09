@@ -149,6 +149,12 @@ suspend/wakeup:
     win: powercfg -devicequery wake_armed
     implement EVENT_USB_Device_Suspend() ?
 
+Passhash
+--------
+naming of key secret
+allowed length of entries
+error checks on all input...
+
 
 URLs
 ----
@@ -158,8 +164,3 @@ tmk issue #332
 tmk wiki HID-Report-Descriptor Dump descriptor linux
 eleccelerator.com tutorial about usb hid report descriptors
 
-Passhash
---------
-naming of key secret
-allowed length of entries
-error checks on all input...
