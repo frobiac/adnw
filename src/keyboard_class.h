@@ -63,7 +63,6 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data);
 uint8_t fillMacroReport(USB_KeyboardReport_Data_t *report_data);
 
 void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data);
-void hostLEDChange(uint8_t leds);
 
 bool suspend_wakeup_condition(void);
 void SetupHardware(void);

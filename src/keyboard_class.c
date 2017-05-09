@@ -678,12 +678,6 @@ void init_active_keys()
 }
 
 
-
-void hostLEDChange(uint8_t leds)
-{
-}
-
-
 void led(uint8_t n)
 {
     DDRD |= (1 << 6);
