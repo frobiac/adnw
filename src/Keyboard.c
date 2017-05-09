@@ -281,11 +281,6 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
         USB_KeyboardReport_Data_t* KeyboardReport = (USB_KeyboardReport_Data_t*)ReportData;
         *ReportSize = sizeof(USB_KeyboardReport_Data_t);
         getKeyboardReport(KeyboardReport) ;
-        // clear report in command mode to disable echoing of selected commands.
-        if( handleCommand(KeyboardReport->KeyCode[0], KeyboardReport->Modifier) ) {
-            memset(&KeyboardReport->KeyCode[0], 0, 6 );
-            KeyboardReport->Modifier=0;
-        }
         return false;
     }
 #ifdef DEBUG_OUTPUT

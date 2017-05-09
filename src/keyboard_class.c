@@ -447,8 +447,15 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
         return sizeof(USB_KeyboardReport_Data_t);
     }
 
-    // no other function inhibts sending, so fill report with pending data.
-    return fillReport(report_data);
+    fillReport(report_data);
+
+    // clear report in command mode to disable echoing of selected commands.
+    if( handleCommand(report_data->KeyCode[0], report_data->Modifier) ) {
+        memset(&report_data->KeyCode[0], 0, 6 );
+        report_data->Modifier=0;
+        return 0;
+    }
+    return sizeof(USB_KeyboardReport_Data_t);
 }
 
 
