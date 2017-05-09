@@ -13,12 +13,16 @@ Test sizes:
 * mousemode not exited on other keys fast enough with thumb keys
     also maybe only activate after threshold? clearance of TP could be ignored more easily..
 
+* hangs on 10 keys pressed
 
 FEATURES
 --------
 * read code to unlock macros, passhash private key and xorshift seed on boot
 * password card easier?
-
+* bootmode for BIOS
+* encrypt secret, simple password card support
+* basic LED signaling: command mode...
+* EEPROM loader LUFA/$(DMBS_MODULE_PATH)/HID_EEPROM_Loader/
 
 ISSUES
 ------
@@ -26,14 +30,11 @@ ISSUES
     may be explained as "/" implies shift on german layout
 * REDTILT: Left thumb rests on center key (space), while right one on second from middle (Shift)
         Win/Ctrl/Spc not like other boards...
+* Test both qwerty/z
 
 CONFIG
 ----
 * usage help for command mode?
-
-LUFA
-----
-* inquire about upstream horizontal scroll support
 
 Documentation
 -------------
@@ -130,6 +131,7 @@ Thumbkey double usage
 ---------------------
 - outmost column only on hypernano
 - make lower center keys mousebuttons for TP
+`
                                  _____         _____
                                 |     |       | M3  |
                                 |     |       |     |
@@ -139,13 +141,23 @@ Thumbkey double usage
   |     |     |     |     |     |     |       |     |     |     |     |     |      |
   |     |     |     |     |SPACE| TAB |       | ESC | <-| |ENTER|     |     |      |
    -----------------------------------         ------------------------------------
+`
 
 Unsorted
 --------
 Testcases/mode
 suspend/wakeup:
     win: powercfg -devicequery wake_armed
-    implement EVENT_USB_Device_Suspend() ??
+    implement EVENT_USB_Device_Suspend() ?
+
+
+URLs
+----
+github.com/NicoHood/HID  Hidcodes
+PaulStoffregen/cores/teensy/keylayouts.c
+tmk issue #332
+tmk wiki HID-Report-Descriptor Dump descriptor linux
+eleccelerator.com tutorial about usb hid report descriptors
 
 Passhash
 --------
