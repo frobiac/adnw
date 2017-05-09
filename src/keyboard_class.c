@@ -97,13 +97,6 @@ struct Key  secondUse_key;
 uint32_t    repeatGesture_timer;
 bool g_send_now;
 
-inline void zeroReport(USB_KeyboardReport_Data_t *report_data)
-{
-    // todo: is this neccessary?
-    clearActiveKeys();
-    memset(&report_data->KeyCode[0], 0, 6 );
-    report_data->Modifier=0;
-}
 
 /**
   * ISR that should get called 61 times a second.
@@ -451,8 +444,7 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 
     // clear report in command mode to disable echoing of selected commands.
     if( handleCommand(report_data->KeyCode[0], report_data->Modifier) ) {
-        memset(&report_data->KeyCode[0], 0, 6 );
-        report_data->Modifier=0;
+        zeroReport(report_data);
         return 0;
     }
     return sizeof(USB_KeyboardReport_Data_t);

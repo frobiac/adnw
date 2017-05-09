@@ -74,5 +74,6 @@ uint8_t     g_mouse_keys_enabled;       ///< temporarily active while mouse in i
 void enable_mouse_keys(uint8_t on);
 void initPWM(void);
 
+inline void zeroReport(USB_KeyboardReport_Data_t *report_data) { memset(report_data, 0, 8); }
 
 #endif // __KEYBOARD_CLASS_H__
