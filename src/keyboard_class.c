@@ -458,10 +458,8 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
  */
 uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 {
-    if(activeKeys.keycnt==0) {
-        zeroReport(report_data);
-        return sizeof(USB_KeyboardReport_Data_t);
-    }
+    if(activeKeys.keycnt==0)
+        goto empty;
 
     // if layer is set to MOUSEKEY LAYER
     if(getActiveLayer()==(MOD_MOUSEKEY-MOD_LAYER_0)) {
@@ -473,8 +471,7 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
         mousekey_activate(mk_mask);
 
         // @todo: There could technically be keys on mouse layer, but why?
-        zeroReport(report_data);
-        return sizeof(USB_KeyboardReport_Data_t);
+        goto empty;
     } else {
         mousekey_activate(0);
     }
@@ -494,12 +491,8 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
         if( HID_CMDMODE == getKeyCode(k.row, k.col, getActiveLayer() ) )
             goto cmdmode;
 
-        if(idx>6) {
-            xprintf("\nError: more than 6 keys! ");
-            for( uint8_t k=0; k<6; ++k)
-                xprintf(" %d ", report_data->KeyCode[k]);
+        if(idx>=6)
             break;
-        }
     }
 
     report_data->Modifier=getActiveModifiers()|getActiveKeyCodeModifier();
@@ -512,8 +505,9 @@ cmdmode:
         rowData[row]=0;
     clearActiveKeys();
     setCommandMode(true);
+empty:
     zeroReport(report_data);
-    return sizeof(USB_KeyboardReport_Data_t);
+    return 0;
 }
 
 
