@@ -32,8 +32,6 @@ The driver was originally based on humblehackers [hhkb firmware][hhkb].
 
 Implementation of mousekey layer, KEYMAP macro and other neat ideas borrowed from the very advanced [tmk_firmware][tmk].
 
-Klaus Weber contributed to an enhanced secondary use state machine and developed several other modifications, including alternate layouts as well as PC/Mac and host language differentiations..
-
 PS/2 support is copied from [TMK sources][tmk].
 
 A dedicated USB ID was generously supplied by Openmoko, Inc.

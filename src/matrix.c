@@ -411,10 +411,8 @@ void scan_matrix(void)
         h=get_kb_rpt    (ALL_COLS_MASK, row);
         r=get_kb_release(ALL_COLS_MASK, row);
 
-        //if(p|h|r)
-        //    keyChange(row, p,h,r);
-
-        rowData[row] = ((rowData[row]|(p|h)) & ~r);
+        if(p|h|r)
+            keyChange(row, p,h,r);
     }
 }
 

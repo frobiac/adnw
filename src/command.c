@@ -75,7 +75,7 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
     // generally return "true" below as we are in command mode which should not echo.
 
     static uint8_t hid_prev, mod_prev, act_prev;
-    uint8_t act_now = activeKeys.keycnt;
+    uint8_t act_now = activeKeysCount();
 
     if((hid_now==hid_prev) && (mod_now==mod_prev) && (act_now==act_prev))
         return true;

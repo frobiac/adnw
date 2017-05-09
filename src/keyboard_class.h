@@ -27,42 +27,17 @@
 #endif
 
 #include "config.h"
+#include "keymap.h" //column_size_t
+
 
 volatile uint32_t idle_count;   ///< interupt-incremented timer used for timeouts of MKT and mousekeys
 
 void      initKeyboard(void);
-void      init_active_keys(void);
-
-uint8_t   getKeyboardReport(USB_KeyboardReport_Data_t *report);
-
-void analogDataAcquire(void);
-
-struct sfrActiveKeys activeKeys;
-struct sfrActiveKeys secondUse_Prev_activeKeys;
-
-struct Key {
-    uint8_t row;
-    uint8_t col;
-    bool normalKey;
-};
-
-#define MAX_ACTIVE_KEYS 10
-
-struct sfrActiveKeys {
-    struct Key keys[MAX_ACTIVE_KEYS];
-    uint8_t keycnt;
-};
-
-
-void clearActiveKeys(void);
 
 void set_led(void);
 void set_led_color(uint8_t r, uint8_t g, uint8_t b);
 
-uint8_t fillReport(USB_KeyboardReport_Data_t *report_data);
-uint8_t fillMacroReport(USB_KeyboardReport_Data_t *report_data);
-
-void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data);
+uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data);
 
 bool suspend_wakeup_condition(void);
 void SetupHardware(void);
@@ -74,5 +49,10 @@ void enable_mouse_keys(uint8_t on);
 void initPWM(void);
 
 inline void zeroReport(USB_KeyboardReport_Data_t *report_data) { memset(report_data, 0, 8); }
+
+bool useAsMouseReport(void);
+void fillKeyboardReport(USB_KeyboardReport_Data_t * report);
+uint8_t activeKeysCount(void);
+void keyChange(uint8_t row, column_size_t p, column_size_t h, column_size_t r);
 
 #endif // __KEYBOARD_CLASS_H__

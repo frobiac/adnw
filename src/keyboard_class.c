@@ -59,43 +59,62 @@ uint8_t getActiveModifiers(void);
 uint8_t getActiveLayer(void);
 uint8_t getActiveKeyCodeModifier(void);
 
-// #define DBG_2ND_USE
+uint8_t getMouseKeys(void);
+void reportPrint (USB_KeyboardReport_Data_t * report, char * str);
 
 /**
- * SecondUseToggle is a simple state machine that enables keys to:
- * 1) emit a normal keycode, including its modifiers, if pressed without any other key being
- *         held down AND immediately released again.
- * 2) act as a modifier if pressed together with another normal key.
-
- * This enables keys in good locations (e.g. thumb buttons) to be used either as frequent keys
- * such as space, return or backspace to also act as layer or control modifiers, thus minimizing
- * finger travel across the board.
+ * Timeouts in idle_count ticks = x/61 [s]
  *
- * @todo : several MKTs together do not work unless they all act as modifiers
- *
+ * If pressed _and_ released within the timeout (and without any other key presses or releases in between)
+ * a dual use key will be interpreted with its tapped meaning, usually a regular printable character.
+ * Otherwise, its regular meaning (typically as a modifier) is assumed.
  */
-typedef enum {
-    SECOND_USE_OFF,
-    SECOND_USE_ACTIVE,
-    SECOND_USE_REPEAT,
-    SECOND_USE_PASSIVE
-} SecondUse_State;
-typedef enum {
-    MOD_TRANS_ON,
-    DELAY_MOD_TRANS
-} ModifierTransmission_State;
+#define TAP_TIMEOUT        30
+/**
+ * If a released dual use key was tapped and pressed again within the repeat timeout, it is continuously
+ * interpreted as tapped key until released.
+ */
+#define TAP_TIMEOUT_REPEAT 10
 
-#define SECOND_USE_TIMEOUT 30 // = x/61 [s]: a modekey will remain modifier key if pressed this long; if released earlier the second use normal key is signaled
-uint32_t    secondUse_timer;
-SecondUse_State secondUse_state=SECOND_USE_OFF;
-SecondUse_State secondUse_state_prev=SECOND_USE_OFF;
-ModifierTransmission_State prev_modTrans_state = DELAY_MOD_TRANS;
-uint8_t modTrans_prev_Mods = 0;
-struct Key  secondUse_key;
+#define MAX_ACTIVE_KEYS 10
 
-#define REPEAT_GESTURE_TIMEOUT 10 // = x/61 [s]: a modekey will remain modifier key if pressed this long; if released earlier the second use normal key is signaled
-uint32_t    repeatGesture_timer;
-bool g_send_now;
+typedef struct {
+    union {
+        struct {
+            uint8_t col:4;
+            uint8_t row:4;
+        };
+        uint8_t id;
+    };
+
+    union {
+        struct {
+            bool    dual:1;
+            uint8_t state:3;
+            bool    layer:1;
+            bool    mod:1;
+            bool    mouse:1;
+            bool    unused:1;
+        };
+        uint8_t mode;
+    };
+
+} keypress_t;
+
+
+keypress_t lastDualUseKey;
+keypress_t activeKeys[MAX_ACTIVE_KEYS];
+
+uint8_t activeKeyCount;
+
+
+enum DualUsageMode {
+    DUAL_NONE,              // init, or released as mod
+    DUAL_UNDECIDED,         // tap not yet determined
+    DUAL_NO_TAP,            // no tap, timed out
+    DUAL_TAPPED,            // was tapped
+    DUAL_TAPPED_NOW_HELD,   // was tapped and now held
+};
 
 
 /**
@@ -122,8 +141,6 @@ void initKeyboard()
 
     set_led_color(16,0,0);
 
-    secondUse_timer=idle_count + SECOND_USE_TIMEOUT;
-
     init_cols();
 
     set_led_color(0,16,0);
@@ -145,261 +162,6 @@ void initKeyboard()
 }
 
 
-// Save all currently pressed keys for later evaluation
-void fill_secondUse_Prev_activeKeys(void)
-{
-    secondUse_Prev_activeKeys.keycnt = activeKeys.keycnt;
-    for (uint8_t i = 0; i < activeKeys.keycnt; ++i) {
-        secondUse_Prev_activeKeys.keys[i] = activeKeys.keys[i];
-    }
-}
-
-// Updates new and previous state and prints a debug message
-void changeSecondUseState(SecondUse_State currentState, SecondUse_State newState)
-{
-    if (currentState != newState) {
-        secondUse_state = newState;
-        secondUse_state_prev = currentState;
-
-#ifdef DBG_2ND_USE
-        char stateStr = '-';
-        if      (secondUse_state == SECOND_USE_ACTIVE)  stateStr = 'A';
-        else if (secondUse_state == SECOND_USE_PASSIVE) stateStr = 'P';
-        else if (secondUse_state == SECOND_USE_REPEAT)  stateStr = 'R';
-        else if (secondUse_state == SECOND_USE_OFF)     stateStr = 'O';
-        xprintf("\n2nd: -> %c (%d->%d active)", stateStr, secondUse_Prev_activeKeys.keycnt, activeKeys.keycnt);
-#endif
-    }
-}
-
-// Send out necessary modifiers
-void handleModifierTransmission(USB_KeyboardReport_Data_t* report_data, ModifierTransmission_State newState)
-{
-    switch( newState ) {
-        case MOD_TRANS_ON:
-            // remember sent mods to be able to repeat them later
-            modTrans_prev_Mods = report_data->Modifier;
-            break;
-
-        case DELAY_MOD_TRANS:
-            report_data->Modifier = modTrans_prev_Mods;
-            break;
-
-        default:    // invalid state, should not happen!
-            break;
-    }
-
-    if (prev_modTrans_state != newState) {
-        prev_modTrans_state = newState;
-#ifdef DBG_2ND_USE
-        char stateStr = '-' ;
-        if (newState == MOD_TRANS_ON) stateStr = 'T';
-        else if (newState == DELAY_MOD_TRANS) stateStr = 'D';
-        xprintf("; Mod %d->%d %c\n",prev_modTrans_state, newState, stateStr);
-#endif
-    }
-}
-
-/**
- * State machine to handle secondary usage keys.
- *
- * Secondary keys are modifier keys (layer or control) which
- * when pressed and released by themselves emit a normal keycode.
- *
- * This code is quite complex since timeouts, repeats and multiple
- * key combinations all have to work.
- *
- */
-void handleSecondaryKeyUsage(USB_KeyboardReport_Data_t* report_data)
-{
-    switch( secondUse_state ) {
-        case SECOND_USE_REPEAT: {
-            if( activeKeys.keycnt==1 ) { // only one => previously determined key to repeat still pressed
-                zeroReport(report_data);
-                getSecondaryUsage(activeKeys.keys[0].row,activeKeys.keys[0].col, &(report_data->KeyCode[0]));
-                changeSecondUseState(SECOND_USE_REPEAT, SECOND_USE_REPEAT);
-                break;
-            } else {  // repeated key was released
-                repeatGesture_timer = idle_count;
-                changeSecondUseState(SECOND_USE_REPEAT, SECOND_USE_OFF);
-            }
-        }
-        case SECOND_USE_OFF: {
-            uint8_t hid;
-            getSecondaryUsage(activeKeys.keys[0].row, activeKeys.keys[0].col, &hid);
-
-            if( activeKeys.keycnt==1 && ! activeKeys.keys[0].normalKey &&
-                hid!=0 &&
-                activeKeys.keys[0].row == secondUse_Prev_activeKeys.keys[0].row &&
-                activeKeys.keys[0].col == secondUse_Prev_activeKeys.keys[0].col &&
-                idle_count-repeatGesture_timer < REPEAT_GESTURE_TIMEOUT ) {
-                changeSecondUseState(SECOND_USE_OFF, SECOND_USE_REPEAT);
-                break;
-            }
-            uint8_t modifierOrLayerKeysPresent = 0;
-            // Modifier among pressed keys?
-            for (uint8_t i = 0; i < activeKeys.keycnt; ++i) {
-                struct Key current_key = activeKeys.keys[i];
-                if (!current_key.normalKey) {
-                    modifierOrLayerKeysPresent++;
-                }
-            }
-
-            // activate 2nd-use when modifier is pressed
-            if(modifierOrLayerKeysPresent>0) {
-                // @TODO should drop extra global g_send_now, maybe by checking in Passive transition instead?
-                //       also work with N normal keys prior to modifier...
-                // previously pressed key was normal, now a modifier that should probably
-                // be interpreted as normal once the first has been released, e.g
-                // "t " will only send space if it is pressed after t has been released due to secondary usage of space
-                if(secondUse_Prev_activeKeys.keycnt == 1 &&
-                   secondUse_Prev_activeKeys.keys[0].normalKey &&
-                   activeKeys.keycnt == 2 &&
-                   modifierOrLayerKeysPresent==1) {
-
-                    uint8_t key_regular=0, key_second=0;
-                    for (uint8_t i = 0; i < activeKeys.keycnt; ++i) {
-                        struct Key k = activeKeys.keys[i];
-                        if (k.normalKey)
-                            key_regular=getKeyCode(k.row, k.col, getActiveLayer());
-                        else
-                            getSecondaryUsage(k.row, k.col, &key_second);
-                    }
-                    zeroReport(report_data);
-                    report_data->KeyCode[0]=key_regular;
-                    report_data->KeyCode[1]=key_second;
-                    g_send_now=true;
-
-                } else {
-                    changeSecondUseState(SECOND_USE_OFF, SECOND_USE_ACTIVE);
-                    secondUse_timer=idle_count;
-                    // fix for repeat of last released modifier if another one is held directly afterwards.
-                    modTrans_prev_Mods=0;
-                    fillReport(report_data);    // prepare to send, but modifiers not just yet
-                    handleModifierTransmission(report_data, DELAY_MOD_TRANS);
-                }
-            } else { // normal key / no modifier
-                changeSecondUseState(SECOND_USE_OFF, SECOND_USE_OFF);
-            }
-
-            fill_secondUse_Prev_activeKeys();
-            break;
-        }
-
-        case SECOND_USE_ACTIVE: {
-            bool normalKeyPresent = false;
-            // Normal key among pressed ?
-            for (uint8_t i = 0; i < activeKeys.keycnt; ++i) {
-                struct Key current_key = activeKeys.keys[i];
-                if (current_key.normalKey) {
-                    normalKeyPresent = true;
-                    break;
-                }
-            }
-            // Which key was just released ?
-            if (activeKeys.keycnt < secondUse_Prev_activeKeys.keycnt) {
-                bool secondUseNecessityFound = false;
-                for (uint8_t i = 0; i < activeKeys.keycnt; ++i) {
-                    struct Key current_key = activeKeys.keys[i];
-                    struct Key previous_key = secondUse_Prev_activeKeys.keys[i];
-                    if (!(current_key.col == previous_key.col
-                          && current_key.row == previous_key.row)) {
-                        secondUseNecessityFound = true;
-                        secondUse_key = previous_key;
-                        break;
-                    }
-                }
-                // the last previously saved key was released
-                if (!secondUseNecessityFound) {
-                    secondUse_key = secondUse_Prev_activeKeys.keys[secondUse_Prev_activeKeys.keycnt - 1];
-                }
-                // report without the released key
-                fillReport(report_data);
-                // and add keycode as only keycode
-                getSecondaryUsage(secondUse_key.row,secondUse_key.col, &(report_data->KeyCode[0])  );
-                changeSecondUseState(SECOND_USE_ACTIVE, SECOND_USE_PASSIVE);
-                // send remaining modifiers and stop delaying
-                handleModifierTransmission(report_data, MOD_TRANS_ON);
-                // store pressed keys for next 2nd-Use run
-                fill_secondUse_Prev_activeKeys();
-
-                repeatGesture_timer = idle_count;
-                break; // end switch
-            } // less keys than previously
-
-            // normal key or timeout of secondUse timer ends further second use
-            if ( normalKeyPresent || (secondUse_timer + SECOND_USE_TIMEOUT < idle_count) ) {
-                changeSecondUseState(SECOND_USE_ACTIVE, SECOND_USE_PASSIVE);
-                fillReport(report_data);
-                handleModifierTransmission(report_data, MOD_TRANS_ON);
-                fill_secondUse_Prev_activeKeys();
-                break; // end switch
-            }
-
-            // Only MKTs were and still are pressed, do not yet emit them though
-            if (!normalKeyPresent && activeKeys.keycnt >= secondUse_Prev_activeKeys.keycnt) {
-                if(activeKeys.keycnt > secondUse_Prev_activeKeys.keycnt)
-                    secondUse_timer=idle_count;
-                changeSecondUseState(SECOND_USE_ACTIVE, SECOND_USE_ACTIVE);
-                fillReport(report_data);
-                handleModifierTransmission(report_data, DELAY_MOD_TRANS);
-                fill_secondUse_Prev_activeKeys();
-                break; // end switch
-            }
-            xprintf("2U: unh. ACT");
-            break;
-        }
-
-        case SECOND_USE_PASSIVE: {
-            // number of modifiers now ...
-            uint8_t actModNo=0, prevModNo = 0;
-            for (uint8_t i = 0; i < activeKeys.keycnt; ++i) {
-                struct Key current_key = activeKeys.keys[i];
-                if (!current_key.normalKey) {
-                    actModNo++;
-                }
-            }
-            // ... and previously
-            for (uint8_t i = 0; i < secondUse_Prev_activeKeys.keycnt; ++i) {
-                struct Key current_key = secondUse_Prev_activeKeys.keys[i];
-                if (!current_key.normalKey) {
-                    prevModNo++;
-                }
-            }
-            if (activeKeys.keycnt == 0) {  // nothing is pressed
-                changeSecondUseState(SECOND_USE_PASSIVE, SECOND_USE_OFF);
-                fill_secondUse_Prev_activeKeys();
-                break; // end switch
-            }
-            // was a modifier released ?
-            if(actModNo <= prevModNo) {
-                changeSecondUseState(SECOND_USE_PASSIVE, SECOND_USE_PASSIVE);
-                fillReport(report_data);
-                // send modifiers now
-                handleModifierTransmission(report_data, MOD_TRANS_ON);
-                fill_secondUse_Prev_activeKeys();
-                break; // end switch
-            }
-            // another modifier pressed?
-            if(actModNo > prevModNo) {
-                changeSecondUseState(SECOND_USE_PASSIVE, SECOND_USE_ACTIVE);
-                secondUse_timer=idle_count;
-                fillReport(report_data);
-                handleModifierTransmission(report_data, DELAY_MOD_TRANS);
-                fill_secondUse_Prev_activeKeys();
-                break; // end switch
-            }
-            xprintf("2U: unh. PASS");
-            break; // end switch
-        }
-        default:
-            xprintf("2U: ill sta");
-            break;
-    }
-}
-
-
-
 /**
  * This function is periodically called from host.
  *
@@ -419,76 +181,66 @@ uint8_t getKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 #endif
 
     scan_matrix();
-    init_active_keys();
-
 
 #ifdef ANALOGSTICK
     analogDataAcquire();
 #endif
-
-    /// @todo return early!
-
-    handleSecondaryKeyUsage(report_data);
-    if( secondUse_state != SECOND_USE_OFF || g_send_now ) {
-        g_send_now=false;
-        // buffer already filled by 2nd-use
-        return sizeof(USB_KeyboardReport_Data_t);
-    }
 
     // send pending data to output like a macro or passhash
     if(printOutstr(report_data)) {
         return sizeof(USB_KeyboardReport_Data_t);
     }
 
-    fillReport(report_data);
+    if(useAsMouseReport())
+        return 0;
+
+    fillKeyboardReport(report_data);
 
     // clear report in command mode to disable echoing of selected commands.
-    if( handleCommand(report_data->KeyCode[0], report_data->Modifier) ) {
+    if( handleCommand(report_data->KeyCode[0], report_data->Modifier) )
         zeroReport(report_data);
-        return 0;
-    }
+
     return sizeof(USB_KeyboardReport_Data_t);
 }
 
 
-/**
- * @brief fillReport
- * @param report_data
- * @return Currently fixed, could be used to signal something to layers above.
- */
-uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
+void fillKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 {
-    if(activeKeys.keycnt==0)
-        goto empty;
-
-    // if layer is set to MOUSEKEY LAYER
-    if(getActiveLayer()==(MOD_MOUSEKEY-MOD_LAYER_0)) {
-        uint16_t mk_mask=0;
-        for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
-            struct Key k=activeKeys.keys[i];
-            mk_mask |= (1<<(getKeyCode(k.row, k.col, (MOD_MOUSEKEY-MOD_LAYER_0))-1-MS_BEGIN));
-        }
-        mousekey_activate(mk_mask);
-
-        // @todo: There could technically be keys on mouse layer, but why?
-        goto empty;
-    } else {
-        mousekey_activate(0);
-    }
+    uint8_t activeLayer = getActiveLayer();
 
     uint8_t idx=0;
+    uint8_t kc;
 
-    for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
-        struct Key k=activeKeys.keys[i];
-        uint8_t kc = getKeyCode(k.row, k.col, getActiveLayer());
-        if(k.normalKey && idx < 6) {
+    //@TODO modified characters like "@" or "%" ? Unlikely, but currently not supported...
+    if(lastDualUseKey.state == DUAL_TAPPED || lastDualUseKey.state == DUAL_TAPPED_NOW_HELD) {
+        getSecondaryUsage(lastDualUseKey.row, lastDualUseKey.col, &kc);
+        report_data->KeyCode[idx]= kc;
+        idx++;
+        if(lastDualUseKey.state == DUAL_TAPPED)
+            lastDualUseKey.state = DUAL_NONE; // remove after handling
+
+    }
+
+    for(uint8_t i=0; i < activeKeyCount; ++i) {
+        uint8_t row = activeKeys[i].row;
+        uint8_t col = activeKeys[i].col;
+
+
+        kc = getKeyCode(row, col, activeLayer);
+        if(isNormalKey(row,col) && idx < 6) {
             report_data->KeyCode[idx]= kc;
             idx++;
-        } else if ( kc == HID_R_GUI && idx<6) {
+        }
+
+        // @TODO Hack to be able to use Int1 as Hyper modifier
+        // It should be handled as a modifier in all regards up until sending
+        // Thus HID_R_GUI is used until here, and now replaced here and at modifiers below...
+        if ( kc == HID_R_GUI && idx<6) {
             report_data->KeyCode[idx]= HID_INT1;
             idx++;
         }
-        if( HID_CMDMODE == getKeyCode(k.row, k.col, getActiveLayer() ) )
+
+        if( HID_CMDMODE == getKeyCode(row, col, activeLayer) )
             goto cmdmode;
 
         if(idx>=6)
@@ -497,17 +249,19 @@ uint8_t fillReport(USB_KeyboardReport_Data_t *report_data)
 
     report_data->Modifier=getActiveModifiers()|getActiveKeyCodeModifier();
     report_data->Modifier &= ~(1<<(MOD_R_GUI-MOD_FIRST));
-
-    return sizeof(USB_KeyboardReport_Data_t);
+    return;
 
 cmdmode:
-    for (uint8_t row = 0; row < ROWS; ++row)
-        rowData[row]=0;
-    clearActiveKeys();
     setCommandMode(true);
-empty:
     zeroReport(report_data);
-    return 0;
+}
+
+
+void reportPrint(USB_KeyboardReport_Data_t * report, char * str)
+{
+    xprintf("%s %04X|", str, report->Modifier);
+    for( uint8_t k=0; k<6; ++k)
+        xprintf("%02X ", report->KeyCode[k]);
 }
 
 
@@ -565,20 +319,18 @@ void set_led_color(uint8_t r, uint8_t g, uint8_t b)
 }
 
 
-void clearActiveKeys()
-{
-    activeKeys.keycnt=0;
-}
 
 /// @todo Switch back from mouse layer!
 uint8_t getActiveLayer()
 {
-
     uint8_t layer=0;
-    for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
-        struct Key k = activeKeys.keys[i];
-        if( isLayerKey(k.row, k.col) ) {
-            layer += getModifier(k.row, k.col,0)-MOD_LAYER_0;
+    for(uint8_t i=0; i < activeKeyCount; ++i) {
+        uint8_t row = activeKeys[i].row;
+        uint8_t col = activeKeys[i].col;
+        if(activeKeys[i].id == lastDualUseKey.id && lastDualUseKey.state != DUAL_NO_TAP)
+            continue;
+        if( isLayerKey(row, col)) {
+            layer += getModifier(row, col,0)-MOD_LAYER_0;
         }
     }
     return layer;
@@ -592,10 +344,11 @@ uint8_t getActiveLayer()
  */
 uint8_t getActiveKeyCodeModifier()
 {
-    for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
-        struct Key k=activeKeys.keys[i];
-        if(k.normalKey) {
-            return getModifier(k.row, k.col, getActiveLayer());
+    for(uint8_t i=0; i < activeKeyCount; ++i) {
+        if(activeKeys[i].id == lastDualUseKey.id && lastDualUseKey.state != DUAL_NO_TAP)
+            continue;
+        if( isNormalKey(activeKeys[i].row, activeKeys[i].col)) {
+            return getModifier(activeKeys[i].row, activeKeys[i].col, getActiveLayer());
         }
     }
     return 0;
@@ -605,76 +358,14 @@ uint8_t getActiveKeyCodeModifier()
 uint8_t getActiveModifiers()
 {
     uint8_t modifiers=0;
-    for(uint8_t i=0; i < activeKeys.keycnt; ++i) {
-        struct Key k = activeKeys.keys[i];
-        if( isModifierKey(k.row, k.col) ) {
-            modifiers |= (1 << (getModifier(k.row, k.col,0)-MOD_L_CTRL));
+    for(uint8_t i=0; i < activeKeyCount; ++i) {
+        if(activeKeys[i].id == lastDualUseKey.id && lastDualUseKey.state != DUAL_NO_TAP)
+            continue;
+        if( isModifierKey(activeKeys[i].row, activeKeys[i].col)) {
+            modifiers += (1<< (getModifier(activeKeys[i].row, activeKeys[i].col,0)-MOD_L_CTRL));
         }
     }
-#ifdef ANALOGSTICK
-    modifiers |= analogData.mods;
-#endif
-
     return modifiers;
-}
-
-
-/**
- * Appends a row/column pair to the currently active key list unless
- * g_mouse_keys are enabled (for a short while after mouse movement)
- * MKT is either stopped or initialized, depending on the situation.
- */
-void ActiveKeys_Add(uint8_t row, uint8_t col)
-{
-    if(activeKeys.keycnt>= MAX_ACTIVE_KEYS) {
-        return;
-    }
-
-    struct Key key;
-    key.row=row;
-    key.col=col;
-    key.normalKey = isNormalKey(row,col);
-
-    // quit early if mouse key is pressed in mouse mode, or end it on other keypress.
-    if( g_mouse_keys_enabled ) {
-        uint8_t btns = getMouseKey(row, col);
-        if(btns != 0) {
-            g_mouse_keys |= btns;
-            return;
-        } else { /*if(isNormalKey(row,col))*/  // quicker exit from mousekey mode on other key
-            enable_mouse_keys(0);
-        }
-    }
-
-    activeKeys.keys[activeKeys.keycnt]=key;
-    activeKeys.keycnt++;
-}
-
-/** key matrix is read into rowData[] at this point,
-  * now map all active keys
-  */
-void init_active_keys()
-{
-    clearActiveKeys();
-
-    // process row/column data to find the active keys
-    for (uint8_t row = 0; row < ROWS; ++row) {
-        for (uint8_t col = 0; col < COLS; ++col) {
-            if (rowData[row] & (1UL << col)) {
-                uint8_t offset=0;
-#ifdef PINKYDROP
-                if(g_cfg.fw.pinkydrop) {
-                    if(col == 1 && row < 4)
-                        offset = (row == 0 ? 3 : -1); //+(4+row-1)%4;
-                    else if( col==5 && row>3)
-                        offset = (row == 4 ? 3 : -1); //+(4+row-1)%4;
-                }
-#endif
-                ActiveKeys_Add(row+offset,col);
-            }
-        }
-    }
-    return;
 }
 
 
@@ -695,7 +386,7 @@ void led(uint8_t n)
 bool suspend_wakeup_condition()
 {
     scan_matrix();
-    return (activeKeys.keycnt>2);
+    return (activeKeyCount>2);
 }
 
 /**
@@ -795,6 +486,190 @@ void SetupHardware()
 
     /* Task init */
     initKeyboard();
+}
+
+
+
+bool useAsMouseReport(void)
+{
+    // Intercept here if we are in mousekey layer...
+    // @TODO check for mousemode should go directly into descriptor polling
+    if(getActiveLayer() == (MOD_MOUSEKEY-MOD_LAYER_0) ) {
+        uint16_t mk_mask=0;
+        for(uint8_t i=0; i < activeKeyCount; ++i) {
+            mk_mask |= (1<<(getKeyCode(activeKeys[i].row, activeKeys[i].col, (MOD_MOUSEKEY-MOD_LAYER_0))-1-MS_BEGIN));
+        }
+        mousekey_activate(mk_mask);
+        return true;
+    } else {
+        mousekey_activate(0);
+        return false;
+    }
+
+    if(g_mouse_keys_enabled) {
+        g_mouse_keys = getMouseKeys();
+        return true;
+    }
+    return false;
+}
+
+uint8_t getMouseKeys(void)
+{
+    uint8_t btns=0;
+    for(uint8_t i=0; i<activeKeyCount; ++i) {
+        btns |= getMouseKey(activeKeys[i].row, activeKeys[i].col);
+    }
+    return btns;
+}
+
+
+void addKey(uint8_t row, uint8_t col)
+{
+    if(activeKeyCount>=MAX_ACTIVE_KEYS-1) {
+        xprintf("\nErr: +");
+        return;
+    }
+    activeKeys[activeKeyCount].row=row;
+    activeKeys[activeKeyCount].col=col;
+    ++activeKeyCount;
+
+    // immediately exit mouse mode on non-mousekey press.
+    if( g_mouse_keys_enabled ) {
+        if(! getMouseKey(row, col))
+            enable_mouse_keys(0);
+    }
+}
+
+
+void delKey(uint8_t row, uint8_t col)
+{
+    if(activeKeyCount<1) {
+        xprintf("\nErr: -");
+        return;
+    }
+    for(uint8_t i=activeKeyCount-1; i>=0; --i) {
+        if(activeKeys[i].row == row && activeKeys[i].col == col) {
+            activeKeys[i] = activeKeys[activeKeyCount-1];
+            --activeKeyCount;
+            return;
+        }
+    }
+}
+
+
+void printKeys(void)
+{
+    xprintf("%d: ", activeKeyCount);
+    if(lastDualUseKey.state != DUAL_NONE) {
+        xprintf("DU %1X%1X=%1d|", lastDualUseKey.row, lastDualUseKey.col, lastDualUseKey.state);
+    } else {
+        xprintf("DU   = |");
+    }
+
+    for(uint8_t i=0; i<activeKeyCount; ++i) {
+        if(activeKeys[i].id != lastDualUseKey.id)
+            xprintf("%02X ", activeKeys[i].id );
+    }
+}
+
+
+uint8_t activeKeysCount(void)
+{
+    return activeKeyCount;
+}
+
+/**
+ *  React to any key change event emitted from scan_matrix().
+ *
+ *  Specified row/col key was either pressed, released or is still held.
+ *  When holding occurs is determined by repeat timeout in scan_matrix().
+ *
+ *  To be able to fill a keyboard report when requested by host, we need to keep track of
+ *  all keys somehow and map them to actual keycodes.
+ *
+ *  Regular keys, modifiers and layers are rather easy to parse at that time as each
+ *  combination of any of them will be assembled in one report by adding all modifiers
+ *  and taking the symbol(s) from the selected layer.
+ *
+ *  For dual use keys a special handling is required since they
+ *  - change their meaning depending on timeouts and other keys pressed
+ *  - may need to emit after having been released
+ *
+ *  Luckily, this handling only affects the last pressed dual use key:
+ *
+ *  State of the saved dual use key:
+ *
+ *  undecided : a new dual use key is pressed. Update save.
+ *  no_tap    : if another key is pressed, or the saved key was not in tap_rep and is now held
+ *  tap       : saved key in init and released within tap timeout
+ *  tap_rep   : saved key in tap  and pressed again within tap_repeat timeout.
+ *
+ *  If the last key pressed was
+ *
+ */
+void keyIdChange(uint8_t row, uint8_t col, uint8_t change)
+{
+    static uint8_t lastDualUse __attribute__((unused));
+    static uint8_t lastPressRelease;
+    static uint32_t tapStartTime;
+    static uint32_t tapRepeatTime;
+
+    uint8_t id = (row<<4|col);
+    uint8_t dualUseNormal=0;
+    getSecondaryUsage(row, col, &dualUseNormal);
+
+    if(dualUseNormal != 0) {    // change is a dual use key
+        if(change!=2) {
+            // state is set below
+            lastDualUseKey =  (keypress_t) { .row=row, .col=col, .dual=dualUseNormal };
+        }
+        if(change==2) { // held -> dual use is mod
+            if(lastDualUseKey.state != DUAL_TAPPED_NOW_HELD)
+                lastDualUseKey.state = DUAL_NO_TAP;
+        } else if(change==1) { // pressed again after release, check time for repeat, maybe normal
+            if(id==lastPressRelease && idle_count - tapRepeatTime < TAP_TIMEOUT_REPEAT) {
+                lastDualUseKey.state = DUAL_TAPPED_NOW_HELD;
+            } else {
+                lastDualUseKey.state = DUAL_UNDECIDED;
+            }
+            tapStartTime = idle_count; // no additional press on fast release
+        } else if(change==0) { // released again, check time for tap
+            lastDualUseKey.state = DUAL_NONE;
+            if(id==lastPressRelease && idle_count - tapStartTime < TAP_TIMEOUT) {
+                lastDualUseKey.state = DUAL_TAPPED;
+            }
+            tapRepeatTime = idle_count;
+        }
+    } else {
+        // non-dual use key changed.
+        lastDualUseKey.state = DUAL_NO_TAP;
+    };
+
+    // any key is added or removed from list
+    if(change==1)
+        addKey(row, col);
+    else if (change==0)
+        delKey(row, col);
+
+    // last press or release id must also be updated
+    if(change!=2) {
+        lastPressRelease = id;
+    }
+
+    //printKeys();
+}
+
+void keyChange(uint8_t row, column_size_t p, column_size_t h, column_size_t r)
+{
+    for(uint8_t col=0; col<COLS; ++col) {
+        uint8_t mask=1<<col;
+        if(p&mask)
+            keyIdChange(row, col, 1);
+        if(h&mask)
+            keyIdChange(row, col, 2);
+        if(r&mask)
+            keyIdChange(row, col, 0);
+    }
 }
 
 
