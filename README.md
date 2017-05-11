@@ -11,24 +11,22 @@ This is my daily driver since about 2 years now:
 ![RedTilt](http://frobiac.github.com/adnw/img/RT_both.jpg)
 
 
-A presentation of my current keyboard prototype can be found [here][DT_hw], where you'll also find more detailed information on the hardware and the layout used as well as discussions related to these project.
+A presentation of my current keyboard prototype can be found [here][DT_hw], where you'll also find more detailed information on the hardware and the layout used as well as discussions related to these projects.
 
 Features
 --------
-- Full macro support with all configuration done on the keyboard itself, no external tools needed.
-- 2nd-Use modifier keys acting as normal keys when toggled by themselves.
+- Full macro support with dynamic recording done on the keyboard itself.
+- 2nd-Use modifier keys acting as normal keys when toggled by themselves, also known as tapping or [dual-role keys][wiki_dualrole].
 - PS/2 protocol for pointing devices
 - Mouse device with 3 buttons and 2 scrollwheels
 - IBM trackpoint configuration
+- Optional extra descriptor support for additional system control keys like power or media control
 - Supports multiple layouts in switchable layers
-- Native support for different host keyboard language settings, qwertz and qwerty implemented
-- HMAC-SHA1 based string generation for safer passwords
+- HMAC-SHA1 based string generation for passwords
 
 Credits
 -------
 USB device support depends on the [LUFA][lufa] framework by Dean Camera.
-
-The driver was originally based on humblehackers [hhkb firmware][hhkb].
 
 Implementation of mousekey layer, KEYMAP macro and other neat ideas borrowed from the very advanced [tmk_firmware][tmk].
 
@@ -46,6 +44,7 @@ xprintf implementation from http://elm-chan.org/fsw/strf/xprintf.html
 I2C Master library by Peter Fleury : http://homepage.hispeed.ch/peterfleury/i2cmaster.zip
 MCP23018 code borrowing from Ruben Laguna : http://rubenlaguna.com/blog/2014/01/16/mcp23018-i2c-communication-advice
 
+The driver was originally based on humblehackers [hhkb firmware][hhkb].
 
 License
 -------
@@ -85,7 +84,6 @@ For a full list of commands refer to handleCommand() in [command.c](/src/command
 - q Quit command mode where possible
 - b Jump to bootloader
 - t TrackPoint info output
-- l Alternate layer toggle
 - m Mouse toggle
 
 The following commands need further input:
@@ -94,14 +92,19 @@ The following commands need further input:
 
 - r Record macro (see number/length limits in [macro.h](/src/macro.h)
     * Press key to record macro for
-    * Type in macro slowly
+    * Type in macro one key at a time
     * <Ctrl>+<Esc> aborts, <Ctrl>+<Return> saves, <Alt>+<Return> insert pause
 
 - c Config
     * @see SUB_CONFIG in src/command.c for details
     * Must "save" for persistent storage of changes in EEPROM
-    * Default LED mode
     * Full TrackPoint configuration of axes orientations and speed/sensitivity/threshold can be performed.
+
+- l LED configuration
+    * Color and default blink mode
+
+- U unlock passhash and macro features
+    * Entered string is used as a unlock password
 
 - h PassHash
     * On first call the master password must be entered. A check against given test data is performed.
@@ -116,7 +119,7 @@ Twik private key of a profile must be set in src/_private_data.h, which is creat
 
 
 Current Layout
-==============
+--------------
 Current default layout as implemented in [keymap.h](/src/keymap.h) :
 ( discussion at [deskthority][DT_layout] and as a [graphical layout][RT_AdNW] )
 
@@ -148,6 +151,10 @@ Current default layout as implemented in [keymap.h](/src/keymap.h) :
 ##### Mousekeys
     tbd, see keymap.h
 
+Notes
+-----
+Currently all keycode handling is preset for German Qwertz host layout, but can be adjusted in [hid_usage.h](src/hid_usage.h) (but untested.)
+
 
 [DT_hw]:     http://deskthority.net/workshop-f7/my-diy-keyboard-collection-or-how-i-became-a-kb-geek-t2534.html
 [DT_layout]: http://deskthority.net/keyboards-f2/the-decent-keyboard-layout-discussion-thread-matrix-t2898-30.html
@@ -162,4 +169,5 @@ Current default layout as implemented in [keymap.h](/src/keymap.h) :
 [twik_android]: https://github.com/gustavomondron/twik/blob/master/app/src/main/java/com/reddyetwo/hashmypass/app/hash
 [avr_crypto_lib]: https://github.com/cantora/avr-crypto-lib
 [lufa]:           http://www.lufa-lib.org
+[wiki_dualrole]:  https://en.wikipedia.org/wiki/Modifier_key#Dual-role_keys
 
