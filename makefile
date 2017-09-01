@@ -13,6 +13,8 @@ MCU          = atmega32u4
 #MCU          = at90usb1286
 ARCH         = AVR8
 BOARD        = TEENSY2
+#BOARD        = MICRO # for LEONARDO ADAFxxx
+
 F_CPU        = 16000000
 F_USB        = $(F_CPU)
 OPTIMIZATION = s
