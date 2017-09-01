@@ -310,10 +310,10 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
         case SUB_CONFIG: {
             // 120
             switch(c) {
-                case 'I': init_config();       tp_init(); break;
-                case 'S': save_config(&g_cfg); tp_init(); break;
-                case 'R': invalidate_config(); init_config(); tp_init(); break;
-                case 'L': load_config(&g_cfg); tp_init(); break;
+                case 'I': init_config();       break;
+                case 'S': save_config(&g_cfg); break;
+                case 'R': invalidate_config(); init_config(); break;
+                case 'L': load_config(&g_cfg); break;
                 case 'm': xprintf("\nMEM: %d/%d", get_mem_unused_simple(), get_mem_unused()); break;
 #ifdef PS2MOUSE
                 // change sensitivity for initial and normal operation
