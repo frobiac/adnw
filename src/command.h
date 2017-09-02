@@ -39,6 +39,7 @@ enum {
     SUB_MACRO,
     SUB_MACRO_REC,
     SUB_PASSHASH,
+    SUB_PW_XOR,
     SUB_CONFIG,
     SUB_LED,
     SUB_EXTRA,

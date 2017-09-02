@@ -20,8 +20,12 @@
 
 #pragma once
 
+#include <stdint.h>
 // smaller than including ctype.h
 
 #define isalnum(c) (('0' <= (c) && (c) <= '9') || ('a' <= (c) && (c) <= 'z') || ('A' <= (c) && (c) <= 'Z'))
 #define isdigit(c) ('0' <= (c) && (c) <= '9')
+
+char mapAscii(uint8_t tmp);
+uint32_t str2hash(const char * str);
 

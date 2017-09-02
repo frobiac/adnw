@@ -27,6 +27,10 @@
 #include "ascii2hid.h"
 #include "print.h"
 
+#ifdef PW_ENABLED
+    #include "passhash/xor.h"
+#endif
+
 #ifdef PS2MOUSE
     #include "trackpoint.h"
 #endif
@@ -177,6 +181,12 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             break;
 #endif
 
+#ifdef PW_ENABLED
+        case 'P':
+            subcmd=SUB_PW_XOR;
+            break;
+#endif
+
         case 'q':
         default:
             setCommandMode(false);
@@ -245,6 +255,25 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             break;
 #endif
 
+#ifdef PW_ENABLED
+#include "macro.h"
+            static char res[4+4+1+5];
+            static uint8_t idx;
+
+        case SUB_PW_XOR:
+            set_xor_seed(1854);
+            idx=idx%3;
+            res[idx]=c;
+            if(++idx==3) {
+                genPass3(res);
+                //xprintf("\n%s", res);
+                setOutputString(res);
+                setCommandMode(false);
+            }
+            return true;
+
+            break;
+#endif
         case SUB_CONFIG: {
             // 120
             switch(c) {

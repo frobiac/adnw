@@ -26,6 +26,7 @@ KB_HW_SUPPORTED = BLUECUBE HYPERNANO REDTILT HYPERMICRO BLACKFLAT BLACKBOWL
 KB_HW		 ?= BLACKBOWL
 
 KB_PH  ?= 1
+KB_PW  ?= 0
 KB_DBG ?= 1
 KB_EXT ?= 1
 
@@ -53,7 +54,7 @@ SRC =   $(LUFA_SRC_USB)          \
 	$(SRCDIR)/global_config.c      \
 	$(SRCDIR)/mem-check.c 		   \
 	$(SRCDIR)/passhash/b64.c   \
-
+	$(SRCDIR)/helpers.c 		   \
 
 LUFA_PATH    = LUFA/LUFA
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/
@@ -65,6 +66,10 @@ CC_FLAGS += -D$(KB_HW)
 
 ifeq ($(KB_PH), 1)
 CC_FLAGS += -DPH_ENABLED
+endif
+
+ifeq ($(KB_PW), 1)
+CC_FLAGS    += -DPW_ENABLED
 endif
 
 ifeq ($(KB_DBG), 1)
@@ -102,6 +107,10 @@ ifneq (,$(findstring PH_ENABLED,$(CC_FLAGS)))
 		$(SRCDIR)/passhash/sha1-asm.S   \
 		$(SRCDIR)/passhash/hmac-sha1.c  \
 		$(SRCDIR)/passhash/passhash.c
+endif
+
+ifneq (,$(findstring PW_ENABLED,$(CC_FLAGS)))
+	SRC += $(SRCDIR)/passhash/xor.c
 endif
 
 ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
@@ -169,6 +178,7 @@ configtest:
 ifneq (,$(filter $(KB_HW), $(KB_HW_SUPPORTED)))
 	@echo "*** HW  = $(KB_HW) from $(origin KB_HW)"
 	@echo "*** PH  = $(KB_PH) from $(origin KB_PH)"
+	@echo "*** PW  = $(KB_PW) from $(origin KB_PW)"
 	@echo "*** DBG = $(KB_DBG) from $(origin KB_DBG)"
 else
 	$(error *** KB_HW defined as "$(KB_HW)" not valid: not in $(KB_HW_SUPPORTED))
