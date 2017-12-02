@@ -252,6 +252,37 @@ void fillKeyboardReport(USB_KeyboardReport_Data_t *report_data)
     report_data->Modifier=getActiveModifiers()|getActiveKeyCodeModifier();
     report_data->Modifier &= ~(1<<(MOD_R_GUI-MOD_FIRST));
 
+#ifdef REORDER_REPORT_LIBINPUT_BUG
+    // Debian unstable bug 20171202 with x.org only parsing Modifier on second consecutive press
+    // [Bug 104030](https://bugs.freedesktop.org/show_bug.cgi?id=104030)
+    // Sending only modifier first solves this, but modifier + dualuse (like Alt-Enter) breaks
+    // so store delayed keycode for now (dualuse ?)
+    {
+        static USB_KeyboardReport_Data_t prev;
+        static uint8_t delayed = 0;
+
+
+        if(delayed != 0) {
+            if(report_data->KeyCode[0] == delayed)
+                delayed=0;
+            else if(report_data->KeyCode[0] == 0) {
+                report_data->KeyCode[0] = delayed;
+                delayed=0;
+            }
+        }
+        if(0!=memcmp(&prev,report_data,sizeof(USB_KeyboardReport_Data_t))) {
+            if(prev.KeyCode[0] == 0 && report_data->KeyCode[0] !=0 &&
+               report_data->Modifier != 0 ) {
+                delayed = report_data->KeyCode[0];
+                memcpy(&prev,report_data,sizeof(USB_KeyboardReport_Data_t));
+                report_data->KeyCode[0]=0;
+            } else {
+                memcpy(&prev,report_data,sizeof(USB_KeyboardReport_Data_t));
+            }
+        }
+    }
+#endif
+
     // Activate for trace
     // reportPrint(report_data, "");
     return;
