@@ -197,7 +197,8 @@ ISR(PS2_USART_RX_VECT)
     if (!error) {
         pbuf_enqueue(data);
     } else {
-        xprintf("PS2 USART error: %02X data: %02X\n", error, data);
+        // @TODO This fills up output queue, must be limited!
+        // xprintf("PS2 USART error: %02X data: %02X\n", error, data);
     }
 }
 
