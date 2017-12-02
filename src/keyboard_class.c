@@ -251,6 +251,9 @@ void fillKeyboardReport(USB_KeyboardReport_Data_t *report_data)
 
     report_data->Modifier=getActiveModifiers()|getActiveKeyCodeModifier();
     report_data->Modifier &= ~(1<<(MOD_R_GUI-MOD_FIRST));
+
+    // Activate for trace
+    // reportPrint(report_data, "");
     return;
 
 cmdmode:
@@ -261,9 +264,14 @@ cmdmode:
 
 void reportPrint(USB_KeyboardReport_Data_t * report, char * str)
 {
-    xprintf("%s %04X|", str, report->Modifier);
-    for( uint8_t k=0; k<6; ++k)
-        xprintf("%02X ", report->KeyCode[k]);
+    static uint8_t bu[8];
+
+    if(0!=memcmp(bu,report,8)) {
+        xprintf("\n%s %04X|", str, report->Modifier);
+        for( uint8_t k=0; k<6; ++k)
+            xprintf("%02X ", report->KeyCode[k]);
+    }
+    memcpy(bu,report,8);
 }
 
 
