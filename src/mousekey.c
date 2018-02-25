@@ -26,6 +26,7 @@
 #include "hid_usage.h"
 #include "Keyboard.h" // idle_count, should go into timer
 #include "mousekey.h"
+#include "print.h"
 
 // Mouse keys acceleration algorithm : http://en.wikipedia.org/wiki/Mouse_keys
 // speed = delta * max_speed * (repeat / time_to_max)**((1000+curve)/1000)

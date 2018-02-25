@@ -21,7 +21,7 @@
 #define GLOBAL_CONFIG_H
 
 #include "macro.h"
-#include "dbg.h"
+#include "print.h"
 
 /**
  * @file global_config.h

@@ -29,7 +29,7 @@
     #include "passhash/passhash.h"
 #endif
 
-#include "dbg.h"
+#include "print.h"
 
 #ifdef PS2MOUSE
     #include "trackpoint.h"

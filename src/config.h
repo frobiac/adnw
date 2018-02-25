@@ -33,7 +33,6 @@
  */
 #include "LUFA/Common/Common.h"  // CONCAT
 
-#include "dbg.h"
 
 // Unicode strings describing this keyboard
 #define STR_MANUFACTURER L"frobiac"

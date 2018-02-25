@@ -33,7 +33,5 @@
     #define wait_us(us)  _delay_us(us)
 #endif
 
-// #include "print.h"
 #include "../config.h"
-#include "../dbg.h"
 #endif
