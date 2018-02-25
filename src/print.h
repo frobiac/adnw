@@ -22,86 +22,103 @@
  * THE SOFTWARE.
  */
 
-#ifndef PRINT_H__
-#define PRINT_H__ 1
+#pragma once
 
 #include <stdint.h>
 #include <stdbool.h>
 // #include "util.h"
 
+#define TRACE(...)
+
 #ifdef DEBUG_OUTPUT
+#include "Descriptors.h"
+#include "mem-check.h"
 
-    #include "xprintf.h"
-    #define print(s)    xputs(PSTR(s))
-    #define println(s)  xputs(PSTR(s "\r\n"))
+typedef struct {
+    char data[DBG_EPSIZE];
+} USB_DBGReport_Data_t;
 
-    #ifdef __cplusplus
-        extern "C"
-    #endif
-    /* function pointer of sendchar to be used by print utility */
-    void print_set_sendchar(int8_t (*print_sendchar_func)(uint8_t));
+uint8_t DBG__get_report(USB_DBGReport_Data_t* report);
 
 
-    /* decimal */
-    #define print_dec(i)                xprintf("%u", i)
-    #define print_decs(i)               xprintf("%d", i)
-    /* hex */
-    #define print_hex4(i)               xprintf("%X", i)
-    #define print_hex8(i)               xprintf("%02X", i)
-    #define print_hex16(i)              xprintf("%04X", i)
-    #define print_hex32(i)              xprintf("%08lX", i)
-    /* binary */
-    #define print_bin4(i)               xprintf("%04b", i)
-    #define print_bin8(i)               xprintf("%08b", i)
-    #define print_bin16(i)              xprintf("%016b", i)
-    #define print_bin32(i)              xprintf("%032lb", i)
-    #define print_bin_reverse8(i)       xprintf("%08b", bitrev(i))
-    #define print_bin_reverse16(i)      xprintf("%016b", bitrev16(i))
-    #define print_bin_reverse32(i)      xprintf("%032lb", bitrev32(i))
-    /* print value utility */
-    #define print_val_dec(v)            xprintf(#v ": %u\n", v)
-    #define print_val_decs(v)           xprintf(#v ": %d\n", v)
-    #define print_val_hex8(v)           xprintf(#v ": %X\n", v)
-    #define print_val_hex16(v)          xprintf(#v ": %02X\n", v)
-    #define print_val_hex32(v)          xprintf(#v ": %04lX\n", v)
-    #define print_val_bin8(v)           xprintf(#v ": %08b\n", v)
-    #define print_val_bin16(v)          xprintf(#v ": %016b\n", v)
-    #define print_val_bin32(v)          xprintf(#v ": %032lb\n", v)
-    #define print_val_bin_reverse8(v)   xprintf(#v ": %08b\n", bitrev(v))
-    #define print_val_bin_reverse16(v)  xprintf(#v ": %016b\n", bitrev16(v))
-    #define print_val_bin_reverse32(v)  xprintf(#v ": %032lb\n", bitrev32(v))
+#include "xprintf.h"
+#define print(s)    xputs(PSTR(s))
+#define println(s)  xputs(PSTR(s "\r\n"))
+
+#ifdef __cplusplus
+    extern "C"
+#endif
+/* function pointer of sendchar to be used by print utility */
+void print_set_sendchar(int8_t (*print_sendchar_func)(uint8_t));
+
+
+/* decimal */
+#define print_dec(i)                xprintf("%u", i)
+#define print_decs(i)               xprintf("%d", i)
+/* hex */
+#define print_hex4(i)               xprintf("%X", i)
+#define print_hex8(i)               xprintf("%02X", i)
+#define print_hex16(i)              xprintf("%04X", i)
+#define print_hex32(i)              xprintf("%08lX", i)
+/* binary */
+#define print_bin4(i)               xprintf("%04b", i)
+#define print_bin8(i)               xprintf("%08b", i)
+#define print_bin16(i)              xprintf("%016b", i)
+#define print_bin32(i)              xprintf("%032lb", i)
+#define print_bin_reverse8(i)       xprintf("%08b", bitrev(i))
+#define print_bin_reverse16(i)      xprintf("%016b", bitrev16(i))
+#define print_bin_reverse32(i)      xprintf("%032lb", bitrev32(i))
+/* print value utility */
+#define print_val_dec(v)            xprintf(#v ": %u\n", v)
+#define print_val_decs(v)           xprintf(#v ": %d\n", v)
+#define print_val_hex8(v)           xprintf(#v ": %X\n", v)
+#define print_val_hex16(v)          xprintf(#v ": %02X\n", v)
+#define print_val_hex32(v)          xprintf(#v ": %04lX\n", v)
+#define print_val_bin8(v)           xprintf(#v ": %08b\n", v)
+#define print_val_bin16(v)          xprintf(#v ": %016b\n", v)
+#define print_val_bin32(v)          xprintf(#v ": %032lb\n", v)
+#define print_val_bin_reverse8(v)   xprintf(#v ": %08b\n", bitrev(v))
+#define print_val_bin_reverse16(v)  xprintf(#v ": %016b\n", bitrev16(v))
+#define print_val_bin_reverse32(v)  xprintf(#v ": %032lb\n", bitrev32(v))
 
 #else   /* NO DEBUG_OUTPUT */
+#define printf(...)
 
-    #define xprintf(s,...)              ((void)0)
-    #define print(s)                    ((void)0)
-    #define println(s)                  ((void)0)
-    #define print_set_sendchar(func)    ((void)0)
-    #define print_dec(data)             ((void)0)
-    #define print_decs(data)            ((void)0)
-    #define print_hex4(data)            ((void)0)
-    #define print_hex8(data)            ((void)0)
-    #define print_hex16(data)           ((void)0)
-    #define print_hex32(data)           ((void)0)
-    #define print_bin4(data)            ((void)0)
-    #define print_bin8(data)            ((void)0)
-    #define print_bin16(data)           ((void)0)
-    #define print_bin32(data)           ((void)0)
-    #define print_bin_reverse8(data)    ((void)0)
-    #define print_bin_reverse16(data)   ((void)0)
-    #define print_bin_reverse32(data)   ((void)0)
-    #define print_val_dec(v)            ((void)0)
-    #define print_val_decs(v)           ((void)0)
-    #define print_val_hex8(v)           ((void)0)
-    #define print_val_hex16(v)          ((void)0)
-    #define print_val_hex32(v)          ((void)0)
-    #define print_val_bin8(v)           ((void)0)
-    #define print_val_bin16(v)          ((void)0)
-    #define print_val_bin32(v)          ((void)0)
-    #define print_val_bin_reverse8(v)   ((void)0)
-    #define print_val_bin_reverse16(v)  ((void)0)
-    #define print_val_bin_reverse32(v)  ((void)0)
-    #define init_printf(s,ss)           ((void)0)
+typedef struct {
+    char data[0];
+} USB_DBGReport_Data_t;
+
+uint8_t DBG__get_report(USB_DBGReport_Data_t* report); // { return 0; } ;
+
+#define xprintf(s,...)              ((void)0)
+#define print(s)                    ((void)0)
+#define println(s)                  ((void)0)
+#define print_set_sendchar(func)    ((void)0)
+#define print_dec(data)             ((void)0)
+#define print_decs(data)            ((void)0)
+#define print_hex4(data)            ((void)0)
+#define print_hex8(data)            ((void)0)
+#define print_hex16(data)           ((void)0)
+#define print_hex32(data)           ((void)0)
+#define print_bin4(data)            ((void)0)
+#define print_bin8(data)            ((void)0)
+#define print_bin16(data)           ((void)0)
+#define print_bin32(data)           ((void)0)
+#define print_bin_reverse8(data)    ((void)0)
+#define print_bin_reverse16(data)   ((void)0)
+#define print_bin_reverse32(data)   ((void)0)
+#define print_val_dec(v)            ((void)0)
+#define print_val_decs(v)           ((void)0)
+#define print_val_hex8(v)           ((void)0)
+#define print_val_hex16(v)          ((void)0)
+#define print_val_hex32(v)          ((void)0)
+#define print_val_bin8(v)           ((void)0)
+#define print_val_bin16(v)          ((void)0)
+#define print_val_bin32(v)          ((void)0)
+#define print_val_bin_reverse8(v)   ((void)0)
+#define print_val_bin_reverse16(v)  ((void)0)
+#define print_val_bin_reverse32(v)  ((void)0)
+#define init_printf(s,ss)           ((void)0)
 
 #endif  /* NO_PRINT */
 
@@ -116,32 +133,5 @@
 #define pbin_reverse(data)      print_bin_reverse8(data)
 #define pbin_reverse16(data)    print_bin_reverse16(data)
 
-
-
 #define printf(...)
 
-/// define DEBUG_OUTPUT in makefile to enable printf() for hid_listen.
-#ifdef DEBUG_OUTPUT
-#include "Descriptors.h"
-#include "mem-check.h"
-
-typedef struct {
-    char data[DBG_EPSIZE];
-} USB_DBGReport_Data_t;
-
-uint8_t DBG__get_report(USB_DBGReport_Data_t* report);
-
-#define TRACE(...)
-
-#else
-#define TRACE(...)
-#define printf(...)
-
-typedef struct {
-    char data[0];
-} USB_DBGReport_Data_t;
-
-uint8_t DBG__get_report(USB_DBGReport_Data_t* report); // { return 0; } ;
-#endif
-
-#endif // PRINT_H__
