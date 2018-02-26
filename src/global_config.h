@@ -34,6 +34,10 @@ uint8_t g_pw[PWLEN+1+1]; // length at g_pw[PWLEN] plus last '\0'
 
 
 
+#define CMD_BUF_SIZE 20
+uint8_t g_cmd_buf[CMD_BUF_SIZE+2]; // last two will contain length and '\0'
+
+
 /**
  * Convenience macros for individual member access of EEPROM config.
  * @see https://projectgus.com/2010/07/eeprom-access-with-arduino/

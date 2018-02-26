@@ -30,6 +30,7 @@ KB_PW  ?= 0
 KB_TR  ?= 1
 KB_DBG ?= 1
 KB_EXT ?= 1
+KB_XXT ?= 0
 
 
 ##################################################################
@@ -75,6 +76,10 @@ endif
 
 ifeq ($(KB_TR), 1)
 CC_FLAGS    += -DTR_ENABLED
+endif
+
+ifeq ($(KB_XXT), 1)
+CC_FLAGS += -DXXTEA
 endif
 
 ifeq ($(KB_DBG), 1)
@@ -124,6 +129,11 @@ ifneq (,$(findstring TR_ENABLED,$(CC_FLAGS)))
 		SRC += $(SRCDIR)/passhash/sha1-asm.S
 		SRC += $(SRCDIR)/passhash/hmac-sha1.c
 	endif
+endif
+
+ifneq (,$(findstring XXTEA,$(CC_FLAGS)))
+	SRC += \
+		$(SRCDIR)/crypt/xxtea.c
 endif
 
 ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
@@ -194,6 +204,7 @@ ifneq (,$(filter $(KB_HW), $(KB_HW_SUPPORTED)))
 	@echo "*** PW  = $(KB_PW) from $(origin KB_PW)"
 	@echo "*** TR  = $(KB_TR) from $(origin KB_TR)"
 	@echo "*** DBG = $(KB_DBG) from $(origin KB_DBG)"
+	@echo "*** XXT = $(KB_XXT) from $(origin KB_XXT)"
 else
 	$(error *** KB_HW defined as "$(KB_HW)" not valid: not in $(KB_HW_SUPPORTED))
 endif

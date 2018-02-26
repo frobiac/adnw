@@ -45,6 +45,7 @@ enum {
     SUB_CONFIG,
     SUB_LED,
     SUB_EXTRA,
+    SUB_XXTEA,
     SUB_END
 };
 

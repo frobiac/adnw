@@ -51,6 +51,11 @@ bool g_cmd_mode_active=false;
     #include "passhash/passhash.h"
 #endif
 
+#ifdef XXTEA
+    #include "crypt/xxtea.h"
+#endif
+
+
 
 static uint8_t subcmd;           ///< currently active subcommand
 
@@ -60,6 +65,9 @@ void setCommandMode(bool on)
     if(on!=g_cmd_mode_active) {
         g_cmd_mode_active=on;
         subcmd = SUB_NONE;
+        if(on) {
+            memset(g_cmd_buf, 0, CMD_BUF_SIZE+2);
+        }
     }
 }
 
@@ -109,6 +117,15 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
     }
 
     char curChar = hid2asciicode(hid_released, mod_released);
+
+    uint8_t len = g_cmd_buf[CMD_BUF_SIZE+1];
+    if(len < CMD_BUF_SIZE) {
+        g_cmd_buf[len] = curChar;
+        //g_cmd_buf[len+1]='\0';
+        g_cmd_buf[CMD_BUF_SIZE+1]=len+1;
+    } else { // not really required.
+        g_cmd_buf[CMD_BUF_SIZE] = '\0';
+    }
 
     if(subcmd) {
         return handleSubCmd(curChar, hid_released, mod_released);
@@ -208,6 +225,12 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             subcmd=SUB_UNLOCK;
             break;
 
+#ifdef XXTEA
+        case 'X':
+            subcmd=SUB_XXTEA;
+            break;
+#endif
+
         case 'q':
         default:
             setCommandMode(false);
@@ -263,6 +286,25 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
                 setCommandMode(false);
             return false; // printing character ?
             break;
+
+#ifdef XXTEA
+        case SUB_XXTEA:
+            if(c==10) {
+                // len minus return
+                uint8_t len = g_cmd_buf[CMD_BUF_SIZE+1] -1 ;
+                memcpy(g_xxtea_txt, &g_cmd_buf[1], len-1);
+
+                // xprintf("\n"); for(uint8_t i=1; i<len; ++i) xprintf("%02X", g_xxtea_txt[i]);
+                xxtea_fixed_encrypt(len);
+                // xprintf("\n"); for(uint8_t i=1; i<len; ++i) xprintf("%02X", g_xxtea_txt[i]);
+                len = xxtea_fixed_decrypt();
+                // xprintf("\n"); for(uint8_t i=1; i<len; ++i) xprintf("%02X", g_xxtea_txt[i]);
+
+                setCommandMode(false);
+            }
+            break;
+
+#endif
 
 #ifdef EXTRA
             static uint16_t data;
