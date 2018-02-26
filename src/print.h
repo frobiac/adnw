@@ -125,13 +125,3 @@ uint8_t DBG__get_report(USB_DBGReport_Data_t* report); // { return 0; } ;
 #endif  /* NO_PRINT */
 
 
-/* Backward compatiblitly for old name */
-#define pdec(data)              print_dec(data)
-#define pdec16(data)            print_dec(data)
-#define phex(data)              print_hex8(data)
-#define phex16(data)            print_hex16(data)
-#define pbin(data)              print_bin8(data)
-#define pbin16(data)            print_bin16(data)
-#define pbin_reverse(data)      print_bin_reverse8(data)
-#define pbin_reverse16(data)    print_bin_reverse16(data)
-
