@@ -143,6 +143,11 @@ void led(uint8_t n)
 static void __attribute__ ((noreturn)) main_loop(void)
 {
     SetupHardware();
+
+#ifdef DEBUG_OUTPUT
+    InitDebugPrint();
+#endif
+
     GlobalInterruptEnable();
 
     for (;;) {
@@ -290,6 +295,7 @@ void EVENT_USB_Device_StartOfFrame(void)
     HID_Device_MillisecondElapsed(&Keyboard_HID_Interface);
 #ifdef DEBUG_OUTPUT
     HID_Device_MillisecondElapsed(&DBG_HID_Interface);
+    Console_Task();
 #endif
     HID_Device_MillisecondElapsed(&Mouse_HID_Interface);
 }

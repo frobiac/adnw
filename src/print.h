@@ -51,8 +51,9 @@ uint8_t DBG__get_report(USB_DBGReport_Data_t* report);
 #ifdef __cplusplus
     extern "C"
 #endif
-/* function pointer of sendchar to be used by print utility */
-void print_set_sendchar(int8_t (*print_sendchar_func)(uint8_t));
+
+void Console_Task(void);
+void InitDebugPrint(void);
 
 
 /* decimal */
@@ -90,7 +91,9 @@ typedef struct {
     char data[0];
 } USB_DBGReport_Data_t;
 
-uint8_t DBG__get_report(USB_DBGReport_Data_t* report); // { return 0; } ;
+uint8_t DBG__get_report(USB_DBGReport_Data_t *report_data); //  { return 0; }
+
+void Console_Task(void); // {};
 
 #define xprintf(s,...)              ((void)0)
 #define print(s)                    ((void)0)
