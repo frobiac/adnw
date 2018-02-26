@@ -17,10 +17,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-    Base64 encoding based on code from base64.sf.net/b64.c
-    Copyright (c) 2001 Bob Trower, Trantor Standard Systems Inc.
-    MIT license
-
     Password hash generation is implemented after the algorithm from the Android apps
     Twik and HashIt!, which in turn are based on the chrome extension Password Hasher Plus.
     See http://github.com/coxande/Twik for a python implementation.
@@ -64,45 +60,7 @@ uint8_t ph_master_pw_len;
 uint8_t ph_pk_len;
 //################################################################################
 
-char b64( uint8_t i )
-{
-    //static const char b64[]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-    if(i<26)
-        return 'A'+i;
-    if(i<52)
-        return 'a'+ i-26;
-    if(i<62)
-        return '0'+ i-52;
-    if(i==62)
-        return '+';
-    if(i==63)
-        return '/';
-
-    // should never get here!!!
-    return '-';
-}
-
-/// encode 3 8-bit binary bytes as 4 '6-bit' characters
-void encodeblock( unsigned char *in, unsigned char *out, int len )
-{
-    out[0] = (unsigned char) b64( (int)(in[0] >> 2) );
-    out[1] = (unsigned char) b64( (int)(((in[0] & 0x03) << 4) | ((in[1] & 0xf0) >> 4)) );
-    out[2] = (unsigned char) (len > 1 ? b64( (int)(((in[1] & 0x0f) << 2) | (((len>2?in[2]:0) & 0xc0) >> 6)) ) : '=');
-    out[3] = (unsigned char) (len > 2 ? b64( (int)(in[2] & 0x3f) ) : '=');
-}
-
-//
-/** Encode data of size len to base64 result
- *  Result must be at least len*4.0/3 (rounded up!)
- *
- *  A SHA1 hash of 20 Bytes will thus occupy 27 Bytes (20*4/3=26.666)
- */
-void b64enc(const unsigned char* data, size_t len, char* result, size_t resultSize)
-{
-    size_t x;
-    for(x=0; x*3<len; ++x)
-        encodeblock( (unsigned char *)(&data[x*3]), (unsigned char *)(&result[x*4]), (len-x*3));
-}
+#include "b64.h"
 
 void injectChar( char * mhash, uint8_t offset, uint8_t reserved,
                  uint32_t seed, uint8_t length, char cstart, uint8_t cnum)

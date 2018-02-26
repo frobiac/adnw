@@ -15,8 +15,9 @@ mkdir .build 2>/dev/null
   $CC $FLAGS -c ../hmac-sha1.c &&
   $CC $FLAGS -c ../passhash.c  &&
   $CC $FLAGS -c ../main.c &&
+  $CC $FLAGS -c ../b64.c      &&
 
-  $CC main.o passhash.o sha1.o hmac-sha1.o -o ../passhash
+  $CC main.o passhash.o sha1.o hmac-sha1.o b64.o -o ../passhash
 )
 
 #########
