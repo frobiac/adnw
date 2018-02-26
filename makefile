@@ -86,7 +86,7 @@ ifneq (,$(findstring PH_ENABLED,$(CC_FLAGS)))
 endif
 
 ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
-	SRC += $(SRCDIR)/hhstdio.c \
+	SRC += \
 		   $(SRCDIR)/print.c \
 		   $(SRCDIR)/xprintf.S \
 

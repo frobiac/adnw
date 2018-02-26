@@ -24,8 +24,6 @@
 
 #include <stdint.h>
 #include "print.h"
-#include "hhstdio.h"
-
 
 #ifdef DEBUG_OUTPUT
 
