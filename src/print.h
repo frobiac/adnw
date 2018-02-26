@@ -28,6 +28,9 @@
 #include <stdbool.h>
 // #include "util.h"
 
+/// @TODO printf hangs (after buffer overflow?)
+#define printf err_use_xprintf_instead
+
 #define TRACE(...)
 
 #ifdef DEBUG_OUTPUT
@@ -82,7 +85,6 @@ void print_set_sendchar(int8_t (*print_sendchar_func)(uint8_t));
 #define print_val_bin_reverse32(v)  xprintf(#v ": %032lb\n", bitrev32(v))
 
 #else   /* NO DEBUG_OUTPUT */
-#define printf(...)
 
 typedef struct {
     char data[0];
@@ -132,6 +134,4 @@ uint8_t DBG__get_report(USB_DBGReport_Data_t* report); // { return 0; } ;
 #define pbin16(data)            print_bin16(data)
 #define pbin_reverse(data)      print_bin_reverse8(data)
 #define pbin_reverse16(data)    print_bin_reverse16(data)
-
-#define printf(...)
 
