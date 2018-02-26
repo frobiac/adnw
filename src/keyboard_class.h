@@ -54,3 +54,5 @@ void fillKeyboardReport(USB_KeyboardReport_Data_t * report);
 uint8_t activeKeysCount(void);
 void keyChange(uint8_t row, column_size_t p, column_size_t h, column_size_t r);
 
+// void hostLEDChange(uint8_t leds);
+

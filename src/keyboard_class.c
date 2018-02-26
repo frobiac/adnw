@@ -757,3 +757,11 @@ uint8_t getMouseKey(uint8_t r, uint8_t c)
     return getKeyCode(r, c, MOD_MOUSEKEY-MOD_LAYER_0);
 }
 
+
+/*
+void hostLEDChange(uint8_t leds)
+{
+//    printf("\nLED 0x%02x, C%d N%d S%d", leds, (leds & HID_KEYBOARD_LED_CAPSLOCK)>0,
+//                  (leds & HID_KEYBOARD_LED_NUMLOCK)>0, (leds & HID_KEYBOARD_LED_SCROLLLOCK)>0);
+}
+*/
