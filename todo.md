@@ -73,6 +73,8 @@ Test sizes:
 * avr-nm --size-sort --print-size -td *.elf
 * avr-size --mcu=atmega32u4 --format=avr *.elf
 
+- mousekey accel not working: normal, slow, fast
+
 Coding style
 ------------
 * astyle --style=linux --convert-tabs --lineend=linux --indent=spaces=4  -o -O -S src/\*.[ch]
