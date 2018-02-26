@@ -52,6 +52,7 @@ SRC =   $(LUFA_SRC_USB)          \
 	$(SRCDIR)/external/i2cmaster/twimaster.c \
 	$(SRCDIR)/global_config.c      \
 	$(SRCDIR)/mem-check.c 		   \
+	$(SRCDIR)/passhash/b64.c   \
 
 
 LUFA_PATH    = LUFA/LUFA
