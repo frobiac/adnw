@@ -76,68 +76,6 @@ uint8_t ph_pk_len;
 char sha1hash[HMAC_SHA1_BYTES]; // save Progmem vs Data compared to local definition
 
 
-void injectChar( char * mhash, uint8_t offset, uint8_t reserved,
-                 uint32_t seed, uint8_t length, char cstart, uint8_t cnum)
-{
-    uint8_t pos0 = seed % length;
-    uint8_t pos = (pos0+offset)%length;
-    uint8_t i, tmp;
-
-    uint8_t cstartI = (uint8_t)(cstart);
-
-    // check if desired character is already present (in special range)
-    for(i=0; i<length-reserved; ++i) {
-        tmp= (pos0+reserved+i)%length;
-        uint8_t ci = (uint8_t)(mhash[tmp]);
-        if( ci >= cstartI && ci < cstartI + cnum) {
-            return;
-        }
-    }
-
-    uint8_t injectC = (((seed+(uint8_t)(mhash[pos]))%cnum)+cstartI);
-    mhash[pos] = (char)(injectC);
-}
-
-
-void remPunct( char * mhash, uint16_t seed, uint8_t length)
-{
-    uint8_t pivot=0;
-    uint8_t i;
-
-    for(i=0; i<length; ++i) {
-        if( ! isalnum(mhash[i]) ) {
-            mhash[i] = (char)( (seed+pivot)%26 + 65 /*'A'*/);
-            pivot=i+1;
-        }
-    }
-}
-
-void conv2digits( char * mhash, uint16_t seed, uint8_t length)
-{
-    uint8_t pivot=0;
-    uint8_t i;
-
-    for(i=0; i<length; ++i) {
-        if( ! isdigit(mhash[i]) ) {
-            mhash[i] = (char)( (seed+(uint8_t)(mhash[pivot]))%10 + 48 /*'0'*/);
-            pivot=i+1;
-        }
-    }
-}
-
-
-uint16_t letterSum(const char * str, uint8_t len)
-{
-    uint8_t i;
-    uint16_t sum=0;
-    for(i=0; i<len; i++) {
-        sum+=(uint8_t)(str[i]);
-    }
-    return sum;
-}
-
-
-
 /**
  * key must have room for 27 chars (20Byte SHA1_HASH to base64)
  */
@@ -156,20 +94,6 @@ void genHash2(char * key, uint8_t key_len,  char * tag, uint8_t tag_len, uint8_t
 
     // b64 of 20 Byte sha1hash -> 27 Bytes ending in '=' which must be removed
     key[27] ='\0';
-
-    uint16_t seed = letterSum(key, 27); // max is 27*122
-
-    if(type==3) { // numeric
-        conv2digits(key,seed,len);
-    } else {
-        injectChar( key, 0, 4, seed, len, '0', 10); // digit
-        if(type==1) // digit + punctuation
-            injectChar( key, 1, 4, seed, len, '!', 15); // punctuation
-        injectChar( key, 2, 4, seed, len, 'A', 26); // uppercase
-        injectChar( key, 3, 4, seed, len, 'a', 26); // lowercase
-        if(type==2) // alnum only
-            remPunct( key, seed, len);
-    }
 
     // truncate result to requested length
     key[len] = '\0';
