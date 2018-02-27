@@ -44,6 +44,9 @@ bool g_cmd_mode_active=false;
     #include "extra.h"
 #endif
 
+#define TAGLEN 8
+char tag[TAGLEN+1];
+
 static uint8_t subcmd;           ///< currently active subcommand
 
 void setCommandMode(bool on)
@@ -167,6 +170,7 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             break;
 #ifdef PH_ENABLED
         case 'h':
+            memset(tag,0,TAGLEN);
             subcmd=SUB_PASSHASH;
             break;
 #endif
@@ -189,12 +193,6 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 
 bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 {
-#ifdef PH_ENABLED
-    uint8_t type=PH_TYPE_ALNUMSYM;
-    uint8_t len=12;
-    char password[PH_MAX_LEN+1];
-#endif
-
     switch( subcmd ) {
         case SUB_MACRO:
             printMacro(c);
@@ -228,9 +226,30 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 
 #ifdef PH_ENABLED
         case SUB_PASSHASH:
-            passHash(password, len, type, "secret", "key", "tag");
-            xprintf("\nPH len=%d type=%d = %s", len, type, password);
-            setCommandMode(false);
+            // read until return=10 is pressed or maximum length reached
+            if( (uint8_t)(c) != 10 && strlen(tag) < TAGLEN) {
+                tag[strlen(tag)]= c;
+            } else {
+                setCommandMode(false);
+
+                uint16_t type=PH_TYPE_ALNUMSYM;
+                uint16_t len=12;
+                char password[PH_MAX_LEN+1];
+                char splitTag[TAGLEN+1];
+
+                // parse input into "tag len type"
+                sscanf(tag,"%s %u %u", splitTag, &len, &type);
+                if(len<PH_MIN_LEN||len>PH_MAX_LEN)
+                    len=12;
+                if(type<PH_TYPE_ALNUMSYM||type>PH_TYPE_NUM)
+                    type=PH_TYPE_ALNUMSYM;
+                /// @todo secret and key from compileflag or EEPROM.
+                uint8_t ret = passHash(password, (uint8_t)len, (uint8_t)type, "secret", "key", splitTag);
+                if(ret==0) {
+                    setOutputString(password);
+                }
+                memset(tag,0,TAGLEN);
+            }
             break;
 #endif
 
