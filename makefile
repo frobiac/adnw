@@ -27,6 +27,7 @@ KB_HW		 ?= BLACKBOWL
 
 KB_PH  ?= 1
 KB_PW  ?= 0
+KB_TR  ?= 1
 KB_DBG ?= 1
 KB_EXT ?= 1
 
@@ -72,6 +73,10 @@ ifeq ($(KB_PW), 1)
 CC_FLAGS    += -DPW_ENABLED
 endif
 
+ifeq ($(KB_TR), 1)
+CC_FLAGS    += -DTR_ENABLED
+endif
+
 ifeq ($(KB_DBG), 1)
 CC_FLAGS += -DDEBUG_OUTPUT
 endif
@@ -111,6 +116,14 @@ endif
 
 ifneq (,$(findstring PW_ENABLED,$(CC_FLAGS)))
 	SRC += $(SRCDIR)/passhash/xor.c
+endif
+
+ifneq (,$(findstring TR_ENABLED,$(CC_FLAGS)))
+	SRC += $(SRCDIR)/passhash/passcard.c
+	ifeq ($(KB_PH), 0)
+		SRC += $(SRCDIR)/passhash/sha1-asm.S
+		SRC += $(SRCDIR)/passhash/hmac-sha1.c
+	endif
 endif
 
 ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
@@ -179,6 +192,7 @@ ifneq (,$(filter $(KB_HW), $(KB_HW_SUPPORTED)))
 	@echo "*** HW  = $(KB_HW) from $(origin KB_HW)"
 	@echo "*** PH  = $(KB_PH) from $(origin KB_PH)"
 	@echo "*** PW  = $(KB_PW) from $(origin KB_PW)"
+	@echo "*** TR  = $(KB_TR) from $(origin KB_TR)"
 	@echo "*** DBG = $(KB_DBG) from $(origin KB_DBG)"
 else
 	$(error *** KB_HW defined as "$(KB_HW)" not valid: not in $(KB_HW_SUPPORTED))

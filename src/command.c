@@ -32,6 +32,10 @@
     #include "passhash/xor.h"
 #endif
 
+#ifdef TR_ENABLED
+    #include "passhash/passcard.h"
+#endif
+
 #ifdef PS2MOUSE
     #include "trackpoint.h"
 #endif
@@ -193,6 +197,12 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             break;
 #endif
 
+#ifdef TR_ENABLED
+        case 'p':
+            subcmdIfUnlocked(SUB_PW_TR);
+            break;
+#endif
+
         case 'U':
             memset(g_pw, 0, PWLEN+2);
             subcmd=SUB_UNLOCK;
@@ -297,6 +307,45 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 
             break;
 #endif
+#ifdef TR_ENABLED
+            static char args[4];
+            static uint8_t tr_idx=0;
+
+        case SUB_PW_TR: {
+            // expect Letter Letter Length
+            tr_idx = tr_idx % 3;
+
+            if(tr_idx==0 && c == 10) {
+                char res[26];
+                for(int i=0; i<13; ++i) {
+                    genPWs('a', 'a', res, 26,0x01);
+                    setOutputString(res);
+                }
+                setCommandMode(false);
+                break;
+            }
+            args[tr_idx]=c;
+            tr_idx++;
+            if(tr_idx==3) {
+                uint8_t len = (10+args[2]-'0')%10;
+                char res[(uint8_t)(len+1)];
+
+                genPWs(args[0], args[1],res, len, 0x01 /*right*/);
+                setOutputString(res);
+                /*
+                                // middle part
+                                printMacro('c');
+
+                                genPWs(args[0]+args[2], args[1],res, len, 0x05); // 5==SE = right-down
+                                setOutputString(res);
+                */
+                setCommandMode(false);
+            }
+
+            break;
+        }
+#endif
+
         case SUB_CONFIG: {
             // 120
             switch(c) {
