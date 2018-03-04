@@ -27,22 +27,17 @@ typedef union {
     uint8_t raw;
 } read_pattern_t;
 
+#define TAG "mytag"
+
 #ifdef __AVR__
-    #define KEY "key"
-
-    #if !defined(KEY)
-        #error KEY must be defined when not in TESTMODE
-    #endif
-
 #else // if !defined(__AVR__)
-    char * KEY; // normally defined/set externally
+    char g_pw[20];  // at most 20 chars
+    char g_tag[27]; // contains only 26 chars after stripping last char (often '=')
+    char g_b64[27]; // contains only 26 chars after stripping last char (often '=')
     void verifyPWs(char r, char c, uint8_t n, uint8_t dir_raw, char * expect);
     void runTests(void);
 #endif
 
-// read tag dynamically during runtime
-char * g_tag; // at most 26 chars, last one is incremented for lines.
-char g_hmac_b64[27];    // contains only 26 chars after stripping '='
 
 void genPWs(char r, char c, char * res, uint8_t n, uint8_t  dir);
 void tabula_recta(void);

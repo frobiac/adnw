@@ -376,6 +376,8 @@ uint8_t printOutstr(USB_KeyboardReport_Data_t * report)
                 c=0; mod=0;
             }
         }
+        ///@todo Check for valid c/mod due to wrong unlock code
+
         // now fill in one character
         /// @todo Is this necessary - purge zeroReport() ???
         memset(&report->KeyCode[0],0,6);

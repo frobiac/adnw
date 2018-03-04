@@ -24,7 +24,7 @@ mkdir .build 2>/dev/null
   $CC $FLAGS -c ../passcard.c  &&
   $CC passcard.o passhash.o sha1.o hmac-sha1.o b64.o -o ../passcard
 )
-
+exit
 #########
 if [ ! -f passhash ]; then
         echo "Binary not found"

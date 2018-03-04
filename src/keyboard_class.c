@@ -63,6 +63,7 @@ uint8_t getActiveLayer(void);
 uint8_t getActiveKeyCodeModifier(void);
 
 void reportPrint (USB_KeyboardReport_Data_t * report, char * str);
+void printKeys(void);
 
 /**
  * Timeouts in idle_count ticks = x/61 [s]
@@ -572,6 +573,8 @@ void addKey(uint8_t row, uint8_t col)
 {
     if(activeKeyCount>=MAX_ACTIVE_KEYS-1) {
         xprintf("\nErr: +");
+        printKeys();
+        activeKeyCount=0;
         return;
     }
     activeKeys[activeKeyCount].row=row;

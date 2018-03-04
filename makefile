@@ -25,9 +25,8 @@ SRCDIR       = ./src
 KB_HW_SUPPORTED = BLUECUBE HYPERNANO REDTILT HYPERMICRO BLACKFLAT BLACKBOWL
 KB_HW		 ?= BLACKBOWL
 
-KB_PH  ?= 1
-KB_PW  ?= 0
-KB_TR  ?= 1
+KB_PH  ?= 0
+KB_TR  ?= 0
 KB_DBG ?= 1
 KB_EXT ?= 1
 KB_XXT ?= 0
@@ -64,14 +63,12 @@ CC_FLAGS    += -fdata-sections
 CC_FLAGS    += -Werror
 LD_FLAGS     =
 
+CC_FLAGS    += -DTR_ALGO=1
+
 CC_FLAGS += -D$(KB_HW)
 
 ifeq ($(KB_PH), 1)
 CC_FLAGS += -DPH_ENABLED
-endif
-
-ifeq ($(KB_PW), 1)
-CC_FLAGS    += -DPW_ENABLED
 endif
 
 ifeq ($(KB_TR), 1)
@@ -111,6 +108,10 @@ CC_FLAGS    += -DPINKYDROP
 CC_FLAGS    += -DPS2MOUSE
 PS2_USE_BUSYWAIT = yes # uses primitive reference code
 endif
+	
+	SRC += \
+		$(SRCDIR)/passhash/sha1-asm.S   \
+		$(SRCDIR)/passhash/hmac-sha1.c  \
 
 ifneq (,$(findstring PH_ENABLED,$(CC_FLAGS)))
 	SRC += \
@@ -119,9 +120,6 @@ ifneq (,$(findstring PH_ENABLED,$(CC_FLAGS)))
 		$(SRCDIR)/passhash/passhash.c
 endif
 
-ifneq (,$(findstring PW_ENABLED,$(CC_FLAGS)))
-	SRC += $(SRCDIR)/passhash/xor.c
-endif
 
 ifneq (,$(findstring TR_ENABLED,$(CC_FLAGS)))
 	SRC += $(SRCDIR)/passhash/passcard.c

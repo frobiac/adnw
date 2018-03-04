@@ -28,14 +28,6 @@
 #include "print.h"
 #include "helpers.h"
 
-#ifdef PW_ENABLED
-    #include "passhash/xor.h"
-#endif
-
-#ifdef TR_ENABLED
-    #include "passhash/passcard.h"
-#endif
-
 #ifdef PS2MOUSE
     #include "trackpoint.h"
 #endif
@@ -47,14 +39,12 @@ bool g_cmd_mode_active=false;
     #include "extra.h"
 #endif
 
-#ifdef PH_ENABLED
-    #include "passhash/passhash.h"
-#endif
-
 #ifdef XXTEA
     #include "crypt/xxtea.h"
 #endif
 
+#include "passhash/hmac-sha1.h"
+#include "passhash/b64.h"
 
 
 static uint8_t subcmd;           ///< currently active subcommand
@@ -195,30 +185,12 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             subcmdIfUnlocked(SUB_MACRO_REC);
             break;
 
-#ifdef PH_ENABLED
-        case 'h':
-            /// only activate passhash generation if defined during compile.
-            subcmdIfUnlocked(SUB_PASSHASH);
-            break;
-#endif
-
 #ifdef EXTRA
         case 'e':
             subcmd=SUB_EXTRA;
             break;
 #endif
 
-#ifdef PW_ENABLED
-        case 'P':
-            subcmdIfUnlocked(SUB_PW_XOR);
-            break;
-#endif
-
-#ifdef TR_ENABLED
-        case 'p':
-            subcmdIfUnlocked(SUB_PW_TR);
-            break;
-#endif
 
         case 'U':
             memset(g_pw, 0, PWLEN+2);
@@ -231,6 +203,14 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             break;
 #endif
 
+        case 'h':
+            subcmd=SUB_HMAC;
+            break;
+
+        case 'H':
+            subcmdIfUnlocked(SUB_HMAC);
+            break;
+
         case 'q':
         default:
             setCommandMode(false);
@@ -238,6 +218,41 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
     }
 
     return true;
+}
+
+void generateLine(uint8_t row, uint8_t col, uint8_t dig)
+{
+    char * g_tr_tag = "0123456789";
+    char * g_tr_pw  = "abcdefghij";
+
+    char algo = g_cmd_buf[4];
+
+    g_cmd_buf[0]=row;
+    memcpy(&g_cmd_buf[1], g_tr_tag, 10);
+
+    uint8_t sha[20];
+
+    if( algo == 'h' ) {
+        // full hmac-sha1 with key=g_pw and tag in g_cmd_buf
+        // hmac_sha1(sha, g_tr_pw, 8*10, g_cmd_buf, 8*(1+10));
+    } else if ( algo == 's' ) {
+        // fill buffer with input to hash function
+        // |row[1] | g_tag[10] | g_pw[10] |
+        memcpy(&g_cmd_buf[11], g_tr_pw, 10);
+        sha1(sha, g_cmd_buf, 8*(1+10+10));
+    }
+
+//    b64enc( sha, 20, (char*)g_cmd_buf, 27);
+    g_cmd_buf[26]='\0'; // remove trailing "=" / last char
+
+
+    xprintf("\n%s -> ", g_cmd_buf);
+    for(uint8_t i=0; i<4; ++i) {
+        xprintf("%c", g_cmd_buf[(col+i)%26]);
+    }
+
+    xprintf("done\n");
+    memset(g_cmd_buf, 0, 27);
 }
 
 
@@ -251,28 +266,75 @@ Several subcommands intercept entered data for consumption:
 
 bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 {
-    switch( subcmd ) {
-        case SUB_UNLOCK:
-            // read until return=10 is pressed or maximum length reached
-            if( (uint8_t)(c) != 10 && g_pw[PWLEN+1] < PWLEN) {
-                g_pw[g_pw[PWLEN+1]] = c;
-                g_pw[PWLEN+1]++;
-                return false;
-            } else {
-                uint32_t hash = str2hash((char*)g_pw);
+    // len minus first (subcmd id) and last (return)
+    uint8_t len = g_cmd_buf[CMD_BUF_SIZE+1] -2 ;
 
-                char out[4];
-                out[0] = mapAscii(g_pw[PWLEN+1]%10);
-                out[1] = mapAscii((hash & 0xf0)>>4);
-                out[2] = mapAscii(hash & 0x0f);
-                out[3] = '\0';
-#ifdef PW_ENABLED
-                // init seed here, unlock
-                set_xor_seed(hash);
-#endif
-                setOutputString(out);
+    switch( subcmd ) {
+        case SUB_HMAC:
+            // read until return=10 is pressed or maximum length reached
+            if( (uint8_t)(c) != 10 )
+                return false;
+
+            // expect args: row(a-z) col(a-z) len
+            char    row=g_cmd_buf[1]; // a-z -> a-m
+            uint8_t col=g_cmd_buf[2] - 'a';
+            uint8_t dig=g_cmd_buf[3] - '0';
+
+            // verify args
+            if(row>'m')
+                row-=13;
+
+            if(row<'a' || row>'m' || col > 26) {
+                setCommandMode(false);
+                break;
             }
+
+            if(dig < 2 || dig > 8)
+                dig=4;
+
+            xprintf("\n%c %d %d", row, col, dig);
+            //generateLine(row, col, dig);
+
+            uint8_t sha[20];
+
+            // KEY=$(echo -n $PW | sha1sum | head -c 40)
+            // echo -n "${ROW}${TAG}" | openssl dgst -sha1 -mac HMAC -macopt hexkey:$KEY -binary | base64 | head -c 27
+
+            g_cmd_buf[0]=row;
+#define TAG "0123456789"
+            //full hmac-sha1 with key=g_pw and tag in g_cmd_buf
+            memcpy(&g_cmd_buf[1], TAG, 10);
+            // memcpy(&g_cmd_buf[1+10], g_pw, 10);
+            // hmac_sha1(sha, &g_cmd_buf[11], 8*10, &g_cmd_buf[0], 8*(1+10));
+            hmac_sha1(sha, g_pw, 8*PWLEN, &g_cmd_buf[0], 8*(1+10));
+
+            b64enc( sha, 20, (char*)g_cmd_buf, 27);
+            g_cmd_buf[27]='\0'; // full 27 usable, but only 26 used
+            xprintf("\n%s|", g_cmd_buf);
+
+            for(uint8_t i=0; i<dig; ++i) {
+                xprintf("%c", g_cmd_buf[(col+i)%26]) ;
+            }
+
+            memset(g_cmd_buf, 0, CMD_BUF_SIZE+2);
+
+            setCommandMode(false);
+            break;
+
+
+        case SUB_UNLOCK:
+            // Initialize g_pw with sha1 hash of entered string.
+
+            // read until return=10 is pressed or maximum length reached
+            if( (uint8_t)(c) != 10 )
+                return false;
+
+            sha1(g_pw, &g_cmd_buf[1], 8*len);
+            g_pw[PWLEN] = '\0';
+            g_pw[PWLEN+1] = PWLEN;
+
             setCommandMode(false); // length limit reached
+
             break;
 
         case SUB_MACRO:
@@ -325,68 +387,6 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             break;
 #endif
 
-#ifdef PH_ENABLED
-        case SUB_PASSHASH:
-            ph_parse(c);
-            break;
-#endif
-
-#ifdef PW_ENABLED
-#include "macro.h"
-            static char res[4+4+1+5];
-            static uint8_t idx;
-
-        case SUB_PW_XOR:
-            idx=idx%3;
-            res[idx]=c;
-            if(++idx==3) {
-                genPass3(res);
-                //xprintf("\n%s", res);
-                setOutputString(res);
-                setCommandMode(false);
-            }
-            return true;
-
-            break;
-#endif
-#ifdef TR_ENABLED
-            static char args[4];
-            static uint8_t tr_idx=0;
-
-        case SUB_PW_TR: {
-            // expect Letter Letter Length
-            tr_idx = tr_idx % 3;
-
-            if(tr_idx==0 && c == 10) {
-                char res[26];
-                for(int i=0; i<13; ++i) {
-                    genPWs('a', 'a', res, 26,0x01);
-                    setOutputString(res);
-                }
-                setCommandMode(false);
-                break;
-            }
-            args[tr_idx]=c;
-            tr_idx++;
-            if(tr_idx==3) {
-                uint8_t len = (10+args[2]-'0')%10;
-                char res[(uint8_t)(len+1)];
-
-                genPWs(args[0], args[1],res, len, 0x01 /*right*/);
-                setOutputString(res);
-                /*
-                                // middle part
-                                printMacro('c');
-
-                                genPWs(args[0]+args[2], args[1],res, len, 0x05); // 5==SE = right-down
-                                setOutputString(res);
-                */
-                setCommandMode(false);
-            }
-
-            break;
-        }
-#endif
 
         case SUB_CONFIG: {
             // 120
