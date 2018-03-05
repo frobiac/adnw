@@ -38,16 +38,13 @@ enum {
     SUB_LAYOUT,
     SUB_MACRO,
     SUB_MACRO_REC,
-    SUB_PASSHASH,
-    SUB_PW_XOR,
-    SUB_PW_TR,
-    SUB_UNLOCK,
     SUB_CONFIG,
     SUB_LED,
     SUB_EXTRA,
-    SUB_XXTEA,
+    SUB_UNLOCK,
     SUB_HMAC,
     SUB_SET_TAG,
+    SUB_XXTEA,
     SUB_END
 };
 

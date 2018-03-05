@@ -330,8 +330,8 @@ void set_led()
     if(commandMode()) {
         if(commandModeSub() == SUB_MACRO_REC) {
             rgb[0] = 50;
-        } else if(commandModeSub() == SUB_PASSHASH) {
-            rgb[2] = 25;
+            //} else if(commandModeSub() == SUB_PASSHASH) {
+            //    rgb[2] = 25;
         } else {
             rgb[0]=15;
         }
