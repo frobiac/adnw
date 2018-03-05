@@ -197,7 +197,7 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 
 
         case 'u':
-            memset(g_pw, 0, PWLEN+2);
+            memset(g_pw, 0, PWLEN);
             subcmd=SUB_UNLOCK;
             break;
 
@@ -246,7 +246,7 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 
             g_cmd_buf[len+1]='\0';
             for(uint8_t i=0; i<len+1; ++i)
-                g_cmd_buf[1+i] ^= g_pw[i%g_pw[PWLEN+1]];
+                g_cmd_buf[1+i] ^= g_pw[i%PWLEN];
 
             eeprom_busy_wait();
             eeprom_update_block (( const void *) (&g_cmd_buf[1]), (void *) EE_ADDR_TAG, len+1);
@@ -302,7 +302,7 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             eeprom_busy_wait();
             eeprom_read_block (( void *) (&g_cmd_buf[dig]), ( const void *) (EE_ADDR_TAG), EE_TAG_LEN);
             for(uint8_t i=0; i<EE_TAG_LEN; ++i)
-                g_cmd_buf[dig+i] ^= g_pw[i%g_pw[PWLEN+1]];
+                g_cmd_buf[dig+i] ^= g_pw[i%PWLEN];
             memcpy(g_cmd_buf, sha, dig);
 
             g_cmd_buf[27]='\0'; // full 27 usable, but only 26 used
@@ -323,9 +323,6 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
                 return false;
 
             sha1(g_pw, &g_cmd_buf[1], 8*len);
-            g_pw[PWLEN] = '\0';
-            g_pw[PWLEN+1] = PWLEN;
-
             // save config to store current password as correct
 
             setCommandMode(false); // length limit reached

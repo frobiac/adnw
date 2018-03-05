@@ -29,8 +29,8 @@
  */
 
 /// global unlock password used "descramble" stored EEPROM content and init seed
-#define PWLEN 20
-uint8_t g_pw[PWLEN+1+1]; // \0 + length at g_pw[PWLEN+1]
+#define PWLEN 20  // Must be >=20 for sha1
+uint8_t g_pw[PWLEN];
 
 #define CMD_BUF_SIZE 27
 uint8_t g_cmd_buf[CMD_BUF_SIZE+2]; // last two will contain length and '\0'
