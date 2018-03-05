@@ -61,7 +61,11 @@ void setCommandMode(bool on)
     }
 }
 
-bool unlocked(void)    { return g_pw[PWLEN+1] != 0; }
+bool unlocked(void)
+{
+    return(g_cfg.unlock_check == ((g_pw[0]<<8)|(g_pw[1]&0xFE)));
+}
+
 void subcmdIfUnlocked(uint8_t cmd) { unlocked() ? subcmd = cmd : setCommandMode(false); }
 bool commandMode(void) { return g_cmd_mode_active; }
 uint8_t commandModeSub(void) { return subcmd; }
@@ -192,7 +196,7 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 #endif
 
 
-        case 'U':
+        case 'u':
             memset(g_pw, 0, PWLEN+2);
             subcmd=SUB_UNLOCK;
             break;
@@ -203,11 +207,11 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             break;
 #endif
 
-        case 'h':
-            subcmd=SUB_HMAC;
+        case 'U':
+            subcmdIfUnlocked(SUB_SET_TAG);
             break;
 
-        case 'H':
+        case 'h':
             subcmdIfUnlocked(SUB_HMAC);
             break;
 
@@ -218,41 +222,6 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
     }
 
     return true;
-}
-
-void generateLine(uint8_t row, uint8_t col, uint8_t dig)
-{
-    char * g_tr_tag = "0123456789";
-    char * g_tr_pw  = "abcdefghij";
-
-    char algo = g_cmd_buf[4];
-
-    g_cmd_buf[0]=row;
-    memcpy(&g_cmd_buf[1], g_tr_tag, 10);
-
-    uint8_t sha[20];
-
-    if( algo == 'h' ) {
-        // full hmac-sha1 with key=g_pw and tag in g_cmd_buf
-        // hmac_sha1(sha, g_tr_pw, 8*10, g_cmd_buf, 8*(1+10));
-    } else if ( algo == 's' ) {
-        // fill buffer with input to hash function
-        // |row[1] | g_tag[10] | g_pw[10] |
-        memcpy(&g_cmd_buf[11], g_tr_pw, 10);
-        sha1(sha, g_cmd_buf, 8*(1+10+10));
-    }
-
-//    b64enc( sha, 20, (char*)g_cmd_buf, 27);
-    g_cmd_buf[26]='\0'; // remove trailing "=" / last char
-
-
-    xprintf("\n%s -> ", g_cmd_buf);
-    for(uint8_t i=0; i<4; ++i) {
-        xprintf("%c", g_cmd_buf[(col+i)%26]);
-    }
-
-    xprintf("done\n");
-    memset(g_cmd_buf, 0, 27);
 }
 
 
@@ -270,6 +239,21 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
     uint8_t len = g_cmd_buf[CMD_BUF_SIZE+1] -2 ;
 
     switch( subcmd ) {
+        case SUB_SET_TAG:
+            // read until return=10 is pressed or maximum length reached
+            if( (uint8_t)(c) != 10 )
+                return false;
+
+            g_cmd_buf[len+1]='\0';
+            for(uint8_t i=0; i<len+1; ++i)
+                g_cmd_buf[1+i] ^= g_pw[i%g_pw[PWLEN+1]];
+
+            eeprom_busy_wait();
+            eeprom_update_block (( const void *) (&g_cmd_buf[1]), (void *) EE_ADDR_TAG, len+1);
+            setCommandMode(false);
+            break;
+
+
         case SUB_HMAC:
             // read until return=10 is pressed or maximum length reached
             if( (uint8_t)(c) != 10 )
@@ -292,9 +276,6 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             if(dig < 2 || dig > 8)
                 dig=4;
 
-            xprintf("\n%c %d %d", row, col, dig);
-            //generateLine(row, col, dig);
-
             uint8_t sha[20];
 
             // KEY=$(echo -n $PW | sha1sum | head -c 40)
@@ -310,11 +291,23 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 
             b64enc( sha, 20, (char*)g_cmd_buf, 27);
             g_cmd_buf[27]='\0'; // full 27 usable, but only 26 used
-            xprintf("\n%s|", g_cmd_buf);
+            // xprintf("\n%s|", g_cmd_buf);
 
             for(uint8_t i=0; i<dig; ++i) {
-                xprintf("%c", g_cmd_buf[(col+i)%26]) ;
+                //xprintf("%c", g_cmd_buf[(col+i)%26]) ;
+                sha[i]=g_cmd_buf[(col+i)%26];
             }
+            sha[dig]='\0';
+
+            eeprom_busy_wait();
+            eeprom_read_block (( void *) (&g_cmd_buf[dig]), ( const void *) (EE_ADDR_TAG), EE_TAG_LEN);
+            for(uint8_t i=0; i<EE_TAG_LEN; ++i)
+                g_cmd_buf[dig+i] ^= g_pw[i%g_pw[PWLEN+1]];
+            memcpy(g_cmd_buf, sha, dig);
+
+            g_cmd_buf[27]='\0'; // full 27 usable, but only 26 used
+
+            setOutputString((char*)g_cmd_buf);
 
             memset(g_cmd_buf, 0, CMD_BUF_SIZE+2);
 
@@ -332,6 +325,8 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             sha1(g_pw, &g_cmd_buf[1], 8*len);
             g_pw[PWLEN] = '\0';
             g_pw[PWLEN+1] = PWLEN;
+
+            // save config to store current password as correct
 
             setCommandMode(false); // length limit reached
 
@@ -392,7 +387,11 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             // 120
             switch(c) {
                 case 'I': init_config();       break;
-                case 'S': save_config(&g_cfg); break;
+                case 'S':
+                    // overwrite unlock verification (0xFE to prevent empty eeprom collision)·
+                    g_cfg.unlock_check = ((g_pw[0]<<8)|(g_pw[1]&0xFE));
+                    save_config(&g_cfg);
+                    break;
                 case 'R': invalidate_config(); init_config(); break;
                 case 'L': load_config(&g_cfg); break;
                 case 'm': xprintf("\nMEM: %d/%d", get_mem_unused_simple(), get_mem_unused()); break;

@@ -73,7 +73,7 @@ void init_config()
 
 void print_config()
 {
-    xprintf("\nEE[%d] %04X: %02X ", sizeof(g_cfg), g_cfg.magic, g_cfg.fw.raw);
+    xprintf("\nEE[%d] %04X: %02X %04X", sizeof(g_cfg), g_cfg.magic, g_cfg.fw.raw, g_cfg.unlock_check);
     xprintf("Mouse=%d-%d", g_cfg.fw.mouse_enabled, g_cfg.fw.swap_xy);
 #ifdef HAS_LED
     xprintf(" LED:(%02X,%02X,%02X) %02X %02X ", g_cfg.led.r, g_cfg.led.g, g_cfg.led.b, g_cfg.led.on, g_cfg.led.off);

@@ -36,6 +36,10 @@ uint8_t g_pw[PWLEN+1+1]; // \0 + length at g_pw[PWLEN+1]
 uint8_t g_cmd_buf[CMD_BUF_SIZE+2]; // last two will contain length and '\0'
 
 
+// Compile time assert to test overlap of kb_cfg_t with macro storage
+// see linux kernel BUILD_BUG_ON
+#define ct_assert(e) ((void)sizeof(char[1-2*!(e)]))
+
 /**
  * Convenience macros for individual member access of EEPROM config.
  * @see https://projectgus.com/2010/07/eeprom-access-with-arduino/
@@ -64,7 +68,7 @@ uint8_t g_cmd_buf[CMD_BUF_SIZE+2]; // last two will contain length and '\0'
 #define EE_CFG_MAGIC        (uint16_t *) 0
 #define EE_CFG_END          (uint8_t  *) (sizeof(kb_cfg_t)) // end of config
 
-/// NOTE: This address is compile-time checked against config size in init_config()
+/// NOTE: This address is compile-time checked against config size in init_config() via ct_assert()
 #define EE_ADDR_START       200
 
 // @TODO refactor to adjust after changes to macro count and max len
@@ -73,12 +77,12 @@ uint8_t g_cmd_buf[CMD_BUF_SIZE+2]; // last two will contain length and '\0'
 #define EE_ADDR_MACROS      (EE_ADDR_MACRO_MAP + MACROCOUNT)
 #define EE_ADDR_MACRO(idx)  (EE_ADDR_MACROS    + ((idx%MACROCOUNT)*(MACRO_MAX_LEN+1)))
 
-// Compile time assert to test overlap of kb_cfg_t with macro storage
-// see linux kernel BUILD_BUG_ON
-#define ct_assert(e) ((void)sizeof(char[1-2*!(e)]))
+// From end of EEPROM
+#define EE_TAG_LEN  20
+#define EE_ADDR_TAG         (E2END - EE_TAG_LEN)
 
 // Check that macros fit into given eeprom
-#if EE_ADDR_MACRO(MACROCOUNT) > E2END
+#if EE_ADDR_MACRO(MACROCOUNT) > EE_ADDR_TAG
     #error EEPROM macro storage too large.
 #endif
 
@@ -146,6 +150,7 @@ typedef struct {
     tp_config_t tp_config;
 
     led_t led;
+    uint16_t unlock_check;
 
 } kb_cfg_t;
 

@@ -47,6 +47,7 @@ enum {
     SUB_EXTRA,
     SUB_XXTEA,
     SUB_HMAC,
+    SUB_SET_TAG,
     SUB_END
 };
 
