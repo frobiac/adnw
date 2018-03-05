@@ -235,9 +235,7 @@ uint8_t readEEMacroHID(uint8_t * macro, uint8_t idx)
     macro[len]=0;
 
     // xor with unlock code
-    for(uint8_t i=0; i<len; ++i) {
-        macro[i] ^= g_pw[i%PWLEN];
-    }
+    decrypt(macro,len);
 
     return len;
 }
@@ -269,9 +267,7 @@ uint8_t updateEEMacroHID(uint8_t * macro, uint8_t idx)
         ++len;
     }
     // xor with unlock code, macro[0] contains selector character so ignore that one
-    for(uint8_t i=0; i<len-1; ++i) {
-        macro[1+i] ^= g_pw[i%PWLEN];
-    }
+    decrypt(&macro[1], len-1);
 
     eeprom_busy_wait();
     eeprom_update_byte ((void *) (EE_ADDR_MACRO_MAP + idx), macro[0]);

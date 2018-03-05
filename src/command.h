@@ -24,6 +24,11 @@
 #include <stdint.h>
 
 void setCommandMode(bool);
+
+// encrypt/decrypt: either XOR with g_pw or true XXTEA
+int8_t decrypt(uint8_t * data, uint8_t len);
+int8_t encrypt(uint8_t * data, uint8_t len);
+
 bool commandMode(void);
 uint8_t commandModeSub(void);
 

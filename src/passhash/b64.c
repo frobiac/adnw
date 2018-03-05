@@ -53,20 +53,18 @@ LICENCE:        Copyright (c) 2001 Bob Trower, Trantor Standard Systems Inc.
 
 char b64( uint8_t i )
 {
-    //static const char b64[]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    i &= 0x3f; // only lowest 6 Bits are mapped
     if(i<26)
-        return 'A'+i;
+        return 'A'+ i;
     if(i<52)
         return 'a'+ i-26;
     if(i<62)
         return '0'+ i-52;
     if(i==62)
         return '+';
-    if(i==63)
-        return '/';
 
-    // should never get here!!!
-    return '-';
+    //if(i==63)
+    return '/';
 }
 
 /// encode 3 8-bit binary bytes as 4 '6-bit' characters

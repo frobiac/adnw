@@ -28,13 +28,6 @@
  * Global variables / configuration options for persistent storage in eeprom.
  */
 
-/// global unlock password used "descramble" stored EEPROM content and init seed
-#define PWLEN 20  // Must be >=20 for sha1
-uint8_t g_pw[PWLEN];
-
-#define CMD_BUF_SIZE 27
-uint8_t g_cmd_buf[CMD_BUF_SIZE+2]; // last two will contain length and '\0'
-
 
 // Compile time assert to test overlap of kb_cfg_t with macro storage
 // see linux kernel BUILD_BUG_ON

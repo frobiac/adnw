@@ -2,14 +2,20 @@
 
 #include <stdint.h>
 
-void xxtea_crypt(uint32_t *v, int8_t n, uint32_t const key[4]);
+// encrypt arbitrary length *v. Negative n for decryption.
+void xxtea_crypt(uint32_t *v, int8_t n);
+
+// encrypt g_xxtea_txt, padding after given length.
 void xxtea_fixed_encrypt(uint8_t len);
+// decrypt g_xxtea_txt, removing padding and returning length.
 uint8_t xxtea_fixed_decrypt(void);
 
 // Fixed size for txt of length XXTEA_DATA_LEN and key length of 16
 #define XXTEA_DATA_LEN 4*5
-uint8_t g_xxtea_txt[XXTEA_DATA_LEN+1];
-uint8_t g_xxtea_key[16];
+uint8_t g_xxtea_txt[XXTEA_DATA_LEN];
+
+// must be defined somewhere else. SIZE=4 for XXTEA
+extern uint32_t * g_xxtea_key;
 
 
 

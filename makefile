@@ -23,12 +23,12 @@ SRCDIR       = ./src
 # Keyboard selection below: Override from environment variable
 # -----------------------------------------------------------
 KB_HW_SUPPORTED = BLUECUBE HYPERNANO REDTILT HYPERMICRO BLACKFLAT BLACKBOWL
-KB_HW		 ?= BLACKBOWL
+KB_HW		 ?= BLACKFLAT
 
 KB_DBG ?= 1
 KB_EXT ?= 1
 KB_TR  ?= 0
-KB_XXT ?= 0
+KB_XXT ?= 1
 
 
 ##################################################################
@@ -105,7 +105,10 @@ endif
 SRC += \
 		$(SRCDIR)/passhash/sha1-asm.S   \
 		$(SRCDIR)/passhash/hmac-sha1.c  \
-		$(SRCDIR)/crypt/xxtea.c
+
+SRC += $(SRCDIR)/crypt/xxtea.c
+		
+# SRC += $(SRCDIR)/passhash/xtea/xtea.c
 
 
 ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
