@@ -45,6 +45,11 @@ LICENCE:        Copyright (c) 2001 Bob Trower, Trantor Standard Systems Inc.
 
 
 #include "b64.h"
+/**
+ * Evaluated options with bitfields, but no size-advantage.
+ * Maybe just drop b64-encoding altogether, or at least simplify?
+ * - only 1 to 1 mapping
+ */
 
 char b64( uint8_t i )
 {
@@ -81,8 +86,7 @@ void encodeblock( unsigned char *in, unsigned char *out, int len )
  */
 void b64enc(const unsigned char* data, size_t len, char* result, size_t resultSize)
 {
-    size_t x;
-    for(x=0; x*3<len; ++x)
+    for(size_t x=0; x*3<len; ++x)
         encodeblock( (unsigned char *)(&data[x*3]), (unsigned char *)(&result[x*4]), (len-x*3));
 }
 
