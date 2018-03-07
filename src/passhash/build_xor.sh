@@ -13,9 +13,10 @@ FLAGS="-g -O -W -std=c99 -DFW_VERSION=\"${FW_VERSION}\""
 CC=gcc
 mkdir .build 2>/dev/null
 (
+  rm xor
   cd .build
 
-  $CC $FLAGS -c ../helpers.c
-  $CC $FLAGS -c ../password.c
-  $CC helpers.o password.o -o ../xor
+  $CC $FLAGS -c ../../helpers.c &&
+  $CC $FLAGS -c ../xor.c  &&
+  $CC $FLAGS helpers.o xor.o -o ../xor
 )

@@ -30,10 +30,11 @@ uint32_t str2hash(const char * str)
 {
     uint8_t i=0;
     uint32_t result = 0;
-    while(str[i++] != '\0') {
-        result *= 94;
+    do {
         result += str[i]-33;
-    }
+        result *= 94;
+        //printf("\n - s[%d]=%c -> %ld", i, str[i], result);
+    } while(str[++i] != '\0' && i<12);
     return result;
 }
 

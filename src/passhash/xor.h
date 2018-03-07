@@ -42,11 +42,6 @@
 
 /// must call this to seed generator with state != 0
 void set_xor_seed(xor_size_t state);
-/// generates enough random data to create LEN characters, of which #cnt @pos are put into result _without_ terminating '\0'
-void genLine(char *result,  const uint8_t cnt, const uint8_t pos,const uint8_t LEN, const bool hexNotRnd);
-/// Loops through line generation for two lines and offset.
-void genPass(char *result, const char c1, const uint8_t d, const char c2);
-/// Wrapper around genPass with args in first 3 elements
-void genPass3(char * result);
-
+void number2str(char dst[XOR_BITS/8], xor_size_t number);
+void tr_code(char *dst, uint8_t len, uint8_t row, uint8_t col);
 

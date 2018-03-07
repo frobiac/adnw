@@ -43,6 +43,8 @@ bool g_cmd_mode_active=false;
     #include "crypt/xxtea.h"
 #endif
 
+#include "passhash/xor.h"
+
 #include "passhash/hmac-sha1.h"
 #include "passhash/b64.h"
 
@@ -206,8 +208,6 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             subcmd=SUB_EXTRA;
             break;
 #endif
-
-
         case 'u':
             subcmd=SUB_UNLOCK;
             break;
@@ -304,6 +304,8 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             if(dig < 2 || dig > 8)
                 dig=4;
 
+            tr_code((char*)g_cmd_buf, dig, row, col);
+            xprintf("\nXOR: %s", g_cmd_buf);
 
             tabula_recta(g_cmd_buf, row, col, dig);
 
@@ -330,6 +332,9 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             if( (uint8_t)(c) != 10 )
                 return false;
 
+            set_xor_seed( (xor_size_t)(g_cmd_buf[1]));
+            //xprintf("\nSeed=%08X", g_xor_seed);
+
             memset(g_pw, 0, PWLEN);
 #ifdef TR_HMAC
             // store hash of entered string as unlock password
@@ -338,8 +343,8 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 #else
             memcpy(g_pw, &g_cmd_buf[1], len);
 #endif
-            setCommandMode(false); // length limit reached
 
+            setCommandMode(false); // length limit reached
             break;
 
         case SUB_MACRO:
