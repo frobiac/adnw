@@ -278,7 +278,8 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             if(row=='z' && col == 'z' && dig==0) {
                 xprintf("\n   abcdefgh klmno rstu ");
                 for( row='a'; row<='m'; ++row) {
-                    tabula_recta(g_cmd_buf, row, 'a', 20);
+                    //tabula_recta(g_cmd_buf, row, 'a', 20);
+                    tr_code((char*)g_cmd_buf, 20, row-'a', 0);
                     g_cmd_buf[20]='\0';
                     xprintf("\n%c%c %s", row, row+13, g_cmd_buf);
                 }
@@ -332,6 +333,7 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             if( (uint8_t)(c) != 10 )
                 return false;
 
+            //@TODO
             set_xor_seed( (xor_size_t)(g_cmd_buf[1]));
             //xprintf("\nSeed=%08X", g_xor_seed);
 

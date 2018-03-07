@@ -97,7 +97,6 @@ void set_xor_seed(xor_size_t state)
         state=1;
 
     g_xor_seed = state;
-    xprintf("\nSeed: %08X", g_xor_seed);
     xor_reset();
 }
 
@@ -144,13 +143,14 @@ void xor_reset()
  */
 void number2str(char dst[XOR_BITS/8], xor_size_t number)
 {
-    // use upper 6bit of each Byte
-    number = number >> 2;
-    // order is reversed, but does not matter
-    for(uint8_t i=0; i<XOR_BITS/8; ++i) {
-        *dst++ = b64map[number&0x3F];
-        number = number >> 8;
-    }
+    /*e    // use upper 6bit of each Byte
+        number = number >> 2;
+        // order is reversed, but does not matter
+        for(uint8_t i=0; i<XOR_BITS/8; ++i) {
+            *dst++ = b64map[number&0x3F];
+            number = number >> 8;
+        }
+        */
 }
 /**
  * Read string[len] at 0-based row x col into *dst
@@ -158,27 +158,22 @@ void number2str(char dst[XOR_BITS/8], xor_size_t number)
  */
 void tr_code(char *dst, uint8_t len, uint8_t row, uint8_t col)
 {
-    xor_size_t tmp = 0;
     xor_reset();
 
-    uint8_t skip = row*(TR_COLS/(XOR_BITS/8));
-    for(uint8_t i=0; i<skip; ++i)
+    for(uint16_t i=0; i<(row*TR_COLS +col); ++i)
         xorshift();
 
 
-    for(uint8_t i=0; i<col+len; ++i) {
-        if(0 == i % XOR_BYTES ) {
-            xorshift();
-            tmp = g_xor_result >> 2;
-        }
-        if(i>=col) {
-            *dst++ = b64map[tmp&0x3F];
-        }
-        tmp = tmp >> 8;
+    for(uint8_t i=0; i<len; ++i) {
+        xorshift();
+        //tmp = g_xor_result >> 2;
+        //*dst++ = b64map[tmp&0x3F];
+        dst[i] = b64map[g_xor_result&0x3F];
     }
 
-    // *dst='\0';
-    // printf("\n%2d @ %2dx%2d: %s", len, row, col, dst-len);
+    //*dst='\0';
+    //dst[len] = '\0';
+    //printf("\n%2d @ %2dx%2d: %s", len, row, col, dst);
 }
 
 
@@ -204,10 +199,11 @@ int main(int argc, char ** argv)
     // settle for 24 chars (XYZ together)
     for(uint8_t r=0; r<TR_ROWS; ++r) {
         printf("\n%2d: ", r);
-        for(uint8_t c=0; c*(XOR_BITS/8)<TR_COLS; ++c) {
+        //for(uint8_t c=0; c*(XOR_BITS/8)<TR_COLS; ++c) {
+        for(uint8_t c=0; c<TR_COLS; ++c) {
             xorshift();
-            number2str(res_str, g_xor_result);
-            printf("%s ", res_str);
+            //number2str(res_str, g_xor_result);
+            printf("%c", b64map[g_xor_result&0x3f] ); //b64map[g_xor_result&0x3F];
         }
     }
 
