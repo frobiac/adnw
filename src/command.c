@@ -33,32 +33,43 @@
 #endif
 #include "macro.h"
 
-bool g_cmd_mode_active=false;
 
 #ifdef EXTRA
     #include "extra.h"
 #endif
 
-#ifdef XXTEA
-    #include "crypt/xxtea.h"
-#endif
-
-#include "passhash/xor.h"
-
-#include "passhash/hmac-sha1.h"
-#include "passhash/b64.h"
-
+bool g_cmd_mode_active=false;
 
 /// global unlock password used "descramble" stored EEPROM content and init seed
 #define PWLEN 20  // Must be >=20 for sha1
 uint8_t g_pw[PWLEN];
-uint32_t * g_xxtea_key = (void*)g_pw;
 
 #define CMD_BUF_SIZE 27
 uint8_t g_cmd_buf[CMD_BUF_SIZE+2]; // last two will contain length and '\0'
 
 
 static uint8_t subcmd;           ///< currently active subcommand
+
+
+
+#define HMAC  1
+#define XXTEA 2
+#define XOR   4
+
+#define TR_ALGO  4
+
+#if TR_ALGO == XXTEA
+    #include "crypt/xxtea.h"
+    uint32_t * g_xxtea_key = (void*)g_pw;
+#elif TR_ALGO == XOR
+    #include "passhash/xor.h"
+#elif TR_ALGO == HMAC
+    #include "passhash/hmac-sha1.h"
+#else
+    //#error TR_ALGO undefined
+#endif
+
+#include "passhash/b64.h"
 
 
 void setCommandMode(bool on)
@@ -83,6 +94,7 @@ bool commandMode(void) { return g_cmd_mode_active; }
 uint8_t commandModeSub(void) { return subcmd; }
 
 void tabula_recta(uint8_t * dst, char row, uint8_t col, uint8_t dig);
+void unlock(uint8_t * str, uint8_t len);
 
 
 
@@ -278,8 +290,8 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             if(row=='z' && col == 'z' && dig==0) {
                 xprintf("\n   abcdefgh klmno rstu ");
                 for( row='a'; row<='m'; ++row) {
-                    //tabula_recta(g_cmd_buf, row, 'a', 20);
-                    tr_code((char*)g_cmd_buf, 20, row-'a', 0);
+                    tabula_recta(g_cmd_buf, row, 'a', 20);
+                    //tr_code((char*)g_cmd_buf, 20, row-'a', 0);
                     g_cmd_buf[20]='\0';
                     xprintf("\n%c%c %s", row, row+13, g_cmd_buf);
                 }
@@ -304,9 +316,6 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 
             if(dig < 2 || dig > 8)
                 dig=4;
-
-            tr_code((char*)g_cmd_buf, dig, row, col);
-            xprintf("\nXOR: %s", g_cmd_buf);
 
             tabula_recta(g_cmd_buf, row, col, dig);
 
@@ -333,18 +342,7 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             if( (uint8_t)(c) != 10 )
                 return false;
 
-            //@TODO
-            set_xor_seed( (xor_size_t)(g_cmd_buf[1]));
-            //xprintf("\nSeed=%08X", g_xor_seed);
-
-            memset(g_pw, 0, PWLEN);
-#ifdef TR_HMAC
-            // store hash of entered string as unlock password
-            sha1(g_pw, &g_cmd_buf[1], 8*len);
-            // save config to store current password as correct
-#else
-            memcpy(g_pw, &g_cmd_buf[1], len);
-#endif
+            unlock(&g_cmd_buf[1],len);
 
             setCommandMode(false); // length limit reached
             break;
@@ -493,7 +491,6 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
  * - Any content can be freely en/decrypted with it
  */
 
-#define TR_HMAC
 #define TAG "0123456789"
 
 
@@ -501,14 +498,14 @@ int8_t encrypt(uint8_t * data, uint8_t len)
 {
     if(!unlocked())
         return -1;
-#ifdef TR_HMAC
-    // xor same as decrypt
-    decrypt(data,len);
-#else
+#if TR_ALGO == XXTEA
     if(len > XXTEA_DATA_LEN)
         return -2;
     memcpy(g_xxtea_txt, data, len);
     xxtea_fixed_encrypt(len);
+#elif TR_ALGO == HMAC || TR_ALGO == XOR
+    // xor same as decrypt
+    decrypt(data,len);
 #endif
     return 0;
 }
@@ -517,23 +514,23 @@ int8_t decrypt(uint8_t * data, uint8_t len)
 {
     if(!unlocked())
         return -1;
-#ifdef TR_HMAC
-    for(uint8_t i=0; i<len; ++i)
-        data[i] ^= g_pw[i%PWLEN];
-    return len;
-#else
+#if TR_ALGO == XXTEA
     if(len > XXTEA_DATA_LEN)
         return -2;
     memcpy(g_xxtea_txt, data, len);
     return xxtea_fixed_decrypt();
+#elif TR_ALGO == HMAC || TR_ALGO == XOR
+    for(uint8_t i=0; i<len; ++i)
+        data[i] ^= g_pw[i%PWLEN];
+    return len;
 #endif
+    return 0;
 }
 
 void tabula_recta(uint8_t * dst, char row, uint8_t col, uint8_t dig)
 {
 
-
-#ifdef TR_HMAC
+#if TR_ALGO == HMAC
     uint8_t sha[20];
     // read row + TAG into textbuffer for hmac-sha
     g_cmd_buf[0]=row;
@@ -546,14 +543,41 @@ void tabula_recta(uint8_t * dst, char row, uint8_t col, uint8_t dig)
         dst[i] = b64map[sha[(col+i)%20]&0x3f];
     }
 
-#else
-
+#elif TR_ALGO == XXTEA
     memset(g_xxtea_txt, 0, XXTEA_DATA_LEN);
     g_xxtea_txt[0]=row;
     memcpy(&g_xxtea_txt[1], TAG, 10);
-    xxtea_fixed_encrypt(20);
+    xxtea_fixed_encrypt(10);
     for(uint8_t i=0; i<dig; ++i) {
         dst[i] = b64map[g_xxtea_txt[(col+i)%20]&0x3f];
     }
+
+#elif TR_ALGO == XOR
+    tr_code((char*)dst, dig, row-'a', col);
+#endif
+}
+
+void unlock(uint8_t * code, uint8_t len)
+{
+#if TR_ALGO == XXTEA
+    memset(g_pw, 0, PWLEN);
+    memcpy(g_pw, &g_cmd_buf[1], len);
+    // @TODO XXTEA key should be expanded from input.
+    //xxtea_fixed_encrypt(10);
+
+#elif TR_ALGO == XOR
+    // set seed from input
+    xor_init((char*)&g_cmd_buf[1], len);
+    for(uint8_t i=0; i<PWLEN; ++i) {
+        xorshift();
+        g_pw[i] = g_xor_result & 0xFF;
+    }
+
+
+#elif TR_ALGO == HMAC
+    memset(g_pw, 0, PWLEN);
+    // store hash of entered string as unlock password
+    sha1(g_pw, &g_cmd_buf[1], 8*len);
+    // save config to store current password as correct
 #endif
 }

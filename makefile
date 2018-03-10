@@ -28,7 +28,7 @@ KB_HW		 ?= BLACKFLAT
 KB_DBG ?= 1
 KB_EXT ?= 1
 KB_TR  ?= 0
-KB_XXT ?= 1
+KB_XXT ?= 0
 
 
 ##################################################################
@@ -107,7 +107,7 @@ SRC += \
 		$(SRCDIR)/passhash/hmac-sha1.c  \
 
 SRC += $(SRCDIR)/crypt/xxtea.c
-SRC += $(SRCDIR)/passhash/xor.c
+ SRC += $(SRCDIR)/passhash/xor.c
 		
 # SRC += $(SRCDIR)/passhash/xtea/xtea.c
 

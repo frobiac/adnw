@@ -23,6 +23,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "b64.h"
+
 #define XOR_BITS 32
 #define XOR_BYTES (XOR_BITS/8)
 
@@ -40,8 +42,14 @@
     #error "Invalid XOR_BITS"
 #endif
 
+/// Must be initialized with seed before each run, and will hold result of xorshifts.
+static xor_size_t g_xor_result;
+
+
 /// must call this to seed generator with state != 0
 void set_xor_seed(xor_size_t state);
-void number2str(char dst[XOR_BITS/8], xor_size_t number);
+void xor_init(char * seed, uint8_t len);
+void xorshift(void);
+// void number2str(char dst[XOR_BITS/8], xor_size_t number);
 void tr_code(char *dst, uint8_t len, uint8_t row, uint8_t col);
 

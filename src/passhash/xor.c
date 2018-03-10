@@ -36,12 +36,8 @@
 
 /// The seed to init everything with on each run, to set externally.
 static xor_size_t g_xor_seed;
-/// Must be initialized with seed before each invocation and will hold result of xorshifts.
-static xor_size_t g_xor_result;
-
 /// internal functions
-void gen4char(char * dst, xor_size_t rnd);
-void xorshift(void);
+//void xorshift(void);
 
 // re-init generator with seed
 void xor_reset(void);
@@ -113,6 +109,18 @@ void xor_reset()
 #endif
 }
 
+/**
+ * Seed from string
+ */
+void xor_init(char * seed, uint8_t len)
+{
+    g_xor_result = 0;
+    for (uint8_t i = 0; i<len; ++i) {
+        g_xor_result += seed[i]<<13;
+        xorshift();
+    }
+    set_xor_seed(g_xor_result);
+}
 
 // random avr:
 // https://gist.github.com/endolith/2568571
@@ -120,7 +128,6 @@ void xor_reset()
 // http://electronics.stackexchange.com/questions/3653/avr-random-number-generator/206605/
 // https://sites.google.com/site/astudyofentropy/project-definition/timer-jitter-entropy-sources/entropy-library/arduino-random-seed
 
-#include "b64.h"
 
 #define TR_COLS 24 // treat xyz as one column
 #define TR_ROWS 13
@@ -143,7 +150,8 @@ void xor_reset()
  */
 void number2str(char dst[XOR_BITS/8], xor_size_t number)
 {
-    /*e    // use upper 6bit of each Byte
+    /*
+        // use upper 6bit of each Byte
         number = number >> 2;
         // order is reversed, but does not matter
         for(uint8_t i=0; i<XOR_BITS/8; ++i) {
@@ -152,6 +160,7 @@ void number2str(char dst[XOR_BITS/8], xor_size_t number)
         }
         */
 }
+
 /**
  * Read string[len] at 0-based row x col into *dst
  *
@@ -166,14 +175,9 @@ void tr_code(char *dst, uint8_t len, uint8_t row, uint8_t col)
 
     for(uint8_t i=0; i<len; ++i) {
         xorshift();
-        //tmp = g_xor_result >> 2;
-        //*dst++ = b64map[tmp&0x3F];
         dst[i] = b64map[g_xor_result&0x3F];
     }
-
-    //*dst='\0';
-    //dst[len] = '\0';
-    //printf("\n%2d @ %2dx%2d: %s", len, row, col, dst);
+    // printf("\n%2d @ %2dx%2d: %s", len, row, col, dst);
 }
 
 
@@ -181,15 +185,11 @@ void tr_code(char *dst, uint8_t len, uint8_t row, uint8_t col)
 
 int main(int argc, char ** argv)
 {
-    xor_size_t hash=1;
-    xor_size_t xor_res;
-    char res_str[XOR_BITS/8];
     char teststr[30];
 
     if(argc>1) {
-        uint32_t hash = str2hash(argv[1]);
-        set_xor_seed(hash);
-        printf("\nh(%s)=%08lX -> %08lX \n%s", argv[1], hash, g_xor_seed, FW_VERSION);
+        xor_init(argv[1], strlen(argv[1]));
+        printf("\nDONE:h(%s)=%08lX -> %08lX \n%s", argv[1], g_xor_result, g_xor_seed, FW_VERSION);
     } else {
         printf("\nMust provide initial seed as arg.");
         return 5;
@@ -198,13 +198,17 @@ int main(int argc, char ** argv)
     xor_reset();
     // settle for 24 chars (XYZ together)
     for(uint8_t r=0; r<TR_ROWS; ++r) {
-        printf("\n%2d: ", r);
-        //for(uint8_t c=0; c*(XOR_BITS/8)<TR_COLS; ++c) {
-        for(uint8_t c=0; c<TR_COLS; ++c) {
-            xorshift();
-            //number2str(res_str, g_xor_result);
-            printf("%c", b64map[g_xor_result&0x3f] ); //b64map[g_xor_result&0x3F];
-        }
+        tr_code(&teststr[0], 26, r,0);
+        teststr[26]='\0';
+        printf("\n%2d: %s", r, teststr);
+        /*
+                //for(uint8_t c=0; c*(XOR_BITS/8)<TR_COLS; ++c) {
+                for(uint8_t c=0; c<TR_COLS; ++c) {
+                    xorshift();
+                    //number2str(res_str, g_xor_result);
+                    printf("%c", b64map[g_xor_result&0x3f] ); //b64map[g_xor_result&0x3F];
+                }
+                */
     }
 
     tr_code(&teststr[0], 4,  0,0);
