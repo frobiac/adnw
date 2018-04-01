@@ -23,6 +23,7 @@
 //
 #include "xor.h"
 #include "../helpers.h"   // mapAscii()
+#include "tabularecta.h"   // mapAscii()
 
 #if defined(__AVR__)
     #include "../print.h"
@@ -35,20 +36,19 @@
 #endif
 
 
-#ifndef __AVR__
-    // should be defined in general TR routine
-    #define TR_COLS 20 // treat xyz as one column
-    #define TR_ROWS 13
-#endif
-
 /// The seed to init everything with on each run, to set externally.
 static xor_size_t g_xor_seed;
+
+/// Must be initialized with seed before each run, and will hold result of xorshifts.
+static xor_size_t g_xor_result;
+
 /// internal functions
 //void xorshift(void);
 
 // re-init generator with seed
 void xor_reset(void);
 
+xor_size_t xor_result(void) { return g_xor_result; };
 
 #if (XOR_BITS == 8)
 // returns values from 1 to 255 inclusive, period is 255

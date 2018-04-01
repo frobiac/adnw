@@ -1,7 +1,7 @@
 /*
     This file is part of the AdNW keyboard firmware.
 
-    Copyright 2017 Stefan Fröbe, <frobiac /at/ gmail [d0t] com>
+    Copyright 2017-2018 Stefan Fröbe, <frobiac /at/ gmail [d0t] com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,34 +21,35 @@
 #pragma once
 
 #include <stdint.h>
-#include <stdbool.h>
 
-#include "b64.h"
+#define TR_COLS 26 // 20 to treat ij pq vwxyz as one column
+#define TR_ROWS 13
 
-#define XOR_BITS 32
-#define XOR_BYTES (XOR_BITS/8)
+#define HMAC  1
+#define XXTEA 2
+#define XOR   4
 
+#define TR_ALGO 4
 
-// uses 42 66 126 630 bytes
-#if   (XOR_BITS == 8)
-    typedef uint8_t  xor_size_t;
-#elif (XOR_BITS == 16)
-    typedef uint16_t xor_size_t;
-#elif (XOR_BITS == 32)
-    typedef uint32_t xor_size_t;
-#elif (XOR_BITS == 64)
-    typedef uint64_t xor_size_t;
+#if TR_ALGO == XXTEA
+    #include "crypt/xxtea.h"
+    uint32_t * g_xxtea_key = (void*)g_pw;
+#elif TR_ALGO == XOR
+    #include "xor.h"
+#elif TR_ALGO == HMAC
+    #include "hmac-sha1.h"
 #else
-    #error "Invalid XOR_BITS"
+    #error TR_ALGO undefined
 #endif
 
 
+bool unlocked(void);
 
-/// must call this to seed generator with state != 0
-void set_xor_seed(xor_size_t state);
-void xor_init(char * seed, uint8_t len);
-void xorshift(void);
-// void number2str(char dst[XOR_BITS/8], xor_size_t number);
-void tr_code(char *dst, uint8_t len, uint8_t row, uint8_t col);
+uint16_t pwfingerprint(void);
 
-xor_size_t xor_result(void);
+int8_t encrypt(uint8_t * data, uint8_t len);
+int8_t decrypt(uint8_t * data, uint8_t len);
+void tabula_recta(uint8_t * dst, char row, uint8_t col, uint8_t dig);
+void unlock(uint8_t * code, uint8_t len);
+
+

@@ -107,7 +107,8 @@ SRC += \
 		$(SRCDIR)/passhash/hmac-sha1.c  \
 
 SRC += $(SRCDIR)/crypt/xxtea.c
- SRC += $(SRCDIR)/passhash/xor.c
+SRC += $(SRCDIR)/passhash/xor.c
+SRC += $(SRCDIR)/passhash/tabularecta.c
 		
 # SRC += $(SRCDIR)/passhash/xtea/xtea.c
 
