@@ -50,13 +50,14 @@ uint8_t g_cmd_buf[CMD_BUF_SIZE+2]; // last two will contain length and '\0'
 
 static uint8_t subcmd;           ///< currently active subcommand
 
-
+#define TR_COLS 20 // treat xyz as one column
+#define TR_ROWS 13
 
 #define HMAC  1
 #define XXTEA 2
 #define XOR   4
 
-#define TR_ALGO  4
+#define TR_ALGO 4
 
 #if TR_ALGO == XXTEA
     #include "crypt/xxtea.h"
@@ -85,6 +86,7 @@ void setCommandMode(bool on)
 
 bool unlocked(void)
 {
+//@TODO REMOVE
     return true;
     return(g_cfg.unlock_check == ((g_pw[0]<<8)|(g_pw[1]&0xFE)));
 }
@@ -289,11 +291,11 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             // Print whole tabula recta on "zz0"
             if(row=='z' && col == 'z' && dig==0) {
                 xprintf("\n   abcdefgh klmno rstu ");
-                for( row='a'; row<='m'; ++row) {
-                    tabula_recta(g_cmd_buf, row, 'a', 20);
+                for( row='a'; row<='a'+TR_ROWS; ++row) {
+                    tabula_recta(g_cmd_buf, row, 0, TR_COLS);
                     //tr_code((char*)g_cmd_buf, 20, row-'a', 0);
                     g_cmd_buf[20]='\0';
-                    xprintf("\n%c%c %s", row, row+13, g_cmd_buf);
+                    xprintf("\n%c%c %s", row, row+TR_ROWS, g_cmd_buf);
                 }
                 setCommandMode(false);
                 break;
@@ -304,12 +306,12 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
                 row-=13;
 
             // 26 -> 20 chars: (ij) (pq) (vwxyz)
-            if(col>='v') col='v';
-            if(col>='q') col--;
-            if(col>='j') col--;
+            if(TR_COLS<=22 && col>='v') col='v';
+            if(TR_COLS<=21 && col>='q') col--;
+            if(TR_COLS<=20 && col>='j') col--;
             col -= 'a';
 
-            if(row<'a' || row>'m' || col > 20) {
+            if(row<'a' || row>'m' || col > TR_COLS) {
                 setCommandMode(false);
                 break;
             }
@@ -491,7 +493,7 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
  * - Any content can be freely en/decrypted with it
  */
 
-#define TAG "0123456789"
+//#define TAG "0123456789"
 
 
 int8_t encrypt(uint8_t * data, uint8_t len)

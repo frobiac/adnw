@@ -34,6 +34,13 @@
     #define xprintf printf
 #endif
 
+
+#ifndef __AVR__
+    // should be defined in general TR routine
+    #define TR_COLS 20 // treat xyz as one column
+    #define TR_ROWS 13
+#endif
+
 /// The seed to init everything with on each run, to set externally.
 static xor_size_t g_xor_seed;
 /// internal functions
@@ -110,13 +117,14 @@ void xor_reset()
 }
 
 /**
- * Seed from string
+ * Seed from string:
+ * Add character to seed, then run xorshift() and use result as new seed.
  */
 void xor_init(char * seed, uint8_t len)
 {
     g_xor_result = 0;
     for (uint8_t i = 0; i<len; ++i) {
-        g_xor_result += seed[i]<<13;
+        g_xor_result += seed[i];
         xorshift();
     }
     set_xor_seed(g_xor_result);
@@ -128,9 +136,6 @@ void xor_init(char * seed, uint8_t len)
 // http://electronics.stackexchange.com/questions/3653/avr-random-number-generator/206605/
 // https://sites.google.com/site/astudyofentropy/project-definition/timer-jitter-entropy-sources/entropy-library/arduino-random-seed
 
-
-#define TR_COLS 24 // treat xyz as one column
-#define TR_ROWS 13
 
 /**
  * Convert each Byte of number to a printable character.
@@ -163,6 +168,7 @@ void number2str(char dst[XOR_BITS/8], xor_size_t number)
 
 /**
  * Read string[len] at 0-based row x col into *dst
+ * @TODO wrap around? last row / end undefined.
  *
  */
 void tr_code(char *dst, uint8_t len, uint8_t row, uint8_t col)
@@ -190,6 +196,15 @@ int main(int argc, char ** argv)
     if(argc>1) {
         xor_init(argv[1], strlen(argv[1]));
         printf("\nDONE:h(%s)=%08lX -> %08lX \n%s", argv[1], g_xor_result, g_xor_seed, FW_VERSION);
+
+        uint32_t sum=0;
+        for(int i=0; i<strlen(argv[1]); ++i) {
+            sum *= 95;
+            sum += argv[1][i] - 31;
+            printf("\n%d sum = %08lX", i, sum);
+        }
+
+
     } else {
         printf("\nMust provide initial seed as arg.");
         return 5;
@@ -198,8 +213,8 @@ int main(int argc, char ** argv)
     xor_reset();
     // settle for 24 chars (XYZ together)
     for(uint8_t r=0; r<TR_ROWS; ++r) {
-        tr_code(&teststr[0], 26, r,0);
-        teststr[26]='\0';
+        tr_code(&teststr[0], TR_COLS, r,0);
+        teststr[TR_COLS]='\0';
         printf("\n%2d: %s", r, teststr);
         /*
                 //for(uint8_t c=0; c*(XOR_BITS/8)<TR_COLS; ++c) {
