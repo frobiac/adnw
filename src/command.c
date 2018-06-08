@@ -309,6 +309,8 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             if(dig < 2 || dig > 8)
                 dig=4;
 
+            memset(g_cmd_buf, 0, CMD_BUF_SIZE+2);
+
             tabula_recta(g_cmd_buf, row, col, dig);
 
             // @TODO should be empty or at least printable after flashing?
@@ -316,6 +318,7 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             eeprom_busy_wait();
             eeprom_read_block (( void *) (&g_cmd_buf[dig]), ( const void *) (EE_ADDR_TAG), EE_TAG_LEN);
             // ... and decrypt after random string from TabulaRecta
+            // @TODO length check! (dig+EE_TAG_LEN <= CMD_BUF_SIZE+2)
             decrypt(&g_cmd_buf[dig], EE_TAG_LEN);
 
             g_cmd_buf[SHA1_B64_BYTES]='\0'; // full 27 usable, but only 26 used
