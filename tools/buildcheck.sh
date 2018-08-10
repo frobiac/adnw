@@ -15,7 +15,7 @@ trap cleanup EXIT
 
 git checkout -b sizelog-${TMP} -f
 #git rebase --interactive 1a4f13ed8fd8d05102fe5ed3f745e7e438c89933 --exec " \
-OPT="KB_HW=REDTILT KB_DBG=0 KB_PH=0"
+OPT="KB_HW=REDTILT KB_DBG=0 "
 
 echo "# $OPT $(date) " >> err.log
 

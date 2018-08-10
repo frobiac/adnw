@@ -166,8 +166,6 @@ configtest:
 # check that KB_HW is defined and valid
 ifneq (,$(filter $(KB_HW), $(KB_HW_SUPPORTED)))
 	@echo "*** HW  = $(KB_HW) from $(origin KB_HW)"
-	@echo "*** PH  = $(KB_PH) from $(origin KB_PH)"
-	@echo "*** PW  = $(KB_PW) from $(origin KB_PW)"
 	@echo "*** DBG = $(KB_DBG) from $(origin KB_DBG)"
 else
 	$(error *** KB_HW defined as "$(KB_HW)" not valid: not in $(KB_HW_SUPPORTED))
@@ -186,7 +184,7 @@ submodule:
 	@git submodule update
 
 sizecheck:
-	@echo HW=$(KB_HW) PH=$(KB_PH) PW=$(KB_PW) DBG=$(KB_DBG)
+	@echo HW=$(KB_HW) DBG=$(KB_DBG)
 	@avr-size --mcu=atmega32u4 -B adnw.elf
 
 
