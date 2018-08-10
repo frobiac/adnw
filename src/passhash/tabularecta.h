@@ -26,15 +26,11 @@
 #define TR_ROWS 13
 
 #define HMAC  1
-#define XXTEA 2
 #define XOR   4
 
 #define TR_ALGO 4
 
-#if TR_ALGO == XXTEA
-    #include "crypt/xxtea.h"
-    uint32_t * g_xxtea_key = (void*)g_pw;
-#elif TR_ALGO == XOR
+#if TR_ALGO == XOR
     #include "xor.h"
 #elif TR_ALGO == HMAC
     #include "hmac-sha1.h"

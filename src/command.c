@@ -192,12 +192,6 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             subcmd=SUB_UNLOCK;
             break;
 
-#ifdef XXTEA
-        case 'X':
-            subcmd=SUB_XXTEA;
-            break;
-#endif
-
         case 'U':
             subcmdIfUnlocked(SUB_SET_TAG);
             break;

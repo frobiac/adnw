@@ -25,7 +25,7 @@
 
 void setCommandMode(bool);
 
-// encrypt/decrypt: either XOR with g_pw or true XXTEA
+// encrypt/decrypt: XOR with g_pw
 int8_t decrypt(uint8_t * data, uint8_t len);
 int8_t encrypt(uint8_t * data, uint8_t len);
 
@@ -49,7 +49,6 @@ enum {
     SUB_UNLOCK,
     SUB_HMAC,
     SUB_SET_TAG,
-    SUB_XXTEA,
     SUB_END
 };
 

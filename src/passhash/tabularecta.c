@@ -30,11 +30,6 @@
  * - Needs base64 and its array
  * -/+ Output fixed at 20 -> 26 in base64
  *
- * XXTEA:
- * + True encryption, Two-Way
- * + Operate in place
- * - Fixed sizes, or at least uint32_t based
- *
  * TABULA_RECTA:
  * Given length, row and col the 13x26 matrix is queried for code[len] @ (row, col)
  * @TODO: direction
@@ -47,9 +42,6 @@
  * - Hash is used to Un-XOR stored EEPROM data like macros and the hmac-sha1 tag base.
  * - It is also used as key for tabula recta hmac-sha1 calls.
  *
- * When using XXTEA:
- * - Unlock string is read into xxtea_key[16]
- * - Any content can be freely en/decrypted with it
  */
 
 //#define TAG "0123456789"
@@ -72,31 +64,16 @@ bool unlocked(void)
 
 int8_t encrypt(uint8_t * data, uint8_t len)
 {
-#if TR_ALGO == XXTEA
-    if(len > XXTEA_DATA_LEN)
-        return -2;
-    memcpy(g_xxtea_txt, data, len);
-    xxtea_fixed_encrypt(len);
-#elif TR_ALGO == HMAC || TR_ALGO == XOR
     // xor same as decrypt
     decrypt(data,len);
-#endif
     return 0;
 }
 
 int8_t decrypt(uint8_t * data, uint8_t len)
 {
-#if TR_ALGO == XXTEA
-    if(len > XXTEA_DATA_LEN)
-        return -2;
-    memcpy(g_xxtea_txt, data, len);
-    return xxtea_fixed_decrypt();
-#elif TR_ALGO == HMAC || TR_ALGO == XOR
     for(uint8_t i=0; i<len; ++i)
         data[i] ^= g_pw[i%PWLEN];
     return len;
-#endif
-    return 0;
 }
 
 void tabula_recta(uint8_t * dst, char row, uint8_t col, uint8_t dig)
@@ -117,15 +94,6 @@ void tabula_recta(uint8_t * dst, char row, uint8_t col, uint8_t dig)
         dst[i] = b64map[sha[(col+i)%20]&0x3f];
     }
 
-#elif TR_ALGO == XXTEA
-    memset(g_xxtea_txt, 0, XXTEA_DATA_LEN);
-    g_xxtea_txt[0]=row;
-    memcpy(&g_xxtea_txt[1], TAG, 10);
-    xxtea_fixed_encrypt(10);
-    for(uint8_t i=0; i<dig; ++i) {
-        dst[i] = b64map[g_xxtea_txt[(col+i)%20]&0x3f];
-    }
-
 #elif TR_ALGO == XOR
     tr_code((char*)dst, dig, row-'a', col);
 #endif
@@ -133,13 +101,7 @@ void tabula_recta(uint8_t * dst, char row, uint8_t col, uint8_t dig)
 
 void unlock(uint8_t * code, uint8_t len)
 {
-#if TR_ALGO == XXTEA
-    memset(g_pw, 0, PWLEN);
-    memcpy(g_pw, code, len);
-    // @TODO XXTEA key should be expanded from input.
-    //xxtea_fixed_encrypt(10);
-
-#elif TR_ALGO == XOR
+#if TR_ALGO == XOR
     // set seed from input
     xor_init((char*)code, len);
     for(uint8_t i=0; i<PWLEN; ++i) {
