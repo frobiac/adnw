@@ -256,7 +256,7 @@ uint8_t updateEEMacroHID(uint8_t * macro, uint8_t idx)
     if(idx>=MACROCOUNT)
         return 0;
 
-    if(macro[0] == 0) { // clear macro
+    if(macro[1] == 0) { // clear macro - [0] contains selector character.
         eeprom_busy_wait();
         eeprom_update_byte ((void *) (EE_ADDR_MACRO_MAP + idx), MACRO_ID_INVALID);
         return 0;
