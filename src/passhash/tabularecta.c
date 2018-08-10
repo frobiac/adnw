@@ -18,6 +18,7 @@
 */
 
 
+#include "sha1.h"
 #include "tabularecta.h"
 #include "../global_config.h"
 
@@ -47,7 +48,7 @@
 //#define TAG "0123456789"
 
 /// global unlock password used "descramble" stored EEPROM content and init seed
-#define PWLEN 20  // Must be >=20 for sha1
+#define PWLEN SHA1_HASH_BYTES  // Must be >=20 for sha1
 uint8_t g_pw[PWLEN];
 
 uint16_t pwfingerprint(void)
@@ -80,9 +81,9 @@ void tabula_recta(uint8_t * dst, char row, uint8_t col, uint8_t dig)
 {
 
 #if TR_ALGO == HMAC
-    uint8_t sha[20];
+    uint8_t sha[SHA1_HASH_BYTES];
     ///@TODO fix this
-    uint8_t g_cmd_buf[27];
+    uint8_t g_cmd_buf[SHA1_B64_BYTES];
     // read row + TAG into textbuffer for hmac-sha
     g_cmd_buf[0]=row;
     memcpy(&g_cmd_buf[1], TAG, 10);

@@ -30,6 +30,8 @@
 
 #define TR_ALGO 4
 
+#define SHA1_B64_BYTES 27 // base64 encoded 20 byte sha1 hash. Only 26 usable!
+
 #if TR_ALGO == XOR
     #include "xor.h"
 #elif TR_ALGO == HMAC

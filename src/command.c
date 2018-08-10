@@ -287,7 +287,7 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             // ... and decrypt after random string from TabulaRecta
             decrypt(&g_cmd_buf[dig], EE_TAG_LEN);
 
-            g_cmd_buf[27]='\0'; // full 27 usable, but only 26 used
+            g_cmd_buf[SHA1_B64_BYTES]='\0'; // full 27 usable, but only 26 used
 
             setOutputString((char*)g_cmd_buf);
 
