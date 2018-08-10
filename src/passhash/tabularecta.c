@@ -22,6 +22,7 @@
 #include "tabularecta.h"
 #include "../global_config.h"
 
+#include "b64.h"
 /**
  * HMAC-SHA1:
  * + Optimized asm available
@@ -45,22 +46,26 @@
  *
  */
 
-//#define TAG "0123456789"
+#define TAG "0123456789"
 
 /// global unlock password used "descramble" stored EEPROM content and init seed
 #define PWLEN SHA1_HASH_BYTES  // Must be >=20 for sha1
-uint8_t g_pw[PWLEN];
+
+uint8_t g_pw[PWLEN]; // @TODO should initialize with random?
 
 uint16_t pwfingerprint(void)
 {
+    // use 0xFE to prevent 0xFFFF in comparison with empty EEPROM
     return ((g_pw[0]<<8)|(g_pw[1]&0xFE));
 }
 
+/**
+ * Indicates correct unlock key was entered.
+ * Slight chance of mismatch is negligable.
+ */
 bool unlocked(void)
 {
-//@TODO REMOVE
-    return true;
-    return(g_cfg.unlock_check == ((g_pw[0]<<8)|(g_pw[1]&0xFE)));
+    return(g_cfg.unlock_check == pwfingerprint());
 }
 
 int8_t encrypt(uint8_t * data, uint8_t len)
@@ -115,7 +120,7 @@ void unlock(uint8_t * code, uint8_t len)
     memset(g_pw, 0, PWLEN);
     // store hash of entered string as unlock password
     sha1(g_pw, code, 8*len);
-    // save config to store current password as correct
+    // must save config to store current password as correct on change
 #endif
 }
 

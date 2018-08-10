@@ -21,6 +21,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #define TR_COLS 26 // 20 to treat ij pq vwxyz as one column
 #define TR_ROWS 13
@@ -28,7 +29,7 @@
 #define HMAC  1
 #define XOR   4
 
-#define TR_ALGO 4
+#define TR_ALGO 1
 
 #define SHA1_B64_BYTES 27 // base64 encoded 20 byte sha1 hash. Only 26 usable!
 

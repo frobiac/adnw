@@ -97,26 +97,26 @@ The following commands need further input:
 
 - c Config
     * @see SUB_CONFIG in src/command.c for details
+    * S save
+    * p print
     * Must "save" for persistent storage of changes in EEPROM
     * Full TrackPoint configuration of axes orientations and speed/sensitivity/threshold can be performed.
 
 - l LED configuration
     * Color and default blink mode
 
-- U unlock passhash and macro features
-    * Entered string is used as a unlock password
+- u unlock passhash and macro features
+    * Entered string is used as a base for an unlock password that is created via hashing.
+    * Must save config after changing to store verification fingerprint
 
-- h PassHash
-    * Unlock password is used as master password.
-    * enter arguments as tag [length [mode]]
+- U set tabula recta tag
+
+- h hash based password generation via tabula recta
 
 
 Password Hash Support
 ---------------------
-Support for passwords compatible with Password Hasher implementations, for example [Twik][twik_home],
-must be configured in a separate header:
-Twik private key of a profile must be set in src/_private_data.h, which is created on first make call and ignored in git.
-Master password is read with unlock command once, tags and length/type can then be used to create passhashes.
+
 
 
 Current Layout

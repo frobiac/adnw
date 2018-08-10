@@ -69,4 +69,4 @@ twik()
 }
 
 
-twik $ {1:-tag23} key privkey
+# twik $ {1:-tag23} key privkey
