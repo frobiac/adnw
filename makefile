@@ -29,7 +29,6 @@ KB_HW		 ?= BLACKFLAT
 
 KB_DBG ?= 1
 KB_EXT ?= 1
-KB_TR  ?= 0
 KB_XXT ?= 0
 
 
@@ -65,10 +64,6 @@ CC_FLAGS    += -Werror
 LD_FLAGS     =
 
 CC_FLAGS += -D$(KB_HW)
-
-ifeq ($(KB_TR), 1)
-CC_FLAGS    += -DTR_ENABLED
-endif
 
 ifeq ($(KB_XXT), 1)
 CC_FLAGS += -DXXTEA
@@ -181,7 +176,6 @@ ifneq (,$(filter $(KB_HW), $(KB_HW_SUPPORTED)))
 	@echo "*** HW  = $(KB_HW) from $(origin KB_HW)"
 	@echo "*** PH  = $(KB_PH) from $(origin KB_PH)"
 	@echo "*** PW  = $(KB_PW) from $(origin KB_PW)"
-	@echo "*** TR  = $(KB_TR) from $(origin KB_TR)"
 	@echo "*** DBG = $(KB_DBG) from $(origin KB_DBG)"
 	@echo "*** XXT = $(KB_XXT) from $(origin KB_XXT)"
 else
@@ -201,7 +195,7 @@ submodule:
 	@git submodule update
 
 sizecheck:
-	@echo HW=$(KB_HW) PH=$(KB_PH) PW=$(KB_PW) TR=$(KB_TR) DBG=$(KB_DBG)
+	@echo HW=$(KB_HW) PH=$(KB_PH) PW=$(KB_PW) DBG=$(KB_DBG)
 	@avr-size --mcu=atmega32u4 -B adnw.elf
 
 
