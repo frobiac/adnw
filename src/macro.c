@@ -267,7 +267,7 @@ uint8_t updateEEMacroHID(uint8_t * macro, uint8_t idx)
         ++len;
     }
     // xor with unlock code, macro[0] contains selector character so ignore that one
-    decrypt(&macro[1], len-1);
+    encrypt(&macro[1], len-1);
 
     eeprom_busy_wait();
     eeprom_update_byte ((void *) (EE_ADDR_MACRO_MAP + idx), macro[0]);
