@@ -38,8 +38,8 @@ KB_EXT ?= 1
 ##################################################################
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC =   $(LUFA_SRC_USB)          \
-	$(LUFA_SRC_USBCLASS)         \
+SRC =  $(LUFA_SRC_USB_DEVICE)    \
+	$(LUFA_PATH)/Drivers/USB/Class/Device/HIDClassDevice.c \
 	$(SRCDIR)/Keyboard.c         \
 	$(SRCDIR)/Descriptors.c      \
 	$(SRCDIR)/keyboard_class.c   \
@@ -191,12 +191,6 @@ sizecheck:
 
 # Include LUFA build script makefiles
 # lines begin with "-" so if not found, the lufacheck above prints message
--include $(LUFA_PATH)/Build/lufa_core.mk
+#-include $(LUFA_PATH)/Build/lufa_core.mk
 -include $(LUFA_PATH)/Build/lufa_sources.mk
 -include $(LUFA_PATH)/Build/lufa_build.mk
--include $(LUFA_PATH)/Build/lufa_cppcheck.mk
--include $(LUFA_PATH)/Build/lufa_doxygen.mk
--include $(LUFA_PATH)/Build/lufa_dfu.mk
--include $(LUFA_PATH)/Build/lufa_hid.mk
--include $(LUFA_PATH)/Build/lufa_avrdude.mk
--include $(LUFA_PATH)/Build/lufa_atprogram.mk
