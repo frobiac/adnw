@@ -81,7 +81,7 @@ int8_t decrypt(uint8_t * data, uint8_t len)
     return len;
 }
 
-void tabula_recta(uint8_t * dst, char row, uint8_t col, uint8_t dig)
+void tabula_recta(uint8_t * dst, char row, uint8_t col, uint8_t dst_len)
 {
 
 #if TR_ALGO == HMAC
@@ -94,13 +94,14 @@ void tabula_recta(uint8_t * dst, char row, uint8_t col, uint8_t dig)
 
     hmac_sha1(sha, g_pw, 8*PWLEN, g_cmd_buf, 8*(1+HMAC_TAG_BASE_LEN));
 
-    //b64enc( sha, 20, (char*)g_cmd_buf, 27);
-    for(uint8_t i=0; i<dig; ++i) {
+    // b64enc( sha, 20, (char*)g_cmd_buf, 27); // little larger than array below
+
+    for(uint8_t i=0; i<dst_len; ++i) {
         dst[i] = b64map[sha[(col+i)%20]&0x3f];
     }
 
 #elif TR_ALGO == XOR
-    tr_code((char*)dst, dig, row-'a', col);
+    tr_code((char*)dst, dst_len, row-'a', col);
 #endif
 }
 
