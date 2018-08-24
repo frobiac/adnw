@@ -216,14 +216,6 @@ int main(int argc, char ** argv)
         tr_code(&teststr[0], TR_COLS, r,0);
         teststr[TR_COLS]='\0';
         printf("\n%2d: %s", r, teststr);
-        /*
-                //for(uint8_t c=0; c*(XOR_BITS/8)<TR_COLS; ++c) {
-                for(uint8_t c=0; c<TR_COLS; ++c) {
-                    xorshift();
-                    //number2str(res_str, g_xor_result);
-                    printf("%c", b64map[g_xor_result&0x3f] ); //b64map[g_xor_result&0x3F];
-                }
-                */
     }
 
     tr_code(&teststr[0], 4,  0,0);
