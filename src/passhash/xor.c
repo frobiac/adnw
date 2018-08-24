@@ -143,7 +143,7 @@ void xor_init(char * seed, uint8_t len)
  * less predictable:
  *
  * 32bit generator has 2^32 outputs of 4 Bytes, each occuring only once.
- * Using only 6 out of each Byte there are (2^6)^4 combinations, each 256 times.
+ * Using only 6 bits out of each Byte there are (2^6)^4 combinations, each 256 times.
  * A single observed number is thus not leaking the internal state.
  *
  * This is all highly theoretical, as the xorshift-generator is used to create a secret

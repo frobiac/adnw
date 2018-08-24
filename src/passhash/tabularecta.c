@@ -96,18 +96,19 @@ void hmac_tag(uint8_t * result, uint8_t result_len, char * tag, uint8_t tag_len,
 
     // xprintf("ht: %d %c[%d] @%d\n", result_len, tag[0], tag_len, offs);
     uint8_t sha[SHA1_HASH_BYTES];
-    uint8_t hmac[SHA1_HASH_BYTES];
+    uint8_t hmac[SHA1_B64_BYTES];
 
     memcpy(hmac, HMAC_TAG_BASE, HMAC_TAG_BASE_LEN);
     memcpy(hmac, tag, tag_len); // overwrite initial portion with given tag
 
     hmac_sha1(sha, g_pw, 8*PWLEN, hmac, 8*HMAC_TAG_BASE_LEN);
 
-    // b64enc( sha, 20, (char*)hmac, 27); // little larger than array below
+    b64enc( sha, 20, (char*)hmac, 27); // little larger than array below
 
-    // only creates 20 characters
     for(uint8_t i=0; i<result_len; ++i) {
-        result[i] = b64map[sha[(i+offs)%SHA1_HASH_BYTES] & 0x3f];
+        // only creates 20 characters
+        // result[i] = b64map[sha[(i+offs)%SHA1_HASH_BYTES] & 0x3f];
+        result[i] = hmac[(i+offs)%26];
     }
 
 }
@@ -123,14 +124,26 @@ void tabula_recta(uint8_t * dst, char row, uint8_t col, uint8_t dst_len)
 #endif
 }
 
+
+void lock(void)
+{
+    memset(g_pw, 0, PWLEN);
+#if TR_ALGO == XOR
+    xor_init("x", 1);
+#endif
+}
+
+
 void unlock(uint8_t * code, uint8_t len)
 {
 #if TR_ALGO == XOR
     // set seed from input
     xor_init((char*)code, len);
+
+    // set g_pw but use different bits so it is different from first tabula_recta calls!
     for(uint8_t i=0; i<PWLEN; ++i) {
         xorshift();
-        g_pw[i] = xor_result() & 0xFF;
+        g_pw[i] = ((xor_result() & 0xFF00)>>8); // ^HMAC_TAG_BASE[i%HMAC_TAG_BASE_LEN];
     }
 
 #elif TR_ALGO == HMAC
