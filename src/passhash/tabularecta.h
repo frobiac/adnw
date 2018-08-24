@@ -29,7 +29,7 @@
 #define HMAC  1
 #define XOR   4
 
-#define TR_ALGO 1
+#define TR_ALGO HMAC
 
 #define SHA1_B64_BYTES 27 // base64 encoded 20 byte sha1 hash. Only 26 usable!
 
@@ -49,6 +49,7 @@ uint16_t pwfingerprint(void);
 int8_t encrypt(uint8_t * data, uint8_t len);
 int8_t decrypt(uint8_t * data, uint8_t len);
 void tabula_recta(uint8_t * dst, char row, uint8_t col, uint8_t dig);
+void hmac_tag(uint8_t * result, uint8_t result_len, char * tag, uint8_t tag_len, uint8_t offs);
 void unlock(uint8_t * code, uint8_t len);
 
 

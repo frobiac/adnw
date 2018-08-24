@@ -41,6 +41,10 @@
 bool g_cmd_mode_active=false;
 
 #define CMD_BUF_SIZE 27
+#if CMD_BUF_SIZE+2 - EE_TAG_LEN < 8
+    #error Not enough space for tabula recta with 8 digits.
+#endif
+
 uint8_t g_cmd_buf[CMD_BUF_SIZE+2]; // last two will contain length and '\0'
 
 

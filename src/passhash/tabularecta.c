@@ -81,25 +81,43 @@ int8_t decrypt(uint8_t * data, uint8_t len)
     return len;
 }
 
+
+#if TR_ALGO == HMAC
+/**
+ *  Create hmac-sha1 from g_pw and string initialized with secret tag base, overwriting the beginning with custom tag.
+ *  Simpler to implement, and regular hmac-sha1 call can always be used...
+ *
+ *  result_len should be <= 20, loops around otherwise
+ */
+void hmac_tag(uint8_t * result, uint8_t result_len, char * tag, uint8_t tag_len, uint8_t offs)
+{
+    if(tag_len>SHA1_HASH_BYTES || result_len> SHA1_HASH_BYTES)
+        return;
+
+    // xprintf("ht: %d %c[%d] @%d\n", result_len, tag[0], tag_len, offs);
+    uint8_t sha[SHA1_HASH_BYTES];
+    uint8_t hmac[SHA1_HASH_BYTES];
+
+    memcpy(hmac, HMAC_TAG_BASE, HMAC_TAG_BASE_LEN);
+    memcpy(hmac, tag, tag_len); // overwrite initial portion with given tag
+
+    hmac_sha1(sha, g_pw, 8*PWLEN, hmac, 8*HMAC_TAG_BASE_LEN);
+
+    // b64enc( sha, 20, (char*)hmac, 27); // little larger than array below
+
+    // only creates 20 characters
+    for(uint8_t i=0; i<result_len; ++i) {
+        result[i] = b64map[sha[(i+offs)%SHA1_HASH_BYTES] & 0x3f];
+    }
+
+}
+#endif
+
 void tabula_recta(uint8_t * dst, char row, uint8_t col, uint8_t dst_len)
 {
 
 #if TR_ALGO == HMAC
-    uint8_t sha[SHA1_HASH_BYTES];
-    uint8_t hmac[SHA1_B64_BYTES]; // right now needs only 20+1, but using b64enc would need 27
-    // read row + TAG into textbuffer for hmac-sha
-    hmac[0]=row;
-    memcpy(&hmac[1], HMAC_TAG_BASE, HMAC_TAG_BASE_LEN);
-
-    hmac_sha1(sha, g_pw, 8*PWLEN, hmac, 8*(1+HMAC_TAG_BASE_LEN));
-
-    // b64enc( sha, 20, (char*)hmac, 27); // little larger than array below
-
-    // only creates 20
-    for(uint8_t i=0; i<dst_len; ++i) {
-        dst[i] = b64map[sha[(col+i)%20]&0x3f];
-    }
-
+    hmac_tag(dst,dst_len, &row, 1, col);
 #elif TR_ALGO == XOR
     tr_code((char*)dst, dst_len, row-'a', col);
 #endif
