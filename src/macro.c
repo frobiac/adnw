@@ -309,31 +309,6 @@ uint8_t setOutputString(char * str)
     return 1;
 };
 
-/**
- * @brief setOutputHIDCodes Will copy given HID code sequence to output buffer.
- *
- *
- * Modifier bitmasks must be encoded with the highest bit set (|0x80) and will be applied
- * to the following HID code. This enables output of control sequences and non-ascii
- * characters like '€' or '°' in printOutstr().
- *
- * @param hidcodes sequence of modifiers and hidcodes, terminated with '0'
- * @return  0 on success
- *
- * @todo Pass length
- */
-uint8_t setOutputHIDCodes(uint8_t * hidcodes)
-{
-    if (! clearHIDCodes() )
-        return 0;
-
-    memcpy(outHidCodes, hidcodes, MACRO_MAX_LEN);
-
-    outOffs = MACRO_COMPLETE;
-    return 1;
-}
-
-
 
 /**
  * Fills report with one characters from outHidCodes[] until all done.
