@@ -21,6 +21,7 @@
 #include "sha1.h"
 #include "tabularecta.h"
 #include "../global_config.h"
+#include "../_private_data.h"
 
 #include "b64.h"
 /**
@@ -45,8 +46,6 @@
  * - It is also used as key for tabula recta hmac-sha1 calls.
  *
  */
-
-#define TAG "0123456789"
 
 /// global unlock password used "descramble" stored EEPROM content and init seed
 #define PWLEN SHA1_HASH_BYTES  // Must be >=20 for sha1
@@ -91,9 +90,9 @@ void tabula_recta(uint8_t * dst, char row, uint8_t col, uint8_t dig)
     uint8_t g_cmd_buf[SHA1_B64_BYTES];
     // read row + TAG into textbuffer for hmac-sha
     g_cmd_buf[0]=row;
-    memcpy(&g_cmd_buf[1], TAG, 10);
+    memcpy(&g_cmd_buf[1], HMAC_TAG_BASE, HMAC_TAG_BASE_LEN);
 
-    hmac_sha1(sha, g_pw, 8*PWLEN, g_cmd_buf, 8*(1+10));
+    hmac_sha1(sha, g_pw, 8*PWLEN, g_cmd_buf, 8*(1+HMAC_TAG_BASE_LEN));
 
     //b64enc( sha, 20, (char*)g_cmd_buf, 27);
     for(uint8_t i=0; i<dig; ++i) {
@@ -114,7 +113,6 @@ void unlock(uint8_t * code, uint8_t len)
         xorshift();
         g_pw[i] = xor_result() & 0xFF;
     }
-
 
 #elif TR_ALGO == HMAC
     memset(g_pw, 0, PWLEN);

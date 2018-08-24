@@ -11,15 +11,16 @@
  */
 
 /* This is the private key of the passhash implementation.
- * Twik uses 36 character uuids with capital letters, but any string should do here.
  *
+ * It must be 20 characters long:
  * Possible sources:
- *     cat /proc/sys/kernel/random/uuid
- *     tr -dc 'a-zA-Z0-9' </dev/urandom | tr -d 'lIO' | head -c 36 | sed 's/./-/9; s/./-/14; s/./-/19; s/./-/24'
+ *     echo "MySuperPassword" | openssl dgst -sha1 | sed "s/.*= //" | sed 's/\(..\)/\\x\1/g'
+ *     tr -dc 'a-f0-9' </dev/urandom | head -c 40 | sed 's/\(..\)/\\x\1/g'
  *
  * Put the private key enclosed in "" below and store a copy somewhere safe!
  */
 
-// ATTENTION: MAXIMUM LENGTH = 26
-#define PH_PRIVATE_KEY "secret"
+// Must be 20 characters!
+#define HMAC_TAG_BASE_LEN 20
+const char * HMAC_TAG_BASE = "\x00\x32\xa7\x9c\xe5\x96\x2e\x20\x25\x0b\x1a\xf3\x85\x97\x7f\x0a\x8e\x72\x57\xff";
 
