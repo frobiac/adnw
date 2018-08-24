@@ -86,16 +86,16 @@ void tabula_recta(uint8_t * dst, char row, uint8_t col, uint8_t dst_len)
 
 #if TR_ALGO == HMAC
     uint8_t sha[SHA1_HASH_BYTES];
-    ///@TODO fix this
-    uint8_t g_cmd_buf[SHA1_B64_BYTES];
+    uint8_t hmac[SHA1_B64_BYTES]; // right now needs only 20+1, but using b64enc would need 27
     // read row + TAG into textbuffer for hmac-sha
-    g_cmd_buf[0]=row;
-    memcpy(&g_cmd_buf[1], HMAC_TAG_BASE, HMAC_TAG_BASE_LEN);
+    hmac[0]=row;
+    memcpy(&hmac[1], HMAC_TAG_BASE, HMAC_TAG_BASE_LEN);
 
-    hmac_sha1(sha, g_pw, 8*PWLEN, g_cmd_buf, 8*(1+HMAC_TAG_BASE_LEN));
+    hmac_sha1(sha, g_pw, 8*PWLEN, hmac, 8*(1+HMAC_TAG_BASE_LEN));
 
-    // b64enc( sha, 20, (char*)g_cmd_buf, 27); // little larger than array below
+    // b64enc( sha, 20, (char*)hmac, 27); // little larger than array below
 
+    // only creates 20
     for(uint8_t i=0; i<dst_len; ++i) {
         dst[i] = b64map[sha[(col+i)%20]&0x3f];
     }
