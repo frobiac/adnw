@@ -91,19 +91,20 @@ int8_t decrypt(uint8_t * data, uint8_t len)
  */
 void hmac_tag(uint8_t * result, uint8_t result_len, char * tag, uint8_t tag_len, uint8_t offs)
 {
-    if(tag_len>SHA1_HASH_BYTES || result_len> SHA1_HASH_BYTES)
+    if(tag_len>SHA1_B64_BYTES || result_len> SHA1_B64_BYTES)
         return;
 
-    // xprintf("ht: %d %c[%d] @%d\n", result_len, tag[0], tag_len, offs);
+    // xprintf("ht: %d %c[%d] @%d", result_len, tag[0], tag_len, offs);
     uint8_t sha[SHA1_HASH_BYTES];
-    uint8_t hmac[SHA1_B64_BYTES];
+    char hmac[SHA1_B64_BYTES];
 
-    memcpy(hmac, HMAC_TAG_BASE, HMAC_TAG_BASE_LEN);
+    memset(hmac, 0, SHA1_B64_BYTES);
+    memcpy(&hmac[SHA1_B64_BYTES-HMAC_TAG_BASE_LEN], HMAC_TAG_BASE, HMAC_TAG_BASE_LEN);
     memcpy(hmac, tag, tag_len); // overwrite initial portion with given tag
 
     hmac_sha1(sha, g_pw, 8*PWLEN, hmac, 8*HMAC_TAG_BASE_LEN);
 
-    b64enc( sha, 20, (char*)hmac, 27); // little larger than array below
+    b64enc( sha, 20, hmac, 27); // little larger than array below
 
     for(uint8_t i=0; i<result_len; ++i) {
         // only creates 20 characters
@@ -111,6 +112,7 @@ void hmac_tag(uint8_t * result, uint8_t result_len, char * tag, uint8_t tag_len,
         result[i] = hmac[(i+offs)%26];
     }
 
+    memset(hmac, 0, SHA1_B64_BYTES);
 }
 #endif
 
@@ -133,7 +135,6 @@ void lock(void)
 #endif
 }
 
-
 void unlock(uint8_t * code, uint8_t len)
 {
 #if TR_ALGO == XOR
@@ -147,7 +148,6 @@ void unlock(uint8_t * code, uint8_t len)
     }
 
 #elif TR_ALGO == HMAC
-    memset(g_pw, 0, PWLEN);
     // store hash of entered string as unlock password
     sha1(g_pw, code, 8*len);
     // must save config to store current password as correct on change

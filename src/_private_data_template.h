@@ -14,7 +14,8 @@
  *
  * It must be 20 characters long:
  * Possible sources:
- *     echo "MySuperPassword" | openssl dgst -sha1 | sed "s/.*= //" | sed 's/\(..\)/\\x\1/g'
+ *     sha1sum directly/openssl
+ *     echo -n 'MySuperRandomPassword' | sha1sum | cut -f 1 -d \  | sed 's/\(..\)/\\x\1/g'
  *     tr -dc 'a-f0-9' </dev/urandom | head -c 40 | sed 's/\(..\)/\\x\1/g'
  *
  * Put the private key enclosed in "" below and store a copy somewhere safe!
