@@ -49,6 +49,8 @@ LICENCE:        Copyright (c) 2001 Bob Trower, Trantor Standard Systems Inc.
  * Evaluated options with bitfields, but no size-advantage.
  * Maybe just drop b64-encoding altogether, or at least simplify?
  * - only 1 to 1 mapping
+ *
+ * + -> - , / -> .
  */
 
 char b64( uint8_t i )
@@ -61,10 +63,10 @@ char b64( uint8_t i )
     if(i<62)
         return '0'+ i-52;
     if(i==62)
-        return '+';
+        return '-';
 
     //if(i==63)
-    return '/';
+    return '.';
 }
 
 /// encode 3 8-bit binary bytes as 4 '6-bit' characters

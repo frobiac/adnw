@@ -52,4 +52,5 @@ LICENCE:        Copyright (c) 2001 Bob Trower, Trantor Standard Systems Inc.
 static const char b64map[]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 void b64enc(const unsigned char* data, size_t len, char* result, size_t resultSize);
+char b64( uint8_t i );
 

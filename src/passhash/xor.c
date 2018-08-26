@@ -181,7 +181,8 @@ void tr_code(char *dst, uint8_t len, uint8_t row, uint8_t col)
 
     for(uint8_t i=0; i<len; ++i) {
         xorshift();
-        dst[i] = b64map[g_xor_result&0x3F];
+        //dst[i] = b64map[g_xor_result&0x3F];
+        dst[i] = b64(g_xor_result&0x3F);
     }
     // printf("\n%2d @ %2dx%2d: %s", len, row, col, dst);
 }

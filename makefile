@@ -139,6 +139,7 @@ UUID := $(shell tr -dc 'a-f0-9' </dev/urandom | head -c 40 | sed 's/\(..\)/\\\\x
 # Default target
 all: lufacheck configtest private_data_check submodule
 
+# Should check length of given data...
 private_data_check:
 ifneq ("$(wildcard $(SRCDIR)/_private_data.h)","")
 	@echo "*** Private data definition found ";
