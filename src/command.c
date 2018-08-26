@@ -232,13 +232,16 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
     // len minus first (subcmd id) and last (return)
     uint8_t len = g_cmd_buf[CMD_BUF_SIZE+1] -2 ;
 
+    if( subcmd ==  SUB_SET_TAG || subcmd == SUB_HMAC || subcmd == SUB_TABULARECTA || subcmd == SUB_UNLOCK) {
+        // read until return=10 is pressed or maximum length reached
+        if( (uint8_t)(c) != 10 )
+            return false;
+
+        g_cmd_buf[len+1]='\0';
+    }
+
     switch( subcmd ) {
         case SUB_SET_TAG:
-            // read until return=10 is pressed or maximum length reached
-            if( (uint8_t)(c) != 10 )
-                return false;
-
-            g_cmd_buf[len+1]='\0';
             encrypt(&g_cmd_buf[1], len+1);
 
             eeprom_busy_wait();
@@ -248,11 +251,6 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 
 #if TR_ALGO == HMAC
         case SUB_HMAC:
-            // read until return=10 is pressed or maximum length reached
-            if( (uint8_t)(c) != 10 )
-                return false;
-
-            g_cmd_buf[len+1]='\0';
 
             uint8_t result[9];
             hmac_tag(result, 8, (char *)&g_cmd_buf[1], len, 0);
@@ -263,11 +261,7 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             break;
 #endif
 
-        case SUB_TABULARECTA:
-            // read until return=10 is pressed or maximum length reached
-            if( (uint8_t)(c) != 10 )
-                return false;
-
+        case SUB_TABULARECTA: {
             // expect args: row(a-z) col(a-z) len
             char    row=g_cmd_buf[1]; // a-z -> a-m
             uint8_t col=g_cmd_buf[2];
@@ -320,15 +314,10 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 
             setCommandMode(false);
             break;
-
+        }
 
         case SUB_UNLOCK:
             // Initialize g_pw with sha1 hash of entered string.
-
-            // read until return=10 is pressed or maximum length reached
-            if( (uint8_t)(c) != 10 )
-                return false;
-
             unlock(&g_cmd_buf[1],len);
 
             setCommandMode(false); // length limit reached
