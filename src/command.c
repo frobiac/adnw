@@ -262,10 +262,12 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 #endif
 
         case SUB_TABULARECTA: {
-            // expect args: row(a-z) col(a-z) len
-            char    row=g_cmd_buf[1]; // a-z -> a-m
-            uint8_t col=g_cmd_buf[2];
-            uint8_t dig=g_cmd_buf[3] - '0';
+            // expect args: row(a-z) col(a-z) [dig]
+            char    row = g_cmd_buf[1]; // a-z -> a-m
+            uint8_t col = g_cmd_buf[2];
+            uint8_t dig = 6;
+            if(len>2)
+                dig = g_cmd_buf[3] - '0';
 
             // Print whole tabula recta on "zz0"
             if(row=='z' && col == 'z' && dig==0) {
