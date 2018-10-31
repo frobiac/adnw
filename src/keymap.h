@@ -207,12 +207,12 @@ uint8_t getKeyCode (uint8_t row, uint8_t col, uint8_t layer);
 /*           0    1    2    3    4    5 */ \
 /* 0 */  {  no,   k,   u,   q, dot,   j  }, \
 /* 1 */  {  no,   h,   i,   e,   a,   o  }, \
-/* 2 */  { SPC,   x,   y, das, com, sla  }, \
-/* 3 */  { ALT,  no,Usft, MAC, GUI, CTL  }, \
+/* 2 */  { ALT,   x,   y, das, com, sla  }, \
+/* 3 */  {  no,Usft, MAC, GUI, CTL, SPC  }, \
 /* 4 */  {  no,   p,   c,   l,   m,   f  }, \
 /* 5 */  {  no,   d,   t,   r,   n,   s  }, \
 /* 6 */  {  no,   b,   g,   w,   v,   z  }, \
-/* 7 */  {  M2, SHF,  M1, AGR,  M3, Unone}  \
+/* 7 */  {  Unone, M2, SHF,  M1, AGR, M3 }, \
 }
 #endif
 
