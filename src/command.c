@@ -262,7 +262,12 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 #endif
 
         case SUB_TABULARECTA: {
-            // expect args: row(a-z) col(a-z) [dig]
+            /**
+             * NOTE: requires (u)nlock (U)pdateTag (cs)configSave
+             * @TODO empty Tag on flash
+             *
+             * expect args: row(a-z) col(a-z) [dig]
+             */
             char    row = g_cmd_buf[1]; // a-z -> a-m
             uint8_t col = g_cmd_buf[2];
             uint8_t dig = 6;
@@ -302,7 +307,8 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 
             tabula_recta(g_cmd_buf, row, col, dig);
 
-            // read encrypted TabulaRecta password from EEPROM
+            // @TODO should be empty or at least printable after flashing?
+            // Read encrypted TabulaRecta password from EEPROM
             eeprom_busy_wait();
             eeprom_read_block (( void *) (&g_cmd_buf[dig]), ( const void *) (EE_ADDR_TAG), EE_TAG_LEN);
             // ... and decrypt after random string from TabulaRecta
