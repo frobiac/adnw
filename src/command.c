@@ -231,6 +231,9 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 {
     // len minus first (subcmd id) and last (return)
     uint8_t len = g_cmd_buf[CMD_BUF_SIZE+1] -2 ;
+#if TR_ALGO == HMAC
+    uint8_t result[9];
+#endif
 
     if( subcmd ==  SUB_SET_TAG || subcmd == SUB_HMAC || subcmd == SUB_TABULARECTA || subcmd == SUB_UNLOCK) {
         // read until return=10 is pressed or maximum length reached
@@ -251,8 +254,6 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 
 #if TR_ALGO == HMAC
         case SUB_HMAC:
-
-            uint8_t result[9];
             hmac_tag(result, 8, (char *)&g_cmd_buf[1], len, 0);
             result[8]='\0';
             // xprintf("hmac %s : %s\n", &g_cmd_buf[1], result);
@@ -372,6 +373,7 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
                     // overwrite unlock verification (0xFE to prevent empty eeprom collision)·
                     g_cfg.unlock_check = pwfingerprint();
                     save_config(&g_cfg);
+                    // @TODO clean SUB_SET_TAG
                     break;
                 case 'R': invalidate_config(); init_config(); break;
                 case 'L': load_config(&g_cfg); break;

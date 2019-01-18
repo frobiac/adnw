@@ -40,7 +40,7 @@
  *
  * When using hmac-sha1:
  * Unlock string is read and hashed via sha1. hash is stored as g_pw[20].
- * - The first two elements of currently entered unlock hash are stored in EEPROM for
+ * - The last two elements of currently entered unlock hash are stored in EEPROM for
  *   verification purposes on config save.
  * - Hash is used to Un-XOR stored EEPROM data like macros and the hmac-sha1 tag base.
  * - It is also used as key for tabula recta hmac-sha1 calls.
@@ -94,12 +94,11 @@ void hmac_tag(uint8_t * result, uint8_t result_len, char * tag, uint8_t tag_len,
     if(tag_len>SHA1_B64_BYTES || result_len> SHA1_B64_BYTES)
         return;
 
-    // xprintf("ht: %d %c[%d] @%d", result_len, tag[0], tag_len, offs);
     uint8_t sha[SHA1_HASH_BYTES];
-    char hmac[SHA1_B64_BYTES];
+    char hmac[SHA1_B64_BYTES]; // needed due to re-use in base64 -> 27
 
     memset(hmac, 0, SHA1_B64_BYTES);
-    memcpy(&hmac[SHA1_B64_BYTES-HMAC_TAG_BASE_LEN], HMAC_TAG_BASE, HMAC_TAG_BASE_LEN);
+    memcpy(hmac, HMAC_TAG_BASE, HMAC_TAG_BASE_LEN);
     memcpy(hmac, tag, tag_len); // overwrite initial portion with given tag
 
     hmac_sha1(sha, g_pw, 8*PWLEN, hmac, 8*HMAC_TAG_BASE_LEN);
@@ -107,8 +106,6 @@ void hmac_tag(uint8_t * result, uint8_t result_len, char * tag, uint8_t tag_len,
     b64enc( sha, 20, hmac, 27); // little larger than array below
 
     for(uint8_t i=0; i<result_len; ++i) {
-        // only creates 20 characters
-        // result[i] = b64map[sha[(i+offs)%SHA1_HASH_BYTES] & 0x3f];
         result[i] = hmac[(i+offs)%26];
     }
 
