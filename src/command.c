@@ -275,6 +275,7 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             if(len>2)
                 dig = g_cmd_buf[3] - '0';
 
+            /*
             // Print whole tabula recta on "zz0"
             if(row=='z' && col == 'z' && dig==0) {
                 // if(TR_COLS == 20) xprintf("\n   abcdefgh klmno rstu ");
@@ -287,6 +288,7 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
                 setCommandMode(false);
                 break;
             }
+            */
 
             // verify args
             if(row>'m')

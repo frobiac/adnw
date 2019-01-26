@@ -137,36 +137,6 @@ void xor_init(char * seed, uint8_t len)
 // http://electronics.stackexchange.com/questions/3653/avr-random-number-generator/206605/
 // https://sites.google.com/site/astudyofentropy/project-definition/timer-jitter-entropy-sources/entropy-library/arduino-random-seed
 
-
-/**
- * Convert each Byte of number to a printable character.
- * Using only part of the [0-255] range for mapping also makes the output of the generator
- * less predictable:
- *
- * 32bit generator has 2^32 outputs of 4 Bytes, each occuring only once.
- * Using only 6 bits out of each Byte there are (2^6)^4 combinations, each 256 times.
- * A single observed number is thus not leaking the internal state.
- *
- * This is all highly theoretical, as the xorshift-generator is used to create a secret
- * TabulaRecta that still depends on other factors like row/col/len and should be used
- * only as part of a password.
- *
- * Similar to base64-encode, but _loosing_ information on purpose.
- *
- */
-void number2str(char dst[XOR_BITS/8], xor_size_t number)
-{
-    /*
-        // use upper 6bit of each Byte
-        number = number >> 2;
-        // order is reversed, but does not matter
-        for(uint8_t i=0; i<XOR_BITS/8; ++i) {
-            *dst++ = b64map[number&0x3F];
-            number = number >> 8;
-        }
-        */
-}
-
 /**
  * Read string[len] at 0-based row x col into *dst
  * @TODO wrap around? last row / end undefined.
@@ -185,7 +155,6 @@ void tr_code(char *dst, uint8_t len, uint8_t row, uint8_t col)
         xorshift();
         dst[i] = b64(g_xor_result&0x3F);
     }
-    // xprintf("\n%2d @ %2dx%2d: %s", len, row, col, dst);
 }
 
 
@@ -210,14 +179,7 @@ int main(int argc, char ** argv)
         printf("\n%2d: %s", r, teststr);
     }
 
-    tr_code(&teststr[0], 4,  0,0);
-    tr_code(&teststr[0], 4,  0,4);
-    tr_code(&teststr[0], 4, 12,0);
-    tr_code(&teststr[0], 12,12,0);
-    tr_code(&teststr[0], 11,12,1);
-    tr_code(&teststr[0], 10,12,2);
-    tr_code(&teststr[0],  9,12,3);
-    tr_code(&teststr[0],  9,11,21);
+
 }
 #endif // not __AVR__
 
