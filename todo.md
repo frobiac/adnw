@@ -14,13 +14,10 @@ Test sizes:
     also maybe only activate after threshold? clearance of TP could be ignored more easily..
 
 * hangs on 10 keys pressed
-* enforce unlocking everywhere, or block macro/tag output on unprintable characters?
 
 FEATURES
 --------
-* password card easier?
 * bootmode for BIOS
-* encrypt secret, simple password card support
 * basic LED signaling: command mode...
 * EEPROM loader LUFA/$(DMBS_MODULE_PATH)/HID_EEPROM_Loader/
 
@@ -106,7 +103,7 @@ Git
 
 Macro
 -----
-* dedicated macro key instead ob subcommands?
+* dedicated macro key instead of subcommands?
 
 Commandmode
 -----------
@@ -152,16 +149,6 @@ suspend/wakeup:
 
 Passhash
 --------
-Secure implementation of various algorithms
-Implement different approaches
-
-## Pseudo-random password like passhash plugin/twik
-HMAC-SHA1 generator of code and secret
-
-## Tabula Recta with paper wallet option
-Generate Tabula Recta from HMAC-SHA1 above
-Select N characters via (x,y) scheme
-Append/Prepend common base password
 
 
 URLs
