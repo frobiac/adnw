@@ -119,6 +119,7 @@ void tabula_recta(uint8_t * dst, char row, uint8_t col, uint8_t dst_len)
 #if TR_ALGO == HMAC
     hmac_tag(dst,dst_len, &row, 1, col);
 #elif TR_ALGO == XOR
+    dst[0] = '\0'; // for tabula recta mode
     tr_code((char*)dst, dst_len, row-'a', col);
 #endif
 }

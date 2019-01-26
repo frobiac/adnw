@@ -48,6 +48,7 @@ static xor_size_t g_xor_result;
 // re-init generator with seed
 void xor_reset(void);
 void set_xor_seed(xor_size_t state);
+void xor_advance(char * str);
 
 xor_size_t xor_result(void) { return g_xor_result; };
 
@@ -121,14 +122,24 @@ void xor_reset()
  * Seed from string:
  * Add character to seed, then run xorshift() and use result as new seed.
  */
-void xor_init(char * seed, uint8_t len)
+void xor_init(char * str, uint8_t len)
 {
     g_xor_result = 0;
-    for (uint8_t i = 0; i<len; ++i) {
-        g_xor_result += seed[i];
+    xor_advance(str);
+    set_xor_seed(g_xor_result);
+}
+
+/**
+ *  Add each character to current state and advance generator
+ *  Used to geneate random output
+ */
+void xor_advance(char * str)
+{
+    while(*str != '\0') {
+        g_xor_result += *str;
+        str++;
         xorshift();
     }
-    set_xor_seed(g_xor_result);
 }
 
 // random avr:
@@ -141,15 +152,20 @@ void xor_init(char * seed, uint8_t len)
  * Read string[len] at 0-based row x col into *dst
  * @TODO wrap around? last row / end undefined.
  *
+ * if *dst[0] != 0 use content of dst as extra offset similar to init.
+ *
  */
 void tr_code(char *dst, uint8_t len, uint8_t row, uint8_t col)
 {
     xor_reset();
 
     // advance generator
-    for(uint16_t i=0; i<(row*TR_COLS +col); ++i)
-        xorshift();
-
+    if( dst[0] == '\0' ) {
+        for(uint16_t i=0; i<(row*TR_COLS +col); ++i)
+            xorshift();
+    } else {
+        xor_advance(dst);
+    }
 
     for(uint8_t i=0; i<len; ++i) {
         xorshift();
@@ -159,6 +175,17 @@ void tr_code(char *dst, uint8_t len, uint8_t row, uint8_t col)
 
 
 #ifndef __AVR__
+void xor_test(const char * str)
+{
+    char teststr[30];
+    xor_reset();
+    sprintf(teststr, str);
+    printf("\nNEW : %s", teststr);
+    tr_code(teststr, 8, 0, 0);
+    teststr[8]='\0';
+    printf(" = %s", teststr);
+
+}
 
 int main(int argc, char ** argv)
 {
@@ -174,11 +201,16 @@ int main(int argc, char ** argv)
 
     xor_reset();
     for(uint8_t r=0; r<TR_ROWS; ++r) {
+        teststr[0]='\0'; // to force tabula recta mode
         tr_code(&teststr[0], TR_COLS, r,0);
         teststr[TR_COLS]='\0';
         printf("\n%2d: %s", r, teststr);
     }
 
+    xor_test("test");
+    xor_test("abc");
+    xor_test("ttt");
+    xor_test("tttt");
 
 }
 #endif // not __AVR__

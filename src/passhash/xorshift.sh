@@ -18,15 +18,10 @@ xorshift32()
 xor_init()
 {
     c=0
-    XORSHIFT=0
-
     while read -n1 c; do
         XORSHIFT=$(( $XORSHIFT + $(printf "%d" \"$c) ))
         xorshift32
-    done < <(echo -n "$UNLOCK")
-
-    SEED=$XORSHIFT
-    printf "seed(%s) = %08X\n" $1 $SEED
+    done < <(echo -n ${1})
 }
 
 b64()
@@ -54,9 +49,19 @@ tr_code()
 # MAIN
 ##############
 
+XORSHIFT=0
 xor_init $UNLOCK
+SEED=$XORSHIFT
 
 for row in $(seq 0 12); do
     code=$(tr_code 26 $row 0)
     printf "\n%2d: %s" $row $code
 done
+
+echo "Custom BASH:"
+for i in "tttt" "test" "abc" "ttt" "tttt" ; do
+    XORSHIFT=$SEED
+    xor_init "$i"
+    printf "\n%-8s %s" $i $(tr_code 8 0 0)
+done
+echo
