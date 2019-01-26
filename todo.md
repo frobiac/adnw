@@ -23,7 +23,6 @@ FEATURES
 * encrypt secret, simple password card support
 * basic LED signaling: command mode...
 * EEPROM loader LUFA/$(DMBS_MODULE_PATH)/HID_EEPROM_Loader/
-* lock after period of inactivity
 
 ISSUES
 ------

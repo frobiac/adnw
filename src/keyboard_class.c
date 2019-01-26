@@ -41,6 +41,7 @@
 #include "matrix.h"
 #include "command.h"
 #include "jump_bootloader.h"
+#include "passhash/tabularecta.h"
 
 #include "global_config.h"
 #ifdef PS2MOUSE
@@ -65,6 +66,7 @@ uint8_t getActiveKeyCodeModifier(void);
 void reportPrint (USB_KeyboardReport_Data_t * report, char * str);
 void printKeys(void);
 
+uint32_t g_last_activity; // idle_count at last pressed key
 /**
  * Timeouts in idle_count ticks = x/61 [s]
  *
@@ -222,6 +224,12 @@ void fillKeyboardReport(USB_KeyboardReport_Data_t *report_data)
         if(lastDualUseKey.state == DUAL_TAPPED)
             lastDualUseKey.state = DUAL_NONE; // remove after handling
 
+    }
+
+    if(0 < activeKeyCount) {
+        g_last_activity = idle_count;
+    } else if( unlocked() && (idle_count > g_last_activity + 61*60*60UL)) {
+        lock();
     }
 
     for(uint8_t i=0; i < activeKeyCount; ++i) {

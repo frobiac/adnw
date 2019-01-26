@@ -44,7 +44,7 @@
     #error TR_ALGO undefined
 #endif
 
-
+void lock(void);
 bool unlocked(void);
 
 uint16_t pwfingerprint(void);
