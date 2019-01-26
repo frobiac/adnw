@@ -32,3 +32,4 @@ src/_private_data.h
 adnw.bin
 *.swp
 .merge_file_*
+tags
