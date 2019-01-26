@@ -175,10 +175,10 @@ void xor_test(const char * str)
     char teststr[30];
     xor_reset();
     sprintf(teststr, str);
-    printf("\nNEW : %s", teststr);
+    printf("\n%s=", teststr);
     tr_code(teststr, 8, 0, 0);
     teststr[8]='\0';
-    printf(" = %s", teststr);
+    printf("%s", teststr);
 
 }
 
@@ -188,12 +188,14 @@ int main(int argc, char ** argv)
 
     if(argc>1) {
         xor_init(argv[1], strlen(argv[1]));
-        printf("\nseed(%s) = %08lX  FW=%s", argv[1], g_xor_seed, FW_VERSION);
+        printf("\nFW=%s",FW_VERSION);
+        printf("\nseed(%s) = %08lX", argv[1], g_xor_seed);
     } else {
         printf("\nMust provide initial seed as arg.");
         return 5;
     }
 
+    // tabula recta
     xor_reset();
     for(uint8_t r=0; r<TR_ROWS; ++r) {
         teststr[0]='\0'; // to force tabula recta mode
@@ -201,12 +203,20 @@ int main(int argc, char ** argv)
         teststr[TR_COLS]='\0';
         printf("\n%2d: %s", r, teststr);
     }
+    teststr[0]='\0'; // to force tabula recta mode
+    tr_code(&teststr[0], 8, TR_ROWS,0);
+    teststr[8]='\0';
+    printf("\n  : %s", teststr);
 
-    xor_test("test");
-    xor_test("abc");
-    xor_test("ttt");
-    xor_test("tttt");
-
+    // test code
+    printf("\n");
+    if(argc>2) {
+        xor_test(argv[2]);
+    } else {
+        xor_test("test");
+        xor_test("abc");
+        xor_test("t t t");
+    }
 }
 #endif // not __AVR__
 

@@ -2,6 +2,8 @@
 set -o nounset
 
 UNLOCK=${1}
+TEST=${2:-test}
+
 XORSHIFT=1   # random on firmware compile
 TR_COLS=26
 
@@ -17,11 +19,13 @@ xorshift32()
 
 xor_init()
 {
-    c=0
-    while read -n1 c; do
-        XORSHIFT=$(( $XORSHIFT + $(printf "%d" \"$c) ))
+    initstr="$@"
+    len=$((${#initstr} - 1))
+    for i in $(seq 0 $len); do
+        c=${initstr:$i:1}
+        XORSHIFT=$(( $XORSHIFT + $(printf "%d" "\"${c}") ))
         xorshift32
-    done < <(echo -n ${1})
+    done
 }
 
 b64()
@@ -50,15 +54,25 @@ tr_code()
 ##############
 
 XORSHIFT=0
-xor_init $UNLOCK
+xor_init "${UNLOCK}"
 SEED=$XORSHIFT
+printf "\nseed($UNLOCK) = %08X" $SEED
 
 for row in $(seq 0 12); do
     code=$(tr_code 26 $row 0)
     printf "\n%2d: %s" $row $code
 done
+# wrap-around for last row
+code=$(tr_code 8 13 0)
+printf "\n  : %s" $code
 
-echo "Custom BASH:"
+XORSHIFT=$SEED
+xor_init "$TEST"
+printf "\n\n%s=%s" $TEST $(tr_code 8 0 0)
+
+exit
+
+echo -e "\n\nCustom BASH:"
 for i in "tttt" "test" "abc" "ttt" "tttt" ; do
     XORSHIFT=$SEED
     xor_init "$i"
