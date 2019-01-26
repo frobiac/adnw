@@ -26,15 +26,15 @@
 #define TR_COLS 26 // 20 to treat ij pq vwxyz as one column
 #define TR_ROWS 13
 
-// hmac is about 1.5k larger
+#define SHA1_B64_BYTES 27 // base64 encoded 20 byte sha1 hash. Only 26 usable as last always contains '=' !
+
+// HMAC: is about 1.5k larger
 #define HMAC  1
+// XOR : No need to get fancy with hmac or random string:
+//       Reading out Flash and EEPROM or binary is not protected anyways.
 #define XOR   2
 
-// XOR: No need to get fancy with hmac or random string:
-//      Reading out Flash and EEPROM or binary is not protected anyways.
 #define TR_ALGO XOR
-
-#define SHA1_B64_BYTES 27 // base64 encoded 20 byte sha1 hash. Only 26 usable as last always contains '=' !
 
 #if TR_ALGO == XOR
     #include "xor.h"

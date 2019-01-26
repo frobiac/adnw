@@ -20,10 +20,12 @@
 
 #include "sha1.h"
 #include "tabularecta.h"
+#include "sha1.h"
+#include "b64.h"
 #include "../global_config.h"
 #include "../_private_data.h"
 
-#include "b64.h"
+
 /**
  * HMAC-SHA1:
  * + Optimized asm available
@@ -131,10 +133,12 @@ void lock(void)
 #if TR_ALGO == XOR
     xor_init("", 0); // reset to random compile time value
 #endif
+    // @todo LED
 }
 
 void unlock(uint8_t * code, uint8_t len)
 {
+    // @todo LED
 #if TR_ALGO == XOR
     // set seed from input
     xor_init((char*)code, len);

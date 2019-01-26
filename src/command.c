@@ -27,6 +27,8 @@
 #include "ascii2hid.h"
 #include "print.h"
 #include "helpers.h"
+#include "passhash/tabularecta.h"
+#include "passhash/b64.h"
 
 #ifdef PS2MOUSE
     #include "trackpoint.h"
@@ -49,10 +51,6 @@ uint8_t g_cmd_buf[CMD_BUF_SIZE+2]; // last two will contain length and '\0'
 
 
 static uint8_t subcmd;           ///< currently active subcommand
-
-#include "passhash/tabularecta.h"
-#include "passhash/b64.h"
-
 
 void setCommandMode(bool on)
 {

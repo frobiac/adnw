@@ -22,8 +22,7 @@
 // -> different shift for xor32
 //
 #include "xor.h"
-#include "../helpers.h"   // mapAscii()
-#include "tabularecta.h"   // mapAscii()
+#include "tabularecta.h"
 
 #if defined(__AVR__)
     #include "../print.h"
@@ -42,13 +41,9 @@ static xor_size_t g_xor_seed;
 /// Must be initialized with seed before each run, and will hold result of xorshifts.
 static xor_size_t g_xor_result;
 
-/// internal functions
-//void xorshift(void);
-
-// re-init generator with seed
-void xor_reset(void);
-void set_xor_seed(xor_size_t state);
-void xor_advance(char * str);
+void xor_reset(void);                   // re-init generator with seed
+void set_xor_seed(xor_size_t state);    // store state as seed
+void xor_advance(char * str);           // for each character in str, add to state and advance once to randomize state.
 
 xor_size_t xor_result(void) { return g_xor_result; };
 
