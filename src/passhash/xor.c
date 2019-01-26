@@ -175,16 +175,16 @@ void tr_code(char *dst, uint8_t len, uint8_t row, uint8_t col)
 {
     xor_reset();
 
+    // advance generator
     for(uint16_t i=0; i<(row*TR_COLS +col); ++i)
         xorshift();
 
 
     for(uint8_t i=0; i<len; ++i) {
         xorshift();
-        //dst[i] = b64map[g_xor_result&0x3F];
         dst[i] = b64(g_xor_result&0x3F);
     }
-    // printf("\n%2d @ %2dx%2d: %s", len, row, col, dst);
+    // xprintf("\n%2d @ %2dx%2d: %s", len, row, col, dst);
 }
 
 
@@ -196,23 +196,13 @@ int main(int argc, char ** argv)
 
     if(argc>1) {
         xor_init(argv[1], strlen(argv[1]));
-        printf("\nDONE:h(%s)=%08lX -> %08lX \n%s", argv[1], g_xor_result, g_xor_seed, FW_VERSION);
-
-        uint32_t sum=0;
-        for(int i=0; i<strlen(argv[1]); ++i) {
-            sum *= 95;
-            sum += argv[1][i] - 31;
-            printf("\n%d sum = %08lX", i, sum);
-        }
-
-
+        printf("\nseed(%s) = %08lX  FW=%s", argv[1], g_xor_seed, FW_VERSION);
     } else {
         printf("\nMust provide initial seed as arg.");
         return 5;
     }
 
     xor_reset();
-    // settle for 24 chars (XYZ together)
     for(uint8_t r=0; r<TR_ROWS; ++r) {
         tr_code(&teststr[0], TR_COLS, r,0);
         teststr[TR_COLS]='\0';

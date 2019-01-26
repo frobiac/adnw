@@ -93,14 +93,13 @@ CC_FLAGS    += -DPINKYDROP
 CC_FLAGS    += -DPS2MOUSE
 PS2_USE_BUSYWAIT = yes # uses primitive reference code
 endif
-	
+
 SRC += \
 		$(SRCDIR)/passhash/sha1-asm.S   \
 		$(SRCDIR)/passhash/hmac-sha1.c  \
 
 SRC += $(SRCDIR)/passhash/xor.c
 SRC += $(SRCDIR)/passhash/tabularecta.c
-		
 
 ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
 	SRC += \
