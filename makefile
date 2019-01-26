@@ -126,7 +126,7 @@ ifneq (,$(findstring PS2MOUSE,$(CC_FLAGS)))
 	SRC += $(SRCDIR)/trackpoint.c
 endif
 
-FW_VERSION := $(shell git describe --tags --always)-$(shell git log --pretty=format:%cd --date=short -n1)-$(shell git describe --tags --always --all | sed s:heads/::| tr " " "_")
+FW_VERSION := $(shell git describe --tags --always --long --dirty="-D")-$(shell git log --pretty=format:%cd --date=short -n1)
 ifeq ('',$(FW_VERSION))
 FW_VERSION := unknown_version-$(shell date +%Y%m%d)
 endif

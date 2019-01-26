@@ -6,7 +6,8 @@
 
 rm ./xor
 
-FW_VERSION=$(git describe --tags --always)-$(git log --pretty=format:%cd --date=short -n1)-$(git describe --tags --always --all | sed s:heads/::| tr " " "_")
+# same as in makefile
+FW_VERSION=$(git describe --tags --always --long --dirty="-D")-$(git log --pretty=format:%cd --date=short -n1)
 
 # using -O0 fails, need to check
 FLAGS="-g -O -W -std=c99 -DFW_VERSION=\"${FW_VERSION}\""
