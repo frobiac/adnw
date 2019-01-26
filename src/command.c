@@ -111,7 +111,7 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
     char curChar = hid2asciicode(hid_released, mod_released);
 
     uint8_t len = g_cmd_buf[CMD_BUF_SIZE+1];
-    if(len < CMD_BUF_SIZE) {
+    if(len <= CMD_BUF_SIZE) {
         g_cmd_buf[len] = curChar;
         //g_cmd_buf[len+1]='\0';
         g_cmd_buf[CMD_BUF_SIZE+1]=len+1;
