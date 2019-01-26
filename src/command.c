@@ -200,11 +200,10 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
             subcmdIfUnlocked(SUB_SET_TAG);
             break;
 
-#if TR_ALGO == HMAC
         case 'H':
-            subcmdIfUnlocked(SUB_HMAC);
+            subcmdIfUnlocked(SUB_RNDSTR);
             break;
-#endif
+
         case 'h':
             subcmdIfUnlocked(SUB_TABULARECTA);
             break;
@@ -231,11 +230,9 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 {
     // len minus first (subcmd id) and last (return)
     uint8_t len = g_cmd_buf[CMD_BUF_SIZE+1] -2 ;
-#if TR_ALGO == HMAC
-    uint8_t result[9];
-#endif
+    char result[9];
 
-    if( subcmd ==  SUB_SET_TAG || subcmd == SUB_HMAC || subcmd == SUB_TABULARECTA || subcmd == SUB_UNLOCK) {
+    if( subcmd ==  SUB_SET_TAG || subcmd == SUB_RNDSTR || subcmd == SUB_TABULARECTA || subcmd == SUB_UNLOCK) {
         // read until return=10 is pressed or maximum length reached
         if( (uint8_t)(c) != 10 )
             return false;
@@ -252,15 +249,21 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             setCommandMode(false);
             break;
 
+        case SUB_RNDSTR:
 #if TR_ALGO == HMAC
-        case SUB_HMAC:
-            hmac_tag(result, 8, (char *)&g_cmd_buf[1], len, 0);
+            hmac_tag((uint8_t*) result, 8, (char *) &g_cmd_buf[1], len, 0);
             result[8]='\0';
+#elif TR_ALGO == XOR
+            memcpy(result, &g_cmd_buf[1], len+1);
+            tr_code(result, 8, 0, 0);
+            result[8]='\0';
+#else
+            break;
+#endif
             // xprintf("hmac %s : %s\n", &g_cmd_buf[1], result);
             setOutputString((char*) result);
             setCommandMode(false);
             break;
-#endif
 
         case SUB_TABULARECTA: {
             /**

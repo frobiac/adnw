@@ -47,7 +47,7 @@ enum {
     SUB_LED,
     SUB_EXTRA,
     SUB_UNLOCK,
-    SUB_HMAC,
+    SUB_RNDSTR,
     SUB_TABULARECTA,
     SUB_SET_TAG,
     SUB_END
