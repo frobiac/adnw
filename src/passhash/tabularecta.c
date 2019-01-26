@@ -128,7 +128,7 @@ void lock(void)
 {
     memset(g_pw, 0, PWLEN);
 #if TR_ALGO == XOR
-    xor_init("x", 1);
+    xor_init("", 0); // reset to random compile time value
 #endif
 }
 

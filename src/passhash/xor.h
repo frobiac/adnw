@@ -45,7 +45,6 @@
 
 
 /// must call this to seed generator with state != 0
-void set_xor_seed(xor_size_t state);
 void xor_init(char * seed, uint8_t len);
 void xorshift(void);
 // void number2str(char dst[XOR_BITS/8], xor_size_t number);

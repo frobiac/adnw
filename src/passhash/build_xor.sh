@@ -12,6 +12,9 @@ FW_VERSION=$(git describe --tags --always)-$(git log --pretty=format:%cd --date=
 FLAGS="-g -O -W -std=c99 -DFW_VERSION=\"${FW_VERSION}\""
 CC=gcc
 
+XORINIT=$(tr -dc 'a-f0-9' </dev/urandom | head -c 8 )
+FLAGS="$FLAGS -DXOR_RND_INIT=0x${XORINIT}"
+
 mkdir .build 2>/dev/null
 (
   rm xor
@@ -19,5 +22,6 @@ mkdir .build 2>/dev/null
 
   $CC $FLAGS -c ../../helpers.c &&
   $CC $FLAGS -c ../xor.c  &&
-  $CC $FLAGS helpers.o xor.o -o ../xor
+  $CC $FLAGS -c ../b64.c  &&
+  $CC $FLAGS helpers.o xor.o b64.o -o ../xor
 )

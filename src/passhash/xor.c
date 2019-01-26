@@ -47,6 +47,7 @@ static xor_size_t g_xor_result;
 
 // re-init generator with seed
 void xor_reset(void);
+void set_xor_seed(xor_size_t state);
 
 xor_size_t xor_result(void) { return g_xor_result; };
 
@@ -97,7 +98,7 @@ void set_xor_seed(xor_size_t state)
 {
     // Don't allow all zero!
     if (state==0)
-        state=1;
+        state=XOR_RND_INIT; // different on each compile
 
     g_xor_seed = state;
     xor_reset();

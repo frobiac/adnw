@@ -30,7 +30,9 @@
 #define HMAC  1
 #define XOR   2
 
-#define TR_ALGO HMAC
+// XOR: No need to get fancy with hmac or random string:
+//      Reading out Flash and EEPROM or binary is not protected anyways.
+#define TR_ALGO XOR
 
 #define SHA1_B64_BYTES 27 // base64 encoded 20 byte sha1 hash. Only 26 usable as last always contains '=' !
 

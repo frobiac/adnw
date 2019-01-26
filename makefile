@@ -134,6 +134,9 @@ CC_FLAGS    += -DFW_VERSION=\"$(FW_VERSION)\"
 
 # generate a sample uuid for passhash secret
 UUID := $(shell tr -dc 'a-f0-9' </dev/urandom | head -c 40 | sed 's/\(..\)/\\\\x\1/g')
+# Random xorshift init 32
+XORINIT := $(shell tr -dc 'a-f0-9' </dev/urandom | head -c 8 )
+CC_FLAGS += -DXOR_RND_INIT=0x$(XORINIT)
 
 # Default target
 all: lufacheck configtest private_data_check submodule
