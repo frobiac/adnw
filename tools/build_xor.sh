@@ -1,10 +1,11 @@
 #!/bin/bash
 #
-# call with extra arg to test ph verification
-#   '-DPH_EXPECTED_4_DIGITS_FOR_A=4616'
+# Build xor test app from AVR code
 #
 
-rm ./xor
+base=$(git rev-parse --show-toplevel)
+cd ${base}/src/passhash/
+
 
 # same as in makefile
 FW_VERSION=$(git describe --tags --always --long --dirty="-D")-$(git log --pretty=format:%cd --date=short -n1)
@@ -17,12 +18,12 @@ XORINIT=$(tr -dc 'a-f0-9' </dev/urandom | head -c 8 )
 FLAGS="$FLAGS -DXOR_RND_INIT=0x${XORINIT}"
 
 mkdir .build 2>/dev/null
-(
-  rm xor
-  cd .build
 
-  $CC $FLAGS -c ../../helpers.c &&
-  $CC $FLAGS -c ../xor.c  &&
-  $CC $FLAGS -c ../b64.c  &&
-  $CC $FLAGS helpers.o xor.o b64.o -o ../xor
-)
+cd .build &&
+$CC $FLAGS -c ../../helpers.c &&
+$CC $FLAGS -c ../xor.c  &&
+$CC $FLAGS -c ../b64.c  &&
+$CC $FLAGS helpers.o xor.o b64.o -o ../xor &&
+cd .. && 
+echo "./src/passhash/xor ready."
+
