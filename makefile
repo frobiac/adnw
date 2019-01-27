@@ -119,7 +119,7 @@ ifneq (,$(findstring PS2MOUSE,$(CC_FLAGS)))
 	#PS2_USE_INT      = yes # uses external interrupt for falling edge of PS/2 clock pin
 	#PS2_USE_USART    = yes # uses hardware USART engine for PS/2 signal receive(recomened)
 
-	TMK_PS2_DIR = ./src/tmk_ps2
+	TMK_PS2_DIR = ./src/external/tmk_ps2
 	-include $(TMK_PS2_DIR)/tmk_ps2.mk
 	CC_FLAGS += $(OPT_DEFS)
 	SRC += $(SRCDIR)/ps2mouse.c

@@ -26,4 +26,4 @@ endif
 
 
 # Search Path
-VPATH += src/tmk_ps2/
+VPATH += src/external/tmk_ps2/

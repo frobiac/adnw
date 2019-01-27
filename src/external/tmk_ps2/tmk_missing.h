@@ -32,4 +32,4 @@
     #define wait_us(us)  _delay_us(us)
 #endif
 
-#include "../config.h"
+#include <src/config.h>

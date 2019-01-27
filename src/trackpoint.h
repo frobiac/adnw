@@ -20,7 +20,7 @@
 #pragma once
 
 #include "ps2mouse.h"
-#include "tmk_ps2/ps2.h"
+#include "external/tmk_ps2/ps2.h"
 #include "global_config.h"
 
 #define PS2_DELAY 150

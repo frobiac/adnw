@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../config.h"
+#include <src/config.h>
 
 void clock_init(void);
 void clock_lo(void);
