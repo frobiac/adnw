@@ -52,7 +52,7 @@ SRC =  $(LUFA_SRC_USB_DEVICE)    \
 	$(SRCDIR)/external/jump_bootloader.c  \
 	$(SRCDIR)/external/i2cmaster/twimaster.c \
 	$(SRCDIR)/global_config.c      \
-	$(SRCDIR)/mem-check.c 		   \
+	$(SRCDIR)/external/mem-check.c 		   \
 	$(SRCDIR)/passhash/b64.c   \
 	$(SRCDIR)/helpers.c 		   \
 

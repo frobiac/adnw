@@ -33,7 +33,7 @@
 
 #ifdef DEBUG_OUTPUT
 #include "Descriptors.h"
-#include "mem-check.h"
+#include <src/external/mem-check.h>
 
 typedef struct {
     char data[DBG_EPSIZE];

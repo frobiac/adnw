@@ -7,7 +7,7 @@ sed -i "s/ \(20[0-9][0-9]\) Stef/ \1-${Y} Stef/" $(grep -L " $Y Stef" $(git ls-f
 sed -i "s/-20[0-9][0-9] Stef/-${Y} Stef/" $(git ls-files | grep -v LUFA)
 
 # these do have separate licenses
-IGNORED="src/_private_data_template.h src/mem-check.c src/mem-check.h"
+IGNORED="src/_private_data_template.h"
 
 echo "# Files without any copyright (without ignored ones):"
 MISSING=$(grep -L "[Cc]opyright " $(git ls-files "*.c" "*.h" | grep -v "LUFA/" | grep -v "src/external/"))
