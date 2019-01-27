@@ -23,7 +23,7 @@
 #include "keyboard_class.h"
 #include "keymap.h"
 #include "trackpoint.h"
-#include "jump_bootloader.h"
+#include <src/external/jump_bootloader.h>
 #include "ascii2hid.h"
 #include "print.h"
 #include "helpers.h"

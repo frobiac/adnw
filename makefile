@@ -49,7 +49,7 @@ SRC =  $(LUFA_SRC_USB_DEVICE)    \
 	$(SRCDIR)/command.c          \
 	$(SRCDIR)/ascii2hid.c        \
 	$(SRCDIR)/mousekey.c         \
-	$(SRCDIR)/jump_bootloader.c  \
+	$(SRCDIR)/external/jump_bootloader.c  \
 	$(SRCDIR)/external/i2cmaster/twimaster.c \
 	$(SRCDIR)/global_config.c      \
 	$(SRCDIR)/mem-check.c 		   \
