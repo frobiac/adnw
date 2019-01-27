@@ -4,7 +4,7 @@
 #
 
 base=$(git rev-parse --show-toplevel)
-cd ${base}/src/passhash/
+cd ${base}/
 
 
 # same as in makefile
@@ -20,10 +20,10 @@ FLAGS="$FLAGS -DXOR_RND_INIT=0x${XORINIT}"
 mkdir .build 2>/dev/null
 
 cd .build &&
-$CC $FLAGS -c ../../helpers.c &&
-$CC $FLAGS -c ../xor.c  &&
-$CC $FLAGS -c ../b64.c  &&
-$CC $FLAGS helpers.o xor.o b64.o -o ../xor &&
+$CC $FLAGS -c ../src/helpers.c &&
+$CC $FLAGS -c ../src/xor.c  &&
+$CC $FLAGS -c ../src/b64.c  &&
+$CC $FLAGS helpers.o xor.o b64.o -o xor &&
 cd .. && 
-echo "./src/passhash/xor ready."
+echo ".build/xor ready."
 

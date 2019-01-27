@@ -53,7 +53,7 @@ SRC =  $(LUFA_SRC_USB_DEVICE)    \
 	$(SRCDIR)/external/i2cmaster/twimaster.c \
 	$(SRCDIR)/global_config.c      \
 	$(SRCDIR)/external/mem-check.c 		   \
-	$(SRCDIR)/passhash/b64.c   \
+	$(SRCDIR)/b64.c   \
 	$(SRCDIR)/helpers.c 		   \
 
 LUFA_PATH    = LUFA/LUFA
@@ -98,8 +98,8 @@ SRC += \
 		$(SRCDIR)/external/avr-cryptolib/sha1-asm.S   \
 		$(SRCDIR)/external/avr-cryptolib/hmac-sha1.c  \
 
-SRC += $(SRCDIR)/passhash/xor.c
-SRC += $(SRCDIR)/passhash/tabularecta.c
+SRC += $(SRCDIR)/xor.c
+SRC += $(SRCDIR)/tabularecta.c
 
 ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
 	SRC += \

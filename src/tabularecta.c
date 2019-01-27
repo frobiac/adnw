@@ -21,8 +21,8 @@
 #include "tabularecta.h"
 #include <src/external/avr-cryptolib/sha1.h>
 #include "b64.h"
-#include "../global_config.h"
-#include "../_private_data.h"
+#include "global_config.h"
+#include "_private_data.h"
 
 
 /**

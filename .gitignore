@@ -17,6 +17,7 @@
 *.autosave
 generated
 build
+.build
 log
 log.err
 *.d

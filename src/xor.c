@@ -25,7 +25,7 @@
 #include "tabularecta.h"
 
 #if defined(__AVR__)
-    #include "../print.h"
+    #include "print.h"
 #else
     #include <stdio.h>
     #include <string.h>

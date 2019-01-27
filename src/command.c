@@ -27,8 +27,8 @@
 #include "ascii2hid.h"
 #include "print.h"
 #include "helpers.h"
-#include "passhash/tabularecta.h"
-#include "passhash/b64.h"
+#include "tabularecta.h"
+#include "b64.h"
 
 #ifdef PS2MOUSE
     #include "trackpoint.h"

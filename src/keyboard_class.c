@@ -41,7 +41,7 @@
 #include "matrix.h"
 #include "command.h"
 #include <src/external/jump_bootloader.h>
-#include "passhash/tabularecta.h"
+#include "tabularecta.h"
 
 #include "global_config.h"
 #ifdef PS2MOUSE
