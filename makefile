@@ -95,8 +95,8 @@ PS2_USE_BUSYWAIT = yes # uses primitive reference code
 endif
 
 SRC += \
-		$(SRCDIR)/passhash/sha1-asm.S   \
-		$(SRCDIR)/passhash/hmac-sha1.c  \
+		$(SRCDIR)/external/avr-cryptolib/sha1-asm.S   \
+		$(SRCDIR)/external/avr-cryptolib/hmac-sha1.c  \
 
 SRC += $(SRCDIR)/passhash/xor.c
 SRC += $(SRCDIR)/passhash/tabularecta.c

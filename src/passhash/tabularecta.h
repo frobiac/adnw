@@ -39,7 +39,7 @@
 #if TR_ALGO == XOR
     #include "xor.h"
 #elif TR_ALGO == HMAC
-    #include "hmac-sha1.h"
+    #include <src/external/avr-cryptolib/hmac-sha1.h>
 #else
     #error TR_ALGO undefined
 #endif
