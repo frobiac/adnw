@@ -17,8 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PS2MOUSE_H
-#define PS2MOUSE_H
+#pragma once
 
 #include <stdbool.h>
 
@@ -42,4 +41,3 @@ bool ps2_init_mouse(void);
 uint8_t getMouseReport(USB_WheelMouseReport_Data_t *report_data);
 
 
-#endif // PS2MOUSE_H

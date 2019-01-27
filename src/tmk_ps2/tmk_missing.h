@@ -18,8 +18,7 @@
 */
 
 
-#ifndef TMK_MISSING_H
-#define TMK_MISSING_H
+#pragma once
 
 /** Missing includes or defines from TMK PS/2 import.
  * These are simply put here to not clutter the originl sources too much
@@ -34,4 +33,3 @@
 #endif
 
 #include "../config.h"
-#endif

@@ -20,8 +20,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MOUSEKEY_H
-#define  MOUSEKEY_H
+#pragma once
 
 #include <stdbool.h>
 
@@ -36,4 +35,3 @@ void mousekey_activate(uint16_t mask);
 
 uint8_t getMouseKeyReport(USB_WheelMouseReport_Data_t *MouseReport);
 
-#endif

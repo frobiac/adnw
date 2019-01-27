@@ -19,8 +19,7 @@
 
 // *INDENT-OFF*
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#pragma once
 
 /**
  * @file config.h
@@ -194,5 +193,4 @@ enum { TP_PTS=0, TP_HALFTAC, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_RES, TP_F
 #   endif
 #endif
 
-#endif // CONFIG_H
 

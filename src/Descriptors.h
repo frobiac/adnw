@@ -37,8 +37,7 @@
   this software.
 */
 
-#ifndef _DESCRIPTORS_H_
-#define _DESCRIPTORS_H_
+#pragma once
 
 /* Includes: */
 #include <avr/pgmspace.h>
@@ -135,5 +134,4 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
                                     const void** const DescriptorAddress)
 ATTR_WARN_UNUSED_RESULT ATTR_NON_NULL_PTR_ARG(3);
 
-#endif
 

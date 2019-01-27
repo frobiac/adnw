@@ -18,8 +18,7 @@
 */
 
 /// based on PJRC example
-#ifndef _analog_h_included__
-#define _analog_h_included__
+#pragma once
 
 #include <stdint.h>
 
@@ -67,4 +66,3 @@ int16_t adc_read(uint8_t mux);
     #endif
 #endif
 
-#endif

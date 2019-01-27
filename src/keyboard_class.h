@@ -17,8 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __KEYBOARD_CLASS_H__
-#define __KEYBOARD_CLASS_H__
+#pragma once
 
 #include <LUFA/Drivers/USB/Class/Device/HIDClassDevice.h>
 
@@ -55,4 +54,3 @@ void fillKeyboardReport(USB_KeyboardReport_Data_t * report);
 uint8_t activeKeysCount(void);
 void keyChange(uint8_t row, column_size_t p, column_size_t h, column_size_t r);
 
-#endif // __KEYBOARD_CLASS_H__

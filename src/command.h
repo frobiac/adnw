@@ -17,8 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _COMMAND_H
-#define _COMMAND_H
+#pragma once
 
 
 #include <stdbool.h>
@@ -45,4 +44,3 @@ enum {
     SUB_END
 };
 
-#endif // _COMMAND_H

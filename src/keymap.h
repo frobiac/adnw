@@ -35,8 +35,7 @@ Hyper.xmodmap:
     add Mod3 = Hyper_L Hyper_R
 */
 
-#ifndef KEYMAP_H
-#define KEYMAP_H 1
+#pragma once
 
 #include <avr/eeprom.h>
 #include <stdint.h>
@@ -323,6 +322,5 @@ static const keycode KeyMatrix[LAYERS][ROWS][COLS] PROGMEM =
     #error "More than 32 columns are not supported"
 #endif
 
-#endif
 
 

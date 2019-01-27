@@ -18,12 +18,10 @@
 */
 
 
-#ifndef _HELPERS_H
-#define _HELPERS_H
+#pragma once
 
 // smaller than including ctype.h
 
 #define isalnum(c) (('0' <= (c) && (c) <= '9') || ('a' <= (c) && (c) <= 'z') || ('A' <= (c) && (c) <= 'Z'))
 #define isdigit(c) ('0' <= (c) && (c) <= '9')
 
-#endif

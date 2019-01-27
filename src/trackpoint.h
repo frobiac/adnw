@@ -17,8 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TRACKPOINT_H
-#define TRACKPOINT_H
+#pragma once
 
 #include "ps2mouse.h"
 #include "tmk_ps2/ps2.h"
@@ -149,4 +148,3 @@ void    tp_ram_toggle(uint8_t addr, uint8_t mask);
 #define TP_DEF_SOURCE_TAG    0x00
 
 
-#endif // TRACKPOINT_H

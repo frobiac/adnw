@@ -36,8 +36,7 @@
   this software.
 */
 
-#ifndef _KEYBOARD_H_
-#define _KEYBOARD_H_
+#pragma once
 
 /* Includes: */
 #include <avr/wdt.h>
@@ -76,6 +75,4 @@ bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDIn
         const uint8_t ReportType, void* ReportData, uint16_t* ReportSize);
 void CALLBACK_HID_Device_ProcessHIDReport(USB_ClassInfo_HID_Device_t* const HIDInterfaceInfo, const uint8_t ReportID,
         const uint8_t ReportType, const void* ReportData, const uint16_t ReportSize);
-
-#endif // _KEYBOARD_H_
 

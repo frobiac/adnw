@@ -16,8 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef HMACSHA1_H_
-#define HMACSHA1_H_
+#pragma once
 
 #include "sha1.h"
 
@@ -38,4 +37,3 @@ void hmac_sha1_final(void *dest, hmac_sha1_ctx_t *s);
 
 void hmac_sha1(void *dest, const void *key, uint16_t keylength_b, const void *msg, uint32_t msglength_b);
 
-#endif /*HMACSHA1_H_*/

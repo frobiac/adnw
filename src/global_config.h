@@ -17,8 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef GLOBAL_CONFIG_H
-#define GLOBAL_CONFIG_H
+#pragma once
 
 #include "macro.h"
 #include "print.h"
@@ -155,5 +154,4 @@ void load_config(kb_cfg_t *cfg);
 void print_config(void);
 void invalidate_config(void);
 
-#endif // GLOBAL_CONFIG_H
 

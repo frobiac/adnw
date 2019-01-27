@@ -27,8 +27,7 @@
  *
  */
 
-#ifndef SHA1_H_
-#define SHA1_H_
+#pragma once
 
 #include <stdint.h>
 /** \def SHA1_HASH_BITS
@@ -116,4 +115,3 @@ void sha1(void *dest, const void *msg, uint32_t length_b);
 
 
 
-#endif /*SHA1_H_*/

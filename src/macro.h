@@ -17,8 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MACRO_H
-#define MACRO_H 1
+#pragma once
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -55,4 +54,3 @@ uint8_t setOutputHIDCodes(uint8_t * hidcodes);
 uint8_t printOutstr(USB_KeyboardReport_Data_t * report);
 
 
-#endif

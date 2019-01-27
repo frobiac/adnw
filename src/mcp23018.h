@@ -21,8 +21,7 @@
    */
 
 
-#ifndef MCP23018_I2C_H
-#define  MCP23018_I2C_H
+#pragma once
 
 #include <stdbool.h>
 #include "external/i2cmaster/i2cmaster.h"
@@ -135,5 +134,4 @@ uint8_t mcp23018_read_rows()
 }
 
 
-#endif // MCP23018_I2C_H
 
