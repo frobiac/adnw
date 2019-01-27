@@ -104,7 +104,7 @@ SRC += $(SRCDIR)/passhash/tabularecta.c
 ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
 	SRC += \
 		   $(SRCDIR)/print.c \
-		   $(SRCDIR)/xprintf.S \
+		   $(SRCDIR)/external/xprintf.S \
 
 endif
 

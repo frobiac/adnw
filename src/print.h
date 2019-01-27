@@ -42,7 +42,7 @@ typedef struct {
 uint8_t DBG__get_report(USB_DBGReport_Data_t* report);
 
 
-#include "xprintf.h"
+#include <src/external/xprintf.h>
 #define print(s)    xputs(PSTR(s))
 #define println(s)  xputs(PSTR(s "\r\n"))
 
