@@ -385,7 +385,7 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
                     // overwrite unlock verification (0xFE to prevent empty eeprom collision)·
                     g_cfg.unlock_check = pwfingerprint();
                     save_config(&g_cfg);
-                    // @TODO clean SUB_SET_TAG
+                    // @TODO clean (or rewrite?) SUB_SET_TAG and MACROS
                     break;
                 case 'R': invalidate_config(); init_config(); break;
                 case 'L': load_config(&g_cfg); break;

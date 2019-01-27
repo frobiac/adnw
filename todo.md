@@ -149,7 +149,7 @@ suspend/wakeup:
 
 Passhash
 --------
-
+wipe macros / tag on password change.
 
 URLs
 ----
