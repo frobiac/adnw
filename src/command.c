@@ -58,6 +58,7 @@ void setCommandMode(bool on)
         g_cmd_mode_active=on;
         subcmd = SUB_NONE;
         if(on) {
+            // clean on activation
             memset(g_cmd_buf, 0, CMD_BUF_SIZE+2);
         }
     }
@@ -108,13 +109,13 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 
     char curChar = hid2asciicode(hid_released, mod_released);
 
-    uint8_t len = g_cmd_buf[CMD_BUF_SIZE+1];
-    if(len <= CMD_BUF_SIZE) {
+    uint8_t len = g_cmd_buf[CMD_BUF_SIZE];
+    if(len < CMD_BUF_SIZE) {
         g_cmd_buf[len] = curChar;
         //g_cmd_buf[len+1]='\0';
-        g_cmd_buf[CMD_BUF_SIZE+1]=len+1;
+        g_cmd_buf[CMD_BUF_SIZE]=len+1;
     } else { // not really required.
-        g_cmd_buf[CMD_BUF_SIZE] = '\0';
+        g_cmd_buf[CMD_BUF_SIZE+1] = '\0';
     }
 
     if(subcmd) {
@@ -226,16 +227,20 @@ Several subcommands intercept entered data for consumption:
 
 bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 {
-    // len minus first (subcmd id) and last (return)
-    uint8_t len = g_cmd_buf[CMD_BUF_SIZE+1] -2 ;
+    uint8_t len = g_cmd_buf[CMD_BUF_SIZE];
     char result[9];
 
     if( subcmd ==  SUB_SET_TAG || subcmd == SUB_RNDSTR || subcmd == SUB_TABULARECTA || subcmd == SUB_UNLOCK) {
         // read until return=10 is pressed or maximum length reached
-        if( (uint8_t)(c) != 10 )
+        if( (uint8_t)(c) != 10 && len < CMD_BUF_SIZE)
             return false;
 
-        g_cmd_buf[len+1]='\0';
+        if(len>=2)               // always true: subcommand plus return
+            len-=2 ;            // len minus first (subcmd id) and last (return)
+
+        // will now contain 1 command char plus at most CMD_BUF_SIZE-2 chars
+        // | c | [len=0..25]*x | \0 | ... ; len=[0..25]
+        g_cmd_buf[len+1]='\0';  // wipe return (or final length)
     }
 
     switch( subcmd ) {
@@ -250,17 +255,18 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
         case SUB_RNDSTR:
 #if TR_ALGO == HMAC
             hmac_tag((uint8_t*) result, 8, (char *) &g_cmd_buf[1], len, 0);
-            result[8]='\0';
 #elif TR_ALGO == XOR
-            memcpy(result, &g_cmd_buf[1], len+1);
-            tr_code(result, 8, 0, 0);
-            result[8]='\0';
+            tr_code((char*)&g_cmd_buf[1], 8, 0, 0);
+            memcpy(result, &g_cmd_buf[1], 8);
 #else
             break;
 #endif
-            // xprintf("hmac %s : %s\n", &g_cmd_buf[1], result);
+            result[8]='\0';
             setOutputString((char*) result);
+            memset(g_cmd_buf, 0, CMD_BUF_SIZE+2);
+            memset(result, 0, 8);
             setCommandMode(false);
+
             break;
 
         case SUB_TABULARECTA: {
