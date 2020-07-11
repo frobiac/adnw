@@ -130,7 +130,7 @@ void lock(void)
 {
     memset(g_pw, 0, PWLEN);
 #if TR_ALGO == XOR
-    xor_init("", 0); // reset to random compile time value
+    xor_init("", 0); // reset to random compile time value XOR_RND_INIT
 #endif
     // @todo LED
 }

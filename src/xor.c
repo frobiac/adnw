@@ -126,7 +126,7 @@ void xor_init(char * str, uint8_t len)
 
 /**
  *  Add each character to current state and advance generator
- *  Used to geneate random output
+ *  Used to generate random output
  */
 void xor_advance(char * str)
 {
@@ -146,6 +146,7 @@ void xor_advance(char * str)
 /**
  * Read string[len] at 0-based row x col into *dst
  * @TODO wrap around? last row / end undefined.
+ * @TODO Refactor into separate functions
  *
  * if *dst[0] != 0 use content of dst as extra offset similar to init.
  *

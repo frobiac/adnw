@@ -367,9 +367,10 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 
 
 #ifdef EXTRA
+        case SUB_EXTRA: {
+            // Read hex code to send via the extra descriptor as HID Desktop or Consumer
             static uint16_t data;
-        case SUB_EXTRA:
-            if(c==10) {
+            if(c=='\n') {
                 xprintf("\nExtra 0x%0X", data);
                 g_extra_data = data;
                 data=0;
@@ -383,6 +384,7 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             }
 
             break;
+        }
 #endif
 
 
