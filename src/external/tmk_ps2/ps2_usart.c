@@ -44,7 +44,7 @@ POSSIBILITY OF SUCH DAMAGE.
 #include <util/delay.h>
 #include "ps2.h"
 #include "ps2_io.h"
-#include "../print.h"
+#include "../../print.h"
 
 #ifdef PS2_USE_USART
 #if defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__)
