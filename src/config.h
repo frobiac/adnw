@@ -51,11 +51,27 @@
 #endif
 
 
-// thanks to Openmoko, Inc we now have a dedicated USB Product ID
-// Change this if you indend to make changes to the firmware, or distribute it
-// in any way as these are specifically acquired for this setup!
-#define VENDOR_ID             0x1D50
-#define PRODUCT_ID            0x6033
+#if defined(FROBIAC_USB_ID)
+    // Thanks to Openmoko, Inc for dedicating a USB Product ID to this project.
+    // You must change this if you indend to make changes to the firmware,
+    // or distribute it in any way as these are specifically acquired for this setup!
+    #define VENDOR_ID             0x1D50
+    #define PRODUCT_ID            0x6033
+#elif defined(LUFA_USB_ID)
+    // These are IDs used in the LUFA demos, see LUFA/LUFA/DoxygenPages/VIDAndPIDValues.txt:
+    // *** These VID/PID values should not be used in commercial designs under any circumstances.***
+    // Private projects may use the following values freely, but must accept
+    // any collisions due to other LUFA derived private projects
+    // sharing identical values. It is suggested that private projects using
+    // interfaces compatible with existing demos share the same VID/PID value.
+    //
+    // LUFA Multiple Report Keyboard/Mouse HID Demo
+    #define VENDOR_ID             0x03EB
+    #define PRODUCT_ID            0x2066
+#else
+    #error "USB ID undefined. See src/config.h for terms and conditions, or supply your own there."
+#endif
+
 #define RELEASE_NUMBER        0x0001
 
 

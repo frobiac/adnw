@@ -48,7 +48,8 @@ License
 Unless otherwise mentioned all code is licensed under GPL3.
 External code may use a different license which should be declared in the relevant files.
 
-**If you create a firmware from this code you _must_ change the vendor and product id!**
+**If you create a firmware from this code you _must_ use your own vendor and product id in
+[config.h](src/config.h) **
 
 Install
 -------
@@ -59,10 +60,11 @@ You will need a recent version of the [LUFA][lufa] usb stack to compile this sof
 
 
 To build, please adjust controller type and build switches in makefile.
-The hardware wiring needs to be specified in matrix.h .
-Further configuration can be achieved by editing src/config.h .
+The hardware wiring needs to be specified in [matrix.h](src/matrix.h).
 
-Valid ids can be retrieved from AVR demoes, or the keyboard examples of the LUFA lib.
+Further configuration can be achieved by editing [config.h](src/config.h):
+Valid USB VIDs and PIDs can be retrieved from AVR demos, or the keyboard examples of the LUFA lib.
+To temporarily build with IDs from the LUFA example, run `make KB_USB_ID=LUFA` .
 
 Then simply call
 
@@ -71,6 +73,10 @@ Then simply call
 To build for a different hardware, either edit KB_HW in makefile or export via environment:
 
     $ make KB_HW=REDTILT
+
+Other variable honoured during make are `KB_DBG` for chatty debug builds and `KB_EXT` to support the
+extra descriptor for hex code input.
+
 
 
 Command Mode Keys

@@ -30,6 +30,9 @@ KB_HW		 ?= BLACKFLAT
 KB_DBG ?= 1
 KB_EXT ?= 1
 
+# Acknowledged USB ID limitations and restrictions
+KB_USB_ID = ""
+
 
 ##################################################################
 #
@@ -66,6 +69,13 @@ CC_FLAGS += -D$(KB_HW)
 
 ifeq ($(KB_DBG), 1)
 CC_FLAGS += -DDEBUG_OUTPUT
+endif
+
+ifneq (,$(findstring frobiac,$(KB_USB_ID)))
+CC_FLAGS += -DFROBIAC_USB_ID
+endif
+ifneq (,$(findstring LUFA,$(KB_USB_ID)))
+CC_FLAGS += -DLUFA_USB_ID
 endif
 
 ifeq ($(KB_EXT), 1)
@@ -176,6 +186,12 @@ ifneq (,$(findstring DEBUG_OUTPUT,$(CC_FLAGS)))
 	@echo "*** DEBUG is defined" ;
 else
 	@echo "*** DEBUG is NOT defined";
+endif
+
+ifneq (,$(findstring USB_ID,$(CC_FLAGS)))
+	@echo "*** USB_ID set to $(KB_USB_ID)" ;
+else
+	@echo "*** USB_ID unset, use KB_USB_ID=xxx or define yours in src/config.h";
 endif
 
 
