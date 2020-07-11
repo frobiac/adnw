@@ -233,7 +233,6 @@ Several subcommands intercept entered data for consumption:
 
 bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 {
-    char result[9];
     uint8_t len = g_cmd_buf[CMD_BUF_AVAIL];
 
     if( subcmd ==  SUB_SET_TAG || subcmd == SUB_RNDSTR || subcmd == SUB_TABULARECTA || subcmd == SUB_UNLOCK) {
@@ -258,22 +257,26 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             setCommandMode(false);
             break;
 
-        case SUB_RNDSTR:
+        case SUB_RNDSTR: {
+            const uint8_t RNDLEN=12;
+            char result[RNDLEN+1];
 #if TR_ALGO == HMAC
-            hmac_tag((uint8_t*) result, 8, (char *) &g_cmd_buf[1], len, 0);
+            hmac_tag((uint8_t*) result, RNDLEN, (char *) &g_cmd_buf[1], len, 0);
 #elif TR_ALGO == XOR
-            tr_code((char*)&g_cmd_buf[1], 8, 0, 0);
-            memcpy(result, &g_cmd_buf[1], 8);
+            // uses given string in g_cmd_buf to advance generator!
+            tr_code((char*)&g_cmd_buf[1], RNDLEN, 0, 0);
+            memcpy(result, &g_cmd_buf[1], RNDLEN);
 #else
             break;
 #endif
-            result[8]='\0';
+            result[RNDLEN]='\0';
             setOutputString((char*) result);
             clear_cmdbuf();
-            memset(result, 0, 8);
+            memset(result, 0, RNDLEN);
             setCommandMode(false);
 
             break;
+        }
 
         case SUB_TABULARECTA: {
             /**
