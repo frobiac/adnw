@@ -4,14 +4,20 @@ This is a firmware for AVR microcontrollers with USB device support to simulate 
 
 By default, it implements a more ergonomic layout without any further drivers on any host operating system. In its current state, the well evolved [AdNW layout][adnw] is implemented with modified layers 3&4 (special characters, navigational keys and numpad) from the [neo layout][neo]. In addition, an integrated IBM trackpoint is also supported, but any PS/2 compatible device can also be hooked-up to the controller.
 
-![BlueCube](http://frobiac.github.com/adnw/img/bluecube/BlueCube-4-tilted.jpg)
-![HyperNano](http://frobiac.github.com/adnw/img/hypernano/2-Final_top.JPG)
+My current keyboard and its development history can be found on [Deskthority.net][DT_hw],
+Where you'll also find more detailed information on the hardware and the layout used as well as discussions related to these projects.
 
-This is my daily driver since about 2 years now:
-![RedTilt](http://frobiac.github.com/adnw/img/RT_both.jpg)
+These are my two main keyboards I use daily, both featuring 19 keys per side and an IBM trackpoint.
 
+The most simple but still entirely ergonomic design `BlackFlat`, here without tenting:
+![BlackFlat](http://frobiac.github.com/adnw/img/BlackFlat1600.jpg)
 
-A presentation of my current keyboard prototype can be found [here][DT_hw], where you'll also find more detailed information on the hardware and the layout used as well as discussions related to these projects.
+And a little more advanced design, the trough-shaped `BlackBowl`:
+![BlackBowl](http://frobiac.github.com/adnw/img/BlackBowl1600.jpg)
+
+More images of various other design can be found in the deskthority thread, or at the bottom of this
+page.
+
 
 Features
 --------
@@ -202,6 +208,23 @@ Current default layout as implemented in [keymap.h](/src/keymap.h) :
 Notes
 -----
 Currently all keycode handling is preset for German Qwertz host layout, but can be adjusted in [hid_usage.h](src/hid_usage.h) (but untested.)
+
+
+
+# More hardware images
+
+Earlier 3D-printed, split & tented design (2012)
+![BlueCube](http://frobiac.github.com/adnw/img/bluecube/BlueCube-4-tilted.jpg)
+
+First non-split design for better portability: HyperNano (2013)
+![HyperNano](http://frobiac.github.com/adnw/img/hypernano/2-Final_top.JPG)
+
+This had been my daily driver for several years: RedTilt (2016)
+![RedTilt](http://frobiac.github.com/adnw/img/RT_both.jpg)
+
+The HyperMicro by 7bit from deskthority, also running this firmware just fine:
+![HyperMicro](http://frobiac.github.com/adnw/img/HyperMicro1600.jpg)
+
 
 
 [DT_hw]:     http://deskthority.net/workshop-f7/my-diy-keyboard-collection-or-how-i-became-a-kb-geek-t2534.html
