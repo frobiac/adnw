@@ -22,7 +22,7 @@ Features
 - IBM trackpoint configuration
 - Optional extra descriptor support for additional system control keys like power or media control
 - Supports multiple layouts in switchable layers
-- HMAC-SHA1 based string generation for passwords
+- HMAC-SHA1 or xorshift32 based string generation for passwords
 
 Credits
 -------
@@ -34,12 +34,9 @@ PS/2 support is copied from [TMK sources][tmk].
 
 A dedicated USB ID was generously supplied by Openmoko, Inc.
 
-Password hash generation is implemented after the algorithm from Password Hasher Plus chrome extension.
-It is compatible with the [Twik][twik_home] implementations for [Android][twik_android] and [python][twik_python].
+Password hash generation may use hmac-sha1 and sha1 implementations from [avr-crypto-lib][avr_crypto_lib], licensed under GPL3.
 
-It uses hmac-sha1 and sha1 implementations from [avr-crypto-lib][avr_crypto_lib], licensed under GPL3.
-
-xprintf implementation from http://elm-chan.org/fsw/strf/xprintf.html
+[xprintf.h](src/external/xprintf.h) implementation from http://elm-chan.org/fsw/strf/xprintf.html
 
 I2C Master library by Peter Fleury : http://homepage.hispeed.ch/peterfleury/i2cmaster.zip
 MCP23018 code borrowing from Ruben Laguna : http://rubenlaguna.com/blog/2014/01/16/mcp23018-i2c-communication-advice
@@ -112,10 +109,54 @@ The following commands need further input:
 - U set tabula recta tag
 
 - h hash based password generation via tabula recta
+- H hash based random string generation
 
 
 Password Hash Support
 ---------------------
+This firmware supports deterministic generation of variable passwords based on a master password.
+Given that the AVR used is inherently insecure with regard to flash or eeprom storage,
+it does *not* attempt to provide a cryptographically safe alternative to a password manager.
+Instead, this functionality can be seen as a convenient method to derive a _part_ of a safe password
+platform-independently and without requiring further programs.
+
+Two generator algorithms are supported: HMAC-SHA1 and xorshift.
+The former is well-known and used for a similar purpose in the
+`Password Hasher Plus` chrome extension or the [Twik][twik_home] implementations
+for [Android][twik_android] and [python][twik_python]. However, a complete compatibility with these
+was unnecessarily bloated, and HMAC-SHA1 - while desirable for its tested design and known
+properties - is probably overkill in the context of this hardware.
+
+Thus, a simple xorshift32-based PRNG is used to derive pseudo-random data, upon which password
+functionality is built.
+
+First, the features have to be unlocked by entering an unlock passphrase at command `SUB_UNLOCK`.
+This is then used to seed the xorshift generator and derive a temporary hash `g_pw`. If no key is
+pressed within 60min (or an unlock retried with invalid/empty passphrase), this information is wiped
+and the keyboard locked again.
+
+One can then retrieve random base64-encoded strings with `SUB_RNDSTR`
+Another convenient method is the use of a tabula-recta that can be printed out for offline use.
+A call to `SUB_TABULARECTA` command with row,col,len will then return len characters from the matrix
+at row,col (wrapping around and down at EOL), and append a custom tag that can be stored in eeprom
+with `SUB_SET_TAG` (xor'ed with `g_pw` so unusable without unlocked firmware).
+
+
+Additional bits and pieces
+--------------------------
+These are not used by default, or only applicable to certain hardware designs.
+
+### PINKYDROP
+Defined only for non-split HyperNano, where pinky column is shifted one row down so it
+uses thumb row as lowest key to compensate for missing rotation.
+
+### ALTERNATE_LAYER
+Allows to define an additional layer that can be permanently switched to as a base,
+for example to implement a different language layout
+
+### [EXTRA](/src/extra.c) :
+Useful for testing additional keycodes not programmed into layer. When activated, reads hex digits
+and sends their code from either the HID Consumer or Generic Desktop Controls Usage Page.
 
 
 

@@ -165,7 +165,7 @@ enum { TP_PTS=0, TP_HALFTAC, TP_BTN2, TP_FLIPX, TP_FLIPY, TP_FLIPZ, TP_RES, TP_F
 #define COLS   12
 
 /// @TODO Hypermicro defines for trackpoint
-#else 
+#else
     #ifdef PS2MOUSE
         #error PS2MOUSE selected, but no pins defined
     #endif
