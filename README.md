@@ -1,11 +1,28 @@
 About
 -----
-This is a firmware for AVR microcontrollers with USB device support to simulate a keyboard and a mouse. It was initially created for a custom split keyboard design with 4x6 keys on each side but can be adapted easily for other hardware.
+This is a firmware for AVR microcontrollers with USB device support to simulate HID devices such as keyboards and a mice.
+It was initially created in 2010 for a custom split keyboard design based on two numpads with 4x6 keys on each side.
+At that time, the number of available firmware projects was pretty small, and this was merely started
+as a hack to be able to iterate quickly over different features I wanted to try out.
 
-By default, it implements a more ergonomic layout without any further drivers on any host operating system. In its current state, the well evolved [AdNW layout][adnw] is implemented with modified layers 3&4 (special characters, navigational keys and numpad) from the [neo layout][neo]. In addition, an integrated IBM trackpoint is also supported, but any PS/2 compatible device can also be hooked-up to the controller.
+Except to support my own prototypes, there is probably little value in the code found here for anyone else.
+Much more sophisticated projects like [tmk][tmk] or [QMK](https://qmk.fm) have since been created, and
+should be preferred for new custom designs.
 
-My current keyboard and its development history can be found on [Deskthority.net][DT_hw],
-Where you'll also find more detailed information on the hardware and the layout used as well as discussions related to these projects.
+A few unique features such as full on-keyboard configurability of trackpoint options as well as of all macros,
+and the convenient "passhash"-generator were once unique features, but also not implemented
+very cleanly and thus hard to redesign.
+
+
+By default, this firmware implements a more ergonomic layout without any further drivers on any host
+operating system. In its current state, the well evolved [AdNW layout][adnw] is implemented with
+modified layers 3&4 (special characters, navigational keys and numpad) from the [neo layout][neo].
+In addition, an integrated IBM trackpoint is also supported, but any PS/2 compatible device can also
+be hooked-up to the controller.
+
+My current keyboard and its development history can be found on [Deskthority.net][DT_hw], Where
+you'll also find more detailed information on the hardware and the layout used as well as
+discussions related to these projects.
 
 These are my two main keyboards I use daily, both featuring 19 keys per side and an IBM trackpoint.
 
@@ -45,6 +62,7 @@ Password hash generation may use hmac-sha1 and sha1 implementations from [avr-cr
 [xprintf.h](src/external/xprintf.h) implementation from http://elm-chan.org/fsw/strf/xprintf.html
 
 I2C Master library by Peter Fleury : http://homepage.hispeed.ch/peterfleury/i2cmaster.zip
+
 MCP23018 code borrowing from Ruben Laguna : http://rubenlaguna.com/blog/2014/01/16/mcp23018-i2c-communication-advice
 
 The driver was originally based on humblehackers [hhkb firmware][hhkb].
@@ -54,8 +72,8 @@ License
 Unless otherwise mentioned all code is licensed under GPL3.
 External code may use a different license which should be declared in the relevant files.
 
-**If you create a firmware from this code you _must_ use your own vendor and product id in
-[config.h](src/config.h) **
+* IMPORTANT: If you create a firmware from this code you _must_ use your own vendor and product id in
+[config.h](src/config.h)
 
 Install
 -------
@@ -69,6 +87,7 @@ To build, please adjust controller type and build switches in makefile.
 The hardware wiring needs to be specified in [matrix.h](src/matrix.h).
 
 Further configuration can be achieved by editing [config.h](src/config.h):
+
 Valid USB VIDs and PIDs can be retrieved from AVR demos, or the keyboard examples of the LUFA lib.
 To temporarily build with IDs from the LUFA example, run `make KB_USB_ID=LUFA` .
 
@@ -148,6 +167,7 @@ pressed within 60min (or an unlock retried with invalid/empty passphrase), this 
 and the keyboard locked again.
 
 One can then retrieve random base64-encoded strings with `SUB_RNDSTR`
+
 Another convenient method is the use of a tabula-recta that can be printed out for offline use.
 A call to `SUB_TABULARECTA` command with row,col,len will then return len characters from the matrix
 at row,col (wrapping around and down at EOL), and append a custom tag that can be stored in eeprom
@@ -213,16 +233,16 @@ Currently all keycode handling is preset for German Qwertz host layout, but can 
 
 # More hardware images
 
-Earlier 3D-printed, split & tented design (2012)
+Earlier 3D-printed, split & tented design `BlueCube` (2012)
 ![BlueCube](http://frobiac.github.com/adnw/img/bluecube/BlueCube-4-tilted.jpg)
 
-First non-split design for better portability: HyperNano (2013)
+First non-split design for better portability: `HyperNano` (2013)
 ![HyperNano](http://frobiac.github.com/adnw/img/hypernano/2-Final_top.JPG)
 
-This had been my daily driver for several years: RedTilt (2016)
+This `RedTilt` had been my daily driver for several years (2016)
 ![RedTilt](http://frobiac.github.com/adnw/img/RT_both.jpg)
 
-The HyperMicro by 7bit from deskthority, also running this firmware just fine:
+The `HyperMicro` PCB by 7bit from deskthority, also running this firmware just fine:
 ![HyperMicro](http://frobiac.github.com/adnw/img/HyperMicro1600.jpg)
 
 
