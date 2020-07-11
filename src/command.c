@@ -42,13 +42,19 @@
 
 bool g_cmd_mode_active=false;
 
-#define CMD_BUF_SIZE 27
-#if CMD_BUF_SIZE+2 - EE_TAG_LEN < 8
+#define CMD_BUF_AVAIL 27
+#define CMD_BUF_SIZE (CMD_BUF_AVAIL + 2)
+uint8_t g_cmd_buf[CMD_BUF_SIZE]; // last two will contain length and '\0'
+
+#if CMD_BUF_SIZE - EE_TAG_LEN < 8
     #error Not enough space for tabula recta with 8 digits.
 #endif
 
-uint8_t g_cmd_buf[CMD_BUF_SIZE+2]; // last two will contain length and '\0'
 
+void clear_cmdbuf(void)
+{
+    memset(g_cmd_buf, 0, CMD_BUF_SIZE);
+}
 
 static uint8_t subcmd;           ///< currently active subcommand
 
@@ -59,7 +65,7 @@ void setCommandMode(bool on)
         subcmd = SUB_NONE;
         if(on) {
             // clean on activation
-            memset(g_cmd_buf, 0, CMD_BUF_SIZE+2);
+            clear_cmdbuf();
         }
     }
 }
@@ -109,13 +115,13 @@ bool handleCommand(uint8_t hid_now, uint8_t mod_now)
 
     char curChar = hid2asciicode(hid_released, mod_released);
 
-    uint8_t len = g_cmd_buf[CMD_BUF_SIZE];
-    if(len < CMD_BUF_SIZE) {
+    uint8_t len = g_cmd_buf[CMD_BUF_AVAIL];
+    if(len < CMD_BUF_AVAIL) {
         g_cmd_buf[len] = curChar;
         //g_cmd_buf[len+1]='\0';
-        g_cmd_buf[CMD_BUF_SIZE]=len+1;
+        g_cmd_buf[CMD_BUF_AVAIL]=len+1;
     } else { // not really required.
-        g_cmd_buf[CMD_BUF_SIZE+1] = '\0';
+        g_cmd_buf[CMD_BUF_AVAIL+1] = '\0';
     }
 
     if(subcmd) {
@@ -227,18 +233,18 @@ Several subcommands intercept entered data for consumption:
 
 bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 {
-    uint8_t len = g_cmd_buf[CMD_BUF_SIZE];
     char result[9];
+    uint8_t len = g_cmd_buf[CMD_BUF_AVAIL];
 
     if( subcmd ==  SUB_SET_TAG || subcmd == SUB_RNDSTR || subcmd == SUB_TABULARECTA || subcmd == SUB_UNLOCK) {
         // read until return=10 is pressed or maximum length reached
-        if( (uint8_t)(c) != 10 && len < CMD_BUF_SIZE)
+        if( (uint8_t)(c) != '\n' && len < CMD_BUF_AVAIL)
             return false;
 
         if(len>=2)               // always true: subcommand plus return
             len-=2 ;            // len minus first (subcmd id) and last (return)
 
-        // will now contain 1 command char plus at most CMD_BUF_SIZE-2 chars
+        // will now contain 1 command char plus at most CMD_BUF_AVAIL chars
         // | c | [len=0..25]*x | \0 | ... ; len=[0..25]
         g_cmd_buf[len+1]='\0';  // wipe return (or final length)
     }
@@ -263,7 +269,7 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
 #endif
             result[8]='\0';
             setOutputString((char*) result);
-            memset(g_cmd_buf, 0, CMD_BUF_SIZE+2);
+            clear_cmdbuf();
             memset(result, 0, 8);
             setCommandMode(false);
 
@@ -315,7 +321,7 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             if(dig < 2 || dig > 8)
                 dig=4;
 
-            memset(g_cmd_buf, 0, CMD_BUF_SIZE+2);
+            clear_cmdbuf();
 
             tabula_recta(g_cmd_buf, row, col, dig);
 
@@ -324,14 +330,14 @@ bool handleSubCmd(char c, uint8_t hid, uint8_t mod)
             eeprom_busy_wait();
             eeprom_read_block (( void *) (&g_cmd_buf[dig]), ( const void *) (EE_ADDR_TAG), EE_TAG_LEN);
             // ... and decrypt after random string from TabulaRecta
-            // @TODO length check! (dig+EE_TAG_LEN <= CMD_BUF_SIZE+2)
+            // @TODO length check! (dig+EE_TAG_LEN <= CMD_BUF_SIZE)
             decrypt(&g_cmd_buf[dig], EE_TAG_LEN);
 
             g_cmd_buf[SHA1_B64_BYTES]='\0'; // full 27 usable, but only 26 used
 
             setOutputString((char*)g_cmd_buf);
 
-            memset(g_cmd_buf, 0, CMD_BUF_SIZE+2);
+            clear_cmdbuf();
 
             setCommandMode(false);
             break;
