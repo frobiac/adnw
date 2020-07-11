@@ -117,7 +117,7 @@ ifneq (,$(findstring PS2MOUSE,$(CC_FLAGS)))
 	# Define variant used per board above
 	#PS2_USE_BUSYWAIT = yes # uses primitive reference code
 	#PS2_USE_INT      = yes # uses external interrupt for falling edge of PS/2 clock pin
-	#PS2_USE_USART    = yes # uses hardware USART engine for PS/2 signal receive(recomened)
+	#PS2_USE_USART    = yes # uses hardware USART engine for PS/2 signal receive(recommended)
 
 	TMK_PS2_DIR = ./src/external/tmk_ps2
 	-include $(TMK_PS2_DIR)/tmk_ps2.mk
@@ -133,10 +133,10 @@ endif
 CC_FLAGS    += -DFW_VERSION=\"$(FW_VERSION)\"
 
 # generate a sample uuid for passhash secret
-UUID := $(shell tr -dc 'a-f0-9' </dev/urandom | head -c 40 | sed 's/\(..\)/\\\\x\1/g')
+HMAC_TAG_BASE := $(shell tr -dc 'a-f0-9' </dev/urandom | head -c 40 | sed 's/\(..\)/\\\\x\1/g')
 # Random xorshift init 32
-XORINIT := $(shell tr -dc 'a-f0-9' </dev/urandom | head -c 8 )
-CC_FLAGS += -DXOR_RND_INIT=0x$(XORINIT)
+XOR_RND_INIT := $(shell tr -dc 'a-f0-9' </dev/urandom | head -c 8 )
+CC_FLAGS += -DXOR_RND_INIT=0x$(XOR_RND_INIT)
 
 # Default target
 all: lufacheck configtest private_data_check submodule
@@ -148,7 +148,7 @@ ifneq ("$(wildcard $(SRCDIR)/_private_data.h)","")
 else
 	@echo "*** PRIVATE DATA $(SRCDIR)/_private_data.h NOT found.";
 	@echo "*** Creating default one. Please edit template to your needs (file is ignored in git)";
-	@sed 's/^const char \* HMAC_TAG_BASE.*/const char * HMAC_TAG_BASE = \"$(UUID)\";/' $(SRCDIR)/_private_data_template.h > $(SRCDIR)/_private_data.h ;
+	@sed 's/^const char \* HMAC_TAG_BASE.*/const char * HMAC_TAG_BASE = \"$(HMAC_TAG_BASE)\";/' $(SRCDIR)/_private_data_template.h > $(SRCDIR)/_private_data.h ;
 	@chmod 600 $(SRCDIR)/_private_data.h ;
 	@false;
 endif
@@ -159,7 +159,7 @@ lufacheck:
 	@if test -d LUFA/LUFA ; then \
 		echo "*** LUFA found.";\
 	else \
-		echo -e "*** ERROR: LUFA/LUFA missing - see README for install instructions.\n***        Try to checkout LUFA source with\n***            git submodule init && git submodule update\n\n"; false;\
+		echo "*** ERROR: LUFA/LUFA missing - see README for install instructions.\n***        Try to checkout LUFA source with\n***        git submodule init && git submodule update\n\n"; false;\
 	fi
 
 configtest:

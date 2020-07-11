@@ -61,7 +61,7 @@ uint16_t pwfingerprint(void)
 
 /**
  * Indicates correct unlock key was entered.
- * Slight chance of mismatch is negligable.
+ * Slight chance of mismatch is negligible.
  */
 bool unlocked(void)
 {

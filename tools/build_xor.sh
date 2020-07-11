@@ -24,6 +24,6 @@ $CC $FLAGS -c ../src/helpers.c &&
 $CC $FLAGS -c ../src/xor.c  &&
 $CC $FLAGS -c ../src/b64.c  &&
 $CC $FLAGS helpers.o xor.o b64.o -o xor &&
-cd .. && 
-echo ".build/xor ready."
+cd .. &&
+echo "${base}/.build/xor ready , RND=${XORINIT}"
 
