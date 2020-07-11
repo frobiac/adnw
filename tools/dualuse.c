@@ -1,7 +1,7 @@
 /*
     This file is part of the AdNW keyboard firmware.
 
-    Copyright 2018-2019 Stefan Fröbe, <frobiac /at/ gmail [d0t] com>
+    Copyright 2018-2020 Stefan Fröbe, <frobiac /at/ gmail [d0t] com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
