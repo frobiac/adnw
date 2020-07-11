@@ -66,6 +66,9 @@ uint8_t getActiveKeyCodeModifier(void);
 void reportPrint (USB_KeyboardReport_Data_t * report, char * str);
 void printKeys(void);
 
+void zeroReport(USB_KeyboardReport_Data_t *report_data) { memset(report_data, 0, 8); }
+
+
 uint32_t g_last_activity; // idle_count at last pressed key
 /**
  * Timeouts in idle_count ticks = x/61 [s]

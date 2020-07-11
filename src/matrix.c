@@ -32,7 +32,7 @@ static uint8_t i2c_adr[2] = {0x46, 0x4E};
 static bool i2c_left = 0;
 
 // this must be called once before matrix_scan.
-static inline column_size_t read_col(void)
+column_size_t read_col(void)
 {
     return mcp23018_read_rows();
 }
@@ -111,7 +111,7 @@ bool init_cols(void)
  *********************************************/
 
 // this must be called once before matrix_scan.
-inline column_size_t read_col(void)
+column_size_t read_col(void)
 {
     uint8_t resF __attribute__((unused)) = PINF;
 
